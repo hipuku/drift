@@ -12,6 +12,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@haus/colour-utils": "file:../haus/packages/colour-utils",
     "playwright": "^1.48.0"
   },
   "devDependencies": {
