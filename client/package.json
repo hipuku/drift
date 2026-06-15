@@ -1,0 +1,26 @@
+{
+  "name": "drift-client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource-variable/stack-sans-notch": "^5.2.1",
+    "@fontsource-variable/stack-sans-text": "^5.2.1",
+    "@fontsource/fira-code": "^5.1.1",
+    "@haus/tokens": "file:../../haus/packages/tokens",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.0",
+    "vite": "^6.0.7"
+  }
+}

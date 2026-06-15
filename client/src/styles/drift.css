@@ -1,0 +1,57 @@
+/* ─── drift / layer ──────────────────────────────────────────────────────────
+   Drift consumes the haus design system and adds the minimum on top:
+   a brand accent (Juniper), the variable-font family, and a few tool tokens.
+
+   The `drift` cascade layer is declared after haus's layers (see import order
+   in main.tsx), so these definitions win where they overlap — without forking.
+   Everything not redefined here (neutrals, ink, borders, feedback, motion,
+   spacing, radius, shadow) is inherited from haus unchanged.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@layer drift.primitives {
+  :root {
+    /* ── Juniper — Drift accent ── H=200°, modest chroma ──────────────────────
+       A calm blue-green. Distinct from Aronia (300°), Damson (290°), and the
+       feedback hues. Reads analytical and measured — right for an auditor. */
+    --juniper-50:  oklch(98% 0.012 200);
+    --juniper-100: oklch(95% 0.025 200);
+    --juniper-200: oklch(90% 0.045 200);
+    --juniper-300: oklch(82% 0.066 200);
+    --juniper-400: oklch(70% 0.085 200);
+    --juniper-500: oklch(58% 0.090 200);
+    --juniper-600: oklch(50% 0.085 200);   /* brand anchor — white text passes */
+    --juniper-700: oklch(42% 0.075 200);
+    --juniper-800: oklch(33% 0.058 200);
+    --juniper-900: oklch(24% 0.042 200);
+
+    /* Drift's type family: Stack Sans Text for body/UI (replaces haus's
+       Manrope at this consumer), Stack Sans Notch for display + headings. */
+    --font-sans: 'Stack Sans Text Variable', 'Stack Sans Text', system-ui, sans-serif;
+
+    --font-display: 'Stack Sans Notch Variable', 'Stack Sans Notch',
+      'Stack Sans Text Variable', system-ui, sans-serif;
+  }
+}
+
+@layer drift.semantics {
+  :root {
+    /* ── Brand role → Juniper. Only the primary role is themed. ─────────────── */
+    --color-primary-default:   var(--juniper-600);
+    --color-primary-hover:     var(--juniper-700);
+    --color-primary-pressed:   var(--juniper-800);
+    --color-primary-subtle:    var(--juniper-100);
+    --color-primary-on-subtle: var(--juniper-800);
+
+    /* Text links pick up the accent. */
+    --color-ink-link: var(--juniper-700);
+
+    /* ── Tool tokens — what an auditor needs that a general system doesn't ──── */
+    --drift-mono: var(--font-mono);
+    --drift-data-size: var(--text-12);
+
+    /* Severity scale, mapped onto haus feedback. */
+    --drift-severity-high:   var(--color-error-default);
+    --drift-severity-medium: var(--color-warning-default);
+    --drift-severity-low:    var(--color-ink-tertiary);
+  }
+}

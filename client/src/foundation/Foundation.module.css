@@ -1,0 +1,196 @@
+.page {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: var(--space-16) var(--space-6) var(--space-20);
+}
+
+.header {
+  margin-bottom: var(--space-12);
+}
+
+/* These set only colour/layout; <Text> owns the type properties via roles. */
+.wordmark {
+  color: var(--color-primary-default);
+}
+
+.subtitle {
+  color: var(--color-ink-primary);
+  margin-top: var(--space-3);
+}
+
+.note {
+  color: var(--color-ink-tertiary);
+  margin-top: var(--space-2);
+}
+
+.note strong {
+  color: var(--color-ink-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.section {
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+.sectionLabel {
+  text-transform: uppercase;
+  color: var(--color-ink-tertiary);
+  margin-bottom: var(--space-5);
+}
+
+/* ── Ramps ────────────────────────────────────────────────────────────────── */
+.ramp {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.chipWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.chip {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-md);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+}
+
+.chipLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--color-ink-tertiary);
+}
+
+/* ── Feedback ─────────────────────────────────────────────────────────────── */
+.feedbackRow {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.feedbackChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
+  border: var(--border-width-default) solid;
+  font-size: var(--text-13);
+  font-weight: var(--weight-medium);
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+/* ── Surfaces ─────────────────────────────────────────────────────────────── */
+.surfaceRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+}
+
+.surfaceCell {
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius-md);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.surfaceName {
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  opacity: 0.75;
+}
+
+.surfaceText {
+  font-size: var(--text-24);
+  font-weight: var(--weight-semibold);
+}
+
+/* ── Rows (type, space) ───────────────────────────────────────────────────── */
+.rowLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--color-ink-tertiary);
+}
+
+.typeList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.typeRow {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: var(--space-4);
+  align-items: baseline;
+}
+
+.spaceList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.spaceRow {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.spaceBar {
+  height: 0.75rem;
+  background: var(--color-primary-default);
+  border-radius: var(--radius-sm);
+  display: block;
+}
+
+/* ── Boxes (radius, shadow) ───────────────────────────────────────────────── */
+.boxRow {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.box {
+  width: 4rem;
+  height: 4rem;
+  background: var(--color-primary-subtle);
+  border: var(--border-width-default) solid var(--color-primary-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--color-primary-on-subtle);
+}
+
+.shadowBox {
+  width: 4rem;
+  height: 4rem;
+  background: var(--color-surface-default);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--color-ink-tertiary);
+}

@@ -1,0 +1,103 @@
+/* Type roles — each consumes haus's four-property role tokens together
+   (size + weight + leading + tracking) and sets the family for its group:
+   display/heading → Drift's display face; body/label → house sans; mono → Fira. */
+
+.display,
+.headingLg,
+.heading,
+.headingSm {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+.bodyLg,
+.body,
+.bodySm,
+.label,
+.labelSm,
+.labelXs {
+  font-family: var(--font-sans);
+  margin: 0;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  margin: 0;
+}
+
+.display {
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  line-height: var(--type-display-leading);
+  letter-spacing: var(--type-display-tracking);
+}
+
+.headingLg {
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-leading);
+  letter-spacing: var(--type-heading-lg-tracking);
+}
+
+.heading {
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-leading);
+  letter-spacing: var(--type-heading-tracking);
+}
+
+.headingSm {
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-leading);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.bodyLg {
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--type-body-lg-weight);
+  line-height: var(--type-body-lg-leading);
+  letter-spacing: var(--type-body-lg-tracking);
+}
+
+.body {
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-leading);
+  letter-spacing: var(--type-body-tracking);
+}
+
+.bodySm {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-leading);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
+.label {
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  line-height: var(--type-label-leading);
+  letter-spacing: var(--type-label-tracking);
+}
+
+.labelSm {
+  font-size: var(--type-label-sm-size);
+  font-weight: var(--type-label-sm-weight);
+  line-height: var(--type-label-sm-leading);
+  letter-spacing: var(--type-label-sm-tracking);
+}
+
+.labelXs {
+  font-size: var(--type-label-xs-size);
+  font-weight: var(--type-label-xs-weight);
+  line-height: var(--type-label-xs-leading);
+  letter-spacing: var(--type-label-xs-tracking);
+}
+
+.mono {
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-leading);
+  letter-spacing: var(--type-mono-tracking);
+}
