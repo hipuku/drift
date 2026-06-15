@@ -8,6 +8,7 @@
     "build": "tsc -p tsconfig.json",
     "crawl": "tsx --tsconfig tsconfig.runtime.json src/index.ts",
     "queue:demo": "tsx --tsconfig tsconfig.runtime.json src/queue/demo.ts",
+    "realtime:demo": "tsx --tsconfig tsconfig.runtime.json src/realtime/demo.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit"
@@ -15,10 +16,12 @@
   "dependencies": {
     "@haus/colour-utils": "file:../haus/packages/colour-utils",
     "bullmq": "^5.78.1",
-    "playwright": "^1.48.0"
+    "playwright": "^1.48.0",
+    "ws": "^8.21.0"
   },
   "devDependencies": {
     "@types/node": "^20.16.0",
+    "@types/ws": "^8.18.1",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0",
     "vitest": "^4.1.8"
