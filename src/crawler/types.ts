@@ -105,4 +105,9 @@ export interface CrawlOptions {
   maxPages: number;
   /** Per-page navigation timeout in milliseconds. */
   timeoutMs?: number;
+  /**
+   * Called after each page is extracted. The seam for progress reporting:
+   * the queue worker reports job progress here; the WebSocket layer streams it.
+   */
+  onPage?: (page: PageExtraction, index: number) => void | Promise<void>;
 }

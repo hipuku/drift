@@ -63,12 +63,14 @@ export async function crawl(rootUrl: string, options: CrawlOptions): Promise<Cra
         const title = await page.title();
         const elements = rawElements.map(normaliseElement);
 
-        pages.push({
+        const extraction: PageExtraction = {
           url: next,
           title,
           elementCount: elements.length,
           elements,
-        });
+        };
+        pages.push(extraction);
+        await options.onPage?.(extraction, pages.length - 1);
 
         if (pages.length < maxPages) {
           const hrefs = await page.evaluate(extractLinks);
