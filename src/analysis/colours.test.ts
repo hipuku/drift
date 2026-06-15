@@ -9,6 +9,7 @@ function element(partial: Partial<ExtractedElement["styles"]>): ExtractedElement
     styles: {
       color: null,
       backgroundColor: null,
+      effectiveBackgroundColor: null,
       borderColor: [],
       fontFamily: null,
       fontSize: null,

@@ -22,6 +22,8 @@ export interface RawElement {
   raw: {
     color: string;
     backgroundColor: string;
+    /** Nearest non-transparent ancestor background (incl. self); page canvas as fallback. */
+    effectiveBackgroundColor: string;
     borderTopColor: string;
     borderRightColor: string;
     borderBottomColor: string;
@@ -52,6 +54,12 @@ export interface ElementStyle {
   /** Hex, lowercase. Includes a trailing alpha pair when alpha < 1. Null when fully transparent. */
   color: string | null;
   backgroundColor: string | null;
+  /**
+   * The background a reader actually sees behind this element's text:
+   * the nearest non-transparent ancestor background, or the page canvas.
+   * This is the value to pair with `color` for contrast.
+   */
+  effectiveBackgroundColor: string | null;
   /** Unique border colours across the four sides, nulls dropped. */
   borderColor: string[];
   /** First family in the stack, unquoted. */

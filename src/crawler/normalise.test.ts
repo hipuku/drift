@@ -120,6 +120,7 @@ describe("normaliseElement", () => {
     raw: {
       color: "rgb(255, 255, 255)",
       backgroundColor: "rgb(0, 31, 63)",
+      effectiveBackgroundColor: "rgb(0, 31, 63)",
       borderTopColor: "rgb(0, 31, 63)",
       borderRightColor: "rgb(0, 31, 63)",
       borderBottomColor: "rgb(0, 31, 63)",
@@ -160,6 +161,7 @@ describe("normaliseElement", () => {
       styles: {
         color: "#ffffff",
         backgroundColor: "#001f3f",
+        effectiveBackgroundColor: "#001f3f",
         borderColor: ["#001f3f"],
         fontFamily: "Inter",
         fontSize: 16,

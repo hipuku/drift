@@ -146,6 +146,7 @@ export function normaliseElement(el: RawElement): ExtractedElement {
   const styles: ElementStyle = {
     color: rgbToHex(r.color),
     backgroundColor: rgbToHex(r.backgroundColor),
+    effectiveBackgroundColor: rgbToHex(r.effectiveBackgroundColor),
     borderColor: uniqueDefined([
       borderColorIfVisible(r.borderTopColor, r.borderTopWidth),
       borderColorIfVisible(r.borderRightColor, r.borderRightWidth),

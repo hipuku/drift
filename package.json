@@ -6,7 +6,7 @@
   "description": "Design system auditor for live websites",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "crawl": "tsx src/index.ts",
+    "crawl": "tsx --tsconfig tsconfig.runtime.json src/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit"

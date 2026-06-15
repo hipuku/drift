@@ -15,6 +15,10 @@ export function extractRawElements(): RawElement[] {
   const SKIP = new Set(["SCRIPT", "STYLE", "META", "LINK", "HEAD", "NOSCRIPT", "BR", "TEMPLATE"]);
   const out: RawElement[] = [];
 
+  // Note: this runs in the browser. Avoid nested named functions here — the
+  // bundler's keepNames helper (__name) does not exist in the page context, so
+  // helpers are inlined below rather than extracted.
+
   const all = document.querySelectorAll("*");
   for (const node of Array.from(all)) {
     const el = node as HTMLElement;
@@ -22,6 +26,24 @@ export function extractRawElements(): RawElement[] {
 
     const cs = window.getComputedStyle(el);
     if (cs.display === "none" || cs.visibility === "hidden") continue;
+
+    // Effective background: walk ancestors (incl. self) to the first
+    // non-transparent background; fall back to the white page canvas.
+    let effectiveBg = "rgb(255, 255, 255)";
+    let bgNode: Element | null = el;
+    while (bgNode) {
+      const bg = window.getComputedStyle(bgNode).backgroundColor;
+      const m = bg.match(/rgba?\(([^)]+)\)/);
+      if (m) {
+        const parts = m[1]!.split(/[,/\s]+/).filter(Boolean);
+        const alpha = parts.length >= 4 ? parseFloat(parts[3]!) : 1;
+        if (alpha > 0) {
+          effectiveBg = bg;
+          break;
+        }
+      }
+      bgNode = bgNode.parentElement;
+    }
 
     let hasText = false;
     for (const child of Array.from(el.childNodes)) {
@@ -37,6 +59,7 @@ export function extractRawElements(): RawElement[] {
       raw: {
         color: cs.color,
         backgroundColor: cs.backgroundColor,
+        effectiveBackgroundColor: effectiveBg,
         borderTopColor: cs.borderTopColor,
         borderRightColor: cs.borderRightColor,
         borderBottomColor: cs.borderBottomColor,

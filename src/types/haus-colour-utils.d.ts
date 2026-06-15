@@ -1,16 +1,19 @@
 /**
  * Type shim for @haus/colour-utils.
  *
- * Temporary bridge (see DECISIONS): the package is consumed as TypeScript
+ * Temporary bridge (see DECISIONS). The package is consumed as TypeScript
  * source via a local file: link and is not yet published with built .d.ts.
- * Type-checking its source directly would subject it to Drift's stricter
- * compiler options (noUncheckedIndexedAccess), which it was not written for.
+ * Type-checking its source directly subjects it to Drift's stricter compiler
+ * options (noUncheckedIndexedAccess), which it was not written for, and which
+ * TypeScript does NOT suppress for .ts files under node_modules.
  *
- * A tsconfig `paths` mapping points the type resolver here, so tsc checks
- * Drift against this declared surface. Runtime (tsx, vitest) ignores tsconfig
- * paths and resolves the real implementation through node_modules. When
- * colour-utils ships built declarations from npm, delete this file and the
- * `paths` entry — imports are unchanged.
+ * Resolution split:
+ *   - tsconfig.json `paths` points type resolution (tsc, editor) here.
+ *   - tsconfig.runtime.json clears `paths`, so tsx resolves the real source.
+ *   - vitest/vite ignore tsconfig paths and resolve the real source too.
+ *
+ * When colour-utils ships built declarations from npm, delete this file, the
+ * `paths` entry, and tsconfig.runtime.json. Imports are unchanged.
  *
  * Declare only the surface Drift actually uses.
  */

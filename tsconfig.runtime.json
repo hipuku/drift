@@ -1,0 +1,7 @@
+{
+  "//": "Runtime config for tsx. Clears the @haus/colour-utils type-shim path mapping so tsx resolves the real package source through node_modules. tsx honours tsconfig `paths`; the base tsconfig points them at a .d.ts shim for type-checking, which must not apply at runtime. Temporary, see DECISIONS.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {}
+  }
+}
