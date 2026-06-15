@@ -11,6 +11,11 @@ import type { ConnectionOptions } from "bullmq";
 const DEFAULT_HOST = "127.0.0.1";
 const DEFAULT_PORT = 6379;
 
+/** The Redis URL, for clients that take a connection string (e.g. ioredis). */
+export function redisUrl(): string {
+  return process.env.REDIS_URL ?? `redis://${DEFAULT_HOST}:${DEFAULT_PORT}`;
+}
+
 export function redisConnection(): ConnectionOptions {
   const url = process.env.REDIS_URL;
   if (!url) {
