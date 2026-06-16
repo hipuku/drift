@@ -30,6 +30,23 @@ export interface AppDeps {
   discover: (url: string) => Promise<DiscoverResult>;
 }
 
+// Turn raw crawler/Playwright failures into a calm, user-facing message —
+// never leak "page.goto: net::ERR_… Call log:" to the client.
+function friendlyDiscoverError(err: unknown): string {
+  const m = err instanceof Error ? err.message : String(err);
+  if (/ERR_NAME_NOT_RESOLVED|ENOTFOUND|getaddrinfo/i.test(m))
+    return "We couldn’t find that site — check the URL for typos.";
+  if (/timeout|ERR_TIMED_OUT|timed out/i.test(m))
+    return "That site took too long to respond. Try again in a moment.";
+  if (/ERR_CONNECTION|ECONNREFUSED|ECONNRESET/i.test(m))
+    return "We couldn’t connect to that site.";
+  if (/ERR_CERT|ERR_SSL|certificate/i.test(m))
+    return "That site has a security-certificate problem we couldn’t get past.";
+  if (/Invalid or unsupported URL/i.test(m))
+    return "That doesn’t look like a valid web address.";
+  return "We couldn’t read that site. Check the URL and try again.";
+}
+
 function clampPages(value: unknown): number {
   const n = typeof value === "number" ? value : Number.parseInt(String(value ?? ""), 10);
   if (!Number.isFinite(n)) return 1;
@@ -69,7 +86,7 @@ export function createApp(deps: AppDeps): Express {
       try {
         res.json(await deps.discover(url));
       } catch (err) {
-        res.status(422).json({ error: err instanceof Error ? err.message : "discovery failed" });
+        res.status(422).json({ error: friendlyDiscoverError(err) });
       }
     }),
   );

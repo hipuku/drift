@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "../../components/Button/Button.js";
+import { Callout } from "../../components/Callout/Callout.js";
 import { Text } from "../../components/Text/Text.js";
 import { TextField } from "../../components/TextField/TextField.js";
 import styles from "./Configure.module.css";
@@ -116,11 +117,7 @@ export function Configure() {
               <Button variant="primary" fullWidth type="submit" disabled={url.trim() === ""}>
                 Find pages
               </Button>
-              {error && (
-                <Text role="body-sm" as="p" className={styles.error}>
-                  {error}
-                </Text>
-              )}
+              {error && <Callout variant="error">{error}</Callout>}
             </form>
           </>
         )}
