@@ -14,24 +14,6 @@ interface DiscoveredPage {
 
 type Step = "url" | "discovering" | "select";
 
-// Mock discovery — replaced by the real backend endpoint (homepage links).
-const MOCK_PAGES: DiscoveredPage[] = [
-  { path: "/", title: "Home" },
-  { path: "/product", title: "Product" },
-  { path: "/pricing", title: "Pricing" },
-  { path: "/customers", title: "Customers" },
-  { path: "/blog", title: "Blog" },
-  { path: "/docs", title: "Documentation" },
-  { path: "/about", title: "About" },
-  { path: "/careers", title: "Careers" },
-  { path: "/integrations", title: "Integrations" },
-  { path: "/security", title: "Security" },
-  { path: "/changelog", title: "Changelog" },
-  { path: "/enterprise", title: "Enterprise" },
-  { path: "/contact", title: "Contact" },
-  { path: "/status", title: "Status" },
-];
-
 function hostOf(raw: string): string {
   for (const candidate of [raw, `https://${raw}`]) {
     try {
@@ -63,17 +45,32 @@ export function Configure() {
   const [pages, setPages] = useState<DiscoveredPage[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showAll, setShowAll] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const host = hostOf(url);
 
-  const discover = () => {
+  const discover = async () => {
     setStep("discovering");
-    window.setTimeout(() => {
-      setPages(MOCK_PAGES);
-      setSelected(new Set([MOCK_PAGES[0]!.path]));
+    setError(null);
+    try {
+      const res = await fetch("/api/discover", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(body.error ?? `Discovery failed (${res.status})`);
+      }
+      const data = (await res.json()) as { pages: DiscoveredPage[] };
+      setPages(data.pages);
+      setSelected(new Set(data.pages[0] ? [data.pages[0].path] : []));
       setShowAll(false);
       setStep("select");
-    }, 750);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not reach the site.");
+      setStep("url");
+    }
   };
 
   const toggle = (path: string) => {
@@ -119,6 +116,11 @@ export function Configure() {
               <Button variant="primary" fullWidth type="submit" disabled={url.trim() === ""}>
                 Find pages
               </Button>
+              {error && (
+                <Text role="body-sm" as="p" className={styles.error}>
+                  {error}
+                </Text>
+              )}
             </form>
           </>
         )}

@@ -49,8 +49,11 @@ afterEach(async () => {
   await new Promise<void>((resolve) => server.close(() => resolve()));
 });
 
-async function listen(deps: AppDeps): Promise<string> {
-  const app = createApp(deps);
+async function listen(deps: Omit<AppDeps, "discover"> & Partial<Pick<AppDeps, "discover">>): Promise<string> {
+  const app = createApp({
+    discover: async () => ({ rootUrl: "", host: "", pages: [] }),
+    ...deps,
+  });
   server = app.listen(0);
   await new Promise<void>((resolve) => server.once("listening", () => resolve()));
   const { port } = server.address() as AddressInfo;

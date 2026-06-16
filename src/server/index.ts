@@ -9,6 +9,7 @@
 
 import http from "node:http";
 import Redis from "ioredis";
+import { discoverPages } from "../crawler/discover.js";
 import { redisUrl } from "../queue/connection.js";
 import { BullCrawlJobs } from "../queue/crawlJobs.js";
 import { createCrawlQueue } from "../queue/crawlQueue.js";
@@ -18,13 +19,10 @@ import { createApp } from "./app.js";
 
 const PORT = Number.parseInt(process.env.PORT ?? "3001", 10);
 
+// The agent needs an API key; discovery and crawling do not. Boot regardless —
+// if the key is absent, only the audit endpoints fail (at call time).
 function main() {
-  let client;
-  try {
-    client = createAgentClient();
-  } catch {
-    process.exit(1);
-  }
+  const client = resolveAgentClient();
 
   const queue = createCrawlQueue();
   const worker = createCrawlWorker();
@@ -32,7 +30,7 @@ function main() {
   const jobs = new BullCrawlJobs(queue);
   const audit = new AuditService(client, redis, jobs);
 
-  const app = createApp({ jobs, audit, redis });
+  const app = createApp({ jobs, audit, redis, discover: (url) => discoverPages(url) });
   const server = http.createServer(app);
   createProgressServer({ server }); // shares the HTTP server for WS upgrades
 

@@ -20,12 +20,14 @@ import {
 import { loadCheckpoint, type RedisLike } from "../agent/checkpoint.js";
 import { pendingReview } from "../agent/runner.js";
 import type { Judgment } from "../agent/types.js";
+import type { DiscoverResult } from "../crawler/types.js";
 import type { CrawlJobs } from "../queue/crawlJobs.js";
 
 export interface AppDeps {
   jobs: CrawlJobs;
   audit: AuditService;
   redis: RedisLike;
+  discover: (url: string) => Promise<DiscoverResult>;
 }
 
 function clampPages(value: unknown): number {
@@ -53,6 +55,22 @@ export function createApp(deps: AppDeps): Express {
       }
       const jobId = await deps.jobs.enqueue({ url, maxPages: clampPages(req.body?.maxPages) });
       res.status(202).json({ jobId });
+    }),
+  );
+
+  app.post(
+    "/discover",
+    wrap(async (req, res) => {
+      const url = req.body?.url;
+      if (typeof url !== "string" || url.trim() === "") {
+        res.status(400).json({ error: "url is required" });
+        return;
+      }
+      try {
+        res.json(await deps.discover(url));
+      } catch (err) {
+        res.status(422).json({ error: err instanceof Error ? err.message : "discovery failed" });
+      }
     }),
   );
 

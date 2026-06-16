@@ -31,6 +31,10 @@
   margin-top: var(--space-7);
 }
 
+.error {
+  color: var(--color-error-default);
+}
+
 /* ── Discovering ──────────────────────────────────────────────────────────── */
 .discovering {
   display: flex;
