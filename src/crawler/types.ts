@@ -100,6 +100,25 @@ export interface CrawlResult {
   pages: PageExtraction[];
 }
 
+/** An anchor as seen in the page (raw href + visible text). */
+export interface NavLink {
+  href: string;
+  text: string;
+}
+
+/** A page offered to the user to audit. */
+export interface DiscoveredPage {
+  url: string;
+  path: string;
+  title: string;
+}
+
+export interface DiscoverResult {
+  rootUrl: string;
+  host: string;
+  pages: DiscoveredPage[];
+}
+
 export interface CrawlOptions {
   /** Number of pages to visit, same-origin, breadth-first. Clamped to 1–5. */
   maxPages: number;

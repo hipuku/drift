@@ -94,3 +94,14 @@ export function extractLinks(): string[] {
   const anchors = Array.from(document.querySelectorAll("a[href]"));
   return anchors.map((a) => (a as HTMLAnchorElement).href).filter(Boolean);
 }
+
+/** Runs in the browser. Returns href + link text for every anchor (for discovery). */
+export function extractNavLinks(): { href: string; text: string }[] {
+  const anchors = Array.from(document.querySelectorAll("a[href]"));
+  return anchors
+    .map((a) => {
+      const el = a as HTMLAnchorElement;
+      return { href: el.href, text: (el.textContent ?? "").trim() };
+    })
+    .filter((l) => l.href);
+}
