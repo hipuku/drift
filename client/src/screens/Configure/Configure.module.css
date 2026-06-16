@@ -1,0 +1,191 @@
+.screen {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-20) var(--space-6);
+}
+
+.card {
+  width: 100%;
+  max-width: 32rem;
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-8);
+}
+
+.intro {
+  color: var(--color-ink-secondary);
+  margin-top: var(--space-3);
+}
+
+.count {
+  color: var(--color-ink-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-top: var(--space-7);
+}
+
+/* ── Discovering ──────────────────────────────────────────────────────────── */
+.discovering {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-ink-secondary);
+  margin-top: var(--space-6);
+}
+
+.spinner {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary-subtle);
+  border-top-color: var(--color-primary-default);
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Select ───────────────────────────────────────────────────────────────── */
+.back {
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: var(--type-label-size);
+  color: var(--color-ink-tertiary);
+  cursor: pointer;
+  margin-bottom: var(--space-4);
+}
+
+.back:hover {
+  color: var(--color-ink-link);
+}
+
+.list {
+  margin-top: var(--space-5);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-move);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover:not(:disabled) {
+  background: var(--color-surface-subtle);
+}
+
+.rowSelected,
+.rowSelected:hover:not(:disabled) {
+  background: var(--color-surface-subtle);
+}
+
+.rowDisabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+.row:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  position: relative;
+  z-index: 1;
+}
+
+.check {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-on-aronia);
+  flex-shrink: 0;
+  transition:
+    background var(--duration-fast) var(--ease-move),
+    border-color var(--duration-fast) var(--ease-move);
+}
+
+.checkOn {
+  background: var(--color-primary-default);
+  border-color: var(--color-primary-default);
+}
+
+.rowText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+/* The one place mono earns its place — an actual URL path. */
+.path {
+  color: var(--color-ink-tertiary);
+}
+
+.showMore {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-3);
+  padding: var(--space-2);
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink-link);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+}
+
+.showMore:hover {
+  background: var(--color-surface-subtle);
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.counter {
+  color: var(--color-ink-tertiary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+  .row,
+  .check {
+    transition-duration: 1ms;
+  }
+}

@@ -1,0 +1,68 @@
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  background: var(--color-surface-default);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+}
+
+.brand {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-primary-default);
+  line-height: 1;
+}
+
+.brand:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-radius: var(--radius-sm);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.iconLink {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--icon-sm);
+  color: var(--color-ink-tertiary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-move);
+}
+
+.iconLink:hover {
+  color: var(--color-ink-primary);
+}
+
+.iconLink:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-radius: var(--radius-sm);
+}
+
+.content {
+  flex: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconLink {
+    transition-duration: 1ms;
+  }
+}

@@ -65,10 +65,7 @@ export function Foundation() {
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <Text role="display" as="h1" className={styles.wordmark}>
-          drift
-        </Text>
-        <Text role="heading" as="p" className={styles.subtitle}>
+        <Text role="display" as="h1">
           Design foundation
         </Text>
         <Text role="mono" as="p" className={styles.note}>
