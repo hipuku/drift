@@ -185,8 +185,14 @@ export interface SiteAudit {
     fontFamilies: number;
     typeSizes: number;
     fontWeights: number;
+    /** Type sizes off the closest modular scale. */
+    typeOffScale?: number;
     spacings: number;
+    /** Spacing values off a 4px grid. */
+    spacingOffGrid?: number;
     radii: number;
+    /** Radius values within ~1px of another. */
+    radiusNearDuplicates?: number;
     shadows: number;
     // Optional extended categories — present only when extracted.
     borders?: number;

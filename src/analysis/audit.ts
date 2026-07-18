@@ -8,7 +8,13 @@
  * picture of what the site actually ships, before any proposal.
  */
 
-import { clusterColours, collectColourUsage, type ColourRole } from "./colours.js";
+import {
+  clusterColours,
+  collectColourUsage,
+  INDISTINGUISHABLE_DELTA_E,
+  type ColourRole,
+} from "./colours.js";
+import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "./typeScale.js";
 import type { CrawlResult } from "../crawler/types.js";
 
 // ── Colour ───────────────────────────────────────────────────────────────────
@@ -68,12 +74,19 @@ export interface AuditSummary {
   pages: number;
   distinctColours: number;
   colourFamilies: number;
+  /** Colours indistinguishable from another (ΔE < ~2) — genuine redundancy. */
   colourNearDuplicates: number;
   fontFamilies: number;
   typeSizes: number;
   fontWeights: number;
+  /** Type sizes that fall off the closest modular scale. */
+  typeOffScale: number;
   spacings: number;
+  /** Spacing values off a 4px grid. */
+  spacingOffGrid: number;
   radii: number;
+  /** Radius values within ~1px of another (accidental near-duplicates). */
+  radiusNearDuplicates: number;
   shadows: number;
 }
 
@@ -286,6 +299,38 @@ function collectShadow(result: CrawlResult): ShadowUsage[] {
   return [...counts.entries()].map(([value, count]) => ({ value, count })).sort((a, b) => b.count - a.count);
 }
 
+// ── Redundancy signals — the honest basis for the health verdicts ────────────
+
+const SPACING_GRID_PX = 4;
+
+/** Count values that don't sit on a `base`-px grid (within 0.5px). */
+function countOffGrid(values: number[], base = SPACING_GRID_PX): number {
+  return values.filter((v) => Math.abs(v - Math.round(v / base) * base) > 0.5).length;
+}
+
+/** Count values within `within`px of a neighbour (single-linkage) — accidental near-dupes. */
+function countNearDuplicates(values: number[], within = 1): number {
+  const sorted = [...values].sort((a, b) => a - b);
+  let clusters = 0;
+  let prev = Number.NEGATIVE_INFINITY;
+  for (const v of sorted) {
+    if (v - prev > within) clusters += 1;
+    prev = v;
+  }
+  return sorted.length - clusters;
+}
+
+/** How many type sizes fall off the closest modular scale (0 when < 2 sizes). */
+function countOffScale(typography: SiteAudit["typography"]): number {
+  const sizes = typography.sizes.map((s) => s.px);
+  if (sizes.length < 2) return 0;
+  const base = typography.sizes.reduce((a, b) => (b.count > a.count ? b : a)).px;
+  const fit = detectClosestRatio(sizes, base);
+  if (!fit) return 0;
+  const scale = buildScaleToCover(base, fit.ratio.ratio, Math.min(...sizes), Math.max(...sizes));
+  return classifyAgainstScale(sizes, scale).filter((c) => !c.onScale).length;
+}
+
 // ── Compose ──────────────────────────────────────────────────────────────────
 
 export function collectAudit(result: CrawlResult): SiteAudit {
@@ -296,7 +341,9 @@ export function collectAudit(result: CrawlResult): SiteAudit {
   const shadow = collectShadow(result);
 
   const distinctColours = colourFamilies.reduce((n, f) => n + f.swatches.length, 0);
-  const clusters = clusterColours(result).length;
+  // Redundancy = colours indistinguishable from another (tight ΔE), so a
+  // deliberate tonal ramp is never counted as duplication.
+  const clusters = clusterColours(result, INDISTINGUISHABLE_DELTA_E).length;
 
   return {
     rootUrl: result.rootUrl,
@@ -308,8 +355,11 @@ export function collectAudit(result: CrawlResult): SiteAudit {
       fontFamilies: typography.families.length,
       typeSizes: typography.sizes.length,
       fontWeights: typography.weights.length,
+      typeOffScale: countOffScale(typography),
       spacings: spacing.length,
+      spacingOffGrid: countOffGrid(spacing.map((s) => s.value)),
       radii: radius.length,
+      radiusNearDuplicates: countNearDuplicates(radius.map((r) => r.value)),
       shadows: shadow.length,
     },
     colourFamilies,

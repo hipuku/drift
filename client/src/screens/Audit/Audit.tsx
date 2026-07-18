@@ -64,9 +64,14 @@ function healthLine(s: SiteAudit["summary"]): string {
       "family",
       "families",
     )}`,
-    `${s.spacings} ad-hoc spacing ${plural(s.spacings, "value")}`,
+    `${s.spacings} spacing ${plural(s.spacings, "value")}`,
   ];
   return `${parts.slice(0, -1).join(", ")}, and ${parts.at(-1)}.`;
+}
+
+/** Graduated verdict from a redundancy count: none = good, a few = watch, more = review. */
+function redundancyVerdict(n: number): Verdict {
+  return n === 0 ? "good" : n <= 2 ? "watch" : "review";
 }
 
 function usageChips(count: number, totalPages: number, tokenPages?: number): string[] {
@@ -109,33 +114,49 @@ export function Audit({ audit, onProposals, onBack }: Props) {
   const maxSpace = audit.spacing.reduce((m, v) => Math.max(m, v.value), 1);
   const maxBp = audit.breakpoints?.reduce((m, v) => Math.max(m, v.value), 1) ?? 1;
 
+  const offScale = s.typeOffScale ?? 0;
+  const offGrid = s.spacingOffGrid ?? 0;
+  const radiusDup = s.radiusNearDuplicates ?? 0;
+
   const verdicts: { label: string; n: number; chips: string[]; verdict: Verdict }[] = [
     {
       label: "Colours",
       n: s.distinctColours,
-      verdict: s.colourNearDuplicates > 0 ? "review" : "good",
+      verdict: redundancyVerdict(s.colourNearDuplicates),
       chips: [
         `${s.colourFamilies} ${plural(s.colourFamilies, "family", "families")}`,
         s.colourNearDuplicates > 0
-          ? `${s.colourNearDuplicates} near-${plural(s.colourNearDuplicates, "duplicate")}`
+          ? `${s.colourNearDuplicates} indistinguishable`
           : "no near-duplicates",
       ],
     },
     {
       label: "Type",
       n: s.typeSizes,
-      verdict: s.typeSizes > 8 ? "review" : s.typeSizes > 5 ? "watch" : "good",
+      verdict: redundancyVerdict(offScale),
       chips: [
         `${s.fontFamilies} ${plural(s.fontFamilies, "family", "families")}`,
         `${s.fontWeights} ${plural(s.fontWeights, "weight")}`,
+        offScale > 0 ? `${offScale} off-scale` : "on a scale",
       ],
     },
-    { label: "Spacing", n: s.spacings, verdict: s.spacings > 10 ? "review" : "watch", chips: ["ad-hoc", "no grid"] },
+    {
+      label: "Spacing",
+      n: s.spacings,
+      verdict: redundancyVerdict(offGrid),
+      chips: [offGrid > 0 ? `${offGrid} off a 4px grid` : "on a 4px grid"],
+    },
     {
       label: "Radius",
       n: s.radii,
-      verdict: s.radii > 4 ? "watch" : "good",
-      chips: [s.radii === 0 ? "none in use" : `${s.radii} ${plural(s.radii, "value")}`],
+      verdict: radiusDup > 0 ? "watch" : "good",
+      chips: [
+        radiusDup > 0
+          ? `${radiusDup} near-${plural(radiusDup, "duplicate")}`
+          : s.radii === 0
+            ? "none in use"
+            : `${s.radii} ${plural(s.radii, "value")}`,
+      ],
     },
     {
       label: "Shadows",

@@ -18,6 +18,16 @@ import type { CrawlResult } from "../crawler/types.js";
 
 export type ColourRole = "text" | "background" | "border";
 
+/**
+ * CIEDE2000 ΔE below which two colours are *perceptually indistinguishable* —
+ * genuine redundancy, not a deliberate variant. Sits at/under the ~2.3
+ * just-noticeable-difference, so an intentional light/mid/dark ramp (steps
+ * typically ΔE 8+) is never counted as duplication. Distinct from the looser
+ * threshold used to *suggest consolidation* (Proposals), which may group
+ * perceptibly-different shades on purpose.
+ */
+export const INDISTINGUISHABLE_DELTA_E = 2;
+
 export interface ColourUsage {
   hex: string;
   /** Total occurrences across every element on every page. */
