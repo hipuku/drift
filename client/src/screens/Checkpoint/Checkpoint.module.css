@@ -1,0 +1,118 @@
+.screen {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-16) var(--space-6);
+}
+
+.card {
+  width: 100%;
+  max-width: 36rem;
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-8);
+}
+
+.eyebrow {
+  color: var(--color-primary-default);
+  margin-bottom: var(--space-2);
+}
+
+.intro {
+  color: var(--color-ink-secondary);
+  margin-top: var(--space-3);
+}
+
+.list {
+  list-style: none;
+  margin: var(--space-7) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.item {
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.summary {
+  color: var(--color-ink-primary);
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-move),
+    background var(--duration-fast) var(--ease-move);
+}
+
+.choice:hover:not(:disabled) {
+  background: var(--color-surface-subtle);
+}
+
+.choiceOn,
+.choiceOn:hover:not(:disabled) {
+  border-color: var(--color-primary-default);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary-on-subtle);
+}
+
+.choice:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+.choice:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.hint {
+  color: var(--color-ink-tertiary);
+}
+
+.choiceOn .hint {
+  color: var(--color-primary-on-subtle);
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-7);
+}
+
+.counter {
+  color: var(--color-ink-tertiary);
+}
+
+@media (max-width: 30rem) {
+  .choices {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .choice {
+    transition-duration: 1ms;
+  }
+}

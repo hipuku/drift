@@ -8,9 +8,9 @@
   width: 100%;
   max-width: 32rem;
   background: var(--color-surface-default);
-  border: var(--border-width-default) solid var(--color-border-subtle);
+  border: var(--border-width-default) solid var(--drift-card-border);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   padding: var(--space-8);
 }
 
@@ -73,8 +73,72 @@
   color: var(--color-ink-link);
 }
 
-.list {
+.search {
+  width: 100%;
   margin-top: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--type-body-size);
+  color: var(--color-ink-primary);
+  background: var(--color-surface-subtle);
+  border: var(--border-width-default) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+}
+
+.search::placeholder {
+  color: var(--color-ink-tertiary);
+}
+
+.search:focus-visible {
+  outline: none;
+  border-color: var(--color-primary-default);
+  box-shadow: var(--shadow-focus);
+}
+
+.empty {
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.muted {
+  color: var(--color-ink-tertiary);
+}
+
+.listActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.textAction {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: var(--type-label-sm-size);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink-link);
+  cursor: pointer;
+}
+
+.textAction:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.textAction:disabled {
+  color: var(--color-ink-disabled);
+  cursor: default;
+}
+
+.actionDivider {
+  width: 1px;
+  height: 0.9rem;
+  background: var(--color-border-default);
+}
+
+.list {
+  margin-top: var(--space-3);
   border: var(--border-width-default) solid var(--color-border-subtle);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -179,6 +243,10 @@
 
 .counter {
   color: var(--color-ink-tertiary);
+}
+
+.limitNote {
+  color: var(--color-primary-default);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -3,7 +3,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, type ReactNode } from "react";
 import { Text } from "../components/Text/Text.js";
 import { Foundation } from "../foundation/Foundation.js";
+import type { AuditReport, ColourInventory, ReviewItem, SiteAudit } from "../lib/api.js";
+import type { TypeInventory } from "../lib/typeScale.js";
+import { Audit } from "../screens/Audit/Audit.js";
+import { Checkpoint } from "../screens/Checkpoint/Checkpoint.js";
 import { Configure } from "../screens/Configure/Configure.js";
+import { Crawling } from "../screens/Crawling/Crawling.js";
+import { ColourProposal } from "../screens/Proposals/ColourProposal.js";
+import { ProposalsHub } from "../screens/Proposals/ProposalsHub.js";
+import { TypeScaleProposal } from "../screens/Proposals/TypeScaleProposal.js";
+import { Report } from "../screens/Report/Report.js";
+import { Failed, Thinking } from "../screens/Status/Status.js";
 import { ProductShell } from "../shell/ProductShell.js";
 import styles from "./DevHarness.module.css";
 
@@ -13,8 +23,257 @@ interface HarnessState {
   render: (key: number) => ReactNode;
 }
 
+// ── Fixtures for the screens that normally receive live data ─────────────────
+const MOCK_REVIEW: ReviewItem[] = [
+  { id: "grey-cluster", summary: "Four near-identical greys, each used once on the pricing page." },
+  { id: "blue-cta", summary: "Two blues within ΔE 3 split across the primary and secondary CTAs." },
+];
+
+const MOCK_REPORT: AuditReport = {
+  healthScore: 72,
+  summary:
+    "The palette is mostly disciplined, but a cluster of greys and two accent blues show drift. Contrast passes AA across the board except for one muted caption style.",
+  findings: [
+    {
+      severity: "high",
+      area: "contrast",
+      description: "Caption text (#9aa0a6 on #ffffff) fails WCAG AA at 3.1:1.",
+      recommendation: "Darken captions to at least #6b7178 to reach 4.5:1.",
+    },
+    {
+      severity: "medium",
+      area: "colour",
+      description: "Four greys within ΔE 4 are used interchangeably for borders.",
+      recommendation: "Consolidate to a single neutral-200 border token.",
+    },
+    {
+      severity: "low",
+      area: "typography",
+      description: "Two body sizes (15px and 16px) appear on the same page.",
+      recommendation: "Pick one base size and map the other to a scale step.",
+    },
+  ],
+  consolidationOpportunities: [
+    "Merge the four border greys into one token.",
+    "Unify the two CTA blues on a single primary.",
+  ],
+};
+
+// A site with an ad-hoc type ramp (note 15px — off most scales) on base 16.
+const MOCK_TYPE: TypeInventory = {
+  baseSizePx: 16,
+  primaryFamily: "Inter",
+  sizes: [
+    { px: 12, count: 40 },
+    { px: 14, count: 120 },
+    { px: 15, count: 22 },
+    { px: 16, count: 380 },
+    { px: 20, count: 64 },
+    { px: 24, count: 30 },
+    { px: 32, count: 12 },
+    { px: 48, count: 5 },
+  ],
+};
+
+// A palette with near-duplicate clusters to consolidate.
+const MOCK_COLOUR: ColourInventory = {
+  clusterCount: 4,
+  distinctColours: 11,
+  clusters: [
+    { representative: "#1f2933", members: ["#1f2933", "#212a35", "#1d2630"], size: 3, totalUsage: 420, pages: ["/", "/about"] },
+    { representative: "#ffffff", members: ["#ffffff", "#fefefe"], size: 2, totalUsage: 300, pages: ["/", "/about", "/pricing"] },
+    { representative: "#6b7280", members: ["#6b7280", "#6d7280", "#697079", "#6b7178"], size: 4, totalUsage: 65, pages: ["/", "/pricing"] },
+    { representative: "#3b82f6", members: ["#3b82f6", "#3a80f5"], size: 2, totalUsage: 88, pages: ["/"] },
+  ],
+};
+
+// A messy site: many near-blacks, two blues, ad-hoc type + spacing.
+const MOCK_SITE_AUDIT: SiteAudit = {
+  rootUrl: "https://example.com",
+  summary: {
+    pages: 3,
+    distinctColours: 9,
+    colourFamilies: 2,
+    colourNearDuplicates: 5,
+    fontFamilies: 2,
+    typeSizes: 6,
+    fontWeights: 3,
+    spacings: 11,
+    radii: 3,
+    shadows: 2,
+    borders: 4,
+    opacities: 5,
+    zIndices: 6,
+    blurs: 3,
+    breakpoints: 4,
+    gradients: 3,
+    motions: 7,
+  },
+  colourFamilies: [
+    {
+      name: "Neutral",
+      count: 900,
+      swatches: [
+        { hex: "#ffffff", count: 300, roles: { text: 0, background: 300, border: 0 }, pages: ["/"], lightness: 100 },
+        { hex: "#f5f5f5", count: 60, roles: { text: 0, background: 60, border: 0 }, pages: ["/"], lightness: 96 },
+        { hex: "#6b7280", count: 80, roles: { text: 80, background: 0, border: 0 }, pages: ["/"], lightness: 47 },
+        { hex: "#32302f", count: 200, roles: { text: 200, background: 0, border: 0 }, pages: ["/"], lightness: 19 },
+        { hex: "#222222", count: 140, roles: { text: 140, background: 0, border: 0 }, pages: ["/"], lightness: 13 },
+        { hex: "#1a1a1a", count: 120, roles: { text: 120, background: 0, border: 0 }, pages: ["/"], lightness: 10 },
+        { hex: "#111111", count: 100, roles: { text: 100, background: 0, border: 0 }, pages: ["/"], lightness: 7 },
+      ],
+    },
+    {
+      name: "Blue",
+      count: 96,
+      swatches: [
+        { hex: "#3b82f6", count: 60, roles: { text: 20, background: 40, border: 0 }, pages: ["/"], lightness: 60 },
+        { hex: "#2563eb", count: 36, roles: { text: 36, background: 0, border: 0 }, pages: ["/"], lightness: 53 },
+      ],
+    },
+  ],
+  typography: {
+    families: [
+      { family: "Inter", count: 820 },
+      { family: "Georgia", count: 40 },
+    ],
+    roles: [
+      { tag: "h1", px: 40, weight: 700, count: 3 },
+      { tag: "h2", px: 28, weight: 600, count: 9 },
+      { tag: "h3", px: 22, weight: 600, count: 14 },
+      { tag: "p", px: 16, weight: 400, count: 220 },
+      { tag: "a", px: 16, weight: 500, count: 60 },
+      { tag: "small", px: 13, weight: 400, count: 18 },
+    ],
+    sizes: [
+      { px: 13, count: 18 },
+      { px: 15, count: 22 },
+      { px: 16, count: 280 },
+      { px: 22, count: 14 },
+      { px: 28, count: 9 },
+      { px: 40, count: 3 },
+    ],
+    weights: [400, 500, 700],
+    lineHeights: [1.2, 1.4, 1.5, 1.6],
+    letterSpacings: [],
+  },
+  spacing: [
+    { value: 4, count: 40 }, { value: 6, count: 12 }, { value: 8, count: 80 },
+    { value: 10, count: 9 }, { value: 12, count: 50 }, { value: 14, count: 6 },
+    { value: 16, count: 120 }, { value: 20, count: 18 }, { value: 24, count: 60 },
+    { value: 32, count: 30 }, { value: 40, count: 8 },
+  ],
+  radius: [
+    { value: 4, count: 60 }, { value: 6, count: 12 }, { value: 8, count: 40 },
+  ],
+  shadow: [
+    { value: "0 1px 2px rgba(0,0,0,0.08)", count: 30 },
+    { value: "0 4px 12px rgba(0,0,0,0.12)", count: 10 },
+  ],
+  borders: [
+    { value: 1, count: 180 }, { value: 1.5, count: 12 },
+    { value: 2, count: 24 }, { value: 4, count: 6 },
+  ],
+  opacity: [
+    { value: 1, count: 0 }, { value: 0.9, count: 14 }, { value: 0.6, count: 30 },
+    { value: 0.5, count: 22 }, { value: 0.08, count: 40 },
+  ],
+  zIndex: [
+    { value: 1, count: 40 }, { value: 10, count: 18 }, { value: 50, count: 9 },
+    { value: 100, count: 6 }, { value: 999, count: 12 }, { value: 9999, count: 3 },
+  ],
+  blur: [
+    { value: 4, count: 8 }, { value: 12, count: 20 }, { value: 40, count: 4 },
+  ],
+  breakpoints: [
+    { value: 480, count: 6 }, { value: 768, count: 14 },
+    { value: 1024, count: 18 }, { value: 1280, count: 9 },
+  ],
+  gradients: [
+    { value: "linear-gradient(180deg, #3b82f6, #2563eb)", count: 12 },
+    { value: "linear-gradient(135deg, #6b7280, #111111)", count: 5 },
+    { value: "radial-gradient(circle at 30% 0%, #f5f5f5, #ffffff)", count: 8 },
+  ],
+  motion: {
+    durations: [
+      { value: 100, count: 60 }, { value: 200, count: 120 },
+      { value: 300, count: 40 }, { value: 500, count: 8 },
+    ],
+    easings: [
+      { value: "cubic-bezier(0.4, 0, 0.2, 1)", count: 140 },
+      { value: "ease-in-out", count: 30 },
+      { value: "cubic-bezier(0.34, 1.56, 0.64, 1)", count: 6 },
+    ],
+  },
+};
+
 const STATES: HarnessState[] = [
   { id: "configure", label: "Configure", render: (key) => <Configure key={key} /> },
+  {
+    id: "audit",
+    label: "Audit",
+    render: () => <Audit audit={MOCK_SITE_AUDIT} onProposals={() => {}} />,
+  },
+  {
+    id: "proposals",
+    label: "Proposals · Hub",
+    render: () => <ProposalsHub onSelect={() => {}} />,
+  },
+  {
+    id: "type-scale",
+    label: "Proposal · Type",
+    render: (key) => <TypeScaleProposal key={key} inventory={MOCK_TYPE} />,
+  },
+  {
+    id: "colour",
+    label: "Proposal · Colour",
+    render: (key) => <ColourProposal key={key} inventory={MOCK_COLOUR} />,
+  },
+  {
+    id: "crawling",
+    label: "Crawling",
+    render: () => (
+      <Crawling
+        host="example.com"
+        progress={{ pagesCrawled: 2, maxPages: 5, lastUrl: "https://example.com/pricing" }}
+      />
+    ),
+  },
+  {
+    id: "auditing",
+    label: "Auditing",
+    render: () => (
+      <Thinking
+        title="Auditing the design system"
+        detail="Clustering colours, checking contrast, and classifying what it finds."
+      />
+    ),
+  },
+  {
+    id: "checkpoint",
+    label: "Checkpoint",
+    render: (key) => (
+      <Checkpoint
+        key={key}
+        question="Are these near-identical colours intentional variants or accidental drift?"
+        items={MOCK_REVIEW}
+        submitting={false}
+        onResolve={(j) => console.log("judgments", j)}
+      />
+    ),
+  },
+  {
+    id: "report",
+    label: "Report",
+    render: () => (
+      <Report report={MOCK_REPORT} rootUrl="https://example.com" onRestart={() => {}} />
+    ),
+  },
+  {
+    id: "error",
+    label: "Error",
+    render: () => <Failed message="We couldn’t read that site. Check the URL and try again." onRetry={() => {}} />,
+  },
   { id: "foundation", label: "Foundation", render: () => <Foundation /> },
 ];
 
@@ -23,8 +282,15 @@ const STATES: HarnessState[] = [
  * opened from the top bar. Not mounted in production; the product is just the
  * ProductShell + the active flow.
  */
+/** Deep-link support: `?harness=type-scale` opens that state directly. */
+function initialStateId(): string {
+  if (typeof window === "undefined") return STATES[0]!.id;
+  const want = new URLSearchParams(window.location.search).get("harness");
+  return STATES.some((s) => s.id === want) ? want! : STATES[0]!.id;
+}
+
 export function DevHarness() {
-  const [activeId, setActiveId] = useState(STATES[0]!.id);
+  const [activeId, setActiveId] = useState(initialStateId);
   const [open, setOpen] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const current = STATES.find((s) => s.id === activeId) ?? STATES[0]!;

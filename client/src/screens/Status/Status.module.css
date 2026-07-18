@@ -1,0 +1,52 @@
+.screen {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-20) var(--space-6);
+}
+
+.card {
+  width: 100%;
+  max-width: 32rem;
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-8);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.detail {
+  color: var(--color-ink-secondary);
+  margin-top: var(--space-4);
+}
+
+.callout {
+  margin: var(--space-5) 0 var(--space-6);
+}
+
+.spinner {
+  width: 1.4rem;
+  height: 1.4rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary-subtle);
+  border-top-color: var(--color-primary-default);
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}

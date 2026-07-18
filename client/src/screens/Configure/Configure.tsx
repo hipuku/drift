@@ -5,10 +5,12 @@ import { Text } from "../../components/Text/Text.js";
 import { TextField } from "../../components/TextField/TextField.js";
 import styles from "./Configure.module.css";
 
-const MAX_PAGES = 5;
-const VISIBLE = 6;
+const VISIBLE = 8;
+/** Mirrors the backend's MAX_CRAWL_PAGES ceiling. */
+const CRAWL_CEILING = 40;
 
 interface DiscoveredPage {
+  url: string;
   path: string;
   title: string;
 }
@@ -26,6 +28,11 @@ function hostOf(raw: string): string {
   return raw || "the site";
 }
 
+interface ConfigureProps {
+  /** Hand the resolved URL and the chosen page URLs to the orchestrator. */
+  onSubmit?: (url: string, pages: string[]) => void;
+}
+
 function Check() {
   return (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -40,15 +47,20 @@ function Check() {
   );
 }
 
-export function Configure() {
+export function Configure({ onSubmit }: ConfigureProps = {}) {
   const [step, setStep] = useState<Step>("url");
   const [url, setUrl] = useState("");
+  const [resolvedUrl, setResolvedUrl] = useState("");
+  const [resolvedHost, setResolvedHost] = useState("");
   const [pages, setPages] = useState<DiscoveredPage[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showAll, setShowAll] = useState(false);
+  const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const host = hostOf(url);
+  // Before discovery we only know the typed host; after, the server's resolved
+  // one (which may have gained www / a scheme).
+  const host = resolvedHost || hostOf(url);
 
   const discover = async () => {
     setStep("discovering");
@@ -57,16 +69,20 @@ export function Configure() {
       const res = await fetch("/api/discover", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url: url.trim() }),
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(body.error ?? `Discovery failed (${res.status})`);
       }
-      const data = (await res.json()) as { pages: DiscoveredPage[] };
+      const data = (await res.json()) as { pages: DiscoveredPage[]; rootUrl?: string; host?: string };
       setPages(data.pages);
+      setResolvedUrl(data.rootUrl ?? url.trim());
+      setResolvedHost(data.host ?? "");
+      // Default to the homepage — the single most representative page.
       setSelected(new Set(data.pages[0] ? [data.pages[0].path] : []));
       setShowAll(false);
+      setQuery("");
       setStep("select");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not reach the site.");
@@ -78,14 +94,33 @@ export function Configure() {
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(path)) next.delete(path);
-      else if (next.size < MAX_PAGES) next.add(path);
+      // Gate selection at the crawl ceiling so nothing is silently dropped later.
+      else if (next.size < CRAWL_CEILING) next.add(path);
       return next;
     });
   };
 
-  const atLimit = selected.size >= MAX_PAGES;
-  const visiblePages = showAll ? pages : pages.slice(0, VISIBLE);
-  const hidden = pages.length - visiblePages.length;
+  const selectAll = () =>
+    setSelected(new Set(pages.slice(0, CRAWL_CEILING).map((p) => p.path)));
+  const clear = () => setSelected(new Set());
+
+  const atLimit = selected.size >= CRAWL_CEILING;
+
+  const q = query.trim().toLowerCase();
+  const filtered = q
+    ? pages.filter((p) => `${p.title} ${p.path}`.toLowerCase().includes(q))
+    : pages;
+  // While searching, show every match; otherwise cap until "Show more".
+  const visiblePages = q || showAll ? filtered : filtered.slice(0, VISIBLE);
+  const hidden = filtered.length - visiblePages.length;
+  const allSelected = selected.size >= Math.min(pages.length, CRAWL_CEILING);
+  const overCeiling = pages.length > CRAWL_CEILING;
+  const showSearch = pages.length > VISIBLE;
+
+  const submit = () => {
+    const chosen = pages.filter((p) => selected.has(p.path)).map((p) => p.url);
+    onSubmit?.(resolvedUrl || url.trim(), chosen);
+  };
 
   return (
     <div className={styles.screen}>
@@ -109,8 +144,12 @@ export function Configure() {
               <TextField
                 id="url"
                 label="URL"
-                type="url"
-                placeholder="https://example.com"
+                type="text"
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                placeholder="studiooptics.com.au"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
               />
@@ -143,11 +182,53 @@ export function Configure() {
               Pick pages to audit
             </Text>
             <Text role="body" as="p" className={styles.intro}>
-              <strong className={styles.count}>{pages.length} pages found</strong> — choose up to{" "}
-              {MAX_PAGES}. A handful is enough to capture the design language.
+              <strong className={styles.count}>{pages.length} pages found</strong> — audit one, a
+              few, or the whole site. The design language lives in the shared stylesheet, so a
+              handful captures most of it.
             </Text>
 
+            {showSearch && (
+              <input
+                type="text"
+                className={styles.search}
+                placeholder="Search pages…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                aria-label="Search pages"
+              />
+            )}
+
+            <div className={styles.listActions}>
+              <button
+                type="button"
+                className={styles.textAction}
+                onClick={selectAll}
+                disabled={allSelected}
+              >
+                Select all{overCeiling ? ` (first ${CRAWL_CEILING})` : ""}
+              </button>
+              <span className={styles.actionDivider} aria-hidden="true" />
+              <button
+                type="button"
+                className={styles.textAction}
+                onClick={clear}
+                disabled={selected.size === 0}
+              >
+                Clear
+              </button>
+            </div>
+
             <div className={styles.list} role="group" aria-label="Pages to audit">
+              {visiblePages.length === 0 && (
+                <div className={styles.empty}>
+                  <Text role="body-sm" className={styles.muted}>
+                    No pages match “{query}”.
+                  </Text>
+                </div>
+              )}
               {visiblePages.map((page) => {
                 const isOn = selected.has(page.path);
                 const disabled = !isOn && atLimit;
@@ -184,9 +265,10 @@ export function Configure() {
 
             <div className={styles.footer}>
               <Text role="label-sm" className={styles.counter}>
-                {selected.size} of {MAX_PAGES} selected
+                {selected.size} selected
+                {atLimit && <span className={styles.limitNote}> · {CRAWL_CEILING} max</span>}
               </Text>
-              <Button variant="primary" fullWidth disabled={selected.size === 0}>
+              <Button variant="primary" fullWidth disabled={selected.size === 0} onClick={submit}>
                 Run audit · {selected.size} page{selected.size === 1 ? "" : "s"}
               </Button>
             </div>

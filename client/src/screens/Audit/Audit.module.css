@@ -1,0 +1,564 @@
+.page {
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: var(--space-12) var(--space-6) var(--space-20);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: var(--space-5);
+  font-family: var(--font-sans);
+  font-size: var(--type-label-size);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink-tertiary);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-move);
+}
+
+.back:hover {
+  color: var(--color-ink-link);
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.title {
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+}
+
+.intro {
+  color: var(--color-ink-secondary);
+  margin-top: var(--space-3);
+  max-width: 32rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.ghost {
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--type-label-size);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink-secondary);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-move), color var(--duration-fast) var(--ease-move);
+}
+
+.ghost:hover {
+  background: var(--color-surface-subtle);
+  color: var(--color-ink-primary);
+}
+
+/* ── Tabs ────────────────────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  margin-top: var(--space-8);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  overflow-x: auto;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: none;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+  font-size: var(--type-label-size);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink-tertiary);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-move), border-color var(--duration-fast) var(--ease-move);
+}
+
+.tab:hover {
+  color: var(--color-ink-primary);
+}
+
+.tabOn {
+  color: var(--color-ink-primary);
+  border-bottom-color: var(--color-primary-default);
+}
+
+.tabCount {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-tertiary);
+  background: var(--color-surface-subtle);
+  border-radius: var(--radius-full);
+  padding: 1px var(--space-2);
+}
+
+.tabOn .tabCount {
+  color: var(--color-primary-on-subtle);
+  background: var(--color-primary-subtle);
+}
+
+/* ── Panel ───────────────────────────────────────────────────────────────── */
+.panel {
+  margin-top: var(--space-8);
+  animation: fade var(--duration-default, 0.2s) var(--ease-move);
+}
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.muted {
+  color: var(--color-ink-tertiary);
+}
+
+.sectionLabel {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-tertiary);
+  margin-bottom: var(--space-4);
+}
+
+.sectionLabel:not(:first-child) {
+  margin-top: var(--space-12);
+}
+
+/* ── Pills — the shared chip for card metadata and verdict detail ─────────── */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  background: color-mix(in oklab, var(--color-ink-primary) 8%, transparent);
+  color: var(--color-ink-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* ── Design Health ───────────────────────────────────────────────────────── */
+.health {
+  padding: var(--space-7) var(--space-8);
+  margin-bottom: var(--space-6);
+  border-radius: var(--radius-xl);
+  border: var(--border-width-default) solid
+    color-mix(in oklab, var(--color-primary-default) 22%, var(--drift-card-border));
+  background: var(--color-primary-subtle);
+}
+
+.healthKicker {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary-on-subtle);
+  margin-bottom: var(--space-3);
+}
+
+.healthLine {
+  color: var(--color-ink-primary);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* ── Overview verdict cards ── equal size; colour + bottom rule = verdict ─── */
+.verdictGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: var(--space-4);
+}
+
+.verdict {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--drift-card-border);
+  border-bottom-width: 3px;
+  border-radius: var(--radius-lg);
+  transition: transform var(--duration-fast) var(--ease-move), box-shadow var(--duration-fast) var(--ease-move);
+}
+
+.verdict:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.verdictLabel {
+  order: -1;
+  color: var(--color-ink-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: var(--text-12);
+}
+
+.verdictN {
+  line-height: 0.9;
+  font-size: clamp(2.5rem, 5vw, 3.25rem);
+  letter-spacing: -0.02em;
+  color: var(--color-ink-primary);
+}
+
+.good {
+  background: color-mix(in oklab, var(--color-success-default) 12%, var(--color-surface-default));
+  border-color: color-mix(in oklab, var(--color-success-default) 26%, var(--drift-card-border));
+  border-bottom-color: var(--color-success-default);
+}
+
+.watch {
+  background: color-mix(in oklab, var(--color-warning-default) 14%, var(--color-surface-default));
+  border-color: color-mix(in oklab, var(--color-warning-default) 30%, var(--drift-card-border));
+  border-bottom-color: var(--color-warning-default);
+}
+
+.review {
+  background: color-mix(in oklab, var(--color-error-default) 13%, var(--color-surface-default));
+  border-color: color-mix(in oklab, var(--color-error-default) 28%, var(--drift-card-border));
+  border-bottom-color: var(--color-error-default);
+}
+
+/* ── Cards (visual tokens: colour, type family, shadow, gradient) ─────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: var(--space-4);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--drift-card-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform var(--duration-fast) var(--ease-move), box-shadow var(--duration-fast) var(--ease-move);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.cardSpecimen {
+  height: 4.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: var(--color-surface-subtle);
+}
+
+.cardMeta {
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.cardValue {
+  color: var(--color-ink-primary);
+  font-size: var(--text-12);
+}
+
+.cardValueTrunc {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.swatchFill {
+  height: 4.75rem;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 10%, transparent);
+}
+
+.glyph {
+  font-size: 2.25rem;
+  line-height: 1;
+  color: var(--color-ink-primary);
+}
+
+.shadowChip {
+  display: inline-block;
+  width: 3rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+}
+
+.gradientBox {
+  width: 100%;
+  height: 4.75rem;
+  border-bottom: var(--border-width-default) solid var(--drift-card-border);
+}
+
+/* ── Tables (scalar tokens) ──────────────────────────────────────────────── */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-tertiary);
+  padding: 0 var(--space-3) var(--space-3);
+  border-bottom: var(--border-width-default) solid var(--color-border-default);
+}
+
+.table th.thRight {
+  text-align: right;
+}
+
+.table td {
+  padding: var(--space-3);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.specimenCell {
+  width: 42%;
+}
+
+.valueCell {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-primary);
+  white-space: nowrap;
+}
+
+.valueCellTrunc {
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.usageCell {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-tertiary);
+  white-space: nowrap;
+}
+
+/* ── Table specimens ─────────────────────────────────────────────────────── */
+.typeSpecimen {
+  color: var(--color-ink-primary);
+  line-height: 1;
+}
+
+.bar {
+  display: block;
+  height: 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-default);
+  min-width: 4px;
+}
+
+.bpBar {
+  display: block;
+  height: 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--color-ink-tertiary);
+  min-width: 4px;
+}
+
+.radiusChip {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--color-primary-subtle);
+  border: var(--border-width-default) solid var(--color-primary-default);
+}
+
+.borderChip {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  border-style: solid;
+  border-color: var(--color-ink-primary);
+  background: var(--color-surface-default);
+}
+
+.checker {
+  display: inline-block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-image:
+    linear-gradient(45deg, var(--color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--color-surface-sunken) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--color-surface-sunken) 75%);
+  background-size: 12px 12px;
+  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+}
+
+.opacityFill {
+  width: 100%;
+  height: 100%;
+  background: var(--color-primary-default);
+}
+
+.blurStage {
+  display: inline-block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: repeating-linear-gradient(45deg, var(--color-primary-default) 0 8px, var(--accent-300) 8px 16px);
+  position: relative;
+}
+
+.blurGlass {
+  position: absolute;
+  inset: 0;
+}
+
+.motionTrack {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 9rem;
+  height: 0.6rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-sunken);
+}
+
+.motionDot,
+.easingDot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-default);
+  transform: translateY(-50%);
+}
+
+.motionDot { animation: slideTrack var(--dur, 200ms) var(--ease-move, ease) infinite alternate; }
+.easingDot { animation: slideTrack 1.4s var(--ease, ease) infinite alternate; }
+
+@keyframes slideTrack {
+  from { left: 0; }
+  to { left: calc(100% - 0.7rem); }
+}
+
+/* ── Type families — full-width rows: specimen + name, then usage pill ────── */
+.familyList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.familyRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--drift-card-border);
+  border-radius: var(--radius-lg);
+}
+
+.familyRowGlyph {
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--color-ink-primary);
+  flex-shrink: 0;
+}
+
+.familyRowName {
+  font-family: var(--font-sans);
+  font-size: var(--type-body-size);
+  color: var(--color-ink-primary);
+}
+
+.familyRow .pill {
+  margin-left: auto;
+}
+
+/* The scale table follows the family rows directly now — give it room. */
+.familyList + .table {
+  margin-top: var(--space-12);
+}
+
+/* ── Colour families (grouping headers over the card grid) ───────────────── */
+.family + .family {
+  margin-top: var(--space-12);
+}
+
+.familyHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 40rem) {
+  .titleRow {
+    flex-direction: column;
+  }
+  .specimenCell {
+    width: 30%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none;
+  }
+  .card,
+  .verdict {
+    transition: none;
+  }
+  .motionDot,
+  .easingDot {
+    animation: none;
+    left: calc(100% - 0.7rem);
+  }
+}

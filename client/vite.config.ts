@@ -12,6 +12,12 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
+      // The progress WebSocket shares the backend HTTP server; it accepts any
+      // path, so we forward /ws straight through with upgrade support.
+      "/ws": {
+        target: "ws://localhost:3001",
+        ws: true,
+      },
     },
   },
 });

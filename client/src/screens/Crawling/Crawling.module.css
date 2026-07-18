@@ -1,0 +1,118 @@
+.screen {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-20) var(--space-6);
+}
+
+.card {
+  width: 100%;
+  max-width: 32rem;
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-8);
+}
+
+.intro {
+  color: var(--color-ink-secondary);
+  margin-top: var(--space-3);
+}
+
+.track {
+  margin-top: var(--space-7);
+  height: 0.5rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-primary-default);
+  transition: width var(--duration-default) var(--ease-move);
+}
+
+.meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.count {
+  color: var(--color-ink-tertiary);
+  flex-shrink: 0;
+}
+
+.elements {
+  color: var(--color-ink-tertiary);
+  flex-shrink: 0;
+}
+
+/* ── Pages landing one by one ────────────────────────────────────────────── */
+.pageList {
+  list-style: none;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-height: 15rem;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, black 70%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent);
+}
+
+.pageRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  animation: land var(--duration-default) var(--ease-move);
+}
+
+@keyframes land {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-default);
+  flex-shrink: 0;
+}
+
+.pagePath {
+  color: var(--color-ink-secondary);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pageEls {
+  color: var(--color-ink-tertiary);
+  margin-left: auto;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill {
+    transition-duration: 1ms;
+  }
+  .pageRow {
+    animation: none;
+  }
+}

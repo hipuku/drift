@@ -1,0 +1,186 @@
+.page {
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--space-12) var(--space-6) var(--space-20);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.head {
+  margin-bottom: var(--space-2);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-ink-secondary);
+  font: inherit;
+  font-size: var(--text-sm, 0.875rem);
+  cursor: pointer;
+}
+
+.back:hover {
+  color: var(--color-ink-primary);
+}
+
+.eyebrow {
+  color: var(--color-primary-default);
+  margin-bottom: var(--space-2);
+}
+
+.intro {
+  color: var(--color-ink-secondary);
+  margin-top: var(--space-3);
+}
+
+/* ── Clusters ────────────────────────────────────────────────────────────── */
+.clusters {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+}
+
+.cluster {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.swatch {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-md);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+}
+
+.body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.rowTop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.hex {
+  color: var(--color-ink-primary);
+  text-transform: uppercase;
+}
+
+.consolidate {
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary-on-subtle);
+  background: var(--color-primary-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-1);
+}
+
+.usage {
+  color: var(--color-ink-tertiary);
+}
+
+.members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.chip {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: var(--radius-sm);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+}
+
+/* ── Export ──────────────────────────────────────────────────────────────── */
+.export {
+  margin-top: var(--space-8);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.exportHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  background: var(--color-surface-subtle);
+}
+
+.formats {
+  display: inline-flex;
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-md);
+  padding: 2px;
+}
+
+.fmt {
+  border: none;
+  background: transparent;
+  padding: var(--space-2) var(--space-4);
+  border-radius: calc(var(--radius-md) - 2px);
+  font-family: var(--font-sans);
+  font-size: var(--type-label-sm-size, 0.85rem);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink-secondary);
+  cursor: pointer;
+}
+
+.fmtOn {
+  background: var(--color-surface-default);
+  color: var(--color-ink-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.copy {
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-surface-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--type-label-sm-size, 0.85rem);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink-primary);
+  cursor: pointer;
+}
+
+.copy:hover {
+  background: var(--color-surface-subtle);
+}
+
+.code {
+  margin: 0;
+  padding: var(--space-5);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  line-height: 1.6;
+  color: var(--color-ink-primary);
+  background: var(--color-surface-default);
+  overflow-x: auto;
+}
+
+@media (max-width: 34rem) {
+  .clusters {
+    grid-template-columns: 1fr;
+  }
+}
