@@ -499,6 +499,82 @@
   to { left: calc(100% - 0.7rem); }
 }
 
+/* ── Scale / grid ruler — the visual evidence behind the verdicts ─────────── */
+.ruler {
+  margin-bottom: var(--space-10);
+}
+
+.rulerHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.rulerTitle {
+  color: var(--color-ink-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rulerNote {
+  color: var(--color-ink-tertiary);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.rulerTrack {
+  position: relative;
+  height: 3rem;
+  margin: 0 var(--space-3);
+}
+
+.rulerLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 1rem;
+  height: 1px;
+  background: var(--color-border-default);
+}
+
+.rulerTick {
+  position: absolute;
+  top: 0.75rem;
+  width: 1px;
+  height: 0.5rem;
+  background: var(--color-border-strong);
+  transform: translateX(-50%);
+}
+
+.rulerTickLabel {
+  position: absolute;
+  top: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-ink-tertiary);
+  white-space: nowrap;
+}
+
+.rulerDot {
+  position: absolute;
+  top: 1rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-default);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 3px var(--color-surface-default);
+}
+
+.rulerDotOff {
+  background: var(--color-error-default);
+  z-index: 1;
+}
+
 /* ── Type families — full-width rows: specimen + name, then usage pill ────── */
 .familyList {
   display: flex;

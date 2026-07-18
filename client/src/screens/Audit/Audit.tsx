@@ -16,6 +16,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { Button } from "../../components/Button/Button.js";
 import { Text } from "../../components/Text/Text.js";
 import type { AuditColourSwatch, SiteAudit } from "../../lib/api.js";
+import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
 import styles from "./Audit.module.css";
 
 type Verdict = "good" | "watch" | "review";
@@ -326,6 +327,8 @@ export function Audit({ audit, onProposals, onBack }: Props) {
               ))}
             </div>
 
+            <TypeRuler sizes={t.sizes} />
+
             <Table head={["Scale", "Size", "Weight", "Uses"]}>
               {scaleRows.map((r) => (
                 <tr key={r.key}>
@@ -347,7 +350,9 @@ export function Audit({ audit, onProposals, onBack }: Props) {
         )}
 
         {tab === "spacing" && (
-          <Table head={["Preview", "Value", "Uses"]}>
+          <>
+            <SpacingRuler values={audit.spacing.map((v) => v.value)} />
+            <Table head={["Preview", "Value", "Uses"]}>
             {audit.spacing.map((v) => (
               <tr key={v.value}>
                 <td className={styles.specimenCell}>
@@ -357,7 +362,8 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                 <td className={styles.usageCell}>{v.count.toLocaleString()}×</td>
               </tr>
             ))}
-          </Table>
+            </Table>
+          </>
         )}
 
         {tab === "radius" && (
@@ -535,6 +541,105 @@ function Table({ head, children }: { head: string[]; children: ReactNode }) {
       </thead>
       <tbody>{children}</tbody>
     </table>
+  );
+}
+
+/**
+ * Type scale ruler — the visual evidence for the "off-scale" verdict. Sizes are
+ * plotted on a log axis against the closest modular scale's steps; sizes that
+ * miss a step sit between ticks in red.
+ */
+function TypeRuler({ sizes }: { sizes: { px: number; count: number }[] }) {
+  if (sizes.length < 2) return null;
+  const px = sizes.map((s) => s.px);
+  const base = sizes.reduce((a, b) => (b.count > a.count ? b : a)).px;
+  const fit = detectClosestRatio(px, base);
+  if (!fit) return null;
+
+  const scale = buildScaleToCover(base, fit.ratio.ratio, Math.min(...px), Math.max(...px));
+  const marks = classifyAgainstScale(px, scale);
+  const lo = Math.log(scale[0]!.px);
+  const hi = Math.log(scale.at(-1)!.px);
+  const pos = (v: number) => (hi > lo ? ((Math.log(v) - lo) / (hi - lo)) * 100 : 50);
+  const off = marks.filter((m) => !m.onScale).length;
+
+  return (
+    <Ruler
+      title={`Closest scale · ${fit.ratio.name} (×${fit.ratio.ratio})`}
+      note={off > 0 ? `${off} off-scale` : "all on scale"}
+      ticks={scale.map((s) => ({ px: s.px, pos: pos(s.px) }))}
+      dots={marks.map((m) => ({ px: m.px, pos: pos(m.px), on: m.onScale, nearest: m.nearestPx }))}
+    />
+  );
+}
+
+/** Spacing grid ruler — values on a linear axis against the 4px grid. */
+function SpacingRuler({ values }: { values: number[] }) {
+  if (values.length === 0) return null;
+  const base = 4;
+  const max = Math.max(...values, base);
+  const step = max / base > 24 ? base * 2 : base; // keep the tick count sane
+  const ticks: number[] = [];
+  for (let v = 0; v <= max; v += step) ticks.push(v);
+  const onGrid = (v: number) => Math.abs(v - Math.round(v / base) * base) <= 0.5;
+  const pos = (v: number) => (max > 0 ? (v / max) * 100 : 0);
+  const off = values.filter((v) => !onGrid(v)).length;
+
+  return (
+    <Ruler
+      title="4px grid"
+      note={off > 0 ? `${off} off grid` : "all on grid"}
+      ticks={ticks.map((t) => ({ px: t, pos: pos(t) }))}
+      dots={values.map((v) => ({ px: v, pos: pos(v), on: onGrid(v) }))}
+    />
+  );
+}
+
+interface RulerMark {
+  px: number;
+  pos: number;
+  on?: boolean;
+  nearest?: number;
+}
+
+function Ruler({
+  title,
+  note,
+  ticks,
+  dots,
+}: {
+  title: string;
+  note: string;
+  ticks: { px: number; pos: number }[];
+  dots: RulerMark[];
+}) {
+  return (
+    <div className={styles.ruler}>
+      <div className={styles.rulerHead}>
+        <Text role="label-sm" className={styles.rulerTitle}>
+          {title}
+        </Text>
+        <Text role="label-xs" className={styles.rulerNote}>
+          {note}
+        </Text>
+      </div>
+      <div className={styles.rulerTrack}>
+        <div className={styles.rulerLine} />
+        {ticks.map((t) => (
+          <span key={`t${t.px}`} className={styles.rulerTick} style={{ left: `${t.pos}%` }}>
+            <span className={styles.rulerTickLabel}>{t.px}</span>
+          </span>
+        ))}
+        {dots.map((d) => (
+          <span
+            key={`d${d.px}`}
+            className={d.on ? styles.rulerDot : `${styles.rulerDot} ${styles.rulerDotOff}`}
+            style={{ left: `${d.pos}%` }}
+            title={`${d.px}px${d.on ? "" : d.nearest != null ? ` · off scale (nearest ${d.nearest})` : " · off grid"}`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
