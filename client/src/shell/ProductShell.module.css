@@ -1,7 +1,26 @@
 .shell {
+  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--drift-app-bg);
+  background-attachment: fixed;
+}
+
+/* Faint measurement grid over the wash — fades toward the lower edge so it
+   never competes with content. Pointer-events off; purely atmospheric. */
+.shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--drift-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--drift-grid-line) 1px, transparent 1px);
+  background-size: var(--drift-grid-size) var(--drift-grid-size);
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 0%, black 0%, transparent 75%);
+  mask-image: radial-gradient(120% 90% at 50% 0%, black 0%, transparent 75%);
 }
 
 .bar {
@@ -12,17 +31,37 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-4) var(--space-6);
-  background: var(--color-surface-default);
-  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  background: oklch(from var(--color-surface-default) l c h / 0.72);
+  backdrop-filter: saturate(1.4) blur(12px);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: var(--border-width-default) solid var(--drift-card-border);
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
   color: var(--color-primary-default);
   line-height: 1;
+}
+
+/* A small mark beside the wordmark — gives the brand presence in the bar. */
+.brand::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-default);
+  box-shadow: 0 0 0 3px var(--color-primary-subtle);
+  transition: transform var(--duration-fast) var(--ease-move);
+}
+
+.brand:hover::before {
+  transform: scale(1.15);
 }
 
 .brand:focus-visible {
@@ -57,7 +96,10 @@
   border-radius: var(--radius-sm);
 }
 
+/* Content sits above the fixed grid layer. */
 .content {
+  position: relative;
+  z-index: 1;
   flex: 1;
 }
 

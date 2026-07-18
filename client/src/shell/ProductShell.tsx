@@ -3,6 +3,7 @@ import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ReactNode } from "react";
 import { Text } from "../components/Text/Text.js";
+import { ThemeControls } from "./ThemeControls.js";
 import styles from "./ProductShell.module.css";
 
 interface ProductShellProps {
@@ -46,6 +47,7 @@ export function ProductShell({ children, onHome, trailing }: ProductShellProps) 
           >
             <FontAwesomeIcon icon={faGlobe} />
           </a>
+          <ThemeControls />
           {trailing}
         </div>
       </header>

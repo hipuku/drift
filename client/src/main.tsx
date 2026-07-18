@@ -1,7 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-// Fonts — the Stack Sans family: Text for reading, Notch for display.
+// Fonts — the Stack Sans family: Text for reading, Notch for display; Fira Code
+// for token values.
 import "@fontsource-variable/stack-sans-text";
 import "@fontsource-variable/stack-sans-notch";
 import "@fontsource/fira-code/400.css";

@@ -15,6 +15,8 @@
   transition:
     background var(--duration-fast) var(--ease-move),
     border-color var(--duration-fast) var(--ease-move),
+    box-shadow var(--duration-fast) var(--ease-move),
+    transform var(--duration-fast) var(--ease-move),
     color var(--duration-fast) var(--ease-move);
 }
 
@@ -26,6 +28,8 @@
 .button:disabled {
   cursor: not-allowed;
   opacity: var(--opacity-disabled);
+  box-shadow: none;
+  transform: none;
 }
 
 .full {
@@ -35,14 +39,24 @@
 .primary {
   background: var(--color-primary-default);
   color: var(--color-ink-on-aronia);
+  /* A soft accent-tinted lift so the primary action reads as raised. */
+  box-shadow:
+    0 1px 2px oklch(40% 0.05 200 / 0.20),
+    0 4px 12px -4px oklch(50% 0.085 200 / 0.45);
 }
 
 .primary:hover:not(:disabled) {
   background: var(--color-primary-hover);
+  box-shadow:
+    0 2px 4px oklch(40% 0.05 200 / 0.22),
+    0 8px 20px -4px oklch(50% 0.085 200 / 0.55);
+  transform: translateY(-1px);
 }
 
 .primary:active:not(:disabled) {
   background: var(--color-primary-pressed);
+  box-shadow: 0 1px 2px oklch(40% 0.05 200 / 0.25);
+  transform: translateY(0);
 }
 
 .secondary {
