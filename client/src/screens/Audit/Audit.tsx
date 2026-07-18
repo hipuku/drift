@@ -20,6 +20,16 @@ import styles from "./Audit.module.css";
 
 type Verdict = "good" | "watch" | "review";
 
+/** Which tab an overview verdict card links to. */
+const VERDICT_TAB: Record<string, string> = {
+  Colours: "colour",
+  Type: "type",
+  Spacing: "spacing",
+  Radius: "radius",
+  Shadows: "shadow",
+  Motion: "motion",
+};
+
 interface Props {
   audit: SiteAudit;
   onProposals?: () => void;
@@ -222,23 +232,39 @@ export function Audit({ audit, onProposals, onBack }: Props) {
               </Text>
             </div>
             <div className={styles.verdictGrid}>
-              {verdicts.map((v) => (
-                <div key={v.label} className={`${styles.verdict} ${styles[v.verdict]}`}>
-                  <Text role="label" className={styles.verdictLabel}>
-                    {v.label}
-                  </Text>
-                  <Text role="display" as="span" className={styles.verdictN}>
-                    {v.n}
-                  </Text>
-                  <div className={styles.pills}>
-                    {v.chips.map((c) => (
-                      <span key={c} className={styles.pill}>
-                        {c}
-                      </span>
-                    ))}
+              {verdicts.map((v) => {
+                const id = VERDICT_TAB[v.label];
+                const hasTab = id != null && tabs.some((t) => t.id === id);
+                const className = `${styles.verdict} ${styles[v.verdict]}${
+                  hasTab ? ` ${styles.verdictClickable}` : ""
+                }`;
+                const body = (
+                  <>
+                    <Text role="label" className={styles.verdictLabel}>
+                      {v.label}
+                    </Text>
+                    <Text role="display" as="span" className={styles.verdictN}>
+                      {v.n}
+                    </Text>
+                    <div className={styles.pills}>
+                      {v.chips.map((c) => (
+                        <span key={c} className={styles.pill}>
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                );
+                return hasTab ? (
+                  <button key={v.label} type="button" className={className} onClick={() => setTab(id)}>
+                    {body}
+                  </button>
+                ) : (
+                  <div key={v.label} className={className}>
+                    {body}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </>
         )}
