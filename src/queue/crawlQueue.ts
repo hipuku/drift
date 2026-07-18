@@ -15,6 +15,8 @@ export const CRAWL_QUEUE_NAME = "crawl";
 export interface CrawlJobData {
   url: string;
   maxPages: number;
+  /** Exact pages to crawl (user selection / all). Absent → BFS from root. */
+  pages?: string[];
 }
 
 /** Progress payload reported per page crawled. */
@@ -22,6 +24,10 @@ export interface CrawlProgress {
   pagesCrawled: number;
   maxPages: number;
   lastUrl: string;
+  /** Title + element count of the page just crawled, and the running total. */
+  lastTitle?: string;
+  lastElements?: number;
+  elementsTotal?: number;
 }
 
 export function createCrawlQueue(): Queue<CrawlJobData> {

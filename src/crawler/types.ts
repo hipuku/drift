@@ -117,11 +117,19 @@ export interface DiscoverResult {
   rootUrl: string;
   host: string;
   pages: DiscoveredPage[];
+  /** How the pages were found — a sitemap, or homepage anchors (fallback). */
+  via?: "sitemap" | "links";
 }
 
 export interface CrawlOptions {
-  /** Number of pages to visit, same-origin, breadth-first. Clamped to 1–5. */
+  /** Page ceiling for this crawl. Clamped to 1–MAX_CRAWL_PAGES. */
   maxPages: number;
+  /**
+   * Exact pages to crawl (the user's selection, or all discovered pages). When
+   * present and non-empty, only these same-origin URLs are visited. When absent,
+   * the crawler falls back to breadth-first discovery from the root.
+   */
+  pages?: string[];
   /** Per-page navigation timeout in milliseconds. */
   timeoutMs?: number;
   /**

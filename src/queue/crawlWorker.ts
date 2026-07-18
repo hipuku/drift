@@ -20,15 +20,21 @@ export function createCrawlWorker(
   return new Worker<CrawlJobData, CrawlResult>(
     CRAWL_QUEUE_NAME,
     async (job: Job<CrawlJobData>): Promise<CrawlResult> => {
-      const { url, maxPages } = job.data;
+      const { url, maxPages, pages } = job.data;
 
+      let elementsTotal = 0;
       return crawl(url, {
         maxPages,
+        pages,
         onPage: async (page, index) => {
+          elementsTotal += page.elementCount;
           const progress: CrawlProgress = {
             pagesCrawled: index + 1,
             maxPages,
             lastUrl: page.url,
+            lastTitle: page.title,
+            lastElements: page.elementCount,
+            elementsTotal,
           };
           await job.updateProgress(progress);
         },

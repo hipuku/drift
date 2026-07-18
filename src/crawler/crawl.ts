@@ -1,33 +1,73 @@
 /**
  * Playwright crawler.
  *
- * Breadth-first, same-origin, capped at a small number of pages. For each page
- * it drives the in-page extractor, normalises the result Node-side, and queues
- * newly discovered same-origin links. This module owns the browser lifecycle
- * and nothing else — no queue, no sockets, no analysis.
+ * Two modes, sharing one per-page extractor:
+ *
+ *  1. Explicit pages — when the caller passes a `pages` list (the user's picked
+ *     pages, or all discovered pages), the crawler visits exactly those URLs.
+ *     This is how a chosen deep page actually gets crawled.
+ *  2. Breadth-first (fallback) — with no `pages`, it walks same-origin links
+ *     from the root up to the page cap. Used when discovery found nothing to
+ *     pick from.
+ *
+ * Either way it drives the in-page extractor, normalises Node-side, and owns the
+ * browser lifecycle and nothing else — no queue, no sockets, no analysis.
  */
 
-import { chromium, type Browser } from "playwright";
+import { chromium, type BrowserContext, type Browser } from "playwright";
 import { extractLinks, extractRawElements } from "./extract.js";
 import { normaliseElement } from "./normalise.js";
 import type { CrawlOptions, CrawlResult, PageExtraction } from "./types.js";
 
-const DEFAULT_TIMEOUT_MS = 20_000;
+const DEFAULT_TIMEOUT_MS = 30_000;
 
-function clampPages(n: number): number {
+/** Hard ceiling on pages per crawl — bounds time, memory, and politeness. */
+export const MAX_CRAWL_PAGES = 40;
+
+export function clampPages(n: number): number {
   if (!Number.isFinite(n)) return 1;
-  return Math.max(1, Math.min(5, Math.floor(n)));
+  return Math.max(1, Math.min(MAX_CRAWL_PAGES, Math.floor(n)));
 }
 
-/** Normalise a URL for visited-set comparison: drop hash, keep path + query. */
+/** Normalise a URL: drop hash, keep path + query. Adds https:// to bare hosts. */
 function canonical(url: string): string | null {
+  for (const candidate of [url, `https://${url}`]) {
+    try {
+      const u = new URL(candidate);
+      if (u.protocol !== "http:" && u.protocol !== "https:") continue;
+      u.hash = "";
+      return u.toString();
+    } catch {
+      // try next
+    }
+  }
+  return null;
+}
+
+interface Visit {
+  extraction: PageExtraction;
+  hrefs: string[];
+}
+
+/** Load one page and extract its elements. Returns null on failure (skip it). */
+async function visit(context: BrowserContext, url: string, timeout: number): Promise<Visit | null> {
+  const page = await context.newPage();
   try {
-    const u = new URL(url);
-    if (u.protocol !== "http:" && u.protocol !== "https:") return null;
-    u.hash = "";
-    return u.toString();
-  } catch {
+    // "domcontentloaded" (not "load") — stylesheets are applied by then, but we
+    // don't wait on images / fonts / third-party scripts, which is what makes
+    // slow sites blow past the timeout.
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout });
+    const rawElements = await page.evaluate(extractRawElements);
+    const title = await page.title();
+    const elements = rawElements.map(normaliseElement);
+    const hrefs = await page.evaluate(extractLinks);
+    return { extraction: { url, title, elementCount: elements.length, elements }, hrefs };
+  } catch (err) {
+    // A single failed page should not abort the crawl; skip and continue.
+    process.stderr.write(`  ! skipped ${url}: ${err instanceof Error ? err.message : String(err)}\n`);
     return null;
+  } finally {
+    await page.close();
   }
 }
 
@@ -41,52 +81,54 @@ export async function crawl(rootUrl: string, options: CrawlOptions): Promise<Cra
   }
   const origin = new URL(start).origin;
 
-  const queue: string[] = [start];
-  const visited = new Set<string>();
+  // Explicit targets: caller-selected pages, same-origin, deduped, capped.
+  const explicit = [
+    ...new Set(
+      (options.pages ?? [])
+        .map((u) => canonical(u))
+        .filter((u): u is string => u !== null && u.startsWith(origin)),
+    ),
+  ].slice(0, maxPages);
+
   const pages: PageExtraction[] = [];
+  const record = async (v: Visit) => {
+    pages.push(v.extraction);
+    await options.onPage?.(v.extraction, pages.length - 1);
+  };
 
   let browser: Browser | undefined;
   try {
     browser = await chromium.launch({ headless: true });
     const context = await browser.newContext();
 
-    while (queue.length > 0 && pages.length < maxPages) {
-      const next = queue.shift()!;
-      if (visited.has(next)) continue;
-      visited.add(next);
+    if (explicit.length > 0) {
+      // Visit exactly the selected pages.
+      for (const url of explicit) {
+        if (pages.length >= maxPages) break;
+        const v = await visit(context, url, timeout);
+        if (v) await record(v);
+      }
+    } else {
+      // Breadth-first from the root, following same-origin links.
+      const queue: string[] = [start];
+      const visited = new Set<string>();
+      while (queue.length > 0 && pages.length < maxPages) {
+        const next = queue.shift()!;
+        if (visited.has(next)) continue;
+        visited.add(next);
 
-      const page = await context.newPage();
-      try {
-        await page.goto(next, { waitUntil: "load", timeout });
-
-        const rawElements = await page.evaluate(extractRawElements);
-        const title = await page.title();
-        const elements = rawElements.map(normaliseElement);
-
-        const extraction: PageExtraction = {
-          url: next,
-          title,
-          elementCount: elements.length,
-          elements,
-        };
-        pages.push(extraction);
-        await options.onPage?.(extraction, pages.length - 1);
+        const v = await visit(context, next, timeout);
+        if (!v) continue;
+        await record(v);
 
         if (pages.length < maxPages) {
-          const hrefs = await page.evaluate(extractLinks);
-          for (const href of hrefs) {
+          for (const href of v.hrefs) {
             const c = canonical(href);
             if (c && c.startsWith(origin) && !visited.has(c) && !queue.includes(c)) {
               queue.push(c);
             }
           }
         }
-      } catch (err) {
-        // A single failed page should not abort the crawl; skip and continue.
-        const message = err instanceof Error ? err.message : String(err);
-        process.stderr.write(`  ! skipped ${next}: ${message}\n`);
-      } finally {
-        await page.close();
       }
     }
   } finally {

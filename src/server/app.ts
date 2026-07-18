@@ -13,19 +13,23 @@
 
 import express, { type Express, type NextFunction, type Request, type Response } from "express";
 import {
-  AuditService,
+  type Auditor,
   CheckpointNotFoundError,
   CrawlResultNotFoundError,
 } from "../agent/auditService.js";
 import { loadCheckpoint, type RedisLike } from "../agent/checkpoint.js";
 import { pendingReview } from "../agent/runner.js";
 import type { Judgment } from "../agent/types.js";
+import { collectAudit } from "../analysis/audit.js";
+import { clusterColours } from "../analysis/colours.js";
+import { collectTypography } from "../analysis/typography.js";
+import { MAX_CRAWL_PAGES } from "../crawler/crawl.js";
 import type { DiscoverResult } from "../crawler/types.js";
 import type { CrawlJobs } from "../queue/crawlJobs.js";
 
 export interface AppDeps {
   jobs: CrawlJobs;
-  audit: AuditService;
+  audit: Auditor;
   redis: RedisLike;
   discover: (url: string) => Promise<DiscoverResult>;
 }
@@ -50,7 +54,14 @@ function friendlyDiscoverError(err: unknown): string {
 function clampPages(value: unknown): number {
   const n = typeof value === "number" ? value : Number.parseInt(String(value ?? ""), 10);
   if (!Number.isFinite(n)) return 1;
-  return Math.max(1, Math.min(5, Math.floor(n)));
+  return Math.max(1, Math.min(MAX_CRAWL_PAGES, Math.floor(n)));
+}
+
+/** Same-origin-agnostic list of page URLs to crawl, if the client sent one. */
+function readPages(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const pages = value.filter((p): p is string => typeof p === "string" && p.trim() !== "");
+  return pages.length > 0 ? pages.slice(0, MAX_CRAWL_PAGES) : undefined;
 }
 
 // Forward async handler rejections to Express's error middleware.
@@ -70,7 +81,9 @@ export function createApp(deps: AppDeps): Express {
         res.status(400).json({ error: "url is required" });
         return;
       }
-      const jobId = await deps.jobs.enqueue({ url, maxPages: clampPages(req.body?.maxPages) });
+      const pages = readPages(req.body?.pages);
+      const maxPages = clampPages(pages?.length ?? req.body?.maxPages);
+      const jobId = await deps.jobs.enqueue({ url, maxPages, pages });
       res.status(202).json({ jobId });
     }),
   );
@@ -100,6 +113,65 @@ export function createApp(deps: AppDeps): Express {
         return;
       }
       res.json({ status, result: result ?? null });
+    }),
+  );
+
+  // The deterministic typography inventory that seeds the Layer-2 type-scale
+  // proposals. Derived from the completed crawl; no model, no key.
+  app.get(
+    "/crawl/:jobId/typography",
+    wrap(async (req, res) => {
+      const { status, result } = await deps.jobs.getResult(String(req.params.jobId));
+      if (status === "not_found") {
+        res.status(404).json({ error: "job not found" });
+        return;
+      }
+      if (!result) {
+        res.status(409).json({ error: "the crawl has not finished" });
+        return;
+      }
+      res.json(collectTypography(result));
+    }),
+  );
+
+  // The deterministic colour inventory: perceptual clusters with usage. Seeds
+  // the Layer-2 consolidation proposal. No model, no key.
+  app.get(
+    "/crawl/:jobId/colours",
+    wrap(async (req, res) => {
+      const { status, result } = await deps.jobs.getResult(String(req.params.jobId));
+      if (status === "not_found") {
+        res.status(404).json({ error: "job not found" });
+        return;
+      }
+      if (!result) {
+        res.status(409).json({ error: "the crawl has not finished" });
+        return;
+      }
+      const clusters = clusterColours(result);
+      res.json({
+        clusters,
+        clusterCount: clusters.length,
+        distinctColours: clusters.reduce((n, c) => n + c.size, 0),
+      });
+    }),
+  );
+
+  // The full deterministic audit — every colour/size/spacing/radius/shadow in
+  // use, grouped and summarised. The diagnosis shown before any proposal.
+  app.get(
+    "/crawl/:jobId/audit",
+    wrap(async (req, res) => {
+      const { status, result } = await deps.jobs.getResult(String(req.params.jobId));
+      if (status === "not_found") {
+        res.status(404).json({ error: "job not found" });
+        return;
+      }
+      if (!result) {
+        res.status(409).json({ error: "the crawl has not finished" });
+        return;
+      }
+      res.json(collectAudit(result));
     }),
   );
 

@@ -19,16 +19,15 @@ import { createApp } from "./app.js";
 
 const PORT = Number.parseInt(process.env.PORT ?? "3001", 10);
 
-// The agent needs an API key; discovery and crawling do not. Boot regardless —
-// if the key is absent, only the audit endpoints fail (at call time).
+// The deterministic product (crawl → inventory → proposals) needs no API key.
+// The optional model audit does; without a key we boot a client whose call throws a
+// clear message, so /audit fails loudly while everything else works.
 function main() {
-  const client = resolveAgentClient();
-
   const queue = createCrawlQueue();
   const worker = createCrawlWorker();
   const redis = new Redis(redisUrl(), { maxRetriesPerRequest: null });
   const jobs = new BullCrawlJobs(queue);
-  const audit = new AuditService(client, redis, jobs);
+  const audit = new AuditService(resolveAgentClient(), redis, jobs);
 
   const app = createApp({ jobs, audit, redis, discover: (url) => discoverPages(url) });
   const server = http.createServer(app);
