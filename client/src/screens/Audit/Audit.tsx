@@ -12,7 +12,7 @@
  * pills. The colour — and a bottom accent rule — is the verdict.
  */
 
-import { useMemo, useState, type ReactNode } from "react";
+import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { Button } from "../../components/Button/Button.js";
 import { Text } from "../../components/Text/Text.js";
 import type { AuditColourSwatch, SiteAudit } from "../../lib/api.js";
@@ -112,6 +112,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
   }, [s, audit]);
 
   const [tab, setTab] = useState("overview");
+  const [selectedHex, setSelectedHex] = useState<string | null>(null);
   const maxSpace = audit.spacing.reduce((m, v) => Math.max(m, v.value), 1);
   const maxBp = audit.breakpoints?.reduce((m, v) => Math.max(m, v.value), 1) ?? 1;
 
@@ -304,7 +305,15 @@ export function Audit({ audit, onProposals, onBack }: Props) {
               </div>
               <div className={styles.grid}>
                 {fam.swatches.map((sw) => (
-                  <ColourCard key={sw.hex} sw={sw} totalPages={s.pages} />
+                  <Fragment key={sw.hex}>
+                    <ColourCard
+                      sw={sw}
+                      totalPages={s.pages}
+                      selected={selectedHex === sw.hex}
+                      onSelect={() => setSelectedHex(selectedHex === sw.hex ? null : sw.hex)}
+                    />
+                    {selectedHex === sw.hex && <ColourDetail sw={sw} totalPages={s.pages} />}
+                  </Fragment>
                 ))}
               </div>
             </div>
@@ -643,26 +652,91 @@ function Ruler({
   );
 }
 
-function ColourCard({ sw, totalPages }: { sw: AuditColourSwatch; totalPages: number }) {
-  const roles: [string, number][] = [
-    ["bg", sw.roles.background],
-    ["text", sw.roles.text],
-    ["border", sw.roles.border],
-  ];
-  const dominant = roles.reduce((a, b) => (b[1] > a[1] ? b : a));
+function ColourCard({
+  sw,
+  totalPages,
+  selected,
+  onSelect,
+}: {
+  sw: AuditColourSwatch;
+  totalPages: number;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  const dominant = ROLE_ORDER.map((r) => [r.short, sw.roles[r.key]] as const).reduce((a, b) =>
+    b[1] > a[1] ? b : a,
+  );
   const chips = usageChips(sw.count, totalPages, sw.pages.length);
   if (dominant[1] > 0) chips.push(`mostly ${dominant[0]}`);
   return (
-    <div className={styles.card}>
-      <div className={styles.swatchFill} style={{ background: sw.hex }} />
-      <div className={styles.cardMeta}>
+    <button
+      type="button"
+      className={`${styles.card} ${styles.cardBtn}${selected ? ` ${styles.cardOn}` : ""}`}
+      aria-pressed={selected}
+      onClick={onSelect}
+    >
+      <span className={styles.swatchFill} style={{ background: sw.hex }} />
+      <span className={styles.cardMeta}>
         <Text role="mono" className={styles.cardValue}>
           {sw.hex.toUpperCase()}
         </Text>
-        <div className={styles.pills}>
+        <span className={styles.pills}>
           {chips.map((c) => (
             <span key={c} className={styles.pill}>
               {c}
+            </span>
+          ))}
+        </span>
+      </span>
+    </button>
+  );
+}
+
+const ROLE_ORDER = [
+  { key: "background" as const, short: "bg", label: "Background" },
+  { key: "text" as const, short: "text", label: "Text" },
+  { key: "border" as const, short: "border", label: "Border" },
+];
+
+function pathOf(url: string): string {
+  try {
+    return new URL(url).pathname || "/";
+  } catch {
+    return url;
+  }
+}
+
+/** The unfolded detail for a selected colour: role split + the pages it's on. */
+function ColourDetail({ sw, totalPages }: { sw: AuditColourSwatch; totalPages: number }) {
+  const roles = ROLE_ORDER.map((r) => ({ label: r.label, n: sw.roles[r.key] })).filter((r) => r.n > 0);
+  const total = roles.reduce((n, r) => n + r.n, 0) || 1;
+  return (
+    <div className={styles.colourDetail}>
+      <div className={styles.detailSection}>
+        <Text role="label-xs" className={styles.detailLabel}>
+          Roles
+        </Text>
+        <div className={styles.roleBars}>
+          {roles.map((r) => (
+            <div key={r.label} className={styles.roleRow}>
+              <span className={styles.roleName}>{r.label}</span>
+              <span className={styles.roleTrack}>
+                <span className={styles.roleFill} style={{ width: `${(r.n / total) * 100}%` }} />
+              </span>
+              <span className={styles.rolePct}>{Math.round((r.n / total) * 100)}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className={styles.detailSection}>
+        <Text role="label-xs" className={styles.detailLabel}>
+          On {sw.pages.length} {totalPages > 1 ? `of ${totalPages} ` : ""}
+          {sw.pages.length === 1 ? "page" : "pages"}
+        </Text>
+        <div className={styles.pageChips}>
+          {sw.pages.map((p) => (
+            <span key={p} className={styles.pageChip}>
+              {pathOf(p)}
             </span>
           ))}
         </div>

@@ -311,9 +311,116 @@
   text-overflow: ellipsis;
 }
 
+/* Colour cards are buttons (click to expand). */
+.cardBtn {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cardBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.cardOn {
+  border-color: var(--color-primary-default);
+  box-shadow: 0 0 0 1px var(--color-primary-default);
+}
+
 .swatchFill {
   height: 4.75rem;
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 10%, transparent);
+}
+
+/* ── Colour detail — the full-width strip that unfolds under a selected swatch */
+.colourDetail {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) 2fr;
+  gap: var(--space-8);
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-surface-subtle);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  animation: fade var(--duration-default) var(--ease-move);
+}
+
+.detailLabel {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-tertiary);
+  margin-bottom: var(--space-3);
+}
+
+.roleBars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.roleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.roleName {
+  width: 5.5rem;
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
+  color: var(--color-ink-secondary);
+}
+
+.roleTrack {
+  flex: 1;
+  height: 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-sunken);
+  overflow: hidden;
+}
+
+.roleFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-primary-default);
+}
+
+.rolePct {
+  width: 2.5rem;
+  flex-shrink: 0;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-tertiary);
+}
+
+.pageChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.pageChip {
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-secondary);
+}
+
+@media (max-width: 40rem) {
+  .colourDetail {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
 }
 
 .glyph {
