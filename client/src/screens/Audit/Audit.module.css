@@ -1,8 +1,116 @@
 .page {
   width: 100%;
+  padding: var(--space-12) var(--space-6) var(--space-20);
+}
+
+/* ── Master–detail layout ── the detail rail pushes content aside ─────────── */
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+  width: 100%;
   max-width: 56rem;
   margin: 0 auto;
-  padding: var(--space-12) var(--space-6) var(--space-20);
+  transition: max-width var(--duration-default) var(--ease-move);
+}
+
+.layoutOpen {
+  max-width: 82rem;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+.rail {
+  flex-shrink: 0;
+  width: 22rem;
+  animation: railIn var(--duration-default) var(--ease-move);
+}
+
+.railInner {
+  position: sticky;
+  top: 4.5rem;
+  display: flex;
+  flex-direction: column;
+  /* Fill the viewport height and stay put as the page scrolls; the body scrolls
+     inside when the detail is tall. */
+  height: calc(100vh - 6rem);
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.railHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  flex-shrink: 0;
+}
+
+.railClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-ink-tertiary);
+  font-size: var(--text-14);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-move), color var(--duration-fast) var(--ease-move);
+}
+
+.railClose:hover {
+  background: var(--color-surface-sunken);
+  color: var(--color-ink-primary);
+}
+
+.railClose:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.railBody {
+  flex: 1;
+  min-height: 0;
+  padding: 0 var(--space-5) var(--space-6);
+  overflow-y: auto;
+}
+
+@keyframes railIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Narrow screens: stack the rail below the content, full width, not sticky. */
+@media (max-width: 60rem) {
+  .layout,
+  .layoutOpen {
+    flex-direction: column;
+    max-width: 56rem;
+  }
+  .rail {
+    width: 100%;
+  }
+  .railInner {
+    position: static;
+    height: auto;
+  }
 }
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
@@ -330,6 +438,21 @@
   box-shadow: 0 0 0 1px var(--color-primary-default);
 }
 
+/* Brief pulse when a card is scrolled to after picking it from the rail. */
+.cardFlash {
+  animation: cardFlash 1.1s var(--ease-move);
+}
+
+@keyframes cardFlash {
+  0%,
+  35% {
+    box-shadow: 0 0 0 3px var(--color-primary-default);
+  }
+  100% {
+    box-shadow: 0 0 0 3px transparent;
+  }
+}
+
 .swatchFill {
   height: 4.75rem;
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 10%, transparent);
@@ -395,12 +518,28 @@
   background: color-mix(in oklab, var(--color-error-default) 10%, var(--color-surface-default));
 }
 
-.nearSwatch {
+/* Checker underlay — invisible behind an opaque swatch, shows through a
+   translucent one so an opacity variant reads as translucent, not just darker. */
+.nearSwatchWrap {
   width: 2rem;
   height: 2rem;
-  border-radius: var(--radius-md);
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 12%, transparent);
   flex-shrink: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-image:
+    linear-gradient(45deg, var(--color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--color-surface-sunken) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--color-surface-sunken) 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+}
+
+.nearSwatch {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 12%, transparent);
 }
 
 .nearText {
@@ -419,10 +558,87 @@
   color: var(--color-ink-tertiary);
 }
 
+/* Section head with a trailing control (e.g. the elements group toggle). */
+.detailHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.detailHead .detailLabel {
+  margin-bottom: 0;
+}
+
+.sortToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  margin-bottom: var(--space-3);
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-ink-tertiary);
+  font-size: var(--text-12);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-move), color var(--duration-fast) var(--ease-move);
+}
+
+.sortToggle:hover {
+  background: var(--color-surface-sunken);
+  color: var(--color-ink-primary);
+}
+
+.sortToggleOn {
+  background: var(--color-primary-subtle);
+  color: var(--color-primary-on-subtle);
+}
+
+.sortToggle:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
 /* Elements-that-use-it list. */
 .elementList {
   display: flex;
   flex-direction: column;
+}
+
+/* Grouped-by-tag view: a tag header with its total, then indented role rows. */
+.elementGroup {
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  padding-bottom: var(--space-2);
+}
+
+.elementGroup:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.elementGroup + .elementGroup {
+  padding-top: var(--space-2);
+}
+
+.elementGroupHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+.elementGroupHead .elementCount {
+  margin-left: auto;
+}
+
+.elementSubRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 2px 0 2px var(--space-4);
 }
 
 .elementRow {
@@ -867,6 +1083,9 @@
   .card,
   .verdict {
     transition: none;
+  }
+  .cardFlash {
+    animation: none;
   }
   .motionDot,
   .easingDot {

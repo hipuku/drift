@@ -92,7 +92,7 @@ const MOCK_SITE_AUDIT: SiteAudit = {
   rootUrl: "https://example.com",
   summary: {
     pages: 3,
-    distinctColours: 9,
+    distinctColours: 10,
     colourFamilies: 2,
     colourNearDuplicates: 5,
     fontFamilies: 2,
@@ -114,21 +114,67 @@ const MOCK_SITE_AUDIT: SiteAudit = {
       name: "Neutral",
       count: 900,
       swatches: [
-        { hex: "#ffffff", count: 300, roles: { text: 0, background: 300, border: 0 }, pages: ["/"], lightness: 100 },
-        { hex: "#f5f5f5", count: 60, roles: { text: 0, background: 60, border: 0 }, pages: ["/"], lightness: 96 },
+        {
+          hex: "#ffffff", count: 300, roles: { text: 0, background: 300, border: 0 },
+          pages: ["/", "/about", "/pricing"], lightness: 100,
+          elements: [
+            { tag: "div", role: "background", count: 190 },
+            { tag: "body", role: "background", count: 70 },
+            { tag: "section", role: "background", count: 40 },
+          ],
+        },
+        {
+          hex: "#f5f5f5", count: 60, roles: { text: 0, background: 60, border: 0 }, pages: ["/"],
+          lightness: 96, nearest: { hex: "#ffffff", deltaE: 2.7 },
+        },
         { hex: "#6b7280", count: 80, roles: { text: 80, background: 0, border: 0 }, pages: ["/"], lightness: 47 },
-        { hex: "#32302f", count: 200, roles: { text: 200, background: 0, border: 0 }, pages: ["/"], lightness: 19 },
-        { hex: "#222222", count: 140, roles: { text: 140, background: 0, border: 0 }, pages: ["/"], lightness: 13 },
-        { hex: "#1a1a1a", count: 120, roles: { text: 120, background: 0, border: 0 }, pages: ["/"], lightness: 10 },
-        { hex: "#111111", count: 100, roles: { text: 100, background: 0, border: 0 }, pages: ["/"], lightness: 7 },
+        {
+          hex: "#32302f", count: 200, roles: { text: 200, background: 0, border: 0 },
+          pages: ["/", "/about"], lightness: 19, nearest: { hex: "#222222", deltaE: 3.1 },
+          elements: [
+            { tag: "div", role: "text", count: 120 },
+            { tag: "p", role: "text", count: 40 },
+            { tag: "a", role: "text", count: 25 },
+            { tag: "div", role: "background", count: 15 },
+          ],
+        },
+        {
+          hex: "#222222", count: 140, roles: { text: 140, background: 0, border: 0 }, pages: ["/"],
+          lightness: 13, nearest: { hex: "#1a1a1a", deltaE: 1.4 },
+        },
+        {
+          hex: "#1a1a1a", count: 120, roles: { text: 120, background: 0, border: 0 }, pages: ["/"],
+          lightness: 10, nearest: { hex: "#222222", deltaE: 1.4 },
+        },
+        {
+          hex: "#111111", count: 100, roles: { text: 100, background: 0, border: 0 }, pages: ["/"],
+          lightness: 7, nearest: { hex: "#1a1a1a", deltaE: 1.3 },
+        },
       ],
     },
     {
       name: "Blue",
-      count: 96,
+      count: 114,
       swatches: [
-        { hex: "#3b82f6", count: 60, roles: { text: 20, background: 40, border: 0 }, pages: ["/"], lightness: 60 },
-        { hex: "#2563eb", count: 36, roles: { text: 36, background: 0, border: 0 }, pages: ["/"], lightness: 53 },
+        {
+          hex: "#3b82f6", count: 60, roles: { text: 20, background: 40, border: 0 }, pages: ["/"],
+          lightness: 60, nearest: { hex: "#2563eb", deltaE: 8.4 },
+          elements: [
+            { tag: "button", role: "background", count: 24 },
+            { tag: "a", role: "text", count: 20 },
+            { tag: "a", role: "background", count: 10 },
+            { tag: "div", role: "border", count: 6 },
+          ],
+        },
+        {
+          hex: "#2563eb", count: 36, roles: { text: 36, background: 0, border: 0 }, pages: ["/"],
+          lightness: 53, nearest: { hex: "#3b82f6", deltaE: 8.4 },
+        },
+        {
+          hex: "#3b82f680", count: 18, roles: { text: 0, background: 18, border: 0 }, pages: ["/"],
+          lightness: 60, nearest: { hex: "#3b82f6", deltaE: 0 },
+          elements: [{ tag: "div", role: "background", count: 18 }],
+        },
       ],
     },
   ],

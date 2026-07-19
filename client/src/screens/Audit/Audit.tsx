@@ -12,9 +12,10 @@
  * pills. The colour — and a bottom accent rule — is the verdict.
  */
 
-import { useMemo, useState, type ReactNode } from "react";
+import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Button } from "../../components/Button/Button.js";
-import { Drawer } from "../../components/Drawer/Drawer.js";
 import { Text } from "../../components/Text/Text.js";
 import type { AuditColourSwatch, SiteAudit } from "../../lib/api.js";
 import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
@@ -53,25 +54,80 @@ function plural(n: number, one: string, many?: string): string {
   return n === 1 ? one : (many ?? `${one}s`);
 }
 
+/** Oxford-comma join: ["a"] → "a"; ["a","b"] → "a and b"; ["a","b","c"] → "a, b, and c". */
+function joinList(items: string[]): string {
+  if (items.length <= 1) return items[0] ?? "";
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+  return `${items.slice(0, -1).join(", ")}, and ${items.at(-1)}`;
+}
+
+function capFirst(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/**
+ * The diagnosis line — where the system is drifting, in plain terms. Names every
+ * token category present: those with redundancy get a "N of M …" problem clause,
+ * the rest are gathered as holding steady. Reads as prose, not a census.
+ */
 function healthLine(s: SiteAudit["summary"]): string {
-  const parts = [
-    `${s.distinctColours} ${plural(s.distinctColours, "colour")} in ${s.colourFamilies} ${plural(
-      s.colourFamilies,
-      "family",
-      "families",
-    )}${
-      s.colourNearDuplicates > 0
-        ? ` with ${s.colourNearDuplicates} near-${plural(s.colourNearDuplicates, "duplicate")}`
-        : ""
-    }`,
-    `${s.typeSizes} type ${plural(s.typeSizes, "size")} across ${s.fontFamilies} ${plural(
-      s.fontFamilies,
-      "family",
-      "families",
-    )}`,
-    `${s.spacings} spacing ${plural(s.spacings, "value")}`,
-  ];
-  return `${parts.slice(0, -1).join(", ")}, and ${parts.at(-1)}.`;
+  const problems: string[] = [];
+  const clean: string[] = [];
+
+  const colourDup = s.colourNearDuplicates ?? 0;
+  if (colourDup > 0)
+    problems.push(`${colourDup} of ${s.distinctColours} colours are near-duplicates`);
+  else clean.push("colour");
+
+  const offScale = s.typeOffScale ?? 0;
+  if (offScale > 0) problems.push(`${offScale} of ${s.typeSizes} type sizes fall off the scale`);
+  else clean.push("type");
+
+  const offGrid = s.spacingOffGrid ?? 0;
+  if (offGrid > 0) problems.push(`${offGrid} of ${s.spacings} spacing values miss the 4px grid`);
+  else clean.push("spacing");
+
+  const radiusDup = s.radiusNearDuplicates ?? 0;
+  if (s.radii > 0) {
+    if (radiusDup > 0) problems.push(`${radiusDup} of ${s.radii} radii nearly repeat`);
+    else clean.push("radius");
+  }
+  if (s.shadows > 0) clean.push("shadows"); // no redundancy signal — treated as holding
+
+  if (problems.length === 0) {
+    return `Nothing's drifting — ${joinList(clean)} all hold to a system.`;
+  }
+  const problemText = `${capFirst(joinList(problems))}.`;
+  if (clean.length === 0) return problemText;
+  return `${problemText} ${capFirst(joinList(clean))} ${plural(clean.length, "holds", "hold")} steady.`;
+}
+
+/** Stable DOM id for a colour card, so picking a neighbour can scroll it into view. */
+function cardId(hex: string): string {
+  return `swatch-${hex.replace(/[^a-z0-9]/gi, "")}`;
+}
+
+/** Alpha channel of an 8-digit hex as a 0–1 fraction; 1 for an opaque #RRGGBB. */
+function alphaOf(hex: string): number {
+  return hex.length >= 9 ? parseInt(hex.slice(7, 9), 16) / 255 : 1;
+}
+
+/** Two colours share an RGB base — they differ, if at all, only in alpha. */
+function sameBaseColour(a: string, b: string): boolean {
+  return a.slice(0, 7).toLowerCase() === b.slice(0, 7).toLowerCase();
+}
+
+type NearKind = "opacity" | "duplicate" | "nearest";
+
+/**
+ * How a colour relates to its nearest neighbour. ΔE ignores alpha, so a colour
+ * and its translucent self read as ΔE 0 — that's an *opacity* variant, not a
+ * perceptual duplicate. Only genuinely different hues under the threshold are
+ * "duplicate"; everything else is just the nearest.
+ */
+function nearKind(hex: string, near: { hex: string; deltaE: number }): NearKind {
+  if (sameBaseColour(hex, near.hex) && alphaOf(hex) !== alphaOf(near.hex)) return "opacity";
+  return near.deltaE < INDISTINGUISHABLE_DELTA_E ? "duplicate" : "nearest";
 }
 
 /** Graduated verdict from a redundancy count: none = good, a few = watch, more = review. */
@@ -117,6 +173,24 @@ export function Audit({ audit, onProposals, onBack }: Props) {
 
   const [tab, setTab] = useState("overview");
   const [selectedHex, setSelectedHex] = useState<string | null>(null);
+  const [flashHex, setFlashHex] = useState<string | null>(null);
+
+  // Picking a neighbour from the rail: swap the detail to it, then scroll its
+  // card into view on the left and flash it so the jump stays legible.
+  const pickColour = useCallback((hex: string) => {
+    setSelectedHex(hex);
+    setFlashHex(hex);
+    requestAnimationFrame(() => {
+      document.getElementById(cardId(hex))?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!flashHex) return;
+    const t = setTimeout(() => setFlashHex(null), 1100);
+    return () => clearTimeout(t);
+  }, [flashHex]);
+
   const maxSpace = audit.spacing.reduce((m, v) => Math.max(m, v.value), 1);
   const maxBp = audit.breakpoints?.reduce((m, v) => Math.max(m, v.value), 1) ?? 1;
   const selectedSwatch = selectedHex
@@ -206,6 +280,8 @@ export function Audit({ audit, onProposals, onBack }: Props) {
 
   return (
     <div className={styles.page}>
+      <div className={`${styles.layout}${selectedSwatch ? ` ${styles.layoutOpen}` : ""}`}>
+        <div className={styles.main}>
       <header>
         {onBack && (
           <button type="button" className={styles.back} onClick={onBack}>
@@ -301,10 +377,6 @@ export function Audit({ audit, onProposals, onBack }: Props) {
 
         {tab === "colour" && (
           <>
-            <Text role="body-sm" as="p" className={styles.tabIntro}>
-              Grouped by hue family — click any colour for its role split, the elements that use it,
-              and its nearest neighbour.
-            </Text>
             {audit.colourFamilies.map((fam) => (
               <div key={fam.name} className={styles.family}>
                 <div className={styles.familyHead}>
@@ -320,8 +392,9 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                     <ColourCard
                       key={sw.hex}
                       sw={sw}
-                      totalPages={s.pages}
+                      id={cardId(sw.hex)}
                       selected={selectedHex === sw.hex}
+                      flash={flashHex === sw.hex}
                       onSelect={() => setSelectedHex(sw.hex)}
                     />
                   ))}
@@ -543,16 +616,29 @@ export function Audit({ audit, onProposals, onBack }: Props) {
           </>
         )}
       </div>
+        </div>
 
-      <Drawer
-        open={selectedSwatch !== null}
-        onClose={() => setSelectedHex(null)}
-        title={selectedSwatch && <ColourDrawerTitle sw={selectedSwatch} totalPages={s.pages} />}
-      >
         {selectedSwatch && (
-          <ColourDetail sw={selectedSwatch} totalPages={s.pages} onPick={setSelectedHex} />
+          <aside className={styles.rail}>
+            <div className={styles.railInner}>
+              <div className={styles.railHeader}>
+                <ColourDrawerTitle sw={selectedSwatch} totalPages={s.pages} />
+                <button
+                  type="button"
+                  className={styles.railClose}
+                  onClick={() => setSelectedHex(null)}
+                  aria-label="Close detail"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className={styles.railBody}>
+                <ColourDetail sw={selectedSwatch} totalPages={s.pages} onPick={pickColour} />
+              </div>
+            </div>
+          </aside>
         )}
-      </Drawer>
+      </div>
     </div>
   );
 }
@@ -676,25 +762,27 @@ function Ruler({
 
 function ColourCard({
   sw,
-  totalPages,
+  id,
   selected,
+  flash,
   onSelect,
 }: {
   sw: AuditColourSwatch;
-  totalPages: number;
+  id: string;
   selected: boolean;
+  flash: boolean;
   onSelect: () => void;
 }) {
-  const dominant = ROLE_ORDER.map((r) => [r.short, sw.roles[r.key]] as const).reduce((a, b) =>
-    b[1] > a[1] ? b : a,
-  );
-  const chips = usageChips(sw.count, totalPages, sw.pages.length);
-  if (dominant[1] > 0) chips.push(`mostly ${dominant[0]}`);
-  const isDup = sw.nearest != null && sw.nearest.deltaE < INDISTINGUISHABLE_DELTA_E;
+  // Thinned card: just the value, headline usage, and a flag when it perceptually
+  // duplicates another hue. Role split, pages, and elements live in the rail.
+  const isDup = sw.nearest != null && nearKind(sw.hex, sw.nearest) === "duplicate";
   return (
     <button
       type="button"
-      className={`${styles.card} ${styles.cardBtn}${selected ? ` ${styles.cardOn}` : ""}`}
+      id={id}
+      className={`${styles.card} ${styles.cardBtn}${selected ? ` ${styles.cardOn}` : ""}${
+        flash ? ` ${styles.cardFlash}` : ""
+      }`}
       aria-pressed={selected}
       onClick={onSelect}
     >
@@ -704,11 +792,7 @@ function ColourCard({
           {sw.hex.toUpperCase()}
         </Text>
         <span className={styles.pills}>
-          {chips.map((c) => (
-            <span key={c} className={styles.pill}>
-              {c}
-            </span>
-          ))}
+          <span className={styles.pill}>{sw.count.toLocaleString()}× used</span>
           {isDup && <span className={`${styles.pill} ${styles.pillDup}`}>≈ ΔE {sw.nearest!.deltaE}</span>}
         </span>
       </span>
@@ -760,8 +844,30 @@ function ColourDetail({
   const roles = ROLE_ORDER.map((r) => ({ label: r.label, n: sw.roles[r.key] })).filter((r) => r.n > 0);
   const total = roles.reduce((n, r) => n + r.n, 0) || 1;
   const elements = sw.elements ?? [];
+
+  // Elements are ranked by frequency by default; the toggle groups them by tag
+  // (all `a`, all `div`…), tags ordered by their combined use.
+  const [grouped, setGrouped] = useState(false);
+  const elementGroups = useMemo(() => {
+    const map = new Map<string, { tag: string; total: number; rows: typeof elements }>();
+    for (const e of elements) {
+      const g = map.get(e.tag) ?? { tag: e.tag, total: 0, rows: [] };
+      g.total += e.count;
+      g.rows.push(e);
+      map.set(e.tag, g);
+    }
+    return [...map.values()].sort((a, b) => b.total - a.total);
+  }, [elements]);
+
   const near = sw.nearest;
-  const isDup = near != null && near.deltaE < INDISTINGUISHABLE_DELTA_E;
+  const kind = near ? nearKind(sw.hex, near) : null;
+  const isDup = kind === "duplicate";
+  const nearLabel =
+    kind === "opacity"
+      ? "Same colour, different opacity"
+      : kind === "duplicate"
+        ? "Indistinguishable from"
+        : "Nearest colour";
 
   return (
     <div className={styles.drawerContent}>
@@ -771,15 +877,17 @@ function ColourDetail({
           className={isDup ? `${styles.nearCallout} ${styles.nearDup}` : styles.nearCallout}
           onClick={() => onPick(near.hex)}
         >
-          <span className={styles.nearSwatch} style={{ background: near.hex }} />
+          <span className={styles.nearSwatchWrap}>
+            <span className={styles.nearSwatch} style={{ background: near.hex }} />
+          </span>
           <span className={styles.nearText}>
-            <Text role="body-sm">{isDup ? "Indistinguishable from" : "Nearest colour"}</Text>
+            <Text role="body-sm">{nearLabel}</Text>
             <Text role="mono" className={styles.nearHex}>
               {near.hex.toUpperCase()}
             </Text>
           </span>
           <Text role="mono" className={styles.nearDelta}>
-            ΔE {near.deltaE}
+            {kind === "opacity" ? `${Math.round(alphaOf(near.hex) * 100)}%` : `ΔE ${near.deltaE}`}
           </Text>
         </button>
       )}
@@ -803,19 +911,49 @@ function ColourDetail({
 
       {elements.length > 0 && (
         <div className={styles.detailSection}>
-          <Text role="label-xs" className={styles.detailLabel}>
-            Used by {elements.length} element {elements.length === 1 ? "type" : "types"}
-          </Text>
+          <div className={styles.detailHead}>
+            <Text role="label-xs" className={styles.detailLabel}>
+              Used by {elements.length} element {elements.length === 1 ? "type" : "types"}
+            </Text>
+            {elementGroups.length < elements.length && (
+              <button
+                type="button"
+                className={grouped ? `${styles.sortToggle} ${styles.sortToggleOn}` : styles.sortToggle}
+                aria-pressed={grouped}
+                title={grouped ? "Sort by frequency" : "Group by element"}
+                onClick={() => setGrouped((g) => !g)}
+              >
+                <FontAwesomeIcon icon={faLayerGroup} />
+              </button>
+            )}
+          </div>
           <div className={styles.elementList}>
-            {elements.map((e) => (
-              <div key={`${e.tag}|${e.role}`} className={styles.elementRow}>
-                <Text role="mono" className={styles.elementTag}>
-                  {e.tag}
-                </Text>
-                <span className={styles.elementRole}>{e.role}</span>
-                <span className={styles.elementCount}>{e.count.toLocaleString()}×</span>
-              </div>
-            ))}
+            {grouped
+              ? elementGroups.map((g) => (
+                  <div key={g.tag} className={styles.elementGroup}>
+                    <div className={styles.elementGroupHead}>
+                      <Text role="mono" className={styles.elementTag}>
+                        {g.tag}
+                      </Text>
+                      <span className={styles.elementCount}>{g.total.toLocaleString()}×</span>
+                    </div>
+                    {g.rows.map((e) => (
+                      <div key={`${e.tag}|${e.role}`} className={styles.elementSubRow}>
+                        <span className={styles.elementRole}>{e.role}</span>
+                        <span className={styles.elementCount}>{e.count.toLocaleString()}×</span>
+                      </div>
+                    ))}
+                  </div>
+                ))
+              : elements.map((e) => (
+                  <div key={`${e.tag}|${e.role}`} className={styles.elementRow}>
+                    <Text role="mono" className={styles.elementTag}>
+                      {e.tag}
+                    </Text>
+                    <span className={styles.elementRole}>{e.role}</span>
+                    <span className={styles.elementCount}>{e.count.toLocaleString()}×</span>
+                  </div>
+                ))}
           </div>
         </div>
       )}
