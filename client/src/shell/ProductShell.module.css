@@ -40,28 +40,24 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
-  color: var(--color-primary-default);
   line-height: 1;
 }
 
-/* A small mark beside the wordmark — gives the brand presence in the bar. */
-.brand::before {
-  content: "";
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: var(--radius-full);
-  background: var(--color-primary-default);
-  box-shadow: 0 0 0 3px var(--color-primary-subtle);
-  transition: transform var(--duration-fast) var(--ease-move);
+/* The wordmark. Sized to the bar; nudged up in opacity on hover for a quiet cue. */
+.logo {
+  display: block;
+  height: 1.5rem;
+  width: auto;
+  opacity: 0.92;
+  transition: opacity var(--duration-fast) var(--ease-move);
 }
 
-.brand:hover::before {
-  transform: scale(1.15);
+.brand:hover .logo {
+  opacity: 1;
 }
 
 .brand:focus-visible {

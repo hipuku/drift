@@ -2,8 +2,8 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ReactNode } from "react";
-import { Text } from "../components/Text/Text.js";
 import { ThemeControls } from "./ThemeControls.js";
+import logo from "../assets/drift-logo.svg";
 import styles from "./ProductShell.module.css";
 
 interface ProductShellProps {
@@ -24,9 +24,7 @@ export function ProductShell({ children, onHome, trailing }: ProductShellProps) 
     <div className={styles.shell}>
       <header className={styles.bar}>
         <button type="button" className={styles.brand} onClick={onHome} aria-label="New audit">
-          <Text role="heading" as="span">
-            drift
-          </Text>
+          <img className={styles.logo} src={logo} alt="Drift" />
         </button>
         <div className={styles.actions}>
           <a
