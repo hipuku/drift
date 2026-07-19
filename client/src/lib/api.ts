@@ -151,6 +151,8 @@ export interface AuditColourSwatch {
   elements?: AuditColourElementUsage[];
   pages: string[];
   lightness: number;
+  /** The perceptually-closest other colour on the site, and the ΔE to it. */
+  nearest?: { hex: string; deltaE: number };
 }
 
 export interface AuditColourFamily {

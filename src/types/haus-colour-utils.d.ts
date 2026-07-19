@@ -29,6 +29,9 @@ declare module "@haus/colour-utils" {
   /** Groups colours by CIEDE2000 perceptual distance (ΔE < threshold). */
   export function clusterByPerceptualDistance(hexes: string[], threshold?: number): ColourCluster[];
 
+  /** CIEDE2000 perceptual distance between two colours (~1 = imperceptible). */
+  export function deltaE(a: string, b: string): number;
+
   export interface ContrastResult {
     ratio: number;
     passAA: boolean;

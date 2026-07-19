@@ -15,6 +15,7 @@ import {
   type ColourElementUsage,
   type ColourRole,
 } from "./colours.js";
+import { deltaE } from "@haus/colour-utils";
 import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "./typeScale.js";
 import type { CrawlResult } from "../crawler/types.js";
 
@@ -29,6 +30,8 @@ export interface ColourSwatch {
   pages: string[];
   /** 0–100 HSL lightness, for sorting within a family. */
   lightness: number;
+  /** The perceptually-closest other colour on the site, and the ΔE to it. */
+  nearest?: { hex: string; deltaE: number };
 }
 
 export interface ColourFamily {
@@ -309,6 +312,23 @@ function collectShadow(result: CrawlResult): ShadowUsage[] {
   return [...counts.entries()].map(([value, count]) => ({ value, count })).sort((a, b) => b.count - a.count);
 }
 
+/** Nearest other colour by CIEDE2000 ΔE (alpha ignored). Undefined if alone. */
+function nearestColour(hex: string, all: string[]): ColourSwatch["nearest"] {
+  const a = hex.slice(0, 7);
+  let best: { hex: string; deltaE: number } | undefined;
+  for (const other of all) {
+    if (other === hex) continue;
+    let d: number;
+    try {
+      d = deltaE(a, other.slice(0, 7));
+    } catch {
+      continue;
+    }
+    if (Number.isFinite(d) && (!best || d < best.deltaE)) best = { hex: other, deltaE: d };
+  }
+  return best ? { hex: best.hex, deltaE: Math.round(best.deltaE * 10) / 10 } : undefined;
+}
+
 // ── Redundancy signals — the honest basis for the health verdicts ────────────
 
 const SPACING_GRID_PX = 4;
@@ -345,6 +365,11 @@ function countOffScale(typography: SiteAudit["typography"]): number {
 
 export function collectAudit(result: CrawlResult): SiteAudit {
   const colourFamilies = groupColoursByFamily(result);
+  // Annotate each swatch with its perceptually-closest neighbour across the site.
+  const allHexes = colourFamilies.flatMap((f) => f.swatches.map((s) => s.hex));
+  for (const fam of colourFamilies) {
+    for (const sw of fam.swatches) sw.nearest = nearestColour(sw.hex, allHexes);
+  }
   const typography = collectTypography(result);
   const spacing = collectSpacing(result);
   const radius = collectRadius(result);
