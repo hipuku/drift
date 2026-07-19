@@ -278,13 +278,11 @@ export function Audit({ audit, onProposals, onBack }: Props) {
     URL.revokeObjectURL(href);
   };
 
-  // Type scale rows — sizes with their weight folded in (largest first). Prefer
-  // the semantic roles (they carry weight); fall back to the bare size list.
-  const scaleRows = (
-    t.roles.length > 0
-      ? t.roles.map((r) => ({ key: r.tag, px: r.px, weight: r.weight != null ? String(r.weight) : "—", count: r.count }))
-      : t.sizes.map((sz) => ({ key: String(sz.px), px: sz.px, weight: "—", count: sz.count }))
-  ).sort((a, b) => b.px - a.px);
+  // Type scale rows — one per distinct size (largest first), so the table matches
+  // the ruler and the tab count, with every weight and the tags that use it.
+  const scaleRows = [...t.sizes].sort((a, b) => b.px - a.px);
+  // Sizes that miss the closest modular scale — mirrors the ruler's red dots.
+  const offScalePx = useMemo(() => offScaleSizes(t.sizes), [t.sizes]);
 
   return (
     <div className={styles.page}>
@@ -431,22 +429,41 @@ export function Audit({ audit, onProposals, onBack }: Props) {
 
             <TypeRuler sizes={t.sizes} />
 
-            <Table head={["Scale", "Size", "Weight", "Uses"]}>
-              {scaleRows.map((r) => (
-                <tr key={r.key}>
-                  <td className={styles.specimenCell}>
-                    <span
-                      className={styles.typeSpecimen}
-                      style={{ fontSize: `${Math.min(r.px, 32)}px`, fontWeight: r.weight === "—" ? undefined : Number(r.weight), fontFamily: fontStack }}
-                    >
-                      Ag
-                    </span>
-                  </td>
-                  <td className={styles.valueCell}>{r.px}px</td>
-                  <td className={styles.valueCell}>{r.weight}</td>
-                  <td className={styles.usageCell}>{r.count.toLocaleString()}×</td>
-                </tr>
-              ))}
+            <Table head={["Scale", "Size", "Weight", "Tags", "Uses"]}>
+              {scaleRows.map((r) => {
+                const off = offScalePx.has(r.px);
+                return (
+                  <tr key={r.px}>
+                    <td className={styles.specimenCell}>
+                      <span
+                        className={styles.typeSpecimen}
+                        style={{ fontSize: `${Math.min(r.px, 32)}px`, fontWeight: r.weights[0], fontFamily: fontStack }}
+                      >
+                        Ag
+                      </span>
+                    </td>
+                    <td className={styles.valueCell}>
+                      <span className={styles.sizeValue}>
+                        {r.px}px
+                        {off && <span className={styles.offScaleDot} title="Off the closest scale" />}
+                      </span>
+                    </td>
+                    <td className={styles.valueCell}>
+                      {r.weights.length ? [...r.weights].sort((a, b) => a - b).join(" · ") : "—"}
+                    </td>
+                    <td className={styles.tagsCell}>
+                      <span className={styles.tagChips}>
+                        {r.tags.map((tg) => (
+                          <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
+                            {tg.tag}
+                          </span>
+                        ))}
+                      </span>
+                    </td>
+                    <td className={styles.usageCell}>{r.count.toLocaleString()}×</td>
+                  </tr>
+                );
+              })}
             </Table>
           </>
         )}
@@ -671,6 +688,17 @@ function Table({ head, children }: { head: string[]; children: ReactNode }) {
       <tbody>{children}</tbody>
     </table>
   );
+}
+
+/** Distinct sizes that miss the closest modular scale — same basis as TypeRuler. */
+function offScaleSizes(sizes: { px: number; count: number }[]): Set<number> {
+  if (sizes.length < 2) return new Set();
+  const px = sizes.map((s) => s.px);
+  const base = sizes.reduce((a, b) => (b.count > a.count ? b : a)).px;
+  const fit = detectClosestRatio(px, base);
+  if (!fit) return new Set();
+  const scale = buildScaleToCover(base, fit.ratio.ratio, Math.min(...px), Math.max(...px));
+  return new Set(classifyAgainstScale(px, scale).filter((m) => !m.onScale).map((m) => m.px));
 }
 
 /**

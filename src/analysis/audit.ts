@@ -66,9 +66,18 @@ export interface TypeRoleUsage {
   count: number;
 }
 
+export interface TypeSizeTagUsage {
+  tag: string;
+  count: number;
+}
+
 export interface SizeUsage {
   px: number;
   count: number;
+  /** All font-weights seen at this size, most-used first. */
+  weights: number[];
+  /** Element tags that render text at this size, most-used first. */
+  tags: TypeSizeTagUsage[];
 }
 
 // ── Spacing / radius / shadow ────────────────────────────────────────────────
@@ -227,9 +236,15 @@ interface RoleTally {
   count: number;
 }
 
+interface SizeTally {
+  count: number;
+  weights: Map<number, number>;
+  tags: Map<string, number>;
+}
+
 function collectTypography(result: CrawlResult): SiteAudit["typography"] {
   const families = new Map<string, number>();
-  const sizes = new Map<number, number>();
+  const sizes = new Map<number, SizeTally>();
   const weights = new Set<number>();
   const lineHeights = new Set<number>();
   const letterSpacings = new Set<number>();
@@ -242,7 +257,14 @@ function collectTypography(result: CrawlResult): SiteAudit["typography"] {
       if (s.fontFamily) families.set(s.fontFamily, (families.get(s.fontFamily) ?? 0) + 1);
       if (s.fontSize != null) {
         const px = Math.round(s.fontSize * 10) / 10;
-        sizes.set(px, (sizes.get(px) ?? 0) + 1);
+        let sz = sizes.get(px);
+        if (!sz) {
+          sz = { count: 0, weights: new Map(), tags: new Map() };
+          sizes.set(px, sz);
+        }
+        sz.count += 1;
+        if (s.fontWeight != null) sz.weights.set(s.fontWeight, (sz.weights.get(s.fontWeight) ?? 0) + 1);
+        sz.tags.set(el.tag, (sz.tags.get(el.tag) ?? 0) + 1);
       }
       if (s.fontWeight != null) weights.add(s.fontWeight);
       if (s.lineHeight != null) lineHeights.add(Math.round(s.lineHeight * 100) / 100);
@@ -271,7 +293,16 @@ function collectTypography(result: CrawlResult): SiteAudit["typography"] {
       .map(([family, count]) => ({ family, count }))
       .sort((a, b) => b.count - a.count),
     roles: roleList,
-    sizes: [...sizes.entries()].map(([px, count]) => ({ px, count })).sort((a, b) => a.px - b.px),
+    sizes: [...sizes.entries()]
+      .map(([px, s]) => ({
+        px,
+        count: s.count,
+        weights: [...s.weights.entries()].sort((a, b) => b[1] - a[1]).map(([w]) => w),
+        tags: [...s.tags.entries()]
+          .map(([tag, count]) => ({ tag, count }))
+          .sort((a, b) => b.count - a.count),
+      }))
+      .sort((a, b) => a.px - b.px),
     weights: [...weights].sort((a, b) => a - b),
     lineHeights: [...lineHeights].sort((a, b) => a - b),
     letterSpacings: [...letterSpacings].sort((a, b) => a - b),

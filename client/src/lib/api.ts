@@ -177,6 +177,15 @@ export interface AuditTypeRole {
   count: number;
 }
 
+export interface AuditTypeSize {
+  px: number;
+  count: number;
+  /** All font-weights seen at this size, most-used first. */
+  weights: number[];
+  /** Element tags that render text at this size, most-used first. */
+  tags: { tag: string; count: number }[];
+}
+
 export interface AuditValueUsage {
   value: number;
   count: number;
@@ -226,7 +235,7 @@ export interface SiteAudit {
   typography: {
     families: { family: string; count: number }[];
     roles: AuditTypeRole[];
-    sizes: { px: number; count: number }[];
+    sizes: AuditTypeSize[];
     weights: number[];
     lineHeights: number[];
     letterSpacings: number[];

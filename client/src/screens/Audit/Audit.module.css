@@ -873,6 +873,42 @@
   white-space: nowrap;
 }
 
+/* Size cell with an optional off-scale marker (mirrors the ruler's red dots). */
+.sizeValue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.offScaleDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-error-default);
+}
+
+/* Tags-that-use-this-size — chips of element tag names. */
+.tagsCell {
+  vertical-align: middle;
+}
+
+.tagChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tagChip {
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--color-ink-primary) 8%, transparent);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-secondary);
+  white-space: nowrap;
+}
+
 /* ── Table specimens ─────────────────────────────────────────────────────── */
 .typeSpecimen {
   color: var(--color-ink-primary);
