@@ -194,6 +194,11 @@ export function Audit({ audit, onProposals, onBack }: Props) {
     return () => clearTimeout(t);
   }, [flashHex]);
 
+  // The detail rail belongs to the Colour tab — leaving it closes the rail.
+  useEffect(() => {
+    if (tab !== "colour") setSelectedHex(null);
+  }, [tab]);
+
   const maxSpace = audit.spacing.reduce((m, v) => Math.max(m, v.value), 1);
   const maxBp = audit.breakpoints?.reduce((m, v) => Math.max(m, v.value), 1) ?? 1;
   const selectedSwatch = selectedHex

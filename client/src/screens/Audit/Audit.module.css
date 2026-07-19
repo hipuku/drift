@@ -1,6 +1,8 @@
 .page {
   width: 100%;
-  padding: var(--space-12) var(--space-6) var(--space-20);
+  /* Bottom breathing room lives on .main, not here, so the rail's sticky column
+     spans the full scroll height and never releases at the very bottom. */
+  padding: var(--space-12) var(--space-6) 0;
 }
 
 /* ── Master–detail layout ── the detail rail pushes content aside ─────────── */
@@ -23,6 +25,7 @@
 .main {
   flex: 1;
   min-width: 0;
+  padding-bottom: var(--space-20);
 }
 
 .rail {
@@ -123,6 +126,14 @@
   .layoutOpen {
     flex-direction: column;
     max-width: 56rem;
+  }
+  .main {
+    /* Stacked: the rail follows the content, so the breathing room goes back to
+       the page bottom rather than between the content and the rail. */
+    padding-bottom: 0;
+  }
+  .page {
+    padding-bottom: var(--space-20);
   }
   .rail {
     width: 100%;
@@ -1078,7 +1089,9 @@
   margin-left: auto;
 }
 
-/* The scale table follows the family rows directly now — give it room. */
+/* Give the scale ruler (and, when there's no ruler, the table) room to breathe
+   below the family rows. */
+.familyList + .ruler,
 .familyList + .table {
   margin-top: var(--space-12);
 }
