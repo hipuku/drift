@@ -264,12 +264,18 @@ function collectTypography(result: CrawlResult): SiteAudit["typography"] {
 
 // ── Spacing / radius / shadow ────────────────────────────────────────────────
 
+/**
+ * Minimum px for a value to count as a real design token. Sub-pixel values are
+ * browser rounding of rem/em/percent (e.g. 0.4375px) — noise, not tokens.
+ */
+const MIN_TOKEN_PX = 1;
+
 function collectSpacing(result: CrawlResult): ValueUsage[] {
   const counts = new Map<number, number>();
   for (const page of result.pages) {
     for (const el of page.elements) {
       for (const v of el.styles.padding) {
-        if (v > 0) counts.set(v, (counts.get(v) ?? 0) + 1);
+        if (v >= MIN_TOKEN_PX) counts.set(v, (counts.get(v) ?? 0) + 1);
       }
     }
   }
@@ -281,7 +287,7 @@ function collectRadius(result: CrawlResult): ValueUsage[] {
   for (const page of result.pages) {
     for (const el of page.elements) {
       for (const v of el.styles.borderRadius) {
-        if (v > 0) counts.set(v, (counts.get(v) ?? 0) + 1);
+        if (v >= MIN_TOKEN_PX) counts.set(v, (counts.get(v) ?? 0) + 1);
       }
     }
   }
