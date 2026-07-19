@@ -432,12 +432,15 @@ export function Audit({ audit, onProposals, onBack }: Props) {
             <Table head={["Scale", "Size", "Weight", "Tags", "Uses"]}>
               {scaleRows.map((r) => {
                 const off = offScalePx.has(r.px);
+                // Guard against an older backend that omits weights/tags per size.
+                const weights = r.weights ?? [];
+                const tags = r.tags ?? [];
                 return (
                   <tr key={r.px}>
                     <td className={styles.specimenCell}>
                       <span
                         className={styles.typeSpecimen}
-                        style={{ fontSize: `${Math.min(r.px, 32)}px`, fontWeight: r.weights[0], fontFamily: fontStack }}
+                        style={{ fontSize: `${Math.min(r.px, 32)}px`, fontWeight: weights[0], fontFamily: fontStack }}
                       >
                         Ag
                       </span>
@@ -449,11 +452,11 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                       </span>
                     </td>
                     <td className={styles.valueCell}>
-                      {r.weights.length ? [...r.weights].sort((a, b) => a - b).join(" · ") : "—"}
+                      {weights.length ? [...weights].sort((a, b) => a - b).join(" · ") : "—"}
                     </td>
                     <td className={styles.tagsCell}>
                       <span className={styles.tagChips}>
-                        {r.tags.map((tg) => (
+                        {tags.map((tg) => (
                           <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
                             {tg.tag}
                           </span>
