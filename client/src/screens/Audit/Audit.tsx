@@ -831,7 +831,47 @@ function ColourDrawerTitle({ sw, totalPages }: { sw: AuditColourSwatch; totalPag
   );
 }
 
-/** Drawer content for a colour: near-duplicate call-out, roles, elements, pages. */
+/** One related-colour row: swatch, relationship label, and ΔE or opacity. */
+function NearCallout({
+  hex,
+  kind,
+  deltaE,
+  onPick,
+}: {
+  hex: string;
+  kind: NearKind;
+  deltaE: number;
+  onPick: (hex: string) => void;
+}) {
+  const label =
+    kind === "opacity"
+      ? "Same colour, different opacity"
+      : kind === "duplicate"
+        ? "Indistinguishable from"
+        : "Nearest colour";
+  return (
+    <button
+      type="button"
+      className={kind === "duplicate" ? `${styles.nearCallout} ${styles.nearDup}` : styles.nearCallout}
+      onClick={() => onPick(hex)}
+    >
+      <span className={styles.nearSwatchWrap}>
+        <span className={styles.nearSwatch} style={{ background: hex }} />
+      </span>
+      <span className={styles.nearText}>
+        <Text role="body-sm">{label}</Text>
+        <Text role="mono" className={styles.nearHex}>
+          {hex.toUpperCase()}
+        </Text>
+      </span>
+      <Text role="mono" className={styles.nearDelta}>
+        {kind === "opacity" ? `${Math.round(alphaOf(hex) * 100)}%` : `ΔE ${deltaE}`}
+      </Text>
+    </button>
+  );
+}
+
+/** Drawer content for a colour: related colours, roles, elements, pages. */
 function ColourDetail({
   sw,
   totalPages,
@@ -859,37 +899,28 @@ function ColourDetail({
     return [...map.values()].sort((a, b) => b.total - a.total);
   }, [elements]);
 
+  // Show every relationship — all opacity variants and near-duplicates — not just
+  // the single closest. Fall back to the one nearest colour when nothing is close.
   const near = sw.nearest;
-  const kind = near ? nearKind(sw.hex, near) : null;
-  const isDup = kind === "duplicate";
-  const nearLabel =
-    kind === "opacity"
-      ? "Same colour, different opacity"
-      : kind === "duplicate"
-        ? "Indistinguishable from"
-        : "Nearest colour";
+  const relations: { hex: string; kind: NearKind; deltaE: number }[] =
+    sw.related && sw.related.length > 0
+      ? sw.related.map((r) => ({
+          hex: r.hex,
+          kind: r.opacityVariant ? "opacity" : "duplicate",
+          deltaE: r.deltaE,
+        }))
+      : near
+        ? [{ hex: near.hex, kind: nearKind(sw.hex, near), deltaE: near.deltaE }]
+        : [];
 
   return (
     <div className={styles.drawerContent}>
-      {near && (
-        <button
-          type="button"
-          className={isDup ? `${styles.nearCallout} ${styles.nearDup}` : styles.nearCallout}
-          onClick={() => onPick(near.hex)}
-        >
-          <span className={styles.nearSwatchWrap}>
-            <span className={styles.nearSwatch} style={{ background: near.hex }} />
-          </span>
-          <span className={styles.nearText}>
-            <Text role="body-sm">{nearLabel}</Text>
-            <Text role="mono" className={styles.nearHex}>
-              {near.hex.toUpperCase()}
-            </Text>
-          </span>
-          <Text role="mono" className={styles.nearDelta}>
-            {kind === "opacity" ? `${Math.round(alphaOf(near.hex) * 100)}%` : `ΔE ${near.deltaE}`}
-          </Text>
-        </button>
+      {relations.length > 0 && (
+        <div className={styles.relatedList}>
+          {relations.map((r) => (
+            <NearCallout key={r.hex} hex={r.hex} kind={r.kind} deltaE={r.deltaE} onPick={onPick} />
+          ))}
+        </div>
       )}
 
       <div className={styles.detailSection}>

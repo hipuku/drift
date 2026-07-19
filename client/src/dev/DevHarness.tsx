@@ -141,14 +141,20 @@ const MOCK_SITE_AUDIT: SiteAudit = {
         {
           hex: "#222222", count: 140, roles: { text: 140, background: 0, border: 0 }, pages: ["/"],
           lightness: 13, nearest: { hex: "#1a1a1a", deltaE: 1.4 },
+          related: [{ hex: "#1a1a1a", deltaE: 1.4, opacityVariant: false }],
         },
         {
           hex: "#1a1a1a", count: 120, roles: { text: 120, background: 0, border: 0 }, pages: ["/"],
-          lightness: 10, nearest: { hex: "#222222", deltaE: 1.4 },
+          lightness: 10, nearest: { hex: "#111111", deltaE: 1.3 },
+          related: [
+            { hex: "#111111", deltaE: 1.3, opacityVariant: false },
+            { hex: "#222222", deltaE: 1.4, opacityVariant: false },
+          ],
         },
         {
           hex: "#111111", count: 100, roles: { text: 100, background: 0, border: 0 }, pages: ["/"],
           lightness: 7, nearest: { hex: "#1a1a1a", deltaE: 1.3 },
+          related: [{ hex: "#1a1a1a", deltaE: 1.3, opacityVariant: false }],
         },
       ],
     },
@@ -159,6 +165,7 @@ const MOCK_SITE_AUDIT: SiteAudit = {
         {
           hex: "#3b82f6", count: 60, roles: { text: 20, background: 40, border: 0 }, pages: ["/"],
           lightness: 60, nearest: { hex: "#2563eb", deltaE: 8.4 },
+          related: [{ hex: "#3b82f680", deltaE: 0, opacityVariant: true }],
           elements: [
             { tag: "button", role: "background", count: 24 },
             { tag: "a", role: "text", count: 20 },
@@ -173,6 +180,7 @@ const MOCK_SITE_AUDIT: SiteAudit = {
         {
           hex: "#3b82f680", count: 18, roles: { text: 0, background: 18, border: 0 }, pages: ["/"],
           lightness: 60, nearest: { hex: "#3b82f6", deltaE: 0 },
+          related: [{ hex: "#3b82f6", deltaE: 0, opacityVariant: true }],
           elements: [{ tag: "div", role: "background", count: 18 }],
         },
       ],

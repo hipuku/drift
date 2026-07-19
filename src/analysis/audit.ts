@@ -32,6 +32,15 @@ export interface ColourSwatch {
   lightness: number;
   /** The perceptually-closest other colour on the site, and the ΔE to it. */
   nearest?: { hex: string; deltaE: number };
+  /** Every colour worth relating this one to — opacity variants and near-duplicates. */
+  related?: ColourRelation[];
+}
+
+export interface ColourRelation {
+  hex: string;
+  deltaE: number;
+  /** Same RGB base as the subject — differs only in alpha. */
+  opacityVariant: boolean;
 }
 
 export interface ColourFamily {
@@ -329,6 +338,39 @@ function nearestColour(hex: string, all: string[]): ColourSwatch["nearest"] {
   return best ? { hex: best.hex, deltaE: Math.round(best.deltaE * 10) / 10 } : undefined;
 }
 
+/** Alpha channel of a hex as a 0–1 fraction; 1 for an opaque #RRGGBB. */
+function hexAlpha(hex: string): number {
+  return hex.length >= 9 ? parseInt(hex.slice(7, 9), 16) / 255 : 1;
+}
+
+/**
+ * Every colour worth relating this one to: its opacity variants (same RGB,
+ * different alpha) and its perceptual near-duplicates (ΔE under the threshold).
+ * ΔE ignores alpha, so opacity variants are found by the hex base, not distance.
+ * Ordered opacity-variants-first, then by ascending ΔE.
+ */
+function relatedColours(hex: string, all: string[]): ColourRelation[] {
+  const base = hex.slice(0, 7).toLowerCase();
+  const alpha = hexAlpha(hex);
+  const rels: ColourRelation[] = [];
+  for (const other of all) {
+    if (other === hex) continue;
+    const opacityVariant = other.slice(0, 7).toLowerCase() === base && hexAlpha(other) !== alpha;
+    let d: number;
+    try {
+      d = deltaE(hex.slice(0, 7), other.slice(0, 7));
+    } catch {
+      continue;
+    }
+    if (!Number.isFinite(d)) continue;
+    if (opacityVariant || d < INDISTINGUISHABLE_DELTA_E) {
+      rels.push({ hex: other, deltaE: Math.round(d * 10) / 10, opacityVariant });
+    }
+  }
+  rels.sort((a, b) => Number(b.opacityVariant) - Number(a.opacityVariant) || a.deltaE - b.deltaE);
+  return rels;
+}
+
 // ── Redundancy signals — the honest basis for the health verdicts ────────────
 
 const SPACING_GRID_PX = 4;
@@ -368,7 +410,10 @@ export function collectAudit(result: CrawlResult): SiteAudit {
   // Annotate each swatch with its perceptually-closest neighbour across the site.
   const allHexes = colourFamilies.flatMap((f) => f.swatches.map((s) => s.hex));
   for (const fam of colourFamilies) {
-    for (const sw of fam.swatches) sw.nearest = nearestColour(sw.hex, allHexes);
+    for (const sw of fam.swatches) {
+      sw.nearest = nearestColour(sw.hex, allHexes);
+      sw.related = relatedColours(sw.hex, allHexes);
+    }
   }
   const typography = collectTypography(result);
   const spacing = collectSpacing(result);

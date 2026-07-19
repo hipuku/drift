@@ -153,6 +153,15 @@ export interface AuditColourSwatch {
   lightness: number;
   /** The perceptually-closest other colour on the site, and the ΔE to it. */
   nearest?: { hex: string; deltaE: number };
+  /** Every colour worth relating this one to — opacity variants and near-duplicates. */
+  related?: AuditColourRelation[];
+}
+
+export interface AuditColourRelation {
+  hex: string;
+  deltaE: number;
+  /** Same RGB base as the subject — differs only in alpha. */
+  opacityVariant: boolean;
 }
 
 export interface AuditColourFamily {

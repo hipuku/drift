@@ -6,7 +6,9 @@
 /* ── Master–detail layout ── the detail rail pushes content aside ─────────── */
 .layout {
   display: flex;
-  align-items: flex-start;
+  /* Stretch the rail column to the content's height so its sticky inner panel
+     has room to stay pinned while the left side scrolls past it. */
+  align-items: stretch;
   gap: var(--space-8);
   width: 100%;
   max-width: 56rem;
@@ -297,7 +299,7 @@
   color: var(--color-ink-primary);
   line-height: 1.25;
   letter-spacing: -0.01em;
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 
 /* ── Overview verdict cards ── equal size; colour + bottom rule = verdict ─── */
@@ -489,6 +491,13 @@
   color: var(--color-ink-primary);
 }
 
+/* The stack of related-colour call-outs (opacity variants + near-duplicates). */
+.relatedList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
 /* Near-duplicate / nearest call-out. */
 .nearCallout {
   display: flex;
@@ -521,6 +530,7 @@
 /* Checker underlay — invisible behind an opaque swatch, shows through a
    translucent one so an opacity variant reads as translucent, not just darker. */
 .nearSwatchWrap {
+  display: block;
   width: 2rem;
   height: 2rem;
   flex-shrink: 0;
@@ -536,6 +546,7 @@
 }
 
 .nearSwatch {
+  display: block;
   width: 100%;
   height: 100%;
   border-radius: inherit;
