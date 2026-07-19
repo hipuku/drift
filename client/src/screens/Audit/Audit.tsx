@@ -24,6 +24,9 @@ import styles from "./Audit.module.css";
 /** ΔE below which two colours are effectively identical (mirrors the analysis). */
 const INDISTINGUISHABLE_DELTA_E = 2;
 
+/** ΔE above which the nearest colour is too far apart to be worth surfacing. */
+const NEAREST_DELTA_E = 5;
+
 type Verdict = "good" | "watch" | "review";
 
 /** Which tab an overview verdict card links to. */
@@ -904,7 +907,9 @@ function ColourDetail({
   }, [elements]);
 
   // Show every relationship — all opacity variants and near-duplicates — not just
-  // the single closest. Fall back to the one nearest colour when nothing is close.
+  // the single closest. Fall back to the one nearest colour only when it's close
+  // enough to matter; a colour whose nearest is far (white ↔ black, ΔE 100) stands
+  // alone and gets no call-out.
   const near = sw.nearest;
   const relations: { hex: string; kind: NearKind; deltaE: number }[] =
     sw.related && sw.related.length > 0
@@ -913,7 +918,7 @@ function ColourDetail({
           kind: r.opacityVariant ? "opacity" : "duplicate",
           deltaE: r.deltaE,
         }))
-      : near
+      : near && near.deltaE < NEAREST_DELTA_E
         ? [{ hex: near.hex, kind: nearKind(sw.hex, near), deltaE: near.deltaE }]
         : [];
 
