@@ -12,12 +12,16 @@
  * pills. The colour — and a bottom accent rule — is the verdict.
  */
 
-import { Fragment, useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Button } from "../../components/Button/Button.js";
+import { Drawer } from "../../components/Drawer/Drawer.js";
 import { Text } from "../../components/Text/Text.js";
 import type { AuditColourSwatch, SiteAudit } from "../../lib/api.js";
 import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
 import styles from "./Audit.module.css";
+
+/** ΔE below which two colours are effectively identical (mirrors the analysis). */
+const INDISTINGUISHABLE_DELTA_E = 2;
 
 type Verdict = "good" | "watch" | "review";
 
@@ -115,6 +119,9 @@ export function Audit({ audit, onProposals, onBack }: Props) {
   const [selectedHex, setSelectedHex] = useState<string | null>(null);
   const maxSpace = audit.spacing.reduce((m, v) => Math.max(m, v.value), 1);
   const maxBp = audit.breakpoints?.reduce((m, v) => Math.max(m, v.value), 1) ?? 1;
+  const selectedSwatch = selectedHex
+    ? (audit.colourFamilies.flatMap((f) => f.swatches).find((sw) => sw.hex === selectedHex) ?? null)
+    : null;
 
   const offScale = s.typeOffScale ?? 0;
   const offGrid = s.spacingOffGrid ?? 0;
@@ -292,32 +299,37 @@ export function Audit({ audit, onProposals, onBack }: Props) {
           </>
         )}
 
-        {tab === "colour" &&
-          audit.colourFamilies.map((fam) => (
-            <div key={fam.name} className={styles.family}>
-              <div className={styles.familyHead}>
-                <Text role="heading-sm" as="h3">
-                  {fam.name}
-                </Text>
-                <Text role="label-sm" className={styles.muted}>
-                  {fam.swatches.length}
-                </Text>
-              </div>
-              <div className={styles.grid}>
-                {fam.swatches.map((sw) => (
-                  <Fragment key={sw.hex}>
+        {tab === "colour" && (
+          <>
+            <Text role="body-sm" as="p" className={styles.tabIntro}>
+              Grouped by hue family — click any colour for its role split, the elements that use it,
+              and its nearest neighbour.
+            </Text>
+            {audit.colourFamilies.map((fam) => (
+              <div key={fam.name} className={styles.family}>
+                <div className={styles.familyHead}>
+                  <Text role="heading-sm" as="h3">
+                    {fam.name}
+                  </Text>
+                  <Text role="label-sm" className={styles.muted}>
+                    {fam.swatches.length}
+                  </Text>
+                </div>
+                <div className={styles.grid}>
+                  {fam.swatches.map((sw) => (
                     <ColourCard
+                      key={sw.hex}
                       sw={sw}
                       totalPages={s.pages}
                       selected={selectedHex === sw.hex}
-                      onSelect={() => setSelectedHex(selectedHex === sw.hex ? null : sw.hex)}
+                      onSelect={() => setSelectedHex(sw.hex)}
                     />
-                    {selectedHex === sw.hex && <ColourDetail sw={sw} totalPages={s.pages} />}
-                  </Fragment>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </>
+        )}
 
         {tab === "type" && (
           <>
@@ -531,6 +543,16 @@ export function Audit({ audit, onProposals, onBack }: Props) {
           </>
         )}
       </div>
+
+      <Drawer
+        open={selectedSwatch !== null}
+        onClose={() => setSelectedHex(null)}
+        title={selectedSwatch && <ColourDrawerTitle sw={selectedSwatch} totalPages={s.pages} />}
+      >
+        {selectedSwatch && (
+          <ColourDetail sw={selectedSwatch} totalPages={s.pages} onPick={setSelectedHex} />
+        )}
+      </Drawer>
     </div>
   );
 }
@@ -668,6 +690,7 @@ function ColourCard({
   );
   const chips = usageChips(sw.count, totalPages, sw.pages.length);
   if (dominant[1] > 0) chips.push(`mostly ${dominant[0]}`);
+  const isDup = sw.nearest != null && sw.nearest.deltaE < INDISTINGUISHABLE_DELTA_E;
   return (
     <button
       type="button"
@@ -686,6 +709,7 @@ function ColourCard({
               {c}
             </span>
           ))}
+          {isDup && <span className={`${styles.pill} ${styles.pillDup}`}>≈ ΔE {sw.nearest!.deltaE}</span>}
         </span>
       </span>
     </button>
@@ -706,12 +730,60 @@ function pathOf(url: string): string {
   }
 }
 
-/** The unfolded detail for a selected colour: role split + the pages it's on. */
-function ColourDetail({ sw, totalPages }: { sw: AuditColourSwatch; totalPages: number }) {
+/** The drawer header: the swatch, its hex, and headline usage. */
+function ColourDrawerTitle({ sw, totalPages }: { sw: AuditColourSwatch; totalPages: number }) {
+  return (
+    <div className={styles.drawerTitle}>
+      <span className={styles.drawerSwatch} style={{ background: sw.hex }} />
+      <div>
+        <Text role="heading-sm" as="span" className={styles.drawerHex}>
+          {sw.hex.toUpperCase()}
+        </Text>
+        <Text role="label-xs" className={styles.muted}>
+          {usageText(sw.count, totalPages, sw.pages.length)}
+        </Text>
+      </div>
+    </div>
+  );
+}
+
+/** Drawer content for a colour: near-duplicate call-out, roles, elements, pages. */
+function ColourDetail({
+  sw,
+  totalPages,
+  onPick,
+}: {
+  sw: AuditColourSwatch;
+  totalPages: number;
+  onPick: (hex: string) => void;
+}) {
   const roles = ROLE_ORDER.map((r) => ({ label: r.label, n: sw.roles[r.key] })).filter((r) => r.n > 0);
   const total = roles.reduce((n, r) => n + r.n, 0) || 1;
+  const elements = sw.elements ?? [];
+  const near = sw.nearest;
+  const isDup = near != null && near.deltaE < INDISTINGUISHABLE_DELTA_E;
+
   return (
-    <div className={styles.colourDetail}>
+    <div className={styles.drawerContent}>
+      {near && (
+        <button
+          type="button"
+          className={isDup ? `${styles.nearCallout} ${styles.nearDup}` : styles.nearCallout}
+          onClick={() => onPick(near.hex)}
+        >
+          <span className={styles.nearSwatch} style={{ background: near.hex }} />
+          <span className={styles.nearText}>
+            <Text role="body-sm">{isDup ? "Indistinguishable from" : "Nearest colour"}</Text>
+            <Text role="mono" className={styles.nearHex}>
+              {near.hex.toUpperCase()}
+            </Text>
+          </span>
+          <Text role="mono" className={styles.nearDelta}>
+            ΔE {near.deltaE}
+          </Text>
+        </button>
+      )}
+
       <div className={styles.detailSection}>
         <Text role="label-xs" className={styles.detailLabel}>
           Roles
@@ -728,6 +800,26 @@ function ColourDetail({ sw, totalPages }: { sw: AuditColourSwatch; totalPages: n
           ))}
         </div>
       </div>
+
+      {elements.length > 0 && (
+        <div className={styles.detailSection}>
+          <Text role="label-xs" className={styles.detailLabel}>
+            Used by {elements.length} element {elements.length === 1 ? "type" : "types"}
+          </Text>
+          <div className={styles.elementList}>
+            {elements.map((e) => (
+              <div key={`${e.tag}|${e.role}`} className={styles.elementRow}>
+                <Text role="mono" className={styles.elementTag}>
+                  {e.tag}
+                </Text>
+                <span className={styles.elementRole}>{e.role}</span>
+                <span className={styles.elementCount}>{e.count.toLocaleString()}×</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className={styles.detailSection}>
         <Text role="label-xs" className={styles.detailLabel}>
           On {sw.pages.length} {totalPages > 1 ? `of ${totalPages} ` : ""}

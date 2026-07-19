@@ -336,16 +336,123 @@
 }
 
 /* ── Colour detail — the full-width strip that unfolds under a selected swatch */
-.colourDetail {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: minmax(12rem, 1fr) 2fr;
-  gap: var(--space-8);
-  padding: var(--space-5) var(--space-6);
-  background: var(--color-surface-subtle);
-  border: var(--border-width-default) solid var(--color-border-subtle);
+/* ── Colour drawer content ───────────────────────────────────────────────── */
+.drawerContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+.detailSection {
+  min-width: 0;
+}
+
+.drawerTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.drawerSwatch {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 12%, transparent);
+  flex-shrink: 0;
+}
+
+.drawerHex {
+  display: block;
+  color: var(--color-ink-primary);
+}
+
+/* Near-duplicate / nearest call-out. */
+.nearCallout {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  text-align: left;
+  padding: var(--space-4);
   border-radius: var(--radius-lg);
-  animation: fade var(--duration-default) var(--ease-move);
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-surface-subtle);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-move);
+}
+
+.nearCallout:hover {
+  border-color: var(--color-border-strong);
+}
+
+.nearCallout:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.nearDup {
+  border-color: color-mix(in oklab, var(--color-error-default) 40%, var(--drift-card-border));
+  background: color-mix(in oklab, var(--color-error-default) 10%, var(--color-surface-default));
+}
+
+.nearSwatch {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 12%, transparent);
+  flex-shrink: 0;
+}
+
+.nearText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--color-ink-secondary);
+}
+
+.nearHex {
+  color: var(--color-ink-primary);
+}
+
+.nearDelta {
+  margin-left: auto;
+  color: var(--color-ink-tertiary);
+}
+
+/* Elements-that-use-it list. */
+.elementList {
+  display: flex;
+  flex-direction: column;
+}
+
+.elementRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+}
+
+.elementRow:last-child {
+  border-bottom: none;
+}
+
+.elementTag {
+  color: var(--color-ink-primary);
+  font-size: var(--text-12);
+}
+
+.elementRole {
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
+  color: var(--color-ink-tertiary);
+}
+
+.elementCount {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-tertiary);
 }
 
 .detailLabel {
@@ -416,9 +523,19 @@
   color: var(--color-ink-secondary);
 }
 
+.tabIntro {
+  color: var(--color-ink-secondary);
+  max-width: 40rem;
+  margin-bottom: var(--space-6);
+}
+
+.pillDup {
+  background: color-mix(in oklab, var(--color-error-default) 16%, transparent);
+  color: var(--drift-alert-ink);
+}
+
 @media (max-width: 40rem) {
-  .colourDetail {
-    grid-template-columns: 1fr;
+  .drawerContent {
     gap: var(--space-5);
   }
 }
