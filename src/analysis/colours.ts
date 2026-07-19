@@ -28,12 +28,21 @@ export type ColourRole = "text" | "background" | "border";
  */
 export const INDISTINGUISHABLE_DELTA_E = 2;
 
+/** One element type that uses a colour, in a given role, with its count. */
+export interface ColourElementUsage {
+  tag: string;
+  role: ColourRole;
+  count: number;
+}
+
 export interface ColourUsage {
   hex: string;
   /** Total occurrences across every element on every page. */
   count: number;
   /** Occurrences split by the role the colour played. */
   roles: Record<ColourRole, number>;
+  /** Which element types use this colour, in which role — the attribution. */
+  elements: ColourElementUsage[];
   /** Distinct page URLs the colour appears on. */
   pages: string[];
 }
@@ -55,6 +64,8 @@ interface MutableUsage {
   hex: string;
   count: number;
   roles: Record<ColourRole, number>;
+  /** Keyed by `${tag}|${role}` → count. */
+  elements: Map<string, number>;
   pages: Set<string>;
 }
 
@@ -65,29 +76,48 @@ interface MutableUsage {
 export function collectColourUsage(result: CrawlResult): ColourUsage[] {
   const usage = new Map<string, MutableUsage>();
 
-  const record = (hex: string, role: ColourRole, url: string): void => {
+  const record = (hex: string, role: ColourRole, url: string, tag: string): void => {
     const key = hex.toLowerCase();
     let entry = usage.get(key);
     if (!entry) {
-      entry = { hex: key, count: 0, roles: { text: 0, background: 0, border: 0 }, pages: new Set() };
+      entry = {
+        hex: key,
+        count: 0,
+        roles: { text: 0, background: 0, border: 0 },
+        elements: new Map(),
+        pages: new Set(),
+      };
       usage.set(key, entry);
     }
     entry.count += 1;
     entry.roles[role] += 1;
+    const tagKey = `${tag}|${role}`;
+    entry.elements.set(tagKey, (entry.elements.get(tagKey) ?? 0) + 1);
     entry.pages.add(url);
   };
 
   for (const page of result.pages) {
     for (const el of page.elements) {
       const s = el.styles;
-      if (s.color) record(s.color, "text", page.url);
-      if (s.backgroundColor) record(s.backgroundColor, "background", page.url);
-      for (const border of s.borderColor) record(border, "border", page.url);
+      if (s.color) record(s.color, "text", page.url, el.tag);
+      if (s.backgroundColor) record(s.backgroundColor, "background", page.url, el.tag);
+      for (const border of s.borderColor) record(border, "border", page.url, el.tag);
     }
   }
 
   return [...usage.values()]
-    .map((e) => ({ hex: e.hex, count: e.count, roles: e.roles, pages: [...e.pages] }))
+    .map((e) => ({
+      hex: e.hex,
+      count: e.count,
+      roles: e.roles,
+      elements: [...e.elements.entries()]
+        .map(([k, count]) => {
+          const [tag, role] = k.split("|");
+          return { tag: tag!, role: role as ColourRole, count };
+        })
+        .sort((a, b) => b.count - a.count),
+      pages: [...e.pages],
+    }))
     .sort((a, b) => b.count - a.count);
 }
 

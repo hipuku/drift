@@ -12,6 +12,7 @@ import {
   clusterColours,
   collectColourUsage,
   INDISTINGUISHABLE_DELTA_E,
+  type ColourElementUsage,
   type ColourRole,
 } from "./colours.js";
 import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "./typeScale.js";
@@ -23,6 +24,8 @@ export interface ColourSwatch {
   hex: string;
   count: number;
   roles: Record<ColourRole, number>;
+  /** Which element types use this colour, in which role. */
+  elements: ColourElementUsage[];
   pages: string[];
   /** 0–100 HSL lightness, for sorting within a family. */
   lightness: number;
@@ -171,6 +174,7 @@ function groupColoursByFamily(result: CrawlResult): ColourFamily[] {
       hex: u.hex,
       count: u.count,
       roles: u.roles,
+      elements: u.elements,
       pages: u.pages,
       lightness: Math.round(hsl.l * 100),
     };

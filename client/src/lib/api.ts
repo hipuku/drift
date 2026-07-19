@@ -137,10 +137,18 @@ export async function getColours(jobId: string): Promise<ColourInventory> {
 
 // ── The deterministic audit (the "what it is" diagnosis) ─────────────────────
 
+export interface AuditColourElementUsage {
+  tag: string;
+  role: "text" | "background" | "border";
+  count: number;
+}
+
 export interface AuditColourSwatch {
   hex: string;
   count: number;
   roles: { text: number; background: number; border: number };
+  /** Which element types use this colour, in which role. */
+  elements?: AuditColourElementUsage[];
   pages: string[];
   lightness: number;
 }
