@@ -852,6 +852,12 @@
   width: 42%;
 }
 
+/* The type scale specimen only needs room for "Ag"; keep it tight so Size,
+   Weight, Tags and Uses share the rest evenly instead of bunching up right. */
+.typeScaleCell {
+  width: 7rem;
+}
+
 .valueCell {
   font-family: var(--font-mono);
   font-size: var(--text-12);

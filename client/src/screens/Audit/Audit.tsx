@@ -437,7 +437,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                 const tags = r.tags ?? [];
                 return (
                   <tr key={r.px}>
-                    <td className={styles.specimenCell}>
+                    <td className={styles.typeScaleCell}>
                       <span
                         className={styles.typeSpecimen}
                         style={{ fontSize: `${Math.min(r.px, 32)}px`, fontWeight: weights[0], fontFamily: fontStack }}
