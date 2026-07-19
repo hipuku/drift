@@ -33,12 +33,13 @@
 
 .railInner {
   position: sticky;
-  top: 4.5rem;
+  /* Clear the 65px top nav with a comfortable gap so the rail never tucks
+     under it; fill the rest of the viewport and stay put as the page scrolls
+     (the body scrolls inside when the detail is tall). */
+  top: 5rem;
   display: flex;
   flex-direction: column;
-  /* Fill the viewport height and stay put as the page scrolls; the body scrolls
-     inside when the detail is tall. */
-  height: calc(100vh - 6rem);
+  height: calc(100vh - 6.5rem);
   background: var(--color-surface-default);
   border: var(--border-width-default) solid var(--color-border-default);
   border-radius: var(--radius-xl);
@@ -91,7 +92,24 @@
 @keyframes railIn {
   from {
     opacity: 0;
-    transform: translateX(12px);
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Cross-fade the detail content when the selected colour changes (keyed by hex),
+   so picking a neighbour glides rather than snaps. */
+.railFade {
+  animation: railFade var(--duration-default) var(--ease-move);
+}
+
+@keyframes railFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
   to {
     opacity: 1;

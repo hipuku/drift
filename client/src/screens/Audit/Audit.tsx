@@ -622,7 +622,9 @@ export function Audit({ audit, onProposals, onBack }: Props) {
           <aside className={styles.rail}>
             <div className={styles.railInner}>
               <div className={styles.railHeader}>
-                <ColourDrawerTitle sw={selectedSwatch} totalPages={s.pages} />
+                <div key={selectedSwatch.hex} className={styles.railFade}>
+                  <ColourDrawerTitle sw={selectedSwatch} totalPages={s.pages} />
+                </div>
                 <button
                   type="button"
                   className={styles.railClose}
@@ -633,7 +635,9 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                 </button>
               </div>
               <div className={styles.railBody}>
-                <ColourDetail sw={selectedSwatch} totalPages={s.pages} onPick={pickColour} />
+                <div key={selectedSwatch.hex} className={styles.railFade}>
+                  <ColourDetail sw={selectedSwatch} totalPages={s.pages} onPick={pickColour} />
+                </div>
               </div>
             </div>
           </aside>
@@ -886,7 +890,7 @@ function ColourDetail({
   const elements = sw.elements ?? [];
 
   // Elements are ranked by frequency by default; the toggle groups them by tag
-  // (all `a`, all `div`…), tags ordered by their combined use.
+  // (all `a`, all `div`…), tags in alphabetical order for quick scanning.
   const [grouped, setGrouped] = useState(false);
   const elementGroups = useMemo(() => {
     const map = new Map<string, { tag: string; total: number; rows: typeof elements }>();
@@ -896,7 +900,7 @@ function ColourDetail({
       g.rows.push(e);
       map.set(e.tag, g);
     }
-    return [...map.values()].sort((a, b) => b.total - a.total);
+    return [...map.values()].sort((a, b) => a.tag.localeCompare(b.tag));
   }, [elements]);
 
   // Show every relationship — all opacity variants and near-duplicates — not just
