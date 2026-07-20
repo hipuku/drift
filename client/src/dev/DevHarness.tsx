@@ -223,6 +223,8 @@ const MOCK_SITE_AUDIT: SiteAudit = {
     { value: 24, count: 60, properties: [{ property: "padding", count: 40 }, { property: "margin", count: 20 }], tags: [{ tag: "section", count: 40 }, { tag: "div", count: 20 }] },
     { value: 32, count: 30, properties: [{ property: "padding", count: 30 }], tags: [{ tag: "main", count: 30 }] },
     { value: 40, count: 8, properties: [{ property: "margin", count: 8 }], tags: [{ tag: "header", count: 8 }] },
+    { value: 200, count: 4, properties: [{ property: "margin", count: 4 }], tags: [{ tag: "section", count: 4 }] },
+    { value: 1004, count: 2, properties: [{ property: "margin", count: 2 }], tags: [{ tag: "div", count: 2 }] },
   ],
   radius: [
     { value: 4, count: 60 }, { value: 6, count: 12 }, { value: 8, count: 40 },

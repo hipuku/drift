@@ -776,12 +776,23 @@ function TypeRuler({ sizes }: { sizes: { px: number; count: number }[] }) {
   );
 }
 
+/** A "nice" round step (1/2/5 × 10ⁿ) near the target, for readable axis labels. */
+function niceStep(target: number): number {
+  const pow = Math.pow(10, Math.floor(Math.log10(target)));
+  const n = target / pow;
+  const nice = n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10;
+  return nice * pow;
+}
+
 /** Spacing grid ruler — values on a linear axis against the 4px grid. */
 function SpacingRuler({ values }: { values: number[] }) {
   if (values.length === 0) return null;
   const base = 4;
   const max = Math.max(...values, base);
-  const step = max / base > 24 ? base * 2 : base; // keep the tick count sane
+  const gridStep = max / base > 24 ? base * 2 : base;
+  // Keep the 4/8px grid ticks for normal ranges; only when they'd smear into an
+  // unreadable strip (a large range) fall back to ~10 round ticks.
+  const step = max / gridStep > 24 ? niceStep(max / 12) : gridStep;
   const ticks: number[] = [];
   for (let v = 0; v <= max; v += step) ticks.push(v);
   const onGrid = (v: number) => Math.abs(v - Math.round(v / base) * base) <= 0.5;
