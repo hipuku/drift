@@ -925,6 +925,11 @@
   table-layout: fixed;
 }
 
+/* Space the Easings table off the Durations table above it. */
+.motionTable + .motionTable {
+  margin-top: var(--space-12);
+}
+
 .motionTable th:nth-child(1),
 .motionTable td:nth-child(1) {
   width: 30%;
