@@ -191,6 +191,17 @@ export interface AuditValueUsage {
   count: number;
 }
 
+export type AuditSpacingProperty = "padding" | "margin" | "gap";
+
+export interface AuditSpacingUsage {
+  value: number;
+  count: number;
+  /** Which CSS properties produce this value, most-used first. */
+  properties: { property: AuditSpacingProperty; count: number }[];
+  /** Element tags using this value, most-used first. */
+  tags: { tag: string; count: number }[];
+}
+
 /** A token whose value is a CSS string (shadow, gradient, easing, …). */
 export interface AuditStringUsage {
   value: string;
@@ -240,7 +251,7 @@ export interface SiteAudit {
     lineHeights: number[];
     letterSpacings: number[];
   };
-  spacing: AuditValueUsage[];
+  spacing: AuditSpacingUsage[];
   radius: AuditValueUsage[];
   shadow: AuditStringUsage[];
   // ── Extended token categories (all optional for backend compatibility) ─────

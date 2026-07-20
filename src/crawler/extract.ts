@@ -82,6 +82,12 @@ export function extractRawElements(): RawElement[] {
         paddingRight: cs.paddingRight,
         paddingBottom: cs.paddingBottom,
         paddingLeft: cs.paddingLeft,
+        marginTop: cs.marginTop,
+        marginRight: cs.marginRight,
+        marginBottom: cs.marginBottom,
+        marginLeft: cs.marginLeft,
+        rowGap: cs.rowGap,
+        columnGap: cs.columnGap,
       },
     });
   }

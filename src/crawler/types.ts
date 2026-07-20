@@ -46,6 +46,12 @@ export interface RawElement {
     paddingRight: string;
     paddingBottom: string;
     paddingLeft: string;
+    marginTop?: string;
+    marginRight?: string;
+    marginBottom?: string;
+    marginLeft?: string;
+    rowGap?: string;
+    columnGap?: string;
   };
 }
 
@@ -78,6 +84,10 @@ export interface ElementStyle {
   boxShadow: string | null;
   /** [top, right, bottom, left] in pixels. */
   padding: [number, number, number, number];
+  /** [top, right, bottom, left] in pixels. Can be negative. Absent on pre-margin crawls. */
+  margin?: [number, number, number, number];
+  /** Distinct flex/grid gap values (row + column) in pixels. Absent on pre-gap crawls. */
+  gap?: number[];
 }
 
 export interface ExtractedElement {

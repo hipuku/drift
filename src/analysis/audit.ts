@@ -87,6 +87,27 @@ export interface ValueUsage {
   count: number;
 }
 
+export type SpacingProperty = "padding" | "margin" | "gap";
+
+export interface SpacingPropertyUsage {
+  property: SpacingProperty;
+  count: number;
+}
+
+export interface SpacingTagUsage {
+  tag: string;
+  count: number;
+}
+
+export interface SpacingUsage {
+  value: number;
+  count: number;
+  /** Which CSS properties produce this value, most-used first. */
+  properties: SpacingPropertyUsage[];
+  /** Element tags using this value, most-used first. */
+  tags: SpacingTagUsage[];
+}
+
 export interface ShadowUsage {
   value: string;
   count: number;
@@ -126,7 +147,7 @@ export interface SiteAudit {
     lineHeights: number[];
     letterSpacings: number[];
   };
-  spacing: ValueUsage[];
+  spacing: SpacingUsage[];
   radius: ValueUsage[];
   shadow: ShadowUsage[];
 }
@@ -317,16 +338,44 @@ function collectTypography(result: CrawlResult): SiteAudit["typography"] {
  */
 const MIN_TOKEN_PX = 1;
 
-function collectSpacing(result: CrawlResult): ValueUsage[] {
-  const counts = new Map<number, number>();
+interface SpacingTally {
+  count: number;
+  properties: Map<SpacingProperty, number>;
+  tags: Map<string, number>;
+}
+
+function collectSpacing(result: CrawlResult): SpacingUsage[] {
+  const values = new Map<number, SpacingTally>();
+  const record = (v: number, property: SpacingProperty, tag: string) => {
+    if (v < MIN_TOKEN_PX) return;
+    let t = values.get(v);
+    if (!t) {
+      t = { count: 0, properties: new Map(), tags: new Map() };
+      values.set(v, t);
+    }
+    t.count += 1;
+    t.properties.set(property, (t.properties.get(property) ?? 0) + 1);
+    t.tags.set(tag, (t.tags.get(tag) ?? 0) + 1);
+  };
+
   for (const page of result.pages) {
     for (const el of page.elements) {
-      for (const v of el.styles.padding) {
-        if (v >= MIN_TOKEN_PX) counts.set(v, (counts.get(v) ?? 0) + 1);
-      }
+      for (const v of el.styles.padding) record(v, "padding", el.tag);
+      for (const v of el.styles.margin ?? []) record(v, "margin", el.tag);
+      for (const v of el.styles.gap ?? []) record(v, "gap", el.tag);
     }
   }
-  return [...counts.entries()].map(([value, count]) => ({ value, count })).sort((a, b) => a.value - b.value);
+
+  return [...values.entries()]
+    .map(([value, t]) => ({
+      value,
+      count: t.count,
+      properties: [...t.properties.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .map(([property, count]) => ({ property, count })),
+      tags: [...t.tags.entries()].sort((a, b) => b[1] - a[1]).map(([tag, count]) => ({ tag, count })),
+    }))
+    .sort((a, b) => a.value - b.value);
 }
 
 function collectRadius(result: CrawlResult): ValueUsage[] {

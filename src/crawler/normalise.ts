@@ -55,7 +55,7 @@ export function firstFontFamily(stack: string): string | null {
 }
 
 /** "16px" → 16. Null when not a finite number. */
-export function pxToNumber(value: string): number | null {
+export function pxToNumber(value: string | undefined | null): number | null {
   if (!value) return null;
   const n = parseFloat(value);
   return Number.isFinite(n) ? n : null;
@@ -171,6 +171,13 @@ export function normaliseElement(el: RawElement): ExtractedElement {
       pxToNumber(r.paddingBottom) ?? 0,
       pxToNumber(r.paddingLeft) ?? 0,
     ],
+    margin: [
+      pxToNumber(r.marginTop) ?? 0,
+      pxToNumber(r.marginRight) ?? 0,
+      pxToNumber(r.marginBottom) ?? 0,
+      pxToNumber(r.marginLeft) ?? 0,
+    ],
+    gap: uniqueDefined([pxToNumber(r.rowGap), pxToNumber(r.columnGap)]),
   };
 
   return { tag: el.tag, hasText: el.hasText, styles };

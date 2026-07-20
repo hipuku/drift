@@ -143,6 +143,12 @@ describe("normaliseElement", () => {
       paddingRight: "16px",
       paddingBottom: "8px",
       paddingLeft: "16px",
+      marginTop: "0px",
+      marginRight: "12px",
+      marginBottom: "24px",
+      marginLeft: "12px",
+      rowGap: "8px",
+      columnGap: "16px",
     },
   };
 
@@ -171,6 +177,8 @@ describe("normaliseElement", () => {
         borderRadius: [8],
         boxShadow: null,
         padding: [8, 16, 8, 16],
+        margin: [0, 12, 24, 12],
+        gap: [8, 16],
       },
     });
   });
