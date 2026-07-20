@@ -620,7 +620,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                 <td className={styles.chipPreviewCell}>
                   <span className={styles.gradientSwatch} style={{ backgroundImage: g.value }} />
                 </td>
-                <td className={`${styles.valueCell} ${styles.valueCellTrunc}`}>{g.value}</td>
+                <td className={`${styles.valueCell} ${styles.valueCellWrap}`}>{g.value}</td>
                 <TagsCell tags={g.tags} />
                 <td className={styles.usageCell}>{g.count.toLocaleString()}×</td>
               </tr>
@@ -732,10 +732,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
 
         {tab === "motion" && audit.motion && (
           <>
-            <Text role="label-sm" as="h3" className={styles.sectionLabel}>
-              Durations
-            </Text>
-            <Table head={["Preview", "Duration", "Tags", "Uses"]}>
+            <Table head={["Preview", "Duration", "Tags", "Uses"]} className={styles.motionTable}>
               {audit.motion.durations.map((d) => (
                 <tr key={d.value}>
                   <td className={styles.specimenCell}>
@@ -750,10 +747,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
               ))}
             </Table>
 
-            <Text role="label-sm" as="h3" className={styles.sectionLabel}>
-              Easings
-            </Text>
-            <Table head={["Preview", "Easing", "Tags", "Uses"]}>
+            <Table head={["Preview", "Easing", "Tags", "Uses"]} className={styles.motionTable}>
               {audit.motion.easings.map((e) => (
                 <tr key={e.value}>
                   <td className={styles.specimenCell}>
@@ -761,7 +755,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                       <span className={styles.easingDot} />
                     </span>
                   </td>
-                  <td className={`${styles.valueCell} ${styles.valueCellTrunc}`}>{e.value}</td>
+                  <td className={`${styles.valueCell} ${styles.valueCellWrap}`}>{e.value}</td>
                   <TagsCell tags={e.tags} />
                   <td className={styles.usageCell}>{e.count.toLocaleString()}×</td>
                 </tr>
@@ -802,9 +796,9 @@ export function Audit({ audit, onProposals, onBack }: Props) {
 }
 
 /** A table with a header row and divider lines, used by every scalar token tab. */
-function Table({ head, children }: { head: ReactNode[]; children: ReactNode }) {
+function Table({ head, children, className }: { head: ReactNode[]; children: ReactNode; className?: string }) {
   return (
-    <table className={styles.table}>
+    <table className={className ? `${styles.table} ${className}` : styles.table}>
       <thead>
         <tr>
           {head.map((h, i) => (

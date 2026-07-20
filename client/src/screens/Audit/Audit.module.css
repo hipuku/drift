@@ -914,6 +914,32 @@
   text-overflow: ellipsis;
 }
 
+/* Long declarations (e.g. gradients) wrap onto multiple lines instead of clipping. */
+.valueCellWrap {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Motion tables share a fixed column layout so Durations and Easings align. */
+.motionTable {
+  table-layout: fixed;
+}
+
+.motionTable th:nth-child(1),
+.motionTable td:nth-child(1) {
+  width: 30%;
+}
+
+.motionTable th:nth-child(2),
+.motionTable td:nth-child(2) {
+  width: 24%;
+}
+
+.motionTable th:nth-child(4),
+.motionTable td:nth-child(4) {
+  width: 12%;
+}
+
 .usageCell {
   text-align: right;
   font-family: var(--font-mono);
@@ -998,22 +1024,27 @@
   background: var(--color-surface-default);
 }
 
+/* Transparency checker — fixed white/grey so the pattern is always visible
+   regardless of theme; the fill on top then shows how opaque the value is. */
 .checker {
   display: inline-block;
   width: 2.5rem;
   height: 2.5rem;
   border-radius: var(--radius-md);
   overflow: hidden;
+  background-color: #ffffff;
   background-image:
-    linear-gradient(45deg, var(--color-surface-sunken) 25%, transparent 25%),
-    linear-gradient(-45deg, var(--color-surface-sunken) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, var(--color-surface-sunken) 75%),
-    linear-gradient(-45deg, transparent 75%, var(--color-surface-sunken) 75%);
+    linear-gradient(45deg, #c3c8d0 25%, transparent 25%),
+    linear-gradient(-45deg, #c3c8d0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #c3c8d0 75%),
+    linear-gradient(-45deg, transparent 75%, #c3c8d0 75%);
   background-size: 12px 12px;
   background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 14%, transparent);
 }
 
 .opacityFill {
+  display: block;
   width: 100%;
   height: 100%;
   background: var(--color-primary-default);
