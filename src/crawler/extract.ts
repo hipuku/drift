@@ -88,6 +88,13 @@ export function extractRawElements(): RawElement[] {
         marginLeft: cs.marginLeft,
         rowGap: cs.rowGap,
         columnGap: cs.columnGap,
+        opacity: cs.opacity,
+        zIndex: cs.zIndex,
+        filter: cs.filter,
+        backdropFilter: cs.backdropFilter,
+        backgroundImage: cs.backgroundImage,
+        transitionDuration: cs.transitionDuration,
+        transitionTimingFunction: cs.transitionTimingFunction,
       },
     });
   }

@@ -52,6 +52,13 @@ export interface RawElement {
     marginLeft?: string;
     rowGap?: string;
     columnGap?: string;
+    opacity?: string;
+    zIndex?: string;
+    filter?: string;
+    backdropFilter?: string;
+    backgroundImage?: string;
+    transitionDuration?: string;
+    transitionTimingFunction?: string;
   };
 }
 
@@ -90,6 +97,18 @@ export interface ElementStyle {
   gap?: number[];
   /** Border widths [top, right, bottom, left] in pixels. Absent on pre-border crawls. */
   borderWidths?: [number, number, number, number];
+  /** Computed opacity, 0–1. 1 is the opaque default. */
+  opacity?: number;
+  /** Parsed z-index; null for `auto`. */
+  zIndex?: number | null;
+  /** Blur radii (px) from filter / backdrop-filter. */
+  blur?: number[];
+  /** Gradient declaration when background-image is a gradient; null otherwise. */
+  gradient?: string | null;
+  /** Transition durations in milliseconds (non-zero, distinct). */
+  motionDurations?: number[];
+  /** Transition timing functions (distinct). */
+  motionEasings?: string[];
 }
 
 export interface ExtractedElement {

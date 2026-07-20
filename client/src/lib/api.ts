@@ -239,9 +239,23 @@ export interface AuditBorderUsage {
 }
 
 /** Motion tokens — the timing and the curves transitions are built from. */
+export interface AuditNumberTagUsage {
+  value: number;
+  count: number;
+  /** Element tags using this value, most-used first. */
+  tags?: AuditTagUsage[];
+}
+
+export interface AuditStringTagUsage {
+  value: string;
+  count: number;
+  /** Element tags using this value, most-used first. */
+  tags?: AuditTagUsage[];
+}
+
 export interface AuditMotion {
-  durations: AuditValueUsage[]; // milliseconds
-  easings: AuditStringUsage[]; // cubic-bezier(...) or keyword
+  durations: AuditNumberTagUsage[]; // milliseconds
+  easings: AuditStringTagUsage[]; // cubic-bezier(...) or keyword
 }
 
 export interface SiteAudit {
@@ -286,11 +300,11 @@ export interface SiteAudit {
   shadow: AuditShadowUsage[];
   // ── Extended token categories (all optional for backend compatibility) ─────
   borders?: AuditBorderUsage[]; // border widths, px
-  opacity?: AuditValueUsage[]; // 0–1
-  zIndex?: AuditValueUsage[]; // stacking values
-  blur?: AuditValueUsage[]; // blur radii, px
+  opacity?: AuditNumberTagUsage[]; // 0–1
+  zIndex?: AuditNumberTagUsage[]; // stacking values
+  blur?: AuditNumberTagUsage[]; // blur radii, px
   breakpoints?: AuditValueUsage[]; // media-query widths, px
-  gradients?: AuditStringUsage[]; // raw gradient declarations
+  gradients?: AuditStringTagUsage[]; // raw gradient declarations
   motion?: AuditMotion;
 }
 

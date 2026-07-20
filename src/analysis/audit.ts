@@ -144,6 +144,25 @@ export interface BorderUsage {
   tags?: TagUsage[];
 }
 
+/** A numeric token value with element-tag attribution (opacity, z-index, blur, motion). */
+export interface NumberTagUsage {
+  value: number;
+  count: number;
+  tags?: TagUsage[];
+}
+
+/** A string token value with element-tag attribution (gradient, easing). */
+export interface StringTagUsage {
+  value: string;
+  count: number;
+  tags?: TagUsage[];
+}
+
+export interface MotionUsage {
+  durations: NumberTagUsage[];
+  easings: StringTagUsage[];
+}
+
 // ── The whole audit ──────────────────────────────────────────────────────────
 
 export interface AuditSummary {
@@ -182,6 +201,11 @@ export interface SiteAudit {
   radius: RadiusUsage[];
   shadow: ShadowUsage[];
   borders?: BorderUsage[];
+  opacity?: NumberTagUsage[];
+  zIndex?: NumberTagUsage[];
+  blur?: NumberTagUsage[];
+  gradients?: StringTagUsage[];
+  motion?: MotionUsage;
 }
 
 // ── Colour family classification ─────────────────────────────────────────────
@@ -488,6 +512,67 @@ function collectBorders(result: CrawlResult): BorderUsage[] {
     .sort((a, b) => a.value - b.value);
 }
 
+/** Tally distinct token values across all elements, with per-value tag attribution. */
+function tallyTagged<K>(
+  result: CrawlResult,
+  values: (el: CrawlResult["pages"][number]["elements"][number]) => K[],
+): Map<K, { count: number; tags: Map<string, number> }> {
+  const tally = new Map<K, { count: number; tags: Map<string, number> }>();
+  for (const page of result.pages) {
+    for (const el of page.elements) {
+      for (const v of values(el)) {
+        let t = tally.get(v);
+        if (!t) {
+          t = { count: 0, tags: new Map() };
+          tally.set(v, t);
+        }
+        t.count += 1;
+        t.tags.set(el.tag, (t.tags.get(el.tag) ?? 0) + 1);
+      }
+    }
+  }
+  return tally;
+}
+
+const numberTagList = (tally: Map<number, { count: number; tags: Map<string, number> }>): NumberTagUsage[] =>
+  [...tally.entries()].map(([value, t]) => ({ value, count: t.count, tags: tagList(t.tags) }));
+
+const stringTagList = (tally: Map<string, { count: number; tags: Map<string, number> }>): StringTagUsage[] =>
+  [...tally.entries()].map(([value, t]) => ({ value, count: t.count, tags: tagList(t.tags) }));
+
+function collectOpacity(result: CrawlResult): NumberTagUsage[] {
+  const tally = tallyTagged(result, (el) => {
+    const o = el.styles.opacity;
+    return o != null && o >= 0 && o < 1 ? [Math.round(o * 100) / 100] : [];
+  });
+  return numberTagList(tally).sort((a, b) => b.value - a.value);
+}
+
+function collectZIndex(result: CrawlResult): NumberTagUsage[] {
+  const tally = tallyTagged(result, (el) => (el.styles.zIndex != null ? [el.styles.zIndex] : []));
+  return numberTagList(tally).sort((a, b) => a.value - b.value);
+}
+
+function collectBlur(result: CrawlResult): NumberTagUsage[] {
+  const tally = tallyTagged(result, (el) => el.styles.blur ?? []);
+  return numberTagList(tally).sort((a, b) => a.value - b.value);
+}
+
+function collectGradients(result: CrawlResult): StringTagUsage[] {
+  const tally = tallyTagged(result, (el) => (el.styles.gradient ? [el.styles.gradient] : []));
+  return stringTagList(tally).sort((a, b) => b.count - a.count);
+}
+
+function collectMotion(result: CrawlResult): MotionUsage {
+  const durations = numberTagList(tallyTagged(result, (el) => el.styles.motionDurations ?? [])).sort(
+    (a, b) => a.value - b.value,
+  );
+  const easings = stringTagList(tallyTagged(result, (el) => el.styles.motionEasings ?? [])).sort(
+    (a, b) => b.count - a.count,
+  );
+  return { durations, easings };
+}
+
 /** Nearest other colour by CIEDE2000 ΔE (alpha ignored). Undefined if alone. */
 function nearestColour(hex: string, all: string[]): ColourSwatch["nearest"] {
   const a = hex.slice(0, 7);
@@ -587,6 +672,11 @@ export function collectAudit(result: CrawlResult): SiteAudit {
   const radius = collectRadius(result);
   const shadow = collectShadow(result);
   const borders = collectBorders(result);
+  const opacity = collectOpacity(result);
+  const zIndex = collectZIndex(result);
+  const blur = collectBlur(result);
+  const gradients = collectGradients(result);
+  const motion = collectMotion(result);
 
   const distinctColours = colourFamilies.reduce((n, f) => n + f.swatches.length, 0);
   // Redundancy = colours indistinguishable from another (tight ΔE), so a
@@ -616,5 +706,10 @@ export function collectAudit(result: CrawlResult): SiteAudit {
     radius,
     shadow,
     borders,
+    opacity,
+    zIndex,
+    blur,
+    gradients,
+    motion,
   };
 }

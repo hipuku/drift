@@ -133,6 +133,49 @@ function uniqueDefined<T>(values: (T | null)[]): T[] {
   return out;
 }
 
+/** Split a comma-separated CSS list, respecting parens (e.g. cubic-bezier(…)). */
+function splitTopLevel(value: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let cur = "";
+  for (const ch of value) {
+    if (ch === "(") depth++;
+    else if (ch === ")") depth--;
+    if (ch === "," && depth === 0) {
+      parts.push(cur.trim());
+      cur = "";
+    } else cur += ch;
+  }
+  if (cur.trim()) parts.push(cur.trim());
+  return parts;
+}
+
+/** Blur radii (px) pulled from filter / backdrop-filter declarations. */
+function parseBlur(...filters: (string | undefined)[]): number[] {
+  const out: number[] = [];
+  for (const f of filters) {
+    if (!f || f === "none") continue;
+    for (const m of f.matchAll(/blur\(([\d.]+)px\)/g)) {
+      const n = parseFloat(m[1]!);
+      if (Number.isFinite(n) && n > 0) out.push(n);
+    }
+  }
+  return uniqueDefined(out).sort((a, b) => a - b);
+}
+
+/** Transition durations in milliseconds (non-zero, distinct). */
+function parseDurations(value: string | undefined): number[] {
+  if (!value) return [];
+  const out: number[] = [];
+  for (const part of splitTopLevel(value)) {
+    const n = parseFloat(part);
+    if (!Number.isFinite(n)) continue;
+    const ms = Math.round(/ms/.test(part) ? n : n * 1000);
+    if (ms > 0) out.push(ms);
+  }
+  return uniqueDefined(out).sort((a, b) => a - b);
+}
+
 /** Normalise one element's raw computed strings into typed styles. */
 export function normaliseElement(el: RawElement): ExtractedElement {
   const r = el.raw;
@@ -142,6 +185,8 @@ export function normaliseElement(el: RawElement): ExtractedElement {
   // Computed border-*-color defaults to currentColor even at width 0.
   const borderColorIfVisible = (color: string, width: string): string | null =>
     (pxToNumber(width) ?? 0) > 0 ? rgbToHex(color) : null;
+
+  const durations = parseDurations(r.transitionDuration);
 
   const styles: ElementStyle = {
     color: rgbToHex(r.color),
@@ -184,6 +229,12 @@ export function normaliseElement(el: RawElement): ExtractedElement {
       pxToNumber(r.borderBottomWidth) ?? 0,
       pxToNumber(r.borderLeftWidth) ?? 0,
     ],
+    opacity: r.opacity != null ? parseFloat(r.opacity) : undefined,
+    zIndex: r.zIndex == null || r.zIndex === "auto" ? null : (pxToNumber(r.zIndex) ?? null),
+    blur: parseBlur(r.filter, r.backdropFilter),
+    gradient: r.backgroundImage && r.backgroundImage.includes("gradient(") ? r.backgroundImage : null,
+    motionDurations: durations,
+    motionEasings: durations.length ? uniqueDefined(splitTopLevel(r.transitionTimingFunction ?? "")) : [],
   };
 
   return { tag: el.tag, hasText: el.hasText, styles };

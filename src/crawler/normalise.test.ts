@@ -180,6 +180,11 @@ describe("normaliseElement", () => {
         margin: [0, 12, 24, 12],
         gap: [8, 16],
         borderWidths: [1, 1, 1, 0],
+        zIndex: null,
+        blur: [],
+        gradient: null,
+        motionDurations: [],
+        motionEasings: [],
       },
     });
   });
