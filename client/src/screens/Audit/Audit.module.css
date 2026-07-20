@@ -858,6 +858,12 @@
   width: 7rem;
 }
 
+/* Spacing preview bar — narrower than the shared specimen cell so the Attribute
+   and Tags columns have room. */
+.spacingPreviewCell {
+  width: 22%;
+}
+
 .valueCell {
   font-family: var(--font-mono);
   font-size: var(--text-12);
@@ -1050,6 +1056,19 @@
   position: relative;
   height: 3rem;
   margin: 0 var(--space-3);
+}
+
+/* Info affordance in a table header (e.g. "Preview" ⓘ). */
+.headInfo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.infoIcon {
+  font-size: 0.85em;
+  color: var(--color-ink-tertiary);
+  cursor: help;
 }
 
 .rulerLine {

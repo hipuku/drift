@@ -12,7 +12,7 @@
  * pills. The colour — and a bottom accent rule — is the verdict.
  */
 
-import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Button } from "../../components/Button/Button.js";
@@ -201,6 +201,11 @@ export function Audit({ audit, onProposals, onBack }: Props) {
 
   const maxSpace = audit.spacing.reduce((m, v) => Math.max(m, v.value), 1);
   const maxBp = audit.breakpoints?.reduce((m, v) => Math.max(m, v.value), 1) ?? 1;
+  // Spacing values that miss the 4px grid — mirrors the ruler's red dots.
+  const offGridSet = useMemo(() => {
+    const onGrid = (v: number) => Math.abs(v - Math.round(v / 4) * 4) <= 0.5;
+    return new Set(audit.spacing.filter((s) => !onGrid(s.value)).map((s) => s.value));
+  }, [audit.spacing]);
   const selectedSwatch = selectedHex
     ? (audit.colourFamilies.flatMap((f) => f.swatches).find((sw) => sw.hex === selectedHex) ?? null)
     : null;
@@ -474,13 +479,51 @@ export function Audit({ audit, onProposals, onBack }: Props) {
         {tab === "spacing" && (
           <>
             <SpacingRuler values={audit.spacing.map((v) => v.value)} />
-            <Table head={["Preview", "Value", "Uses"]}>
+            <Table
+              head={[
+                <span
+                  key="preview"
+                  className={styles.headInfo}
+                  title="Bar length is relative to the largest value, not actual pixels."
+                >
+                  Preview
+                  <FontAwesomeIcon icon={faCircleInfo} className={styles.infoIcon} />
+                </span>,
+                "Value",
+                "Attribute",
+                "Tags",
+                "Uses",
+              ]}
+            >
             {audit.spacing.map((v) => (
               <tr key={v.value}>
-                <td className={styles.specimenCell}>
+                <td className={styles.spacingPreviewCell}>
                   <span className={styles.bar} style={{ width: `${Math.max((v.value / maxSpace) * 100, 4)}%` }} />
                 </td>
-                <td className={styles.valueCell}>{v.value}px</td>
+                <td className={styles.valueCell}>
+                  <span className={styles.sizeValue}>
+                    {v.value}px
+                    {offGridSet.has(v.value) && <span className={styles.offScaleDot} title="Off the 4px grid" />}
+                  </span>
+                </td>
+                <td className={styles.tagsCell}>
+                  <span className={styles.tagChips}>
+                    {(v.properties ?? []).map((p) => (
+                      <span key={p.property} className={styles.tagChip} title={`${p.count.toLocaleString()}×`}>
+                        {p.property}
+                      </span>
+                    ))}
+                  </span>
+                </td>
+                <td className={styles.tagsCell}>
+                  <span className={styles.tagChips}>
+                    {(v.tags ?? []).map((tg) => (
+                      <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
+                        {tg.tag}
+                      </span>
+                    ))}
+                  </span>
+                </td>
                 <td className={styles.usageCell}>{v.count.toLocaleString()}×</td>
               </tr>
             ))}
@@ -676,7 +719,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
 }
 
 /** A table with a header row and divider lines, used by every scalar token tab. */
-function Table({ head, children }: { head: string[]; children: ReactNode }) {
+function Table({ head, children }: { head: ReactNode[]; children: ReactNode }) {
   return (
     <table className={styles.table}>
       <thead>
