@@ -217,6 +217,17 @@ export function Audit({ audit, onProposals, onBack }: Props) {
     }
     return set;
   }, [audit.radius]);
+  // Border widths within ~0.5px of a smaller one (e.g. 1px vs 1.5px).
+  const borderNearDupSet = useMemo(() => {
+    const sorted = (audit.borders ?? []).map((b) => b.value).sort((a, b) => a - b);
+    const set = new Set<number>();
+    let prev = Number.NEGATIVE_INFINITY;
+    for (const v of sorted) {
+      if (v - prev <= 0.5) set.add(v);
+      prev = v;
+    }
+    return set;
+  }, [audit.borders]);
   const selectedSwatch = selectedHex
     ? (audit.colourFamilies.flatMap((f) => f.swatches).find((sw) => sw.hex === selectedHex) ?? null)
     : null;
@@ -546,7 +557,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
           <Table head={["Preview", "Value", "Tags", "Uses"]}>
             {audit.radius.map((v) => (
               <tr key={v.value}>
-                <td className={styles.specimenCell}>
+                <td className={styles.chipPreviewCell}>
                   <span className={styles.radiusChip} style={{ borderRadius: `${v.value}px` }} />
                 </td>
                 <td className={styles.valueCell}>
@@ -576,7 +587,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
           <Table head={["Preview", "Value", "Tags", "Uses"]}>
             {audit.shadow.map((sh, i) => (
               <tr key={i}>
-                <td className={styles.specimenCell}>
+                <td className={styles.chipPreviewCell}>
                   <span className={styles.shadowChip} style={{ boxShadow: sh.value }} />
                 </td>
                 <td className={`${styles.valueCell} ${styles.valueCellTrunc}`}>{sh.value}</td>
@@ -614,13 +625,38 @@ export function Audit({ audit, onProposals, onBack }: Props) {
         )}
 
         {tab === "border" && audit.borders && (
-          <Table head={["Preview", "Value", "Uses"]}>
+          <Table head={["Preview", "Value", "Sides", "Tags", "Uses"]}>
             {audit.borders.map((b) => (
               <tr key={b.value}>
-                <td className={styles.specimenCell}>
+                <td className={styles.chipPreviewCell}>
                   <span className={styles.borderChip} style={{ borderWidth: `${b.value}px` }} />
                 </td>
-                <td className={styles.valueCell}>{b.value}px</td>
+                <td className={styles.valueCell}>
+                  <span className={styles.sizeValue}>
+                    {b.value}px
+                    {borderNearDupSet.has(b.value) && (
+                      <span className={styles.offScaleDot} title="Near-duplicate of another width" />
+                    )}
+                  </span>
+                </td>
+                <td className={styles.tagsCell}>
+                  <span className={styles.tagChips}>
+                    {(b.sides ?? []).map((s) => (
+                      <span key={s.side} className={styles.tagChip} title={`${s.count.toLocaleString()}×`}>
+                        {s.side}
+                      </span>
+                    ))}
+                  </span>
+                </td>
+                <td className={styles.tagsCell}>
+                  <span className={styles.tagChips}>
+                    {(b.tags ?? []).map((tg) => (
+                      <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
+                        {tg.tag}
+                      </span>
+                    ))}
+                  </span>
+                </td>
                 <td className={styles.usageCell}>{b.count.toLocaleString()}×</td>
               </tr>
             ))}

@@ -127,6 +127,23 @@ export interface ShadowUsage {
   tags?: TagUsage[];
 }
 
+export type BorderSide = "top" | "right" | "bottom" | "left";
+
+export interface BorderSideUsage {
+  side: BorderSide;
+  count: number;
+}
+
+export interface BorderUsage {
+  /** Border width in pixels. */
+  value: number;
+  count: number;
+  /** Which sides carry this width, most-used first. */
+  sides?: BorderSideUsage[];
+  /** Element tags using this width, most-used first. */
+  tags?: TagUsage[];
+}
+
 // ── The whole audit ──────────────────────────────────────────────────────────
 
 export interface AuditSummary {
@@ -164,6 +181,7 @@ export interface SiteAudit {
   spacing: SpacingUsage[];
   radius: RadiusUsage[];
   shadow: ShadowUsage[];
+  borders?: BorderUsage[];
 }
 
 // ── Colour family classification ─────────────────────────────────────────────
@@ -438,6 +456,38 @@ function collectShadow(result: CrawlResult): ShadowUsage[] {
     .sort((a, b) => b.count - a.count);
 }
 
+const BORDER_SIDES: BorderSide[] = ["top", "right", "bottom", "left"];
+
+function collectBorders(result: CrawlResult): BorderUsage[] {
+  const tally = new Map<number, { count: number; sides: Map<BorderSide, number>; tags: Map<string, number> }>();
+  for (const page of result.pages) {
+    for (const el of page.elements) {
+      const widths = el.styles.borderWidths;
+      if (!widths) continue;
+      widths.forEach((w, i) => {
+        if (w < MIN_TOKEN_PX) return;
+        let t = tally.get(w);
+        if (!t) {
+          t = { count: 0, sides: new Map(), tags: new Map() };
+          tally.set(w, t);
+        }
+        t.count += 1;
+        const side = BORDER_SIDES[i]!;
+        t.sides.set(side, (t.sides.get(side) ?? 0) + 1);
+        t.tags.set(el.tag, (t.tags.get(el.tag) ?? 0) + 1);
+      });
+    }
+  }
+  return [...tally.entries()]
+    .map(([value, t]) => ({
+      value,
+      count: t.count,
+      sides: [...t.sides.entries()].sort((a, b) => b[1] - a[1]).map(([side, count]) => ({ side, count })),
+      tags: tagList(t.tags),
+    }))
+    .sort((a, b) => a.value - b.value);
+}
+
 /** Nearest other colour by CIEDE2000 ΔE (alpha ignored). Undefined if alone. */
 function nearestColour(hex: string, all: string[]): ColourSwatch["nearest"] {
   const a = hex.slice(0, 7);
@@ -536,6 +586,7 @@ export function collectAudit(result: CrawlResult): SiteAudit {
   const spacing = collectSpacing(result);
   const radius = collectRadius(result);
   const shadow = collectShadow(result);
+  const borders = collectBorders(result);
 
   const distinctColours = colourFamilies.reduce((n, f) => n + f.swatches.length, 0);
   // Redundancy = colours indistinguishable from another (tight ΔE), so a
@@ -564,5 +615,6 @@ export function collectAudit(result: CrawlResult): SiteAudit {
     spacing,
     radius,
     shadow,
+    borders,
   };
 }

@@ -237,8 +237,10 @@ const MOCK_SITE_AUDIT: SiteAudit = {
     { value: "0 4px 12px rgba(0,0,0,0.12)", count: 10, tags: [{ tag: "div", count: 10 }] },
   ],
   borders: [
-    { value: 1, count: 180 }, { value: 1.5, count: 12 },
-    { value: 2, count: 24 }, { value: 4, count: 6 },
+    { value: 1, count: 180, sides: [{ side: "bottom", count: 120 }, { side: "top", count: 60 }], tags: [{ tag: "div", count: 140 }, { tag: "li", count: 40 }] },
+    { value: 1.5, count: 12, sides: [{ side: "left", count: 12 }], tags: [{ tag: "blockquote", count: 12 }] },
+    { value: 3, count: 24, sides: [{ side: "bottom", count: 20 }, { side: "left", count: 4 }], tags: [{ tag: "button", count: 24 }] },
+    { value: 4, count: 6, sides: [{ side: "left", count: 6 }], tags: [{ tag: "aside", count: 6 }] },
   ],
   opacity: [
     { value: 1, count: 0 }, { value: 0.9, count: 14 }, { value: 0.6, count: 30 },

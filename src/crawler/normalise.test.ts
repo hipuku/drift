@@ -179,6 +179,7 @@ describe("normaliseElement", () => {
         padding: [8, 16, 8, 16],
         margin: [0, 12, 24, 12],
         gap: [8, 16],
+        borderWidths: [1, 1, 1, 0],
       },
     });
   });

@@ -227,6 +227,17 @@ export interface AuditShadowUsage {
   tags?: AuditTagUsage[];
 }
 
+export type AuditBorderSide = "top" | "right" | "bottom" | "left";
+
+export interface AuditBorderUsage {
+  value: number;
+  count: number;
+  /** Which sides carry this width, most-used first. */
+  sides?: { side: AuditBorderSide; count: number }[];
+  /** Element tags using this width, most-used first. */
+  tags?: AuditTagUsage[];
+}
+
 /** Motion tokens — the timing and the curves transitions are built from. */
 export interface AuditMotion {
   durations: AuditValueUsage[]; // milliseconds
@@ -274,7 +285,7 @@ export interface SiteAudit {
   radius: AuditRadiusUsage[];
   shadow: AuditShadowUsage[];
   // ── Extended token categories (all optional for backend compatibility) ─────
-  borders?: AuditValueUsage[]; // border widths, px
+  borders?: AuditBorderUsage[]; // border widths, px
   opacity?: AuditValueUsage[]; // 0–1
   zIndex?: AuditValueUsage[]; // stacking values
   blur?: AuditValueUsage[]; // blur radii, px

@@ -178,6 +178,12 @@ export function normaliseElement(el: RawElement): ExtractedElement {
       pxToNumber(r.marginLeft) ?? 0,
     ],
     gap: uniqueDefined([pxToNumber(r.rowGap), pxToNumber(r.columnGap)]),
+    borderWidths: [
+      pxToNumber(r.borderTopWidth) ?? 0,
+      pxToNumber(r.borderRightWidth) ?? 0,
+      pxToNumber(r.borderBottomWidth) ?? 0,
+      pxToNumber(r.borderLeftWidth) ?? 0,
+    ],
   };
 
   return { tag: el.tag, hasText: el.hasText, styles };

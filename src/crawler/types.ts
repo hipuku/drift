@@ -88,6 +88,8 @@ export interface ElementStyle {
   margin?: [number, number, number, number];
   /** Distinct flex/grid gap values (row + column) in pixels. Absent on pre-gap crawls. */
   gap?: number[];
+  /** Border widths [top, right, bottom, left] in pixels. Absent on pre-border crawls. */
+  borderWidths?: [number, number, number, number];
 }
 
 export interface ExtractedElement {
