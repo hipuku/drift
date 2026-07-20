@@ -108,9 +108,23 @@ export interface SpacingUsage {
   tags: SpacingTagUsage[];
 }
 
+export interface TagUsage {
+  tag: string;
+  count: number;
+}
+
+export interface RadiusUsage {
+  value: number;
+  count: number;
+  /** Element tags using this radius, most-used first. */
+  tags?: TagUsage[];
+}
+
 export interface ShadowUsage {
   value: string;
   count: number;
+  /** Element tags using this shadow, most-used first. */
+  tags?: TagUsage[];
 }
 
 // ── The whole audit ──────────────────────────────────────────────────────────
@@ -148,7 +162,7 @@ export interface SiteAudit {
     letterSpacings: number[];
   };
   spacing: SpacingUsage[];
-  radius: ValueUsage[];
+  radius: RadiusUsage[];
   shadow: ShadowUsage[];
 }
 
@@ -378,27 +392,50 @@ function collectSpacing(result: CrawlResult): SpacingUsage[] {
     .sort((a, b) => a.value - b.value);
 }
 
-function collectRadius(result: CrawlResult): ValueUsage[] {
-  const counts = new Map<number, number>();
+/** Sort a tag→count map into a most-used-first list. */
+function tagList(tags: Map<string, number>): TagUsage[] {
+  return [...tags.entries()].sort((a, b) => b[1] - a[1]).map(([tag, count]) => ({ tag, count }));
+}
+
+function collectRadius(result: CrawlResult): RadiusUsage[] {
+  const tally = new Map<number, { count: number; tags: Map<string, number> }>();
   for (const page of result.pages) {
     for (const el of page.elements) {
       for (const v of el.styles.borderRadius) {
-        if (v >= MIN_TOKEN_PX) counts.set(v, (counts.get(v) ?? 0) + 1);
+        if (v < MIN_TOKEN_PX) continue;
+        let t = tally.get(v);
+        if (!t) {
+          t = { count: 0, tags: new Map() };
+          tally.set(v, t);
+        }
+        t.count += 1;
+        t.tags.set(el.tag, (t.tags.get(el.tag) ?? 0) + 1);
       }
     }
   }
-  return [...counts.entries()].map(([value, count]) => ({ value, count })).sort((a, b) => a.value - b.value);
+  return [...tally.entries()]
+    .map(([value, t]) => ({ value, count: t.count, tags: tagList(t.tags) }))
+    .sort((a, b) => a.value - b.value);
 }
 
 function collectShadow(result: CrawlResult): ShadowUsage[] {
-  const counts = new Map<string, number>();
+  const tally = new Map<string, { count: number; tags: Map<string, number> }>();
   for (const page of result.pages) {
     for (const el of page.elements) {
       const sh = el.styles.boxShadow;
-      if (sh) counts.set(sh, (counts.get(sh) ?? 0) + 1);
+      if (!sh) continue;
+      let t = tally.get(sh);
+      if (!t) {
+        t = { count: 0, tags: new Map() };
+        tally.set(sh, t);
+      }
+      t.count += 1;
+      t.tags.set(el.tag, (t.tags.get(el.tag) ?? 0) + 1);
     }
   }
-  return [...counts.entries()].map(([value, count]) => ({ value, count })).sort((a, b) => b.count - a.count);
+  return [...tally.entries()]
+    .map(([value, t]) => ({ value, count: t.count, tags: tagList(t.tags) }))
+    .sort((a, b) => b.count - a.count);
 }
 
 /** Nearest other colour by CIEDE2000 ΔE (alpha ignored). Undefined if alone. */

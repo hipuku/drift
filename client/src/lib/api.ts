@@ -208,6 +208,25 @@ export interface AuditStringUsage {
   count: number;
 }
 
+export interface AuditTagUsage {
+  tag: string;
+  count: number;
+}
+
+export interface AuditRadiusUsage {
+  value: number;
+  count: number;
+  /** Element tags using this radius, most-used first. */
+  tags?: AuditTagUsage[];
+}
+
+export interface AuditShadowUsage {
+  value: string;
+  count: number;
+  /** Element tags using this shadow, most-used first. */
+  tags?: AuditTagUsage[];
+}
+
 /** Motion tokens — the timing and the curves transitions are built from. */
 export interface AuditMotion {
   durations: AuditValueUsage[]; // milliseconds
@@ -252,8 +271,8 @@ export interface SiteAudit {
     letterSpacings: number[];
   };
   spacing: AuditSpacingUsage[];
-  radius: AuditValueUsage[];
-  shadow: AuditStringUsage[];
+  radius: AuditRadiusUsage[];
+  shadow: AuditShadowUsage[];
   // ── Extended token categories (all optional for backend compatibility) ─────
   borders?: AuditValueUsage[]; // border widths, px
   opacity?: AuditValueUsage[]; // 0–1

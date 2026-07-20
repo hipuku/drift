@@ -206,6 +206,17 @@ export function Audit({ audit, onProposals, onBack }: Props) {
     const onGrid = (v: number) => Math.abs(v - Math.round(v / 4) * 4) <= 0.5;
     return new Set(audit.spacing.filter((s) => !onGrid(s.value)).map((s) => s.value));
   }, [audit.spacing]);
+  // Radii within ~1px of a smaller one — the redundancy the audit counts.
+  const radiusNearDupSet = useMemo(() => {
+    const sorted = audit.radius.map((r) => r.value).sort((a, b) => a - b);
+    const set = new Set<number>();
+    let prev = Number.NEGATIVE_INFINITY;
+    for (const v of sorted) {
+      if (v - prev <= 1) set.add(v);
+      prev = v;
+    }
+    return set;
+  }, [audit.radius]);
   const selectedSwatch = selectedHex
     ? (audit.colourFamilies.flatMap((f) => f.swatches).find((sw) => sw.hex === selectedHex) ?? null)
     : null;
@@ -532,13 +543,29 @@ export function Audit({ audit, onProposals, onBack }: Props) {
         )}
 
         {tab === "radius" && (
-          <Table head={["Preview", "Value", "Uses"]}>
+          <Table head={["Preview", "Value", "Tags", "Uses"]}>
             {audit.radius.map((v) => (
               <tr key={v.value}>
                 <td className={styles.specimenCell}>
                   <span className={styles.radiusChip} style={{ borderRadius: `${v.value}px` }} />
                 </td>
-                <td className={styles.valueCell}>{v.value}px</td>
+                <td className={styles.valueCell}>
+                  <span className={styles.sizeValue}>
+                    {v.value}px
+                    {radiusNearDupSet.has(v.value) && (
+                      <span className={styles.offScaleDot} title="Near-duplicate of another radius" />
+                    )}
+                  </span>
+                </td>
+                <td className={styles.tagsCell}>
+                  <span className={styles.tagChips}>
+                    {(v.tags ?? []).map((tg) => (
+                      <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
+                        {tg.tag}
+                      </span>
+                    ))}
+                  </span>
+                </td>
                 <td className={styles.usageCell}>{v.count.toLocaleString()}×</td>
               </tr>
             ))}
@@ -546,13 +573,22 @@ export function Audit({ audit, onProposals, onBack }: Props) {
         )}
 
         {tab === "shadow" && (
-          <Table head={["Preview", "Value", "Uses"]}>
+          <Table head={["Preview", "Value", "Tags", "Uses"]}>
             {audit.shadow.map((sh, i) => (
               <tr key={i}>
                 <td className={styles.specimenCell}>
                   <span className={styles.shadowChip} style={{ boxShadow: sh.value }} />
                 </td>
                 <td className={`${styles.valueCell} ${styles.valueCellTrunc}`}>{sh.value}</td>
+                <td className={styles.tagsCell}>
+                  <span className={styles.tagChips}>
+                    {(sh.tags ?? []).map((tg) => (
+                      <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
+                        {tg.tag}
+                      </span>
+                    ))}
+                  </span>
+                </td>
                 <td className={styles.usageCell}>{sh.count.toLocaleString()}×</td>
               </tr>
             ))}

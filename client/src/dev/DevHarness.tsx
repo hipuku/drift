@@ -99,7 +99,7 @@ const MOCK_SITE_AUDIT: SiteAudit = {
     typeSizes: 6,
     fontWeights: 3,
     spacings: 11,
-    radii: 3,
+    radii: 4,
     shadows: 2,
     borders: 4,
     opacities: 5,
@@ -227,11 +227,14 @@ const MOCK_SITE_AUDIT: SiteAudit = {
     { value: 1004, count: 2, properties: [{ property: "margin", count: 2 }], tags: [{ tag: "div", count: 2 }] },
   ],
   radius: [
-    { value: 4, count: 60 }, { value: 6, count: 12 }, { value: 8, count: 40 },
+    { value: 4, count: 60, tags: [{ tag: "button", count: 40 }, { tag: "input", count: 20 }] },
+    { value: 5, count: 12, tags: [{ tag: "div", count: 12 }] },
+    { value: 8, count: 40, tags: [{ tag: "div", count: 30 }, { tag: "img", count: 10 }] },
+    { value: 12, count: 8, tags: [{ tag: "section", count: 8 }] },
   ],
   shadow: [
-    { value: "0 1px 2px rgba(0,0,0,0.08)", count: 30 },
-    { value: "0 4px 12px rgba(0,0,0,0.12)", count: 10 },
+    { value: "0 1px 2px rgba(0,0,0,0.08)", count: 30, tags: [{ tag: "div", count: 20 }, { tag: "button", count: 10 }] },
+    { value: "0 4px 12px rgba(0,0,0,0.12)", count: 10, tags: [{ tag: "div", count: 10 }] },
   ],
   borders: [
     { value: 1, count: 180 }, { value: 1.5, count: 12 },
