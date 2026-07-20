@@ -228,6 +228,13 @@ export function Audit({ audit, onProposals, onBack }: Props) {
     }
     return set;
   }, [audit.borders]);
+  // Rank of each z-index in the stacking order — drives the ladder preview.
+  const zIndexRank = useMemo(() => {
+    const sorted = (audit.zIndex ?? []).map((z) => z.value).sort((a, b) => a - b);
+    const map = new Map<number, number>();
+    sorted.forEach((v, i) => map.set(v, i));
+    return { map, total: sorted.length };
+  }, [audit.zIndex]);
   const selectedSwatch = selectedHex
     ? (audit.colourFamilies.flatMap((f) => f.swatches).find((sw) => sw.hex === selectedHex) ?? null)
     : null;
@@ -607,21 +614,18 @@ export function Audit({ audit, onProposals, onBack }: Props) {
         )}
 
         {tab === "gradient" && audit.gradients && (
-          <div className={styles.grid}>
+          <Table head={["Preview", "Value", "Tags", "Uses"]}>
             {audit.gradients.map((g, i) => (
-              <div key={i} className={styles.card}>
-                <div className={styles.gradientBox} style={{ backgroundImage: g.value }} />
-                <div className={styles.cardMeta}>
-                  <Text role="mono" className={`${styles.cardValue} ${styles.cardValueTrunc}`}>
-                    {g.value}
-                  </Text>
-                  <div className={styles.pills}>
-                    <span className={styles.pill}>{usageText(g.count, s.pages)}</span>
-                  </div>
-                </div>
-              </div>
+              <tr key={i}>
+                <td className={styles.chipPreviewCell}>
+                  <span className={styles.gradientSwatch} style={{ backgroundImage: g.value }} />
+                </td>
+                <td className={`${styles.valueCell} ${styles.valueCellTrunc}`}>{g.value}</td>
+                <TagsCell tags={g.tags} />
+                <td className={styles.usageCell}>{g.count.toLocaleString()}×</td>
+              </tr>
             ))}
-          </div>
+          </Table>
         )}
 
         {tab === "border" && audit.borders && (
@@ -664,15 +668,16 @@ export function Audit({ audit, onProposals, onBack }: Props) {
         )}
 
         {tab === "opacity" && audit.opacity && (
-          <Table head={["Preview", "Value", "Uses"]}>
+          <Table head={["Preview", "Value", "Tags", "Uses"]}>
             {audit.opacity.map((o) => (
               <tr key={o.value}>
-                <td className={styles.specimenCell}>
+                <td className={styles.chipPreviewCell}>
                   <span className={styles.checker}>
                     <span className={styles.opacityFill} style={{ opacity: o.value }} />
                   </span>
                 </td>
                 <td className={styles.valueCell}>{o.value.toFixed(2)}</td>
+                <TagsCell tags={o.tags} />
                 <td className={styles.usageCell}>{o.count.toLocaleString()}×</td>
               </tr>
             ))}
@@ -680,11 +685,14 @@ export function Audit({ audit, onProposals, onBack }: Props) {
         )}
 
         {tab === "zindex" && audit.zIndex && (
-          <Table head={["Preview", "Value", "Uses"]}>
+          <Table head={["Layer", "Value", "Tags", "Uses"]}>
             {audit.zIndex.map((z) => (
               <tr key={z.value}>
-                <td className={styles.specimenCell} />
+                <td className={styles.chipPreviewCell}>
+                  <ZIndexLadder rank={zIndexRank.map.get(z.value) ?? 0} total={zIndexRank.total} />
+                </td>
                 <td className={styles.valueCell}>{z.value}</td>
+                <TagsCell tags={z.tags} />
                 <td className={styles.usageCell}>{z.count.toLocaleString()}×</td>
               </tr>
             ))}
@@ -692,15 +700,16 @@ export function Audit({ audit, onProposals, onBack }: Props) {
         )}
 
         {tab === "blur" && audit.blur && (
-          <Table head={["Preview", "Value", "Uses"]}>
+          <Table head={["Preview", "Value", "Tags", "Uses"]}>
             {audit.blur.map((b) => (
               <tr key={b.value}>
-                <td className={styles.specimenCell}>
+                <td className={styles.chipPreviewCell}>
                   <span className={styles.blurStage}>
                     <span className={styles.blurGlass} style={{ backdropFilter: `blur(${b.value}px)`, WebkitBackdropFilter: `blur(${b.value}px)` }} />
                   </span>
                 </td>
                 <td className={styles.valueCell}>{b.value}px</td>
+                <TagsCell tags={b.tags} />
                 <td className={styles.usageCell}>{b.count.toLocaleString()}×</td>
               </tr>
             ))}
@@ -726,7 +735,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
             <Text role="label-sm" as="h3" className={styles.sectionLabel}>
               Durations
             </Text>
-            <Table head={["Preview", "Value", "Uses"]}>
+            <Table head={["Preview", "Duration", "Tags", "Uses"]}>
               {audit.motion.durations.map((d) => (
                 <tr key={d.value}>
                   <td className={styles.specimenCell}>
@@ -735,6 +744,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                     </span>
                   </td>
                   <td className={styles.valueCell}>{d.value}ms</td>
+                  <TagsCell tags={d.tags} />
                   <td className={styles.usageCell}>{d.count.toLocaleString()}×</td>
                 </tr>
               ))}
@@ -743,7 +753,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
             <Text role="label-sm" as="h3" className={styles.sectionLabel}>
               Easings
             </Text>
-            <Table head={["Preview", "Value", "Uses"]}>
+            <Table head={["Preview", "Easing", "Tags", "Uses"]}>
               {audit.motion.easings.map((e) => (
                 <tr key={e.value}>
                   <td className={styles.specimenCell}>
@@ -752,6 +762,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                     </span>
                   </td>
                   <td className={`${styles.valueCell} ${styles.valueCellTrunc}`}>{e.value}</td>
+                  <TagsCell tags={e.tags} />
                   <td className={styles.usageCell}>{e.count.toLocaleString()}×</td>
                 </tr>
               ))}
@@ -805,6 +816,37 @@ function Table({ head, children }: { head: ReactNode[]; children: ReactNode }) {
       </thead>
       <tbody>{children}</tbody>
     </table>
+  );
+}
+
+/** Stacking-order preview for z-index — offset layers, taller = higher in the stack. */
+function ZIndexLadder({ rank, total }: { rank: number; total: number }) {
+  const layers = Math.min(rank + 1, 5);
+  return (
+    <span className={styles.zLadder} title={`Layer ${rank + 1} of ${total}`}>
+      {Array.from({ length: layers }).map((_, i) => (
+        <span
+          key={i}
+          className={i === layers - 1 ? `${styles.zLayer} ${styles.zLayerTop}` : styles.zLayer}
+          style={{ left: `${i * 6}px`, bottom: `${i * 5}px` }}
+        />
+      ))}
+    </span>
+  );
+}
+
+/** A table cell of element-tag chips — the shared attribution column. */
+function TagsCell({ tags }: { tags?: { tag: string; count: number }[] }) {
+  return (
+    <td className={styles.tagsCell}>
+      <span className={styles.tagChips}>
+        {(tags ?? []).map((tg) => (
+          <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
+            {tg.tag}
+          </span>
+        ))}
+      </span>
+    </td>
   );
 }
 

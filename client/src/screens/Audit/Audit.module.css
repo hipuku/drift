@@ -864,6 +864,43 @@
   width: 22%;
 }
 
+/* Fixed-size chip previews (radius, shadow) only need room for the chip, so the
+   Value/Tags/Uses columns don't get squeezed to the right. */
+.chipPreviewCell {
+  width: 6rem;
+}
+
+/* Z-index stacking ladder — offset layers, the frontmost accented. */
+.zLadder {
+  position: relative;
+  display: inline-block;
+  width: 3rem;
+  height: 2.25rem;
+}
+
+.zLayer {
+  position: absolute;
+  width: 1.6rem;
+  height: 1.1rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  border: var(--border-width-default) solid var(--color-border-default);
+}
+
+.zLayerTop {
+  background: var(--color-primary-subtle);
+  border-color: var(--color-primary-default);
+}
+
+/* Gradient swatch preview (in the gradient table). */
+.gradientSwatch {
+  display: block;
+  width: 4rem;
+  height: 2rem;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 10%, transparent);
+}
+
 .valueCell {
   font-family: var(--font-mono);
   font-size: var(--text-12);
