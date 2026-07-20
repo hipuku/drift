@@ -400,6 +400,16 @@
   border-bottom-color: var(--color-error-default);
 }
 
+/* Greyed core-five card — the token category exists in the system's vocabulary
+   but isn't used on this site. */
+.empty {
+  opacity: 0.5;
+}
+
+.empty .verdictN {
+  color: var(--color-ink-tertiary);
+}
+
 /* ── Cards (visual tokens: colour, type family, shadow, gradient) ─────────── */
 .grid {
   display: grid;

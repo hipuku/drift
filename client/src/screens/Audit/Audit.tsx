@@ -27,7 +27,7 @@ const INDISTINGUISHABLE_DELTA_E = 2;
 /** ΔE above which the nearest colour is too far apart to be worth surfacing. */
 const NEAREST_DELTA_E = 5;
 
-type Verdict = "good" | "watch" | "review";
+type Verdict = "good" | "watch" | "review" | "neutral" | "empty";
 
 /** Which tab an overview verdict card links to. */
 const VERDICT_TAB: Record<string, string> = {
@@ -36,6 +36,12 @@ const VERDICT_TAB: Record<string, string> = {
   Spacing: "spacing",
   Radius: "radius",
   Shadows: "shadow",
+  Border: "border",
+  Opacity: "opacity",
+  "Z-index": "zindex",
+  Blur: "blur",
+  Breakpoints: "breakpoint",
+  Gradient: "gradient",
   Motion: "motion",
 };
 
@@ -290,11 +296,30 @@ export function Audit({ audit, onProposals, onBack }: Props) {
       chips: [s.shadows === 0 ? "none in use" : `${s.shadows} ${plural(s.shadows, "value")}`],
     },
   ];
+  // The core five are always shown; grey out any that isn't in use.
+  for (const v of verdicts) {
+    if (v.n === 0) {
+      v.verdict = "empty";
+      v.chips = ["none in use"];
+    }
+  }
+  // Extended tokens appear only when present, as neutral (informational) cards.
+  const pushExtended = (label: string, list: { length: number } | undefined, unit: string) => {
+    if (list && list.length) {
+      verdicts.push({ label, n: list.length, verdict: "neutral", chips: [`${list.length} ${plural(list.length, unit)}`] });
+    }
+  };
+  pushExtended("Border", audit.borders, "width");
+  pushExtended("Opacity", audit.opacity, "value");
+  pushExtended("Z-index", audit.zIndex, "value");
+  pushExtended("Blur", audit.blur, "value");
+  pushExtended("Breakpoints", audit.breakpoints, "value");
+  pushExtended("Gradient", audit.gradients, "value");
   if (audit.motion && (audit.motion.durations.length || audit.motion.easings.length)) {
     verdicts.push({
       label: "Motion",
       n: audit.motion.durations.length + audit.motion.easings.length,
-      verdict: "watch",
+      verdict: "neutral",
       chips: [
         `${audit.motion.durations.length} ${plural(audit.motion.durations.length, "duration")}`,
         `${audit.motion.easings.length} ${plural(audit.motion.easings.length, "easing")}`,
@@ -381,7 +406,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
               {verdicts.map((v) => {
                 const id = VERDICT_TAB[v.label];
                 const hasTab = id != null && tabs.some((t) => t.id === id);
-                const className = `${styles.verdict} ${styles[v.verdict]}${
+                const className = `${styles.verdict} ${styles[v.verdict] ?? ""}${
                   hasTab ? ` ${styles.verdictClickable}` : ""
                 }`;
                 const body = (
