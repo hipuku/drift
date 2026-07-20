@@ -262,8 +262,10 @@ const MOCK_SITE_AUDIT: SiteAudit = {
     { value: 40, count: 4, tags: [{ tag: "aside", count: 4 }] },
   ],
   breakpoints: [
-    { value: 480, count: 6 }, { value: 768, count: 14 },
-    { value: 1024, count: 18 }, { value: 1280, count: 9 },
+    { value: 480, count: 6, types: [{ type: "max", count: 6 }] },
+    { value: 768, count: 14, types: [{ type: "min", count: 10 }, { type: "max", count: 4 }] },
+    { value: 1024, count: 18, types: [{ type: "min", count: 18 }] },
+    { value: 1280, count: 9, types: [{ type: "min", count: 9 }] },
   ],
   gradients: [
     { value: "linear-gradient(180deg, #3b82f6, #2563eb)", count: 12, tags: [{ tag: "button", count: 12 }] },

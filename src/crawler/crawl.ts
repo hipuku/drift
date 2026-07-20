@@ -15,7 +15,7 @@
  */
 
 import { chromium, type BrowserContext, type Browser } from "playwright";
-import { extractLinks, extractRawElements } from "./extract.js";
+import { extractBreakpoints, extractLinks, extractRawElements } from "./extract.js";
 import { normaliseElement } from "./normalise.js";
 import type { CrawlOptions, CrawlResult, PageExtraction } from "./types.js";
 
@@ -61,7 +61,8 @@ async function visit(context: BrowserContext, url: string, timeout: number): Pro
     const title = await page.title();
     const elements = rawElements.map(normaliseElement);
     const hrefs = await page.evaluate(extractLinks);
-    return { extraction: { url, title, elementCount: elements.length, elements }, hrefs };
+    const breakpoints = await page.evaluate(extractBreakpoints);
+    return { extraction: { url, title, elementCount: elements.length, elements, breakpoints }, hrefs };
   } catch (err) {
     // A single failed page should not abort the crawl; skip and continue.
     process.stderr.write(`  ! skipped ${url}: ${err instanceof Error ? err.message : String(err)}\n`);

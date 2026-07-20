@@ -163,6 +163,19 @@ export interface MotionUsage {
   easings: StringTagUsage[];
 }
 
+export interface BreakpointTypeUsage {
+  type: "min" | "max";
+  count: number;
+}
+
+export interface BreakpointUsage {
+  /** Breakpoint width in pixels. */
+  value: number;
+  count: number;
+  /** min-width vs max-width split, most-used first. */
+  types?: BreakpointTypeUsage[];
+}
+
 // ── The whole audit ──────────────────────────────────────────────────────────
 
 export interface AuditSummary {
@@ -206,6 +219,7 @@ export interface SiteAudit {
   blur?: NumberTagUsage[];
   gradients?: StringTagUsage[];
   motion?: MotionUsage;
+  breakpoints?: BreakpointUsage[];
 }
 
 // ── Colour family classification ─────────────────────────────────────────────
@@ -563,6 +577,28 @@ function collectGradients(result: CrawlResult): StringTagUsage[] {
   return stringTagList(tally).sort((a, b) => b.count - a.count);
 }
 
+function collectBreakpoints(result: CrawlResult): BreakpointUsage[] {
+  const tally = new Map<number, { count: number; types: Map<"min" | "max", number> }>();
+  for (const page of result.pages) {
+    for (const bp of page.breakpoints ?? []) {
+      let t = tally.get(bp.value);
+      if (!t) {
+        t = { count: 0, types: new Map() };
+        tally.set(bp.value, t);
+      }
+      t.count += 1;
+      t.types.set(bp.type, (t.types.get(bp.type) ?? 0) + 1);
+    }
+  }
+  return [...tally.entries()]
+    .map(([value, t]) => ({
+      value,
+      count: t.count,
+      types: [...t.types.entries()].sort((a, b) => b[1] - a[1]).map(([type, count]) => ({ type, count })),
+    }))
+    .sort((a, b) => a.value - b.value);
+}
+
 function collectMotion(result: CrawlResult): MotionUsage {
   const durations = numberTagList(tallyTagged(result, (el) => el.styles.motionDurations ?? [])).sort(
     (a, b) => a.value - b.value,
@@ -677,6 +713,7 @@ export function collectAudit(result: CrawlResult): SiteAudit {
   const blur = collectBlur(result);
   const gradients = collectGradients(result);
   const motion = collectMotion(result);
+  const breakpoints = collectBreakpoints(result);
 
   const distinctColours = colourFamilies.reduce((n, f) => n + f.swatches.length, 0);
   // Redundancy = colours indistinguishable from another (tight ΔE), so a
@@ -711,5 +748,6 @@ export function collectAudit(result: CrawlResult): SiteAudit {
     blur,
     gradients,
     motion,
+    breakpoints,
   };
 }

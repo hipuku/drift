@@ -717,13 +717,25 @@ export function Audit({ audit, onProposals, onBack }: Props) {
         )}
 
         {tab === "breakpoint" && audit.breakpoints && (
-          <Table head={["Preview", "Value", "Uses"]}>
+          <Table head={["Preview", "Value", "Device", "Query", "Uses"]}>
             {audit.breakpoints.map((bp) => (
               <tr key={bp.value}>
-                <td className={styles.specimenCell}>
-                  <span className={styles.bpBar} style={{ width: `${Math.max((bp.value / maxBp) * 100, 4)}%` }} />
+                <td className={styles.spacingPreviewCell}>
+                  <span className={styles.bpScreen} style={{ width: `${Math.max((bp.value / maxBp) * 100, 10)}%` }} />
                 </td>
                 <td className={styles.valueCell}>{bp.value}px</td>
+                <td className={styles.valueCell}>
+                  <span className={styles.tagChip}>{deviceClass(bp.value)}</span>
+                </td>
+                <td className={styles.tagsCell}>
+                  <span className={styles.tagChips}>
+                    {(bp.types ?? []).map((t) => (
+                      <span key={t.type} className={styles.tagChip} title={`${t.count.toLocaleString()}×`}>
+                        {t.type}-width
+                      </span>
+                    ))}
+                  </span>
+                </td>
                 <td className={styles.usageCell}>{bp.count.toLocaleString()}×</td>
               </tr>
             ))}
@@ -827,6 +839,13 @@ function ZIndexLadder({ rank, total }: { rank: number; total: number }) {
       ))}
     </span>
   );
+}
+
+/** Rough device class for a breakpoint width. */
+function deviceClass(px: number): string {
+  if (px < 640) return "mobile";
+  if (px < 1024) return "tablet";
+  return "desktop";
 }
 
 /** A table cell of element-tag chips — the shared attribution column. */

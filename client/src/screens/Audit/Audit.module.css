@@ -1011,6 +1011,18 @@
   min-width: 4px;
 }
 
+/* Breakpoint preview — a viewport/screen outline whose width scales with the
+   breakpoint, so the row reads as a device size. */
+.bpScreen {
+  display: block;
+  height: 1.6rem;
+  min-width: 1rem;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-border-strong);
+  background: var(--color-surface-raised);
+  box-shadow: inset 0 0.4rem 0 -0.3rem var(--color-border-default);
+}
+
 .radiusChip {
   display: block;
   width: 2.5rem;

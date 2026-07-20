@@ -117,11 +117,19 @@ export interface ExtractedElement {
   styles: ElementStyle;
 }
 
+/** A min/max-width condition pulled from an @media rule. */
+export interface MediaBreakpoint {
+  value: number;
+  type: "min" | "max";
+}
+
 export interface PageExtraction {
   url: string;
   title: string;
   elementCount: number;
   elements: ExtractedElement[];
+  /** Breakpoints from @media rules in accessible stylesheets. */
+  breakpoints?: MediaBreakpoint[];
 }
 
 export interface CrawlResult {

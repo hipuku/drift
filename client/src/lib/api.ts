@@ -227,6 +227,13 @@ export interface AuditShadowUsage {
   tags?: AuditTagUsage[];
 }
 
+export interface AuditBreakpointUsage {
+  value: number;
+  count: number;
+  /** min-width vs max-width split, most-used first. */
+  types?: { type: "min" | "max"; count: number }[];
+}
+
 export type AuditBorderSide = "top" | "right" | "bottom" | "left";
 
 export interface AuditBorderUsage {
@@ -303,7 +310,7 @@ export interface SiteAudit {
   opacity?: AuditNumberTagUsage[]; // 0–1
   zIndex?: AuditNumberTagUsage[]; // stacking values
   blur?: AuditNumberTagUsage[]; // blur radii, px
-  breakpoints?: AuditValueUsage[]; // media-query widths, px
+  breakpoints?: AuditBreakpointUsage[]; // media-query widths, px
   gradients?: AuditStringTagUsage[]; // raw gradient declarations
   motion?: AuditMotion;
 }

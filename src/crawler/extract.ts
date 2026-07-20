@@ -8,7 +8,7 @@
  * Node-side, in normalise.ts.
  */
 
-import type { RawElement } from "./types.js";
+import type { MediaBreakpoint, RawElement } from "./types.js";
 
 /** Runs in the browser. Returns untouched computed-style strings per element. */
 export function extractRawElements(): RawElement[] {
@@ -106,6 +106,40 @@ export function extractRawElements(): RawElement[] {
 export function extractLinks(): string[] {
   const anchors = Array.from(document.querySelectorAll("a[href]"));
   return anchors.map((a) => (a as HTMLAnchorElement).href).filter(Boolean);
+}
+
+/**
+ * Runs in the browser. Pulls min/max-width breakpoints from every accessible
+ * @media rule. Cross-origin stylesheets throw on `.cssRules` and are skipped.
+ */
+export function extractBreakpoints(): MediaBreakpoint[] {
+  const out: MediaBreakpoint[] = [];
+  const re = /(min|max)-width\s*:\s*([\d.]+)(px|r?em)/g;
+  for (const sheet of Array.from(document.styleSheets)) {
+    let stack: CSSRule[];
+    try {
+      stack = sheet.cssRules ? Array.from(sheet.cssRules) : [];
+    } catch {
+      continue; // cross-origin — not readable
+    }
+    while (stack.length) {
+      const rule = stack.pop();
+      if (!rule) continue;
+      if (rule instanceof CSSMediaRule) {
+        const cond = rule.conditionText || rule.media.mediaText || "";
+        re.lastIndex = 0;
+        let m: RegExpExecArray | null;
+        while ((m = re.exec(cond)) !== null) {
+          const raw = parseFloat(m[2]!);
+          const px = m[3] === "px" ? raw : raw * 16;
+          if (Number.isFinite(px) && px > 0) out.push({ type: m[1] as "min" | "max", value: Math.round(px) });
+        }
+      }
+      const grouping = rule as CSSGroupingRule;
+      if (grouping.cssRules) for (const r of Array.from(grouping.cssRules)) stack.push(r);
+    }
+  }
+  return out;
 }
 
 /** Runs in the browser. Returns href + link text for every anchor (for discovery). */
