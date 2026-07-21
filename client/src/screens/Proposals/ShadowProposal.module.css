@@ -95,6 +95,7 @@
   width: 4.5rem;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-1);
 }
 
@@ -130,27 +131,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.snap,
-.fold {
-  align-self: flex-start;
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
-  font-weight: var(--weight-semibold);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--space-1);
-}
-
-.snap {
-  color: var(--color-warning-on-subtle);
-  background: var(--color-warning-subtle);
-}
-
-.fold {
-  color: var(--color-ink-tertiary);
-  background: var(--color-surface-sunken);
-  font-weight: var(--weight-medium);
 }
 
 @media (max-width: 34rem) {

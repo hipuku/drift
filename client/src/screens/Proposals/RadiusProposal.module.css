@@ -121,27 +121,6 @@
   border-color: var(--color-warning-on-subtle);
 }
 
-.snap,
-.fold {
-  align-self: center;
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
-  font-weight: var(--weight-semibold);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--space-1);
-}
-
-.snap {
-  color: var(--color-warning-on-subtle);
-  background: var(--color-warning-subtle);
-}
-
-.fold {
-  color: var(--color-ink-tertiary);
-  background: var(--color-surface-sunken);
-  font-weight: var(--weight-medium);
-}
-
 @media (max-width: 34rem) {
   .rowMeta {
     width: 5rem;

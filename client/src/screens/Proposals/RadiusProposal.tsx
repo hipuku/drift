@@ -10,6 +10,7 @@
 
 import { useMemo, useState } from "react";
 import { Text } from "../../components/Text/Text.js";
+import { Badge } from "../../components/Badge/Badge.js";
 import { ExportPanel } from "../../components/ExportPanel/ExportPanel.js";
 import type { AuditRadiusUsage } from "../../lib/api.js";
 import { exportTokens, type TokenEntry, type TokenGroup } from "../../lib/exportTokens.js";
@@ -140,7 +141,9 @@ export function RadiusProposal({ radius, onBack }: Props) {
               aria-hidden="true"
             />
             {row.note && (
-              <span className={row.off ? styles.snap : styles.fold}>{row.note}</span>
+              <Badge variant={row.off ? "warning" : "info"} mono={row.off}>
+                {row.note}
+              </Badge>
             )}
           </div>
         ))}

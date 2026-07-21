@@ -10,6 +10,7 @@
 
 import { useMemo, useState } from "react";
 import { Text } from "../../components/Text/Text.js";
+import { Badge } from "../../components/Badge/Badge.js";
 import { ExportPanel } from "../../components/ExportPanel/ExportPanel.js";
 import {
   RATIOS,
@@ -139,7 +140,7 @@ export function TypeScaleProposal({ inventory, onBack }: Props) {
               <Text role="mono" className={styles.rowLabel}>
                 {row.label}
               </Text>
-              {row.off && <span className={styles.offBadge}>off-scale</span>}
+              {row.off && <Badge variant="warning">off-scale</Badge>}
             </div>
             <div
               className={styles.specimen}

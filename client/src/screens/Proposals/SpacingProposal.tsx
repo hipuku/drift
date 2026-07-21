@@ -10,6 +10,7 @@
 
 import { useMemo, useState } from "react";
 import { Text } from "../../components/Text/Text.js";
+import { Badge } from "../../components/Badge/Badge.js";
 import { ExportPanel } from "../../components/ExportPanel/ExportPanel.js";
 import type { AuditSpacingUsage } from "../../lib/api.js";
 import { exportTokens, type TokenEntry, type TokenGroup } from "../../lib/exportTokens.js";
@@ -170,7 +171,11 @@ export function SpacingProposal({ spacing, onBack }: Props) {
                 className={row.off ? `${styles.bar} ${styles.barOff}` : styles.bar}
                 style={{ width: `${Math.min(100, (row.px / railMax) * 100)}%` }}
               />
-              {row.off && <span className={styles.snap}>{row.snapTo}</span>}
+              {row.off && (
+                <Badge variant="warning" mono>
+                  {row.snapTo}
+                </Badge>
+              )}
             </div>
           </div>
         ))}

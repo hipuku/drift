@@ -107,7 +107,8 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
   const clear = () => setSelected(new Set());
 
   // Add a page discovery missed (deep, unlinked, or not in the sitemap). Accepts
-  // a path ("/about") or a full same-origin URL; resolves against the site origin.
+  // only a path or slug ("/about", "pricing") — the origin is already fixed by
+  // the site URL above, so a full URL or domain is rejected as ambiguous.
   const addPage = () => {
     const raw = addUrl.trim();
     if (!raw) return;
@@ -118,15 +119,18 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
       setAddError("Enter a URL for the site first.");
       return;
     }
-    let full: URL;
-    try {
-      full = /^https?:\/\//i.test(raw) ? new URL(raw) : new URL(raw.startsWith("/") ? raw : `/${raw}`, origin);
-    } catch {
-      setAddError("That doesn’t look like a valid page.");
+    // Reject anything that carries its own origin — scheme, protocol-relative,
+    // or a leading domain segment ("example.com/about").
+    const firstSeg = raw.replace(/^\//, "").split(/[/?#]/)[0] ?? "";
+    if (/^[a-z][a-z0-9+.-]*:\/\//i.test(raw) || raw.startsWith("//") || firstSeg.includes(".")) {
+      setAddError("Enter just the path, like /pricing — not the full URL.");
       return;
     }
-    if (full.origin !== origin) {
-      setAddError(`Only pages on ${new URL(origin).host} can be added.`);
+    let full: URL;
+    try {
+      full = new URL(raw.startsWith("/") ? raw : `/${raw}`, origin);
+    } catch {
+      setAddError("That doesn’t look like a valid page.");
       return;
     }
     const path = `${full.pathname}${full.search}` || "/";
@@ -312,7 +316,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
               <input
                 type="text"
                 className={styles.addInput}
-                placeholder="Not listed? Add a page by URL or /path…"
+                placeholder="Not listed? Add a page by /path…"
                 value={addUrl}
                 onChange={(e) => {
                   setAddUrl(e.target.value);
@@ -321,7 +325,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                aria-label="Add a page by URL"
+                aria-label="Add a page by path"
               />
               <button
                 type="submit"

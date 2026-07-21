@@ -11,6 +11,7 @@
 
 import { useMemo, useState } from "react";
 import { Text } from "../../components/Text/Text.js";
+import { Badge } from "../../components/Badge/Badge.js";
 import { ExportPanel } from "../../components/ExportPanel/ExportPanel.js";
 import type { AuditShadowUsage } from "../../lib/api.js";
 import { exportStringTokens, type StringTokenEntry, type StringTokenGroup } from "../../lib/exportTokens.js";
@@ -129,7 +130,9 @@ export function ShadowProposal({ shadow, onBack }: Props) {
                 {row.label}
               </Text>
               {row.note && (
-                <span className={row.off ? styles.snap : styles.fold}>{row.note}</span>
+                <Badge variant={row.off ? "warning" : "info"} mono={row.off}>
+                  {row.note}
+                </Badge>
               )}
             </div>
             <div className={styles.canvas}>

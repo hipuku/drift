@@ -193,17 +193,6 @@
   );
 }
 
-.snap {
-  flex-shrink: 0;
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
-  font-weight: var(--weight-semibold);
-  color: var(--color-warning-on-subtle);
-  background: var(--color-warning-subtle);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--space-1);
-}
-
 @media (max-width: 34rem) {
   .rowMeta {
     width: 5rem;

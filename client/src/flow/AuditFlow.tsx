@@ -84,18 +84,35 @@ export function AuditFlow() {
     setPhase("error");
   }, []);
 
+  // Forward navigation pushes a history entry so the browser Back button walks
+  // the flow (proposal → hub → audit) instead of leaving the app. Back buttons
+  // call history.back(); popstate is the single place that reacts to a pop.
+  const go = useCallback((next: Phase) => {
+    setPhase(next);
+    window.history.pushState({ phase: next }, "");
+  }, []);
+
+  useEffect(() => {
+    const onPop = (e: PopStateEvent) => {
+      const state = e.state as { phase?: Phase } | null;
+      setPhase(state?.phase ?? "configure");
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
   // On crawl completion, fetch the deterministic audit and land on it.
   const loadAudit = useCallback(
     async (id: string) => {
       setPhase("loading");
       try {
         setAudit(await getAudit(id));
-        setPhase("audit");
+        go("audit");
       } catch (err) {
         fail(err instanceof Error ? err.message : "Could not read the design system.");
       }
     },
-    [fail],
+    [fail, go],
   );
 
   useEffect(() => {
@@ -138,11 +155,13 @@ export function AuditFlow() {
       ]);
       setTypeInventory(type);
       setColourInventory(colour);
-      setPhase("proposals");
+      go("proposals");
     } catch (err) {
       fail(err instanceof Error ? err.message : "Could not load the proposals.");
     }
-  }, [jobId, typeInventory, colourInventory, fail]);
+  }, [jobId, typeInventory, colourInventory, fail, go]);
+
+  const back = useCallback(() => window.history.back(), []);
 
   const reset = useCallback(() => {
     loadedRef.current = false;
@@ -172,34 +191,34 @@ export function AuditFlow() {
     case "proposals":
       return (
         <ProposalsHub
-          onSelect={(kind) => setPhase(PROPOSAL_PHASE[kind])}
-          onBack={() => setPhase("audit")}
+          onSelect={(kind) => go(PROPOSAL_PHASE[kind])}
+          onBack={back}
           audit={audit ?? undefined}
         />
       );
     case "proposals-type":
       return typeInventory ? (
-        <TypeScaleProposal inventory={typeInventory} onBack={() => setPhase("proposals")} />
+        <TypeScaleProposal inventory={typeInventory} onBack={back} />
       ) : null;
     case "proposals-colour":
       return colourInventory ? (
-        <ColourProposal inventory={colourInventory} onBack={() => setPhase("proposals")} />
+        <ColourProposal inventory={colourInventory} onBack={back} />
       ) : null;
     case "proposals-spacing":
       return audit ? (
-        <SpacingProposal spacing={audit.spacing} onBack={() => setPhase("proposals")} />
+        <SpacingProposal spacing={audit.spacing} onBack={back} />
       ) : null;
     case "proposals-radius":
       return audit ? (
-        <RadiusProposal radius={audit.radius} onBack={() => setPhase("proposals")} />
+        <RadiusProposal radius={audit.radius} onBack={back} />
       ) : null;
     case "proposals-shadow":
       return audit ? (
-        <ShadowProposal shadow={audit.shadow} onBack={() => setPhase("proposals")} />
+        <ShadowProposal shadow={audit.shadow} onBack={back} />
       ) : null;
     case "proposals-zindex":
       return audit ? (
-        <ZIndexProposal zIndex={audit.zIndex ?? []} onBack={() => setPhase("proposals")} />
+        <ZIndexProposal zIndex={audit.zIndex ?? []} onBack={back} />
       ) : null;
     case "error":
       return <Failed message={error} onRetry={reset} />;

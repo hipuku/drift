@@ -10,6 +10,7 @@
 
 import { useMemo, useState } from "react";
 import { Text } from "../../components/Text/Text.js";
+import { Badge } from "../../components/Badge/Badge.js";
 import { ExportPanel } from "../../components/ExportPanel/ExportPanel.js";
 import type { AuditNumberTagUsage } from "../../lib/api.js";
 import { exportTokens, type TokenEntry, type TokenGroup } from "../../lib/exportTokens.js";
@@ -116,7 +117,11 @@ export function ZIndexProposal({ zIndex, onBack }: Props) {
                   className={row.inflated ? `${styles.bar} ${styles.barOff}` : styles.bar}
                   style={{ width: `${((row.rank + 1) / total) * 100}%` }}
                 />
-                {row.note && <span className={row.inflated ? styles.snap : styles.map}>{row.note}</span>}
+                {row.note && (
+                  <Badge variant={row.inflated ? "warning" : "info"} mono>
+                    {row.note}
+                  </Badge>
+                )}
               </div>
             </div>
           ))}

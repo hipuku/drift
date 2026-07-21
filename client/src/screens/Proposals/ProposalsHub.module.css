@@ -77,17 +77,6 @@
   gap: var(--space-3);
 }
 
-.signal {
-  flex-shrink: 0;
-  font-size: var(--text-12);
-  font-weight: var(--weight-semibold);
-  color: var(--color-warning-on-subtle);
-  background: var(--color-warning-subtle);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--space-2);
-  line-height: 1.6;
-}
-
 .signalClean {
   flex-shrink: 0;
   font-size: var(--text-12);

@@ -8,6 +8,7 @@
  */
 
 import { Text } from "../../components/Text/Text.js";
+import { Badge } from "../../components/Badge/Badge.js";
 import type { SiteAudit } from "../../lib/api.js";
 import { buildElevationLadder } from "../../lib/shadowScale.js";
 import { assignLayers } from "../../lib/zIndexScale.js";
@@ -80,10 +81,11 @@ const META: CardMeta[] = [
 ];
 
 export function ProposalsHub({ onSelect, onBack, audit }: Props) {
+  // Keep the audit's token order — the hub should read the same way the report does.
   const cards = META.map((m) => {
     const count = audit ? m.count(audit) : 0;
     return { ...m, count, label: `${count} ${m.noun[count === 1 ? 0 : 1]}` };
-  }).sort((a, b) => b.count - a.count);
+  });
 
   return (
     <main className={styles.page}>
@@ -97,7 +99,7 @@ export function ProposalsHub({ onSelect, onBack, audit }: Props) {
           Proposals
         </Text>
         <Text role="body" as="p" className={styles.intro}>
-          Your tokens, projected onto known-good structures — worst drift first. Preview, apply, and export.
+          Your tokens, projected onto known-good structures. Preview, apply, and export.
         </Text>
       </header>
 
@@ -110,7 +112,7 @@ export function ProposalsHub({ onSelect, onBack, audit }: Props) {
               </Text>
               {audit &&
                 (card.count > 0 ? (
-                  <span className={styles.signal}>{card.label}</span>
+                  <Badge variant="warning">{card.label}</Badge>
                 ) : (
                   <span className={styles.signalClean}>no drift</span>
                 ))}

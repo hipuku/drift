@@ -1,16 +1,19 @@
 /**
  * Colour proposal (Layer 2, "what it could be") — consolidation.
  *
- * Shows the site's colours grouped into perceptual clusters: a representative
- * per cluster plus the near-identical members folded into it. The proposal is
- * the consolidation itself — N distinct colours down to M tokens — and the
- * export is the clean palette of representatives. Deterministic.
+ * Shows the site's colours grouped into perceptual clusters (CIEDE2000 ΔE),
+ * sorted by hue so the palette reads as a palette. Each cluster lists its
+ * representative plus every member's hex, so a consolidation can be judged, not
+ * just accepted. The export is the clean palette of representatives.
  */
 
+import { useMemo } from "react";
 import { Text } from "../../components/Text/Text.js";
+import { Badge } from "../../components/Badge/Badge.js";
 import { ExportPanel } from "../../components/ExportPanel/ExportPanel.js";
 import type { ColourInventory } from "../../lib/api.js";
 import { exportPalette } from "../../lib/palette.js";
+import { hueOf } from "../../lib/hue.js";
 import styles from "./ColourProposal.module.css";
 
 interface Props {
@@ -21,6 +24,12 @@ interface Props {
 export function ColourProposal({ inventory, onBack }: Props) {
   const representatives = inventory.clusters.map((c) => c.representative);
   const reducible = inventory.distinctColours - inventory.clusterCount;
+
+  // Sort clusters by hue (greys first) so the palette reads perceptually.
+  const clusters = useMemo(
+    () => inventory.clusters.slice().sort((a, b) => hueOf(a.representative) - hueOf(b.representative)),
+    [inventory.clusters],
+  );
 
   return (
     <main className={styles.page}>
@@ -42,7 +51,7 @@ export function ColourProposal({ inventory, onBack }: Props) {
       </header>
 
       <div className={styles.clusters}>
-        {inventory.clusters.map((c) => (
+        {clusters.map((c) => (
           <div key={c.representative} className={styles.cluster}>
             <div className={styles.swatch} style={{ background: c.representative }} aria-hidden="true" />
             <div className={styles.body}>
@@ -50,7 +59,7 @@ export function ColourProposal({ inventory, onBack }: Props) {
                 <Text role="mono" className={styles.hex}>
                   {c.representative}
                 </Text>
-                {c.size > 1 && <span className={styles.consolidate}>consolidate {c.size} → 1</span>}
+                {c.size > 1 && <Badge variant="info">consolidate {c.size} → 1</Badge>}
               </div>
               <Text role="label-sm" className={styles.usage}>
                 used {c.totalUsage}× · {c.pages.length} page{c.pages.length === 1 ? "" : "s"}
@@ -58,13 +67,10 @@ export function ColourProposal({ inventory, onBack }: Props) {
               {c.size > 1 && (
                 <div className={styles.members}>
                   {c.members.map((m) => (
-                    <span
-                      key={m}
-                      className={styles.chip}
-                      style={{ background: m }}
-                      title={m}
-                      aria-label={m}
-                    />
+                    <span key={m} className={styles.member}>
+                      <span className={styles.chip} style={{ background: m }} aria-hidden="true" />
+                      <span className={styles.memberHex}>{m}</span>
+                    </span>
                   ))}
                 </div>
               )}

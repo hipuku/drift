@@ -1,0 +1,40 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Neutral — a plain fact (usage count, attribute). Matches the audit token pill. */
+.neutral {
+  background: color-mix(in oklab, var(--color-ink-primary) 8%, transparent);
+  color: var(--color-ink-secondary);
+}
+
+/* Info — a proposed change (consolidate 3 → 1, snaps-to). */
+.info {
+  background: var(--color-primary-subtle);
+  color: var(--color-primary-on-subtle);
+}
+
+/* Warning — drift that's off-structure (off-grid, off-scale, off-ramp). */
+.warning {
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-on-subtle);
+}
+
+/* Danger — genuine redundancy (near-duplicate). */
+.danger {
+  background: color-mix(in oklab, var(--color-error-default) 16%, transparent);
+  color: var(--drift-alert-ink, var(--color-error-default));
+}
