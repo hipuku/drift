@@ -9,25 +9,24 @@
 
 import { Text } from "../../components/Text/Text.js";
 import type { SiteAudit } from "../../lib/api.js";
+import { buildElevationLadder } from "../../lib/shadowScale.js";
 import styles from "./ProposalsHub.module.css";
 
-export type ProposalKind = "type" | "colour" | "spacing" | "radius";
-
-type Summary = SiteAudit["summary"];
+export type ProposalKind = "type" | "colour" | "spacing" | "radius" | "shadow";
 
 interface Props {
   onSelect: (kind: ProposalKind) => void;
   onBack?: () => void;
-  /** The audit summary, for per-token drift signals. Omitted in some harness views. */
-  summary?: Summary;
+  /** The full audit, for per-token drift signals. Omitted in some harness views. */
+  audit?: SiteAudit;
 }
 
 interface CardMeta {
   kind: ProposalKind;
   title: string;
   blurb: string;
-  /** Drift count and its noun, derived from the summary. */
-  signal: (s: Summary) => { count: number; noun: string };
+  /** Drift count and its noun, derived from the audit. */
+  signal: (a: SiteAudit) => { count: number; noun: string };
 }
 
 const META: CardMeta[] = [
@@ -35,25 +34,35 @@ const META: CardMeta[] = [
     kind: "colour",
     title: "Colour",
     blurb: "Consolidate near-identical colours to one token each.",
-    signal: (s) => ({ count: s.colourNearDuplicates ?? 0, noun: "near-duplicate" }),
+    signal: (a) => ({ count: a.summary.colourNearDuplicates ?? 0, noun: "near-duplicate" }),
   },
   {
     kind: "type",
     title: "Type scale",
     blurb: "Project your base size onto a modular scale, in your font.",
-    signal: (s) => ({ count: s.typeOffScale ?? 0, noun: "size off-scale" }),
+    signal: (a) => ({ count: a.summary.typeOffScale ?? 0, noun: "size off-scale" }),
   },
   {
     kind: "spacing",
     title: "Spacing",
     blurb: "Snap ad-hoc spacing to a clean base grid.",
-    signal: (s) => ({ count: s.spacingOffGrid ?? 0, noun: "value off-grid" }),
+    signal: (a) => ({ count: a.summary.spacingOffGrid ?? 0, noun: "value off-grid" }),
   },
   {
     kind: "radius",
     title: "Radius",
     blurb: "Fit corner radii to a canonical named ramp.",
-    signal: (s) => ({ count: s.radiusNearDuplicates ?? 0, noun: "near-duplicate" }),
+    signal: (a) => ({ count: a.summary.radiusNearDuplicates ?? 0, noun: "near-duplicate" }),
+  },
+  {
+    kind: "shadow",
+    title: "Shadow",
+    blurb: "Order ad-hoc shadows into a named elevation ladder.",
+    // Drift = shadows that fold into a level they don't head.
+    signal: (a) => ({
+      count: Math.max(0, a.shadow.length - buildElevationLadder(a.shadow).length),
+      noun: "shadow to merge",
+    }),
   },
 ];
 
@@ -64,9 +73,9 @@ const plural = (n: number, noun: string): string => {
   return [`${head}s`, ...rest].join(" ");
 };
 
-export function ProposalsHub({ onSelect, onBack, summary }: Props) {
+export function ProposalsHub({ onSelect, onBack, audit }: Props) {
   const cards = META.map((m) => {
-    const sig = summary ? m.signal(summary) : { count: 0, noun: "" };
+    const sig = audit ? m.signal(audit) : { count: 0, noun: "" };
     return { ...m, count: sig.count, noun: sig.noun };
   }).sort((a, b) => b.count - a.count);
 
@@ -93,7 +102,7 @@ export function ProposalsHub({ onSelect, onBack, summary }: Props) {
               <Text role="heading-sm" as="span">
                 {card.title}
               </Text>
-              {summary &&
+              {audit &&
                 (card.count > 0 ? (
                   <span className={styles.signal}>
                     {card.count} {plural(card.count, card.noun)}

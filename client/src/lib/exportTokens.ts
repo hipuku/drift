@@ -53,3 +53,37 @@ export function exportTokens(group: TokenGroup, entries: TokenEntry[], format: E
   if (format === "dtcg") return toDtcg(group, entries);
   return toCss(group, entries);
 }
+
+// ── String-valued tokens (shadow, gradient) ──────────────────────────────────
+
+export interface StringTokenGroup {
+  /** CSS var prefix and DTCG group key, e.g. "shadow". */
+  group: string;
+  /** W3C DTCG $type, e.g. "shadow". */
+  dtcgType: string;
+  /** Tailwind theme key, e.g. "boxShadow". */
+  tailwindKey: string;
+}
+
+export interface StringTokenEntry {
+  name: string;
+  value: string;
+}
+
+export function exportStringTokens(
+  group: StringTokenGroup,
+  entries: StringTokenEntry[],
+  format: ExportFormat,
+): string {
+  if (format === "tailwind") {
+    const rows = entries.map((e) => `      "${e.name}": "${e.value}"`);
+    return `export default {\n  theme: {\n    ${group.tailwindKey}: {\n${rows.join(",\n")},\n    },\n  },\n};`;
+  }
+  if (format === "dtcg") {
+    const tokens: Record<string, { $type: string; $value: string }> = {};
+    for (const e of entries) tokens[e.name] = { $type: group.dtcgType, $value: e.value };
+    return JSON.stringify({ [group.group]: tokens }, null, 2);
+  }
+  const lines = entries.map((e) => `  --${group.group}-${e.name}: ${e.value};`);
+  return `:root {\n${lines.join("\n")}\n}`;
+}

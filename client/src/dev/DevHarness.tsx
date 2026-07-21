@@ -12,6 +12,7 @@ import { Crawling } from "../screens/Crawling/Crawling.js";
 import { ColourProposal } from "../screens/Proposals/ColourProposal.js";
 import { ProposalsHub } from "../screens/Proposals/ProposalsHub.js";
 import { RadiusProposal } from "../screens/Proposals/RadiusProposal.js";
+import { ShadowProposal } from "../screens/Proposals/ShadowProposal.js";
 import { SpacingProposal } from "../screens/Proposals/SpacingProposal.js";
 import { TypeScaleProposal } from "../screens/Proposals/TypeScaleProposal.js";
 import { Report } from "../screens/Report/Report.js";
@@ -302,7 +303,7 @@ const STATES: HarnessState[] = [
   {
     id: "proposals",
     label: "Proposals · Hub",
-    render: () => <ProposalsHub onSelect={() => {}} summary={MOCK_SITE_AUDIT.summary} />,
+    render: () => <ProposalsHub onSelect={() => {}} audit={MOCK_SITE_AUDIT} />,
   },
   {
     id: "type-scale",
@@ -323,6 +324,11 @@ const STATES: HarnessState[] = [
     id: "radius",
     label: "Proposal · Radius",
     render: (key) => <RadiusProposal key={key} radius={MOCK_SITE_AUDIT.radius} />,
+  },
+  {
+    id: "shadow",
+    label: "Proposal · Shadow",
+    render: (key) => <ShadowProposal key={key} shadow={MOCK_SITE_AUDIT.shadow} />,
   },
   {
     id: "crawling",

@@ -1,0 +1,160 @@
+.page {
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--space-12) var(--space-6) var(--space-20);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.head {
+  margin-bottom: var(--space-2);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-ink-secondary);
+  font: inherit;
+  font-size: var(--text-sm, 0.875rem);
+  cursor: pointer;
+}
+
+.back:hover {
+  color: var(--color-ink-primary);
+}
+
+.intro {
+  color: var(--color-ink-secondary);
+  margin-top: var(--space-3);
+}
+
+/* ── Apply toggle ────────────────────────────────────────────────────────── */
+.applyRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+}
+
+.toggle {
+  display: inline-flex;
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-md);
+  padding: 2px;
+}
+
+.tab {
+  border: none;
+  background: transparent;
+  padding: var(--space-2) var(--space-4);
+  border-radius: calc(var(--radius-md) - 2px);
+  font-family: var(--font-sans);
+  font-size: var(--type-label-sm-size, 0.85rem);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink-secondary);
+  cursor: pointer;
+}
+
+.tabOn {
+  background: var(--color-surface-default);
+  color: var(--color-ink-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.applyHint {
+  color: var(--color-ink-tertiary);
+}
+
+/* ── Elevation ladder ────────────────────────────────────────────────────── */
+.ladder {
+  margin-top: var(--space-6);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.rowMeta {
+  flex-shrink: 0;
+  width: 4.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.rowLabel {
+  color: var(--color-ink-primary);
+}
+
+/* Fixed light canvas so dark shadows read in either theme. */
+.canvas {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.5rem;
+  height: 3.5rem;
+  background: #eef0f3;
+  border-radius: var(--radius-md);
+}
+
+.tile {
+  width: 3rem;
+  height: 2rem;
+  background: #ffffff;
+  border-radius: var(--radius-sm);
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  color: var(--color-ink-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.snap,
+.fold {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-1);
+}
+
+.snap {
+  color: var(--color-warning-on-subtle);
+  background: var(--color-warning-subtle);
+}
+
+.fold {
+  color: var(--color-ink-tertiary);
+  background: var(--color-surface-sunken);
+  font-weight: var(--weight-medium);
+}
+
+@media (max-width: 34rem) {
+  .value {
+    display: none;
+  }
+}
