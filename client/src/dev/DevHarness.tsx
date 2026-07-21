@@ -11,6 +11,7 @@ import { Configure } from "../screens/Configure/Configure.js";
 import { Crawling } from "../screens/Crawling/Crawling.js";
 import { ColourProposal } from "../screens/Proposals/ColourProposal.js";
 import { ProposalsHub } from "../screens/Proposals/ProposalsHub.js";
+import { RadiusProposal } from "../screens/Proposals/RadiusProposal.js";
 import { SpacingProposal } from "../screens/Proposals/SpacingProposal.js";
 import { TypeScaleProposal } from "../screens/Proposals/TypeScaleProposal.js";
 import { Report } from "../screens/Report/Report.js";
@@ -103,6 +104,7 @@ const MOCK_SITE_AUDIT: SiteAudit = {
     spacings: 11,
     spacingOffGrid: 3,
     radii: 4,
+    radiusNearDuplicates: 1,
     shadows: 2,
     borders: 4,
     opacities: 5,
@@ -316,6 +318,11 @@ const STATES: HarnessState[] = [
     id: "spacing",
     label: "Proposal · Spacing",
     render: (key) => <SpacingProposal key={key} spacing={MOCK_SITE_AUDIT.spacing} />,
+  },
+  {
+    id: "radius",
+    label: "Proposal · Radius",
+    render: (key) => <RadiusProposal key={key} radius={MOCK_SITE_AUDIT.radius} />,
   },
   {
     id: "crawling",

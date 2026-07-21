@@ -11,7 +11,7 @@ import { Text } from "../../components/Text/Text.js";
 import type { SiteAudit } from "../../lib/api.js";
 import styles from "./ProposalsHub.module.css";
 
-export type ProposalKind = "type" | "colour" | "spacing";
+export type ProposalKind = "type" | "colour" | "spacing" | "radius";
 
 type Summary = SiteAudit["summary"];
 
@@ -48,6 +48,12 @@ const META: CardMeta[] = [
     title: "Spacing",
     blurb: "Snap ad-hoc spacing to a clean base grid.",
     signal: (s) => ({ count: s.spacingOffGrid ?? 0, noun: "value off-grid" }),
+  },
+  {
+    kind: "radius",
+    title: "Radius",
+    blurb: "Fit corner radii to a canonical named ramp.",
+    signal: (s) => ({ count: s.radiusNearDuplicates ?? 0, noun: "near-duplicate" }),
   },
 ];
 

@@ -26,6 +26,7 @@ import { Configure } from "../screens/Configure/Configure.js";
 import { Crawling } from "../screens/Crawling/Crawling.js";
 import { ColourProposal } from "../screens/Proposals/ColourProposal.js";
 import { ProposalsHub, type ProposalKind } from "../screens/Proposals/ProposalsHub.js";
+import { RadiusProposal } from "../screens/Proposals/RadiusProposal.js";
 import { SpacingProposal } from "../screens/Proposals/SpacingProposal.js";
 import { TypeScaleProposal } from "../screens/Proposals/TypeScaleProposal.js";
 import { Failed, Thinking } from "../screens/Status/Status.js";
@@ -39,12 +40,14 @@ type Phase =
   | "proposals-type"
   | "proposals-colour"
   | "proposals-spacing"
+  | "proposals-radius"
   | "error";
 
 const PROPOSAL_PHASE: Record<ProposalKind, Phase> = {
   type: "proposals-type",
   colour: "proposals-colour",
   spacing: "proposals-spacing",
+  radius: "proposals-radius",
 };
 
 function hostOf(raw: string): string {
@@ -179,6 +182,10 @@ export function AuditFlow() {
     case "proposals-spacing":
       return audit ? (
         <SpacingProposal spacing={audit.spacing} onBack={() => setPhase("proposals")} />
+      ) : null;
+    case "proposals-radius":
+      return audit ? (
+        <RadiusProposal radius={audit.radius} onBack={() => setPhase("proposals")} />
       ) : null;
     case "error":
       return <Failed message={error} onRetry={reset} />;
