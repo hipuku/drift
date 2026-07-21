@@ -7,7 +7,7 @@
  *
  * Crawl completion (WebSocket + poll) triggers the deterministic audit fetch.
  * The audit is the landing — the honest "what it is". Proposals are opened from
- * it on demand. No model on this path.
+ * it on demand.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";

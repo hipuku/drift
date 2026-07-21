@@ -5,7 +5,7 @@
  * renders a specimen ladder in the site's actual font. Pick a ratio, hit Apply,
  * and the ladder swaps from the site's current ad-hoc sizes to the proposed
  * scale; off-scale current sizes are flagged. Export the proposed scale as
- * CSS / Tailwind / DTCG. Fully deterministic — no model.
+ * CSS / Tailwind / DTCG. Fully deterministic.
  */
 
 import { useMemo, useState } from "react";
@@ -84,9 +84,6 @@ export function TypeScaleProposal({ inventory, onBack }: Props) {
             ← Back to proposals
           </button>
         )}
-        <Text role="label-xs" as="p" className={styles.eyebrow}>
-          Proposal · Type scale
-        </Text>
         <Text role="heading-lg" as="h1">
           What your type could be
         </Text>

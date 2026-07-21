@@ -1,7 +1,7 @@
 /**
  * Consolidated-palette export. Given the representative hex of each perceptual
  * cluster (usage-ranked), emit a clean palette as CSS custom properties,
- * Tailwind colours, or W3C DTCG tokens. Deterministic; no model.
+ * Tailwind colours, or W3C DTCG tokens. Deterministic.
  */
 
 export type ExportFormat = "css" | "tailwind" | "dtcg";

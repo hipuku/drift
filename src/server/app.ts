@@ -117,7 +117,7 @@ export function createApp(deps: AppDeps): Express {
   );
 
   // The deterministic typography inventory that seeds the Layer-2 type-scale
-  // proposals. Derived from the completed crawl; no model, no key.
+  // proposals. Derived from the completed crawl.
   app.get(
     "/crawl/:jobId/typography",
     wrap(async (req, res) => {
@@ -135,7 +135,7 @@ export function createApp(deps: AppDeps): Express {
   );
 
   // The deterministic colour inventory: perceptual clusters with usage. Seeds
-  // the Layer-2 consolidation proposal. No model, no key.
+  // the Layer-2 consolidation proposal.
   app.get(
     "/crawl/:jobId/colours",
     wrap(async (req, res) => {

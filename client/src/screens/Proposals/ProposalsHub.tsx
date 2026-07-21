@@ -29,15 +29,11 @@ export function ProposalsHub({ onSelect, onBack }: Props) {
             ← Back to audit
           </button>
         )}
-        <Text role="label-xs" as="p" className={styles.eyebrow}>
-          What it could be
-        </Text>
         <Text role="heading-lg" as="h1">
           Proposals
         </Text>
         <Text role="body" as="p" className={styles.intro}>
-          Your tokens, projected onto known-good structures. Preview, apply, and export — all
-          computed, no model.
+          Your tokens, projected onto known-good structures. Preview, apply, and export.
         </Text>
       </header>
 

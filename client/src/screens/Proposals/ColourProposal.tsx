@@ -4,7 +4,7 @@
  * Shows the site's colours grouped into perceptual clusters: a representative
  * per cluster plus the near-identical members folded into it. The proposal is
  * the consolidation itself — N distinct colours down to M tokens — and the
- * export is the clean palette of representatives. Deterministic; no model.
+ * export is the clean palette of representatives. Deterministic.
  */
 
 import { useState } from "react";
@@ -46,9 +46,6 @@ export function ColourProposal({ inventory, onBack }: Props) {
             ← Back to proposals
           </button>
         )}
-        <Text role="label-xs" as="p" className={styles.eyebrow}>
-          Proposal · Colour
-        </Text>
         <Text role="heading-lg" as="h1">
           What your colour set could be
         </Text>
