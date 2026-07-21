@@ -10,9 +10,10 @@
 import { Text } from "../../components/Text/Text.js";
 import type { SiteAudit } from "../../lib/api.js";
 import { buildElevationLadder } from "../../lib/shadowScale.js";
+import { assignLayers } from "../../lib/zIndexScale.js";
 import styles from "./ProposalsHub.module.css";
 
-export type ProposalKind = "type" | "colour" | "spacing" | "radius" | "shadow";
+export type ProposalKind = "type" | "colour" | "spacing" | "radius" | "shadow" | "zindex";
 
 interface Props {
   onSelect: (kind: ProposalKind) => void;
@@ -25,8 +26,10 @@ interface CardMeta {
   kind: ProposalKind;
   title: string;
   blurb: string;
-  /** Drift count and its noun, derived from the audit. */
-  signal: (a: SiteAudit) => { count: number; noun: string };
+  /** The drift count for this token, from the audit. */
+  count: (a: SiteAudit) => number;
+  /** Singular and plural forms of the signal — grammar differs per phrase. */
+  noun: [singular: string, plural: string];
 }
 
 const META: CardMeta[] = [
@@ -34,49 +37,52 @@ const META: CardMeta[] = [
     kind: "colour",
     title: "Colour",
     blurb: "Consolidate near-identical colours to one token each.",
-    signal: (a) => ({ count: a.summary.colourNearDuplicates ?? 0, noun: "near-duplicate" }),
+    count: (a) => a.summary.colourNearDuplicates ?? 0,
+    noun: ["near-duplicate", "near-duplicates"],
   },
   {
     kind: "type",
     title: "Type scale",
     blurb: "Project your base size onto a modular scale, in your font.",
-    signal: (a) => ({ count: a.summary.typeOffScale ?? 0, noun: "size off-scale" }),
+    count: (a) => a.summary.typeOffScale ?? 0,
+    noun: ["size off-scale", "sizes off-scale"],
   },
   {
     kind: "spacing",
     title: "Spacing",
     blurb: "Snap ad-hoc spacing to a clean base grid.",
-    signal: (a) => ({ count: a.summary.spacingOffGrid ?? 0, noun: "value off-grid" }),
+    count: (a) => a.summary.spacingOffGrid ?? 0,
+    noun: ["value off-grid", "values off-grid"],
   },
   {
     kind: "radius",
     title: "Radius",
     blurb: "Fit corner radii to a canonical named ramp.",
-    signal: (a) => ({ count: a.summary.radiusNearDuplicates ?? 0, noun: "near-duplicate" }),
+    count: (a) => a.summary.radiusNearDuplicates ?? 0,
+    noun: ["near-duplicate", "near-duplicates"],
   },
   {
     kind: "shadow",
     title: "Shadow",
     blurb: "Order ad-hoc shadows into a named elevation ladder.",
     // Drift = shadows that fold into a level they don't head.
-    signal: (a) => ({
-      count: Math.max(0, a.shadow.length - buildElevationLadder(a.shadow).length),
-      noun: "shadow to merge",
-    }),
+    count: (a) => Math.max(0, a.shadow.length - buildElevationLadder(a.shadow).length),
+    noun: ["shadow to merge", "shadows to merge"],
+  },
+  {
+    kind: "zindex",
+    title: "Layering",
+    blurb: "Map arbitrary z-index values to a named ladder.",
+    // Drift = stacking values inflated far past their ordinal position.
+    count: (a) => assignLayers((a.zIndex ?? []).map((z) => z.value)).filter((l) => l.current > l.layer.value * 4).length,
+    noun: ["inflated value", "inflated values"],
   },
 ];
 
-const plural = (n: number, noun: string): string => {
-  // Pluralise the head noun of "size off-scale" / "value off-grid" / "near-duplicate".
-  if (n === 1) return noun;
-  const [head, ...rest] = noun.split(" ");
-  return [`${head}s`, ...rest].join(" ");
-};
-
 export function ProposalsHub({ onSelect, onBack, audit }: Props) {
   const cards = META.map((m) => {
-    const sig = audit ? m.signal(audit) : { count: 0, noun: "" };
-    return { ...m, count: sig.count, noun: sig.noun };
+    const count = audit ? m.count(audit) : 0;
+    return { ...m, count, label: `${count} ${m.noun[count === 1 ? 0 : 1]}` };
   }).sort((a, b) => b.count - a.count);
 
   return (
@@ -104,9 +110,7 @@ export function ProposalsHub({ onSelect, onBack, audit }: Props) {
               </Text>
               {audit &&
                 (card.count > 0 ? (
-                  <span className={styles.signal}>
-                    {card.count} {plural(card.count, card.noun)}
-                  </span>
+                  <span className={styles.signal}>{card.label}</span>
                 ) : (
                   <span className={styles.signalClean}>no drift</span>
                 ))}

@@ -29,6 +29,7 @@ import { ProposalsHub, type ProposalKind } from "../screens/Proposals/ProposalsH
 import { RadiusProposal } from "../screens/Proposals/RadiusProposal.js";
 import { ShadowProposal } from "../screens/Proposals/ShadowProposal.js";
 import { SpacingProposal } from "../screens/Proposals/SpacingProposal.js";
+import { ZIndexProposal } from "../screens/Proposals/ZIndexProposal.js";
 import { TypeScaleProposal } from "../screens/Proposals/TypeScaleProposal.js";
 import { Failed, Thinking } from "../screens/Status/Status.js";
 
@@ -43,6 +44,7 @@ type Phase =
   | "proposals-spacing"
   | "proposals-radius"
   | "proposals-shadow"
+  | "proposals-zindex"
   | "error";
 
 const PROPOSAL_PHASE: Record<ProposalKind, Phase> = {
@@ -51,6 +53,7 @@ const PROPOSAL_PHASE: Record<ProposalKind, Phase> = {
   spacing: "proposals-spacing",
   radius: "proposals-radius",
   shadow: "proposals-shadow",
+  zindex: "proposals-zindex",
 };
 
 function hostOf(raw: string): string {
@@ -193,6 +196,10 @@ export function AuditFlow() {
     case "proposals-shadow":
       return audit ? (
         <ShadowProposal shadow={audit.shadow} onBack={() => setPhase("proposals")} />
+      ) : null;
+    case "proposals-zindex":
+      return audit ? (
+        <ZIndexProposal zIndex={audit.zIndex ?? []} onBack={() => setPhase("proposals")} />
       ) : null;
     case "error":
       return <Failed message={error} onRetry={reset} />;

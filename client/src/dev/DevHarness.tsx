@@ -14,6 +14,7 @@ import { ProposalsHub } from "../screens/Proposals/ProposalsHub.js";
 import { RadiusProposal } from "../screens/Proposals/RadiusProposal.js";
 import { ShadowProposal } from "../screens/Proposals/ShadowProposal.js";
 import { SpacingProposal } from "../screens/Proposals/SpacingProposal.js";
+import { ZIndexProposal } from "../screens/Proposals/ZIndexProposal.js";
 import { TypeScaleProposal } from "../screens/Proposals/TypeScaleProposal.js";
 import { Report } from "../screens/Report/Report.js";
 import { Failed, Thinking } from "../screens/Status/Status.js";
@@ -329,6 +330,11 @@ const STATES: HarnessState[] = [
     id: "shadow",
     label: "Proposal · Shadow",
     render: (key) => <ShadowProposal key={key} shadow={MOCK_SITE_AUDIT.shadow} />,
+  },
+  {
+    id: "zindex",
+    label: "Proposal · Layering",
+    render: (key) => <ZIndexProposal key={key} zIndex={MOCK_SITE_AUDIT.zIndex ?? []} />,
   },
   {
     id: "crawling",
