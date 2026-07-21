@@ -12,7 +12,23 @@
  * pills. The colour — and a bottom accent rule — is the verdict.
  */
 
-import { faCircleInfo, faLayerGroup } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBolt,
+  faBorderStyle,
+  faChartSimple,
+  faCircleHalfStroke,
+  faCircleInfo,
+  faClone,
+  faDesktop,
+  faDroplet,
+  faFillDrip,
+  faFont,
+  faLayerGroup,
+  faPalette,
+  faRulerHorizontal,
+  faShapes,
+  type IconDefinition,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Button } from "../../components/Button/Button.js";
@@ -43,6 +59,23 @@ const VERDICT_TAB: Record<string, string> = {
   Breakpoints: "breakpoint",
   Gradient: "gradient",
   Motion: "motion",
+};
+
+/** An icon per token tab — gives the strip identity and speeds scanning. */
+const TAB_ICON: Record<string, IconDefinition> = {
+  overview: faChartSimple,
+  colour: faPalette,
+  type: faFont,
+  spacing: faRulerHorizontal,
+  radius: faShapes,
+  shadow: faClone,
+  border: faBorderStyle,
+  opacity: faCircleHalfStroke,
+  zindex: faLayerGroup,
+  blur: faDroplet,
+  breakpoint: faDesktop,
+  gradient: faFillDrip,
+  motion: faBolt,
 };
 
 interface Props {
@@ -384,6 +417,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
               className={tab === tb.id ? `${styles.tab} ${styles.tabOn}` : styles.tab}
               onClick={() => setTab(tb.id)}
             >
+              {TAB_ICON[tb.id] && <FontAwesomeIcon icon={TAB_ICON[tb.id]!} className={styles.tabIcon} />}
               {tb.label}
               {tb.count != null && <span className={styles.tabCount}>{tb.count}</span>}
             </button>
