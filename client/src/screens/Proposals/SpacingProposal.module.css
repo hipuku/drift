@@ -28,30 +28,20 @@
   color: var(--color-ink-primary);
 }
 
-.eyebrow {
-  color: var(--color-primary-default);
-  margin-bottom: var(--space-2);
-}
-
 .intro {
   color: var(--color-ink-secondary);
   margin-top: var(--space-3);
 }
 
-.fam {
-  color: var(--color-ink-primary);
-  font-weight: var(--weight-medium);
-}
-
-/* ── Ratio picker ────────────────────────────────────────────────────────── */
-.ratios {
+/* ── Base-unit picker ────────────────────────────────────────────────────── */
+.bases {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-3);
   margin-top: var(--space-7);
 }
 
-.ratio {
+.baseBtn {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -67,31 +57,31 @@
     background var(--duration-fast) var(--ease-move);
 }
 
-.ratio:hover {
+.baseBtn:hover {
   background: var(--color-surface-subtle);
 }
 
-.ratioOn,
-.ratioOn:hover {
+.baseOn,
+.baseOn:hover {
   border-color: var(--color-primary-default);
   background: var(--color-primary-subtle);
   color: var(--color-primary-on-subtle);
 }
 
-.ratio:focus-visible {
+.baseBtn:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);
 }
 
-.ratioVal {
+.baseVal {
   color: var(--color-ink-tertiary);
 }
 
-.ratioOn .ratioVal {
+.baseOn .baseVal {
   color: var(--color-primary-on-subtle);
 }
 
-.closest {
+.detected {
   position: absolute;
   top: var(--space-2);
   right: var(--space-2);
@@ -140,7 +130,7 @@
   color: var(--color-ink-tertiary);
 }
 
-/* ── Specimen ladder ─────────────────────────────────────────────────────── */
+/* ── Spacing rail ────────────────────────────────────────────────────────── */
 .ladder {
   margin-top: var(--space-6);
   border: var(--border-width-default) solid var(--color-border-subtle);
@@ -150,9 +140,9 @@
 
 .row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--space-5);
-  padding: var(--space-4) var(--space-5);
+  padding: var(--space-3) var(--space-5);
   border-bottom: var(--border-width-default) solid var(--color-border-subtle);
 }
 
@@ -162,19 +152,50 @@
 
 .rowMeta {
   flex-shrink: 0;
-  width: 5.5rem;
+  width: 6rem;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  align-self: center;
+  gap: 2px;
 }
 
 .rowLabel {
+  color: var(--color-ink-primary);
+}
+
+.rowSub {
   color: var(--color-ink-tertiary);
 }
 
-.offBadge {
-  align-self: flex-start;
+.barWrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.bar {
+  height: 0.75rem;
+  min-width: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-default);
+}
+
+.barOff {
+  background: var(--color-warning-default, var(--color-warning-on-subtle));
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 3px,
+    rgba(255, 255, 255, 0.35) 3px,
+    rgba(255, 255, 255, 0.35) 6px
+  );
+}
+
+.snap {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
   font-size: var(--text-12);
   font-weight: var(--weight-semibold);
   color: var(--color-warning-on-subtle);
@@ -183,23 +204,14 @@
   padding: 0 var(--space-1);
 }
 
-.specimen {
-  color: var(--color-ink-primary);
-  line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-}
-
 @media (max-width: 34rem) {
-  .ratios {
-    grid-template-columns: repeat(2, 1fr);
+  .rowMeta {
+    width: 5rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ratio {
+  .baseBtn {
     transition-duration: 1ms;
   }
 }

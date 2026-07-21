@@ -10,23 +10,18 @@
 
 import { useMemo, useState } from "react";
 import { Text } from "../../components/Text/Text.js";
+import { ExportPanel } from "../../components/ExportPanel/ExportPanel.js";
 import {
   RATIOS,
   buildScaleToCover,
   classifyAgainstScale,
   detectClosestRatio,
   exportScale,
-  type ExportFormat,
   type TypeInventory,
 } from "../../lib/typeScale.js";
 import styles from "./TypeScaleProposal.module.css";
 
 const SAMPLE = "Design systems drift over time";
-const FORMATS: { id: ExportFormat; label: string }[] = [
-  { id: "css", label: "CSS" },
-  { id: "tailwind", label: "Tailwind" },
-  { id: "dtcg", label: "DTCG" },
-];
 
 interface Props {
   inventory: TypeInventory;
@@ -42,8 +37,6 @@ export function TypeScaleProposal({ inventory, onBack }: Props) {
   const closest = useMemo(() => detectClosestRatio(currentSizes, basePx), [currentSizes, basePx]);
   const [ratioId, setRatioId] = useState(closest?.ratio.id ?? "major-third");
   const [applied, setApplied] = useState(false);
-  const [format, setFormat] = useState<ExportFormat>("css");
-  const [copied, setCopied] = useState(false);
 
   const ratio = RATIOS.find((r) => r.id === ratioId) ?? RATIOS[1]!;
 
@@ -60,13 +53,6 @@ export function TypeScaleProposal({ inventory, onBack }: Props) {
   );
 
   const fontStack = family ? `'${family}', var(--font-sans)` : "var(--font-sans)";
-  const exportText = exportScale(scale, format);
-
-  const copy = () => {
-    void navigator.clipboard?.writeText(exportText);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1400);
-  };
 
   // Rows: proposed scale (largest first) when applied, else current sizes.
   const rows = applied
@@ -166,28 +152,7 @@ export function TypeScaleProposal({ inventory, onBack }: Props) {
       </div>
 
       {/* Export */}
-      <section className={styles.export} aria-label="Export">
-        <div className={styles.exportHead}>
-          <div className={styles.formats} role="tablist" aria-label="Export format">
-            {FORMATS.map((f) => (
-              <button
-                key={f.id}
-                type="button"
-                role="tab"
-                aria-selected={format === f.id}
-                className={format === f.id ? `${styles.fmt} ${styles.fmtOn}` : styles.fmt}
-                onClick={() => setFormat(f.id)}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-          <button type="button" className={styles.copy} onClick={copy}>
-            {copied ? "Copied" : "Copy"}
-          </button>
-        </div>
-        <pre className={styles.code}>{exportText}</pre>
-      </section>
+      <ExportPanel render={(format) => exportScale(scale, format)} />
     </main>
   );
 }

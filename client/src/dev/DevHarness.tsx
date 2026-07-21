@@ -11,6 +11,7 @@ import { Configure } from "../screens/Configure/Configure.js";
 import { Crawling } from "../screens/Crawling/Crawling.js";
 import { ColourProposal } from "../screens/Proposals/ColourProposal.js";
 import { ProposalsHub } from "../screens/Proposals/ProposalsHub.js";
+import { SpacingProposal } from "../screens/Proposals/SpacingProposal.js";
 import { TypeScaleProposal } from "../screens/Proposals/TypeScaleProposal.js";
 import { Report } from "../screens/Report/Report.js";
 import { Failed, Thinking } from "../screens/Status/Status.js";
@@ -98,7 +99,9 @@ const MOCK_SITE_AUDIT: SiteAudit = {
     fontFamilies: 2,
     typeSizes: 6,
     fontWeights: 3,
+    typeOffScale: 4,
     spacings: 11,
+    spacingOffGrid: 3,
     radii: 4,
     shadows: 2,
     borders: 4,
@@ -297,7 +300,7 @@ const STATES: HarnessState[] = [
   {
     id: "proposals",
     label: "Proposals · Hub",
-    render: () => <ProposalsHub onSelect={() => {}} />,
+    render: () => <ProposalsHub onSelect={() => {}} summary={MOCK_SITE_AUDIT.summary} />,
   },
   {
     id: "type-scale",
@@ -308,6 +311,11 @@ const STATES: HarnessState[] = [
     id: "colour",
     label: "Proposal · Colour",
     render: (key) => <ColourProposal key={key} inventory={MOCK_COLOUR} />,
+  },
+  {
+    id: "spacing",
+    label: "Proposal · Spacing",
+    render: (key) => <SpacingProposal key={key} spacing={MOCK_SITE_AUDIT.spacing} />,
   },
   {
     id: "crawling",

@@ -25,7 +25,8 @@ import { Audit } from "../screens/Audit/Audit.js";
 import { Configure } from "../screens/Configure/Configure.js";
 import { Crawling } from "../screens/Crawling/Crawling.js";
 import { ColourProposal } from "../screens/Proposals/ColourProposal.js";
-import { ProposalsHub } from "../screens/Proposals/ProposalsHub.js";
+import { ProposalsHub, type ProposalKind } from "../screens/Proposals/ProposalsHub.js";
+import { SpacingProposal } from "../screens/Proposals/SpacingProposal.js";
 import { TypeScaleProposal } from "../screens/Proposals/TypeScaleProposal.js";
 import { Failed, Thinking } from "../screens/Status/Status.js";
 
@@ -37,7 +38,14 @@ type Phase =
   | "proposals"
   | "proposals-type"
   | "proposals-colour"
+  | "proposals-spacing"
   | "error";
+
+const PROPOSAL_PHASE: Record<ProposalKind, Phase> = {
+  type: "proposals-type",
+  colour: "proposals-colour",
+  spacing: "proposals-spacing",
+};
 
 function hostOf(raw: string): string {
   for (const candidate of [raw, `https://${raw}`]) {
@@ -155,8 +163,9 @@ export function AuditFlow() {
     case "proposals":
       return (
         <ProposalsHub
-          onSelect={(kind) => setPhase(kind === "type" ? "proposals-type" : "proposals-colour")}
+          onSelect={(kind) => setPhase(PROPOSAL_PHASE[kind])}
           onBack={() => setPhase("audit")}
+          summary={audit?.summary}
         />
       );
     case "proposals-type":
@@ -166,6 +175,10 @@ export function AuditFlow() {
     case "proposals-colour":
       return colourInventory ? (
         <ColourProposal inventory={colourInventory} onBack={() => setPhase("proposals")} />
+      ) : null;
+    case "proposals-spacing":
+      return audit ? (
+        <SpacingProposal spacing={audit.spacing} onBack={() => setPhase("proposals")} />
       ) : null;
     case "error":
       return <Failed message={error} onRetry={reset} />;
