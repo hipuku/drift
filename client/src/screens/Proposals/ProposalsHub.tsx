@@ -7,6 +7,16 @@
  * start there". New token proposals plug in by contributing a signal. Extensible.
  */
 
+import {
+  faClone,
+  faFont,
+  faLayerGroup,
+  faPalette,
+  faRulerHorizontal,
+  faShapes,
+  type IconDefinition,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Text } from "../../components/Text/Text.js";
 import { Badge } from "../../components/Badge/Badge.js";
 import type { SiteAudit } from "../../lib/api.js";
@@ -26,6 +36,8 @@ interface Props {
 interface CardMeta {
   kind: ProposalKind;
   title: string;
+  /** Same icon the audit token tab uses, so the two screens share a vocabulary. */
+  icon: IconDefinition;
   blurb: string;
   /** The drift count for this token, from the audit. */
   count: (a: SiteAudit) => number;
@@ -37,6 +49,7 @@ const META: CardMeta[] = [
   {
     kind: "colour",
     title: "Colour",
+    icon: faPalette,
     blurb: "Consolidate near-identical colours to one token each.",
     count: (a) => a.summary.colourNearDuplicates ?? 0,
     noun: ["near-duplicate", "near-duplicates"],
@@ -44,6 +57,7 @@ const META: CardMeta[] = [
   {
     kind: "type",
     title: "Type scale",
+    icon: faFont,
     blurb: "Project your base size onto a modular scale, in your font.",
     count: (a) => a.summary.typeOffScale ?? 0,
     noun: ["size off-scale", "sizes off-scale"],
@@ -51,6 +65,7 @@ const META: CardMeta[] = [
   {
     kind: "spacing",
     title: "Spacing",
+    icon: faRulerHorizontal,
     blurb: "Snap ad-hoc spacing to a clean base grid.",
     count: (a) => a.summary.spacingOffGrid ?? 0,
     noun: ["value off-grid", "values off-grid"],
@@ -58,6 +73,7 @@ const META: CardMeta[] = [
   {
     kind: "radius",
     title: "Radius",
+    icon: faShapes,
     blurb: "Fit corner radii to a canonical named ramp.",
     count: (a) => a.summary.radiusNearDuplicates ?? 0,
     noun: ["near-duplicate", "near-duplicates"],
@@ -65,6 +81,7 @@ const META: CardMeta[] = [
   {
     kind: "shadow",
     title: "Shadow",
+    icon: faClone,
     blurb: "Order ad-hoc shadows into a named elevation ladder.",
     // Drift = shadows that fold into a level they don't head.
     count: (a) => Math.max(0, a.shadow.length - buildElevationLadder(a.shadow).length),
@@ -73,6 +90,7 @@ const META: CardMeta[] = [
   {
     kind: "zindex",
     title: "Layering",
+    icon: faLayerGroup,
     blurb: "Map arbitrary z-index values to a named ladder.",
     // Drift = stacking values inflated far past their ordinal position.
     count: (a) => assignLayers((a.zIndex ?? []).map((z) => z.value)).filter((l) => l.current > l.layer.value * 4).length,
@@ -119,9 +137,12 @@ export function ProposalsHub({ onSelect, onBack, audit }: Props) {
             onClick={() => onSelect(card.kind)}
           >
             <div className={styles.cardHead}>
-              <Text role="heading-sm" as="span">
-                {card.title}
-              </Text>
+              <span className={styles.titleGroup}>
+                <FontAwesomeIcon icon={card.icon} className={styles.icon} aria-hidden="true" />
+                <Text role="heading-sm" as="span">
+                  {card.title}
+                </Text>
+              </span>
               {audit && <Badge variant="neutral">{card.label}</Badge>}
             </div>
             <Text role="body-sm" className={styles.blurb}>
