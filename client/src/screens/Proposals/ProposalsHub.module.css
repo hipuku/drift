@@ -44,30 +44,53 @@
   margin-top: var(--space-7);
 }
 
+/* Shares the audit overview card language: a 3px bottom accent + tint carry
+   the verdict, details sit in neutral pills. */
 .card {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
   text-align: left;
+  font: inherit;
   background: var(--color-surface-default);
-  border: var(--border-width-default) solid var(--color-border-subtle);
+  border: var(--border-width-default) solid var(--drift-card-border, var(--color-border-subtle));
+  border-bottom-width: 3px;
   border-radius: var(--radius-lg);
   padding: var(--space-6);
   cursor: pointer;
   transition:
-    border-color var(--duration-fast) var(--ease-move),
+    transform var(--duration-fast) var(--ease-move),
     box-shadow var(--duration-fast) var(--ease-move);
 }
 
 .card:hover {
-  border-color: var(--color-primary-default);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
 .card:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);
+}
+
+/* Verdict tints + accent, matching the audit overview cards exactly. */
+.good {
+  background: color-mix(in oklab, var(--color-success-default) 12%, var(--color-surface-default));
+  border-color: color-mix(in oklab, var(--color-success-default) 26%, var(--drift-card-border));
+  border-bottom-color: var(--color-success-default);
+}
+
+.watch {
+  background: color-mix(in oklab, var(--color-warning-default) 14%, var(--color-surface-default));
+  border-color: color-mix(in oklab, var(--color-warning-default) 30%, var(--drift-card-border));
+  border-bottom-color: var(--color-warning-default);
+}
+
+.review {
+  background: color-mix(in oklab, var(--color-error-default) 13%, var(--color-surface-default));
+  border-color: color-mix(in oklab, var(--color-error-default) 28%, var(--drift-card-border));
+  border-bottom-color: var(--color-error-default);
 }
 
 .cardHead {
@@ -77,21 +100,8 @@
   gap: var(--space-3);
 }
 
-.signalClean {
-  flex-shrink: 0;
-  font-size: var(--text-12);
-  font-weight: var(--weight-medium);
-  color: var(--color-ink-tertiary);
-}
-
 .blurb {
   color: var(--color-ink-secondary);
-}
-
-.arrow {
-  margin-top: var(--space-2);
-  color: var(--color-primary-default);
-  font-size: var(--text-lg, 1.125rem);
 }
 
 @media (max-width: 34rem) {

@@ -80,11 +80,18 @@ const META: CardMeta[] = [
   },
 ];
 
+/** Same graduated verdict the audit overview uses: none good, a few watch, more review. */
+function verdictClass(count: number): string {
+  if (count === 0) return styles.good!;
+  if (count <= 2) return styles.watch!;
+  return styles.review!;
+}
+
 export function ProposalsHub({ onSelect, onBack, audit }: Props) {
   // Keep the audit's token order — the hub should read the same way the report does.
   const cards = META.map((m) => {
     const count = audit ? m.count(audit) : 0;
-    return { ...m, count, label: `${count} ${m.noun[count === 1 ? 0 : 1]}` };
+    return { ...m, count, label: count > 0 ? `${count} ${m.noun[count === 1 ? 0 : 1]}` : "no drift" };
   });
 
   return (
@@ -105,24 +112,21 @@ export function ProposalsHub({ onSelect, onBack, audit }: Props) {
 
       <div className={styles.cards}>
         {cards.map((card) => (
-          <button key={card.kind} type="button" className={styles.card} onClick={() => onSelect(card.kind)}>
+          <button
+            key={card.kind}
+            type="button"
+            className={`${styles.card} ${audit ? verdictClass(card.count) : ""}`}
+            onClick={() => onSelect(card.kind)}
+          >
             <div className={styles.cardHead}>
               <Text role="heading-sm" as="span">
                 {card.title}
               </Text>
-              {audit &&
-                (card.count > 0 ? (
-                  <Badge variant="warning">{card.label}</Badge>
-                ) : (
-                  <span className={styles.signalClean}>no drift</span>
-                ))}
+              {audit && <Badge variant="neutral">{card.label}</Badge>}
             </div>
             <Text role="body-sm" className={styles.blurb}>
               {card.blurb}
             </Text>
-            <span className={styles.arrow} aria-hidden="true">
-              →
-            </span>
           </button>
         ))}
       </div>
