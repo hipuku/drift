@@ -5,8 +5,8 @@ import { Text } from "../../components/Text/Text.js";
 import { TextField } from "../../components/TextField/TextField.js";
 import styles from "./Configure.module.css";
 
-const VISIBLE = 8;
-/** Mirrors the backend's MAX_CRAWL_PAGES ceiling. */
+const VISIBLE = 10;
+/** Mirrors the backend's MAX_CRAWL_PAGES ceiling (how many pages one audit visits). */
 const CRAWL_CEILING = 40;
 
 interface DiscoveredPage {
@@ -57,6 +57,8 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
   const [showAll, setShowAll] = useState(false);
   const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [addUrl, setAddUrl] = useState("");
+  const [addError, setAddError] = useState<string | null>(null);
 
   // Before discovery we only know the typed host; after, the server's resolved
   // one (which may have gained www / a scheme).
@@ -103,6 +105,43 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
   const selectAll = () =>
     setSelected(new Set(pages.slice(0, CRAWL_CEILING).map((p) => p.path)));
   const clear = () => setSelected(new Set());
+
+  // Add a page discovery missed (deep, unlinked, or not in the sitemap). Accepts
+  // a path ("/about") or a full same-origin URL; resolves against the site origin.
+  const addPage = () => {
+    const raw = addUrl.trim();
+    if (!raw) return;
+    let origin: string;
+    try {
+      origin = new URL(resolvedUrl || `https://${host}`).origin;
+    } catch {
+      setAddError("Enter a URL for the site first.");
+      return;
+    }
+    let full: URL;
+    try {
+      full = /^https?:\/\//i.test(raw) ? new URL(raw) : new URL(raw.startsWith("/") ? raw : `/${raw}`, origin);
+    } catch {
+      setAddError("That doesn’t look like a valid page.");
+      return;
+    }
+    if (full.origin !== origin) {
+      setAddError(`Only pages on ${new URL(origin).host} can be added.`);
+      return;
+    }
+    const path = `${full.pathname}${full.search}` || "/";
+    setAddError(null);
+    setAddUrl("");
+    setQuery("");
+    setShowAll(true);
+    if (!pages.some((p) => p.path === path)) {
+      setPages((prev) => [...prev, { url: full.href, path, title: path }]);
+    }
+    setSelected((prev) => {
+      if (prev.has(path) || prev.size >= CRAWL_CEILING) return prev;
+      return new Set(prev).add(path);
+    });
+  };
 
   const atLimit = selected.size >= CRAWL_CEILING;
 
@@ -261,6 +300,41 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
               <button type="button" className={styles.showMore} onClick={() => setShowAll(true)}>
                 Show {hidden} more
               </button>
+            )}
+
+            <form
+              className={styles.addRow}
+              onSubmit={(e) => {
+                e.preventDefault();
+                addPage();
+              }}
+            >
+              <input
+                type="text"
+                className={styles.addInput}
+                placeholder="Not listed? Add a page by URL or /path…"
+                value={addUrl}
+                onChange={(e) => {
+                  setAddUrl(e.target.value);
+                  setAddError(null);
+                }}
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                aria-label="Add a page by URL"
+              />
+              <button
+                type="submit"
+                className={styles.textAction}
+                disabled={addUrl.trim() === "" || atLimit}
+              >
+                Add
+              </button>
+            </form>
+            {addError && (
+              <Text role="body-sm" className={styles.muted}>
+                {addError}
+              </Text>
             )}
 
             <div className={styles.footer}>

@@ -57,7 +57,10 @@ export async function discoverPages(
   options: { timeoutMs?: number; maxPages?: number } = {},
 ): Promise<DiscoverResult> {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
-  const maxPages = options.maxPages ?? 50;
+  // Listing is cheap (sitemap parse / homepage anchors), so list generously —
+  // every page should be searchable in the picker. The audit itself is bounded
+  // separately by MAX_CRAWL_PAGES. The high cap only guards pathological sitemaps.
+  const maxPages = options.maxPages ?? 1000;
 
   // Resolve to a reachable URL first (some sites live only at www, or only at
   // the apex). Fall back to a best-effort canonical guess if nothing responds.
