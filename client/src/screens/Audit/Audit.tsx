@@ -112,7 +112,7 @@ function capFirst(s: string): string {
  * token category present: those with redundancy get a "N of M …" problem clause,
  * the rest are gathered as holding steady. Reads as prose, not a census.
  */
-function healthLine(s: SiteAudit["summary"]): string {
+function healthLine(s: SiteAudit["summary"], extendedDrift: string[] = []): string {
   const problems: string[] = [];
   const clean: string[] = [];
 
@@ -136,12 +136,14 @@ function healthLine(s: SiteAudit["summary"]): string {
   }
   if (s.shadows > 0) clean.push("shadows"); // no redundancy signal — treated as holding
 
+  const tail = extendedDrift.length ? ` Also drifting: ${joinList(extendedDrift)}.` : "";
+
   if (problems.length === 0) {
-    return `Nothing's drifting — ${joinList(clean)} all hold to a system.`;
+    return `Nothing's drifting — ${joinList(clean)} all hold to a system.${tail}`;
   }
   const problemText = `${capFirst(joinList(problems))}.`;
-  if (clean.length === 0) return problemText;
-  return `${problemText} ${capFirst(joinList(clean))} ${plural(clean.length, "holds", "hold")} steady.`;
+  if (clean.length === 0) return `${problemText}${tail}`;
+  return `${problemText} ${capFirst(joinList(clean))} ${plural(clean.length, "holds", "hold")} steady.${tail}`;
 }
 
 /** Stable DOM id for a colour card, so picking a neighbour can scroll it into view. */
@@ -274,6 +276,15 @@ export function Audit({ audit, onProposals, onBack }: Props) {
     sorted.forEach((v, i) => map.set(v, i));
     return { map, total: sorted.length };
   }, [audit.zIndex]);
+  // The only extended tokens with a real drift signal, for the health line:
+  // redundant border widths, and a z-index set too large/ad-hoc to be a scale.
+  const extendedDrift = useMemo(() => {
+    const out: string[] = [];
+    if (borderNearDupSet.size > 0) out.push("border widths");
+    const zi = audit.zIndex ?? [];
+    if (zi.length > 8 || zi.some((z) => Math.abs(z.value) >= 9999)) out.push("z-index");
+    return out;
+  }, [borderNearDupSet, audit.zIndex]);
   const selectedSwatch = selectedHex
     ? (audit.colourFamilies.flatMap((f) => f.swatches).find((sw) => sw.hex === selectedHex) ?? null)
     : null;
@@ -433,7 +444,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                 Design Health
               </Text>
               <Text role="heading-lg" as="p" className={styles.healthLine}>
-                {healthLine(s)}
+                {healthLine(s, extendedDrift)}
               </Text>
             </div>
             <div className={styles.verdictGrid}>
