@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, type ReactNode } from "react";
 import { Text } from "../components/Text/Text.js";
 import { Foundation } from "../foundation/Foundation.js";
-import type { AuditReport, ColourInventory, ReviewItem, SiteAudit } from "../lib/api.js";
+import type { AuditReport, ReviewItem, SiteAudit } from "../lib/api.js";
 import { Audit } from "../screens/Audit/Audit.js";
 import { Checkpoint } from "../screens/Checkpoint/Checkpoint.js";
 import { Configure } from "../screens/Configure/Configure.js";
@@ -59,18 +59,6 @@ const MOCK_REPORT: AuditReport = {
   consolidationOpportunities: [
     "Merge the four border greys into one token.",
     "Unify the two CTA blues on a single primary.",
-  ],
-};
-
-// A palette with near-duplicate clusters to consolidate.
-const MOCK_COLOUR: ColourInventory = {
-  clusterCount: 4,
-  distinctColours: 11,
-  clusters: [
-    { representative: "#1f2933", members: ["#1f2933", "#212a35", "#1d2630"], size: 3, totalUsage: 420, pages: ["/", "/about"] },
-    { representative: "#ffffff", members: ["#ffffff", "#fefefe"], size: 2, totalUsage: 300, pages: ["/", "/about", "/pricing"] },
-    { representative: "#6b7280", members: ["#6b7280", "#6d7280", "#697079", "#6b7178"], size: 4, totalUsage: 65, pages: ["/", "/pricing"] },
-    { representative: "#3b82f6", members: ["#3b82f6", "#3a80f5"], size: 2, totalUsage: 88, pages: ["/"] },
   ],
 };
 
@@ -297,7 +285,7 @@ const STATES: HarnessState[] = [
   {
     id: "colour",
     label: "Proposal · Colour",
-    render: (key) => <ColourProposal key={key} inventory={MOCK_COLOUR} />,
+    render: (key) => <ColourProposal key={key} families={MOCK_SITE_AUDIT.colourFamilies} />,
   },
   {
     id: "spacing",

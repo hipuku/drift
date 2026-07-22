@@ -38,6 +38,59 @@
   margin-top: var(--space-3);
 }
 
+/* ── Merge threshold ─────────────────────────────────────────────────────── */
+.thresholds {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-7);
+}
+
+.threshold {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-move),
+    background var(--duration-fast) var(--ease-move);
+}
+
+.threshold:hover {
+  background: var(--color-surface-subtle);
+}
+
+.thresholdOn,
+.thresholdOn:hover {
+  border-color: var(--color-primary-default);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary-on-subtle);
+}
+
+.threshold:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.thresholdVal {
+  color: var(--color-ink-tertiary);
+}
+
+.thresholdOn .thresholdVal {
+  color: var(--color-primary-on-subtle);
+}
+
+@media (max-width: 34rem) {
+  .thresholds {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* ── Clusters ────────────────────────────────────────────────────────────── */
 .clusters {
   display: grid;
@@ -78,8 +131,37 @@
 }
 
 .hex {
-  color: var(--color-ink-primary);
+  color: var(--color-ink-tertiary);
   text-transform: uppercase;
+}
+
+/* The token name is editable in place — the naming is the one judgement call. */
+.nameInput {
+  min-width: 0;
+  flex: 1 1 6rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-14, 0.875rem);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink-primary);
+  background: transparent;
+  border: var(--border-width-default) solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 2px var(--space-1);
+}
+
+.nameInput:hover {
+  border-color: var(--color-border-subtle);
+}
+
+.nameInput:focus {
+  outline: none;
+  border-color: var(--color-primary-default);
+  background: var(--color-surface-default);
+}
+
+.de {
+  color: var(--color-ink-tertiary);
+  opacity: 0.75;
 }
 
 
@@ -113,6 +195,80 @@
   font-size: var(--text-12);
   color: var(--color-ink-tertiary);
   text-transform: uppercase;
+}
+
+/* ── Contrast + migration panels ─────────────────────────────────────────── */
+.panel {
+  margin-top: var(--space-8);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  background: var(--color-surface-subtle);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.contrastRow,
+.migrateRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+}
+
+.contrastRow:last-child,
+.migrateRow:last-child {
+  border-bottom: none;
+}
+
+/* Live specimen — the pair rendered as it actually appears. */
+.pairSwatch {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 1.75rem;
+  border-radius: var(--radius-sm);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+}
+
+.pairName {
+  flex: 1;
+  min-width: 0;
+  color: var(--color-ink-secondary);
+}
+
+.arrow {
+  color: var(--color-ink-tertiary);
+}
+
+.tokenName {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-primary);
+}
+
+.migrateCount {
+  flex-shrink: 0;
+  color: var(--color-ink-tertiary);
 }
 
 @media (max-width: 34rem) {

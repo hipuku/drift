@@ -13,9 +13,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getAudit,
-  getColours,
   startCrawl,
-  type ColourInventory,
   type SiteAudit,
 } from "../lib/api.js";
 import { useCrawlProgress } from "../lib/useCrawlProgress.js";
@@ -70,7 +68,6 @@ export function AuditFlow() {
   const [jobId, setJobId] = useState<string | null>(null);
   const [host, setHost] = useState("");
   const [audit, setAudit] = useState<SiteAudit | null>(null);
-  const [colourInventory, setColourInventory] = useState<ColourInventory | null>(null);
   const [error, setError] = useState<string>("");
 
   const crawl = useCrawlProgress(phase === "crawling" ? jobId : null);
@@ -141,18 +138,9 @@ export function AuditFlow() {
     [fail],
   );
 
-  // Opened from the audit: fetch the proposal inputs, then the hub. Only colour
-  // needs its own inventory — every other proposal reads from the audit itself.
-  const openProposals = useCallback(async () => {
-    if (!jobId) return;
-    setPhase("loading");
-    try {
-      setColourInventory(colourInventory ?? (await getColours(jobId)));
-      go("proposals");
-    } catch (err) {
-      fail(err instanceof Error ? err.message : "Could not load the proposals.");
-    }
-  }, [jobId, colourInventory, fail, go]);
+  // Opened from the audit. Every proposal derives from the audit itself, so
+  // there's nothing further to fetch.
+  const openProposals = useCallback(() => go("proposals"), [go]);
 
   const back = useCallback(() => window.history.back(), []);
 
@@ -162,7 +150,6 @@ export function AuditFlow() {
     setJobId(null);
     setHost("");
     setAudit(null);
-    setColourInventory(null);
     setError("");
   }, []);
 
@@ -191,9 +178,7 @@ export function AuditFlow() {
     case "proposals-type":
       return audit ? <TypeScaleProposal typography={audit.typography} onBack={back} /> : null;
     case "proposals-colour":
-      return colourInventory ? (
-        <ColourProposal inventory={colourInventory} onBack={back} />
-      ) : null;
+      return audit ? <ColourProposal families={audit.colourFamilies} onBack={back} /> : null;
     case "proposals-spacing":
       return audit ? (
         <SpacingProposal spacing={audit.spacing} onBack={back} />
