@@ -454,11 +454,17 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                 const className = `${styles.verdict} ${styles[v.verdict] ?? ""}${
                   hasTab ? ` ${styles.verdictClickable}` : ""
                 }`;
+                const icon = id ? TAB_ICON[id] : undefined;
                 const body = (
                   <>
-                    <Text role="label" className={styles.verdictLabel}>
-                      {v.label}
-                    </Text>
+                    <span className={styles.verdictLabelRow}>
+                      {icon && (
+                        <FontAwesomeIcon icon={icon} className={styles.verdictIcon} aria-hidden="true" />
+                      )}
+                      <Text role="label" className={styles.verdictLabel}>
+                        {v.label}
+                      </Text>
+                    </span>
                     <Text role="display" as="span" className={styles.verdictN}>
                       {v.n}
                     </Text>

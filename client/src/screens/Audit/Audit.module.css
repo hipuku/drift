@@ -379,8 +379,19 @@
   box-shadow: var(--shadow-focus);
 }
 
-.verdictLabel {
+.verdictLabelRow {
   order: -1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.verdictIcon {
+  font-size: 0.85em;
+  color: var(--color-ink-tertiary);
+}
+
+.verdictLabel {
   color: var(--color-ink-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
