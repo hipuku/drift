@@ -4,7 +4,6 @@ import { useState, type ReactNode } from "react";
 import { Text } from "../components/Text/Text.js";
 import { Foundation } from "../foundation/Foundation.js";
 import type { AuditReport, ColourInventory, ReviewItem, SiteAudit } from "../lib/api.js";
-import type { TypeInventory } from "../lib/typeScale.js";
 import { Audit } from "../screens/Audit/Audit.js";
 import { Checkpoint } from "../screens/Checkpoint/Checkpoint.js";
 import { Configure } from "../screens/Configure/Configure.js";
@@ -60,22 +59,6 @@ const MOCK_REPORT: AuditReport = {
   consolidationOpportunities: [
     "Merge the four border greys into one token.",
     "Unify the two CTA blues on a single primary.",
-  ],
-};
-
-// A site with an ad-hoc type ramp (note 15px — off most scales) on base 16.
-const MOCK_TYPE: TypeInventory = {
-  baseSizePx: 16,
-  primaryFamily: "Inter",
-  sizes: [
-    { px: 12, count: 40 },
-    { px: 14, count: 120 },
-    { px: 15, count: 22 },
-    { px: 16, count: 380 },
-    { px: 20, count: 64 },
-    { px: 24, count: 30 },
-    { px: 32, count: 12 },
-    { px: 48, count: 5 },
   ],
 };
 
@@ -309,7 +292,7 @@ const STATES: HarnessState[] = [
   {
     id: "type-scale",
     label: "Proposal · Type",
-    render: (key) => <TypeScaleProposal key={key} inventory={MOCK_TYPE} />,
+    render: (key) => <TypeScaleProposal key={key} typography={MOCK_SITE_AUDIT.typography} />,
   },
   {
     id: "colour",

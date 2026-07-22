@@ -14,11 +14,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getAudit,
   getColours,
-  getTypography,
   startCrawl,
   type ColourInventory,
   type SiteAudit,
-  type TypographyInventory,
 } from "../lib/api.js";
 import { useCrawlProgress } from "../lib/useCrawlProgress.js";
 import { Audit } from "../screens/Audit/Audit.js";
@@ -72,7 +70,6 @@ export function AuditFlow() {
   const [jobId, setJobId] = useState<string | null>(null);
   const [host, setHost] = useState("");
   const [audit, setAudit] = useState<SiteAudit | null>(null);
-  const [typeInventory, setTypeInventory] = useState<TypographyInventory | null>(null);
   const [colourInventory, setColourInventory] = useState<ColourInventory | null>(null);
   const [error, setError] = useState<string>("");
 
@@ -144,22 +141,18 @@ export function AuditFlow() {
     [fail],
   );
 
-  // Opened from the audit: fetch the proposal inputs, then the hub.
+  // Opened from the audit: fetch the proposal inputs, then the hub. Only colour
+  // needs its own inventory — every other proposal reads from the audit itself.
   const openProposals = useCallback(async () => {
     if (!jobId) return;
     setPhase("loading");
     try {
-      const [type, colour] = await Promise.all([
-        typeInventory ?? getTypography(jobId),
-        colourInventory ?? getColours(jobId),
-      ]);
-      setTypeInventory(type);
-      setColourInventory(colour);
+      setColourInventory(colourInventory ?? (await getColours(jobId)));
       go("proposals");
     } catch (err) {
       fail(err instanceof Error ? err.message : "Could not load the proposals.");
     }
-  }, [jobId, typeInventory, colourInventory, fail, go]);
+  }, [jobId, colourInventory, fail, go]);
 
   const back = useCallback(() => window.history.back(), []);
 
@@ -169,7 +162,6 @@ export function AuditFlow() {
     setJobId(null);
     setHost("");
     setAudit(null);
-    setTypeInventory(null);
     setColourInventory(null);
     setError("");
   }, []);
@@ -197,9 +189,7 @@ export function AuditFlow() {
         />
       );
     case "proposals-type":
-      return typeInventory ? (
-        <TypeScaleProposal inventory={typeInventory} onBack={back} />
-      ) : null;
+      return audit ? <TypeScaleProposal typography={audit.typography} onBack={back} /> : null;
     case "proposals-colour":
       return colourInventory ? (
         <ColourProposal inventory={colourInventory} onBack={back} />
