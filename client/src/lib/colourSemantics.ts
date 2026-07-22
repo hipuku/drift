@@ -19,14 +19,16 @@
 
 import { deltaE, wcagContrast } from "@haus/colour-utils";
 import type { AuditColourFamily, AuditColourSwatch } from "./api.js";
-import { hslOf } from "./hue.js";
+import { colourfulness, hslOf } from "./hue.js";
 
 /** Below the ~2.3 just-noticeable difference — genuine redundancy. */
 export const MERGE_DELTA_E = 2;
 /** ΔE 2–5 is ambiguous: close enough to be related, far enough to be intentional. */
 export const VARIANT_MAX_DELTA_E = 5;
-/** Below this saturation a colour reads as a neutral, not a hue. */
-const NEUTRAL_SATURATION = 0.12;
+/** Below this colourfulness a colour reads as a neutral, not a hue. */
+const NEUTRAL_CHROMA = 0.1;
+/** Roles this close together are ambiguous — let contrast settle it. */
+const AMBIGUOUS_ROLE_MARGIN = 0.15;
 /** A related colour used this much less than its sibling looks like a state. */
 const STATE_USAGE_RATIO = 0.4;
 
@@ -82,10 +84,47 @@ export interface PaletteProposal {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function dominantRole(s: AuditColourSwatch): ColourRole {
-  const { text, background, border } = s.roles;
-  if (border >= text && border >= background) return "border";
-  return background > text ? "background" : "text";
+/**
+ * The job a colour does, from how it's actually used. Usage leads because it's
+ * evidence of intent — a colour used as a background 697× is a surface whatever
+ * its contrast says. Contrast only steps in when the usage is genuinely split,
+ * where it decides ink-vs-surface rather than leaving it to a coin flip.
+ */
+function dominantRole(s: AuditColourSwatch, pageBackground: string | null): ColourRole {
+  const entries: [ColourRole, number][] = [
+    ["text", s.roles.text],
+    ["background", s.roles.background],
+    ["border", s.roles.border],
+  ];
+  entries.sort((a, b) => b[1] - a[1]);
+  const [top, second] = entries;
+  if (!top) return "text";
+
+  const total = s.roles.text + s.roles.background + s.roles.border;
+  const ambiguous =
+    second && total > 0 && (top[1] - second[1]) / total < AMBIGUOUS_ROLE_MARGIN;
+
+  if (ambiguous && pageBackground) {
+    const roles = new Set([top[0], second[0]]);
+    if (roles.has("text") && roles.has("background")) {
+      try {
+        return wcagContrast(s.hex, pageBackground).passAA ? "text" : "background";
+      } catch {
+        // fall through to usage
+      }
+    }
+  }
+  return top[0];
+}
+
+/** The colour the site actually uses as its page background, for tie-breaks. */
+function pageBackgroundOf(swatches: AuditColourSwatch[]): string | null {
+  let best: AuditColourSwatch | null = null;
+  for (const s of swatches) {
+    if (s.roles.background <= 0) continue;
+    if (!best || s.roles.background > best.roles.background) best = s;
+  }
+  return best?.hex ?? null;
 }
 
 function topTags(s: AuditColourSwatch): string[] {
@@ -130,7 +169,7 @@ interface Group {
  * sharing a value — which is how a real system expresses "the border happens to
  * match the surface" without welding them together.
  */
-function groupSwatches(swatches: AuditColourSwatch[], threshold: number): Group[] {
+function groupSwatches(swatches: AuditColourSwatch[], threshold: number, pageBg: string | null): Group[] {
   const ordered = swatches.slice().sort((a, b) => b.count - a.count);
   const taken = new Set<string>();
   const groups: Group[] = [];
@@ -138,7 +177,7 @@ function groupSwatches(swatches: AuditColourSwatch[], threshold: number): Group[
   for (const s of ordered) {
     if (taken.has(s.hex)) continue;
     taken.add(s.hex);
-    const role = dominantRole(s);
+    const role = dominantRole(s, pageBg);
     const group: Group = { rep: s, role, members: [], variants: [] };
 
     for (const other of ordered) {
@@ -153,7 +192,7 @@ function groupSwatches(swatches: AuditColourSwatch[], threshold: number): Group[
       const d = safeDeltaE(s.hex, other.hex);
       if (d >= threshold) continue;
       // Same colour — but only fold it in if it's doing the same job.
-      if (dominantRole(other) !== role) continue;
+      if (dominantRole(other, pageBg) !== role) continue;
       group.members.push({ swatch: other, deltaE: d });
       taken.add(other.hex);
     }
@@ -168,7 +207,7 @@ function groupSwatches(swatches: AuditColourSwatch[], threshold: number): Group[
  * own detection; a hover/active state is inferred from evidence — perceptibly
  * but only slightly different, same job, sharing an element, and used far less.
  */
-function attachVariants(groups: Group[], swatches: AuditColourSwatch[]): void {
+function attachVariants(groups: Group[], swatches: AuditColourSwatch[], pageBg: string | null): void {
   // Opacity variants were already absorbed during grouping.
   const claimed = new Set(
     groups.flatMap((g) => [
@@ -181,7 +220,7 @@ function attachVariants(groups: Group[], swatches: AuditColourSwatch[]): void {
   // Hover/active states: unclaimed colours orbiting a token.
   for (const s of swatches) {
     if (claimed.has(s.hex)) continue;
-    const role = dominantRole(s);
+    const role = dominantRole(s, pageBg);
     const tags = new Set(topTags(s));
 
     let best: { group: Group; d: number } | null = null;
@@ -224,7 +263,8 @@ function nameGroups(groups: Group[]): string[] {
   const names = new Array<string>(groups.length);
   const hsl = groups.map((g) => hslOf(g.rep.hex));
 
-  const isNeutral = (i: number): boolean => hsl[i]!.s < NEUTRAL_SATURATION || hsl[i]!.h < 0;
+  const isNeutral = (i: number): boolean =>
+    colourfulness(groups[i]!.rep.hex) < NEUTRAL_CHROMA || hsl[i]!.h < 0;
 
   const neutralIdx = groups.map((_, i) => i).filter(isNeutral);
   const hueIdx = groups.map((_, i) => i).filter((i) => !isNeutral(i));
@@ -270,17 +310,22 @@ function nameGroups(groups: Group[]): string[] {
     families.push(fam);
   }
 
+  // Status colours arrive as a set. A site with one stray amber almost certainly
+  // has a warm accent — or a warm brand — not a lone "warning", so status names
+  // are only considered once there are enough hue families to form a real set.
+  const statusPlausible = families.length >= 3;
+
   families.forEach((fam, famIndex) => {
     const lead = fam[0]!;
     let base: string;
     if (famIndex === 0) {
       base = "brand";
     } else {
-      // Rare hues that match a status range are almost certainly status colours.
-      const status = statusName(hsl[lead]!.h);
-      base = status && groups[lead]!.rep.count < groups[families[0]![0]!]!.rep.count * 0.5
-        ? status
-        : ordinal("accent", famIndex - 1);
+      const status = statusPlausible ? statusName(hsl[lead]!.h) : null;
+      base =
+        status && groups[lead]!.rep.count < groups[families[0]![0]!]!.rep.count * 0.25
+          ? status
+          : ordinal("accent", famIndex - 1);
     }
     fam.forEach((idx, i) => {
       names[idx] = i === 0 ? base : `${base}-${i + 1}`;
@@ -304,28 +349,29 @@ function nameGroups(groups: Group[]): string[] {
 // ── Contrast ─────────────────────────────────────────────────────────────────
 
 /**
- * Text tokens against the surfaces they could plausibly sit on, so a merge can't
- * silently break AA. Deliberately *not* a full cartesian product: pairing every
- * ink against a saturated brand fill invents combinations nobody ships and
- * buries the real failures in false alarms. Neutral surfaces only.
+ * Every token against every other, keeping only the pairs that pass AA.
+ *
+ * Reporting failures was the wrong shape: a full matrix of a 21-token palette
+ * fails in most combinations, which is both alarming and useless — nobody was
+ * going to put that text on that background anyway. Inverted, the same
+ * computation becomes a pairing guide: here are the combinations that work.
+ * Nonsense pairs disappear on their own, because they don't pass.
  */
-function contrastMatrix(tokens: PaletteToken[]): ContrastPair[] {
-  const inks = tokens.filter((t) => t.role === "text");
-  const surfaces = tokens.filter(
-    (t) => t.role === "background" && hslOf(t.hex).s < NEUTRAL_SATURATION,
-  );
+function safeCombinations(tokens: PaletteToken[]): ContrastPair[] {
   const pairs: ContrastPair[] = [];
-  for (const bg of surfaces) {
-    for (const fg of inks) {
+  for (const bg of tokens) {
+    for (const fg of tokens) {
+      if (fg.hex === bg.hex) continue;
       try {
         const { ratio, passAA } = wcagContrast(fg.hex, bg.hex);
+        if (!passAA) continue;
         pairs.push({ fg: fg.hex, bg: bg.hex, fgName: fg.name, bgName: bg.name, ratio, passAA });
       } catch {
         // Unparseable colour — skip rather than fabricate a result.
       }
     }
   }
-  return pairs.sort((a, b) => a.ratio - b.ratio);
+  return pairs.sort((a, b) => b.ratio - a.ratio);
 }
 
 // ── Entry point ──────────────────────────────────────────────────────────────
@@ -344,8 +390,9 @@ export function analysePalette(
     return { tokens: [], contrast: [], distinct: 0, merged: 0, variants: 0 };
   }
 
-  const groups = groupSwatches(swatches, threshold);
-  attachVariants(groups, swatches);
+  const pageBg = pageBackgroundOf(swatches);
+  const groups = groupSwatches(swatches, threshold, pageBg);
+  attachVariants(groups, swatches, pageBg);
   const names = nameGroups(groups);
 
   const tokens: PaletteToken[] = groups.map((g, i) => ({
@@ -361,7 +408,7 @@ export function analysePalette(
 
   return {
     tokens,
-    contrast: contrastMatrix(tokens),
+    contrast: safeCombinations(tokens),
     distinct: swatches.length,
     merged: groups.reduce((sum, g) => sum + g.members.length, 0),
     variants: groups.reduce((sum, g) => sum + g.variants.length, 0),

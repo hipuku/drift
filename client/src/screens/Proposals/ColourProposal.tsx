@@ -1,19 +1,19 @@
 /**
  * Colour proposal (Layer 2, "what it could be") — palette rationalisation.
  *
- * One job: turn the site's mess into a palette you can ship, and say what to
- * swap. So the screen shows four things and hides the rest.
+ * Drift is reductive, never generative: every token here is a colour the site
+ * already ships. The job is to slim the palette down and say what to swap.
  *
- * The size control is expressed in *tokens*, not ΔE — nobody arrives wanting a
- * perceptual distance of 3, they want fewer colours. ΔE stays an implementation
- * detail: we precompute the palette at each threshold and let the slider pick
- * between the outcomes that actually differ.
- *
- * Cards rest quiet (swatch, name, hex) and open for the evidence behind a merge.
- * Contrast is a one-line safety signal, not a workspace. The migration map is a
- * takeaway, so it lives in Export rather than on the page.
+ * The size control reads in tokens, not ΔE, with the ΔE shown as a readout and
+ * a healthy band marking what a website palette usually needs (~10–16). The
+ * contrast panel is inverted from the obvious design: instead of listing the
+ * pairs that fail — most of a big palette, alarming and useless — it lists the
+ * pairs that *pass*, which turns it into a pairing guide and makes nonsense
+ * combinations disappear on their own.
  */
 
+import { faArrowDownAZ, faCheck, faDroplet, faPencil, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMemo, useState } from "react";
 import { Text } from "../../components/Text/Text.js";
 import { Badge } from "../../components/Badge/Badge.js";
@@ -30,6 +30,10 @@ import { hueOf } from "../../lib/hue.js";
 import styles from "./ColourProposal.module.css";
 
 const GROUP: StringTokenGroup = { group: "color", dtcgType: "color", tailwindKey: "colors" };
+
+/** What a website palette usually needs: 1–2 brand hues, a neutral ramp, maybe status. */
+const HEALTHY_MIN = 10;
+const HEALTHY_MAX = 16;
 
 type ColourExport = "css" | "tailwind" | "dtcg" | "replacements";
 const FORMATS: { id: ColourExport; label: string }[] = [
@@ -50,9 +54,8 @@ interface Rung {
 }
 
 /**
- * The distinct palettes available, fewest tokens first. Thresholds that produce
- * a palette we've already seen are dropped, so every slider stop is a real
- * change rather than a dead zone.
+ * The distinct palettes available, fewest tokens first. Thresholds producing a
+ * palette we've already seen are dropped, so every slider stop is a real change.
  */
 function buildLadder(families: AuditColourFamily[]): Rung[] {
   const bySize = new Map<number, Rung>();
@@ -66,7 +69,6 @@ function buildLadder(families: AuditColourFamily[]): Rung[] {
 export function ColourProposal({ families, onBack }: Props) {
   const ladder = useMemo(() => buildLadder(families), [families]);
 
-  // Start at the safe default (ΔE 2 — below the just-noticeable difference).
   const defaultIndex = useMemo(() => {
     let best = 0;
     ladder.forEach((r, i) => {
@@ -77,30 +79,68 @@ export function ColourProposal({ families, onBack }: Props) {
 
   const [index, setIndex] = useState(defaultIndex);
   const [renames, setRenames] = useState<Record<string, string>>({});
-  const [open, setOpen] = useState<string | null>(null);
-  const [showContrast, setShowContrast] = useState(false);
+  const [openToken, setOpenToken] = useState<string | null>(null);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [railOpen, setRailOpen] = useState(false);
+  const [sort, setSort] = useState<"hue" | "alpha">("hue");
 
   const rung = ladder[Math.min(index, ladder.length - 1)];
   const proposal = rung?.proposal;
 
   const nameOf = (t: PaletteToken): string => renames[t.name] ?? t.name;
 
-  const tokens = useMemo(
-    () => (proposal?.tokens ?? []).slice().sort((a, b) => hueOf(a.hex) - hueOf(b.hex) || b.count - a.count),
-    [proposal],
-  );
+  /** Resolve a hex to its current (possibly renamed) token name. */
+  const displayName = (hex: string): string => {
+    const t = proposal?.tokens.find((x) => x.hex === hex);
+    return t ? nameOf(t) : hex;
+  };
 
-  const failures = proposal?.contrast.filter((c) => !c.passAA) ?? [];
+  const tokens = useMemo(() => {
+    const list = (proposal?.tokens ?? []).slice();
+    if (sort === "alpha") {
+      return list.sort((a, b) =>
+        (renames[a.name] ?? a.name).localeCompare(renames[b.name] ?? b.name),
+      );
+    }
+    return list.sort((a, b) => hueOf(a.hex) - hueOf(b.hex) || b.count - a.count);
+  }, [proposal, sort, renames]);
+
+  /** Safe pairs grouped by the background they sit on. */
+  const byBackground = useMemo(() => {
+    const map = new Map<string, PaletteProposal["contrast"]>();
+    for (const c of proposal?.contrast ?? []) {
+      const list = map.get(c.bg) ?? [];
+      list.push(c);
+      map.set(c.bg, list);
+    }
+    return [...map.entries()];
+  }, [proposal]);
+
+  // Where on the track a healthy palette sits, for the band above the slider.
+  const band = useMemo(() => {
+    if (ladder.length < 2) return null;
+    const inRange = ladder
+      .map((r, i) => ({ i, n: r.proposal.tokens.length }))
+      .filter((x) => x.n >= HEALTHY_MIN && x.n <= HEALTHY_MAX);
+    if (inRange.length === 0) return null;
+    const span = ladder.length - 1;
+    return {
+      left: (inRange[0]!.i / span) * 100,
+      width: ((inRange[inRange.length - 1]!.i - inRange[0]!.i) / span) * 100,
+    };
+  }, [ladder]);
+
+  const count = proposal?.tokens.length ?? 0;
+  const isHealthy = count >= HEALTHY_MIN && count <= HEALTHY_MAX;
 
   const renderExport = (format: ColourExport): string => {
     if (!proposal) return "";
     if (format === "replacements") {
       const rows = migrationMap(proposal.tokens);
       if (rows.length === 0) return "/* Nothing to replace — every colour is already its own token. */";
-      const named = rows.map((r) => {
-        const token = proposal.tokens.find((t) => t.hex === r.to);
-        return `${r.from}  →  var(--${GROUP.group}-${token ? nameOf(token) : r.token})  /* ${r.count} uses */`;
-      });
+      const named = rows.map(
+        (r) => `${r.from}  →  var(--${GROUP.group}-${displayName(r.to)})  /* ${r.count} uses */`,
+      );
       return `/* Replace ${rows.length} colour${rows.length === 1 ? "" : "s"} */\n${named.join("\n")}`;
     }
     return exportStringTokens(
@@ -132,146 +172,251 @@ export function ColourProposal({ families, onBack }: Props) {
 
   return (
     <main className={styles.page}>
-      <header className={styles.head}>
-        {onBack && (
-          <button type="button" className={styles.back} onClick={onBack}>
-            ← Back to proposals
-          </button>
-        )}
-        <Text role="heading-lg" as="h1">
-          What your colour set could be
-        </Text>
-        <Text role="body" as="p" className={styles.intro}>
-          Your <strong>{proposal.distinct}</strong> colours become{" "}
-          <strong>{proposal.tokens.length}</strong> tokens you can ship.
-        </Text>
-      </header>
-
-      {/* Palette size, in the only unit that means anything here: tokens. */}
-      {ladder.length > 1 && (
-        <div className={styles.sizer}>
-          <label className={styles.sizerLabel} htmlFor="palette-size">
-            <span>fewer</span>
-            <input
-              id="palette-size"
-              className={styles.slider}
-              type="range"
-              min={0}
-              max={ladder.length - 1}
-              step={1}
-              value={Math.min(index, ladder.length - 1)}
-              onChange={(e) => setIndex(Number(e.target.value))}
-            />
-            <span>truer</span>
-          </label>
-          <Text role="label-sm" className={styles.sizerCount}>
-            {proposal.tokens.length} tokens
-          </Text>
-        </div>
-      )}
-
-      {/* Safety signal — a line, not a panel. */}
-      {proposal.contrast.length > 0 && (
-        <div className={styles.safety}>
-          <button
-            type="button"
-            className={styles.safetyToggle}
-            onClick={() => setShowContrast((s) => !s)}
-            aria-expanded={showContrast}
-          >
-            {failures.length === 0 ? (
-              <Badge variant="neutral">✓ All text passes AA</Badge>
-            ) : (
-              <Badge variant="warning">
-                {failures.length} text pair{failures.length === 1 ? "" : "s"} below AA
-              </Badge>
+      <div className={railOpen ? `${styles.layout} ${styles.layoutOpen}` : styles.layout}>
+        <div className={styles.mainCol}>
+          <header className={styles.head}>
+            {onBack && (
+              <button type="button" className={styles.back} onClick={onBack}>
+                ← Back to proposals
+              </button>
             )}
-            <span className={styles.safetyMore}>{showContrast ? "hide" : "check"}</span>
-          </button>
-          {showContrast && (
-            <div className={styles.rows}>
-              {proposal.contrast.map((c) => (
-                <div key={`${c.fg}-${c.bg}`} className={styles.contrastRow}>
-                  <span className={styles.pairSwatch} style={{ background: c.bg }}>
-                    <span style={{ color: c.fg }}>Aa</span>
-                  </span>
-                  <Text role="label-sm" className={styles.pairName}>
-                    {c.fgName} on {c.bgName}
-                  </Text>
-                  <Badge variant={c.passAA ? "neutral" : "warning"} mono>
-                    {c.ratio.toFixed(1)}:1
-                  </Badge>
+            <Text role="heading-lg" as="h1">
+              What your colour set could be
+            </Text>
+            <Text role="body" as="p" className={styles.intro}>
+              Your <strong>{proposal.distinct}</strong> colours become <strong>{count}</strong> tokens
+              you can ship — all of them colours you already use.
+            </Text>
+          </header>
+
+          {/* Size, in tokens. ΔE is a readout, never the control. */}
+          {ladder.length > 1 && (
+            <div className={styles.sizer}>
+              <div className={styles.sliderCol}>
+                <div className={styles.bandTrack} aria-hidden="true">
+                  {band && (
+                    <span
+                      className={styles.band}
+                      style={{ left: `${band.left}%`, width: `${band.width}%` }}
+                    />
+                  )}
                 </div>
-              ))}
+                <div className={styles.sliderRow}>
+                  <span className={styles.sliderEnd}>fewer</span>
+                  <input
+                    id="palette-size"
+                    className={styles.slider}
+                    type="range"
+                    min={0}
+                    max={ladder.length - 1}
+                    step={1}
+                    value={Math.min(index, ladder.length - 1)}
+                    onChange={(e) => setIndex(Number(e.target.value))}
+                    aria-label="Palette size"
+                  />
+                  <span className={styles.sliderEnd}>truer</span>
+                </div>
+              </div>
+              <div className={styles.readout}>
+                <Badge variant="neutral" mono>
+                  ΔE {rung!.threshold}
+                </Badge>
+                <Badge variant={isHealthy ? "info" : "neutral"}>{count} tokens</Badge>
+              </div>
             </div>
           )}
-        </div>
-      )}
+          {band && (
+            <Text role="label-sm" className={styles.bandHint}>
+              A website usually needs {HEALTHY_MIN}–{HEALTHY_MAX} tokens — marked on the track.
+            </Text>
+          )}
 
-      {/* The palette. Quiet at rest; the evidence is one click away. */}
-      <div className={styles.clusters}>
-        {tokens.map((t) => {
-          const isOpen = open === t.name;
-          const extras = t.members.length + t.variants.length;
-          return (
-            <div key={t.hex + t.name} className={styles.cluster}>
-              <div className={styles.swatch} style={{ background: t.hex }} aria-hidden="true" />
-              <div className={styles.body}>
-                <div className={styles.rowTop}>
-                  <input
-                    className={styles.nameInput}
-                    value={nameOf(t)}
-                    onChange={(e) => setRenames((r) => ({ ...r, [t.name]: e.target.value }))}
-                    aria-label={`Token name for ${t.hex}`}
-                    spellCheck={false}
-                  />
-                  <Text role="mono" className={styles.hex}>
-                    {t.hex}
-                  </Text>
-                </div>
+          {/* Sort at one end, the pairing guide at the other. */}
+          <div className={styles.controls}>
+            <div className={styles.sortRow} role="tablist" aria-label="Sort palette">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={sort === "hue"}
+                aria-label="Sort by hue"
+                title="Sort by hue"
+                className={sort === "hue" ? `${styles.sortTab} ${styles.sortTabOn}` : styles.sortTab}
+                onClick={() => setSort("hue")}
+              >
+                <FontAwesomeIcon icon={faDroplet} />
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={sort === "alpha"}
+                aria-label="Sort A to Z"
+                title="Sort A–Z"
+                className={sort === "alpha" ? `${styles.sortTab} ${styles.sortTabOn}` : styles.sortTab}
+                onClick={() => setSort("alpha")}
+              >
+                <FontAwesomeIcon icon={faArrowDownAZ} />
+              </button>
+            </div>
 
-                {extras > 0 && (
-                  <button
-                    type="button"
-                    className={styles.expand}
-                    onClick={() => setOpen(isOpen ? null : t.name)}
-                    aria-expanded={isOpen}
-                  >
-                    +{extras} folded in
-                  </button>
-                )}
+            <button
+              type="button"
+              className={styles.safetyToggle}
+              onClick={() => setRailOpen((r) => !r)}
+              aria-expanded={railOpen}
+            >
+              <Badge variant="neutral">{proposal.contrast.length} safe combinations</Badge>
+            </button>
+          </div>
 
-                {isOpen && (
-                  <div className={styles.detail}>
+          {/* The palette. */}
+          <div className={styles.clusters}>
+            {tokens.map((t) => {
+              const isOpen = openToken === t.name;
+              const isEditing = editing === t.name;
+              const opacities = t.variants.filter((v) => v.kind === "opacity").length;
+              const states = t.variants.filter((v) => v.kind === "hover").length;
+              const inputId = `token-${t.hex.replace(/[^a-z0-9]/gi, "")}`;
+              return (
+                <div key={t.hex + t.name} className={styles.cluster}>
+                  <div className={styles.swatch} style={{ background: t.hex }} aria-hidden="true" />
+                  <div className={styles.body}>
+                    <div className={styles.rowTop}>
+                      <span className={styles.nameWrap}>
+                        <input
+                          id={inputId}
+                          className={styles.nameInput}
+                          value={nameOf(t)}
+                          style={{ width: `${Math.max(nameOf(t).length, 3) + 1}ch` }}
+                          onChange={(e) => setRenames((r) => ({ ...r, [t.name]: e.target.value }))}
+                          onFocus={() => setEditing(t.name)}
+                          onBlur={() => setEditing(null)}
+                          aria-label={`Token name for ${t.hex}`}
+                          spellCheck={false}
+                        />
+                        <button
+                          type="button"
+                          className={styles.editBtn}
+                          aria-label={isEditing ? `Done renaming ${nameOf(t)}` : `Rename ${nameOf(t)}`}
+                          // Without this the button takes focus on click, which
+                          // blurs the input we just focused and drops us straight
+                          // back out of editing.
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            const el = document.getElementById(inputId) as HTMLInputElement | null;
+                            if (isEditing) el?.blur();
+                            else el?.focus();
+                          }}
+                        >
+                          <FontAwesomeIcon icon={isEditing ? faCheck : faPencil} />
+                        </button>
+                      </span>
+                      <Text role="mono" className={styles.hex}>
+                        {t.hex}
+                      </Text>
+                    </div>
+
+                    {/* Always present — the attribution is the evidence. */}
                     <Text role="label-sm" className={styles.usage}>
                       {t.role} · used {t.count}× · {t.pages} page{t.pages === 1 ? "" : "s"}
                       {t.tags.length ? ` · ${t.tags.join(", ")}` : ""}
                     </Text>
-                    {t.members.map((m) => (
-                      <span key={m.hex} className={styles.member}>
-                        <span className={styles.chip} style={{ background: m.hex }} aria-hidden="true" />
-                        <span className={styles.memberHex}>
-                          {m.hex} <span className={styles.de}>merged · ΔE {m.deltaE.toFixed(1)}</span>
+
+                    {(t.members.length > 0 || opacities > 0 || states > 0) && (
+                      <button
+                        type="button"
+                        className={styles.pillRow}
+                        onClick={() => setOpenToken(isOpen ? null : t.name)}
+                        aria-expanded={isOpen}
+                      >
+                        {t.members.length > 0 && <Badge variant="info">{t.members.length} merged</Badge>}
+                        {opacities > 0 && <Badge variant="neutral">{opacities} opacity kept</Badge>}
+                        {states > 0 && <Badge variant="neutral">{states} state kept</Badge>}
+                      </button>
+                    )}
+
+                    {isOpen && (
+                      <div className={styles.detail}>
+                        {t.members.map((m) => (
+                          <span key={m.hex} className={styles.member}>
+                            <span className={styles.chip} style={{ background: m.hex }} aria-hidden="true" />
+                            <span className={styles.memberHex}>
+                              {m.hex} <span className={styles.de}>merged · ΔE {m.deltaE.toFixed(1)}</span>
+                            </span>
+                          </span>
+                        ))}
+                        {t.variants.map((v) => (
+                          <span key={v.hex} className={styles.member}>
+                            <span className={styles.chip} style={{ background: v.hex }} aria-hidden="true" />
+                            <span className={styles.memberHex}>
+                              {v.hex}{" "}
+                              <span className={styles.de}>
+                                kept · {v.kind === "hover" ? "a state" : "lower opacity"}
+                              </span>
+                            </span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <ExportPanel formats={FORMATS} render={renderExport} />
+        </div>
+
+        {/* Pairing guide — the combinations that work, grouped by background. */}
+        {railOpen && (
+          <aside className={styles.rail} aria-label="Safe combinations">
+            <div className={styles.railInner}>
+              <div className={styles.railHeader}>
+                <Text role="heading-sm" as="h2">
+                  Safe combinations
+                </Text>
+                <button
+                  type="button"
+                  className={styles.railClose}
+                  onClick={() => setRailOpen(false)}
+                  aria-label="Close"
+                >
+                  <FontAwesomeIcon icon={faXmark} />
+                </button>
+              </div>
+              <div className={styles.railBody}>
+                {byBackground.length === 0 && (
+                  <Text role="body-sm" className={styles.usage}>
+                    No pair in this palette reaches AA. Try a truer palette.
+                  </Text>
+                )}
+                {byBackground.map(([bg, pairs]) => (
+                  <div key={bg} className={styles.railGroup}>
+                    <div className={styles.railGroupHead}>
+                      <span className={styles.chip} style={{ background: bg }} aria-hidden="true" />
+                      <Text role="label" className={styles.railGroupName}>
+                        on {displayName(bg)}
+                      </Text>
+                    </div>
+                    {pairs.map((c) => (
+                      <div key={`${c.fg}-${c.bg}`} className={styles.contrastRow}>
+                        <span className={styles.pairSwatch} style={{ background: c.bg }}>
+                          <span style={{ color: c.fg }}>Aa</span>
                         </span>
-                      </span>
-                    ))}
-                    {t.variants.map((v) => (
-                      <span key={v.hex} className={styles.member}>
-                        <span className={styles.chip} style={{ background: v.hex }} aria-hidden="true" />
-                        <span className={styles.memberHex}>
-                          {v.hex} <span className={styles.de}>kept as {v.kind === "hover" ? "a state" : "an opacity"}</span>
-                        </span>
-                      </span>
+                        <Text role="label-sm" className={styles.pairName}>
+                          {displayName(c.fg)}
+                        </Text>
+                        <Badge variant="neutral" mono>
+                          {c.ratio.toFixed(1)}:1
+                        </Badge>
+                      </div>
                     ))}
                   </div>
-                )}
+                ))}
               </div>
             </div>
-          );
-        })}
+          </aside>
+        )}
       </div>
-
-      <ExportPanel formats={FORMATS} render={renderExport} />
     </main>
   );
 }

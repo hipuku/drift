@@ -1,3 +1,21 @@
+/**
+ * How colourful a hex is, 0–1, as the plain RGB spread.
+ *
+ * HSL saturation is the wrong tool for telling a neutral from a hue: it
+ * inflates at extreme lightness, so a near-black with a faint cast (#1E2029)
+ * computes to 0.155 and reads as "blue" when every human sees a dark grey.
+ * The raw spread doesn't have that failure mode.
+ */
+export function colourfulness(hex: string): number {
+  const h = hex.replace(/^#/, "").trim();
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h.slice(0, 6);
+  if (!/^[0-9a-fA-F]{6}$/.test(full)) return 0;
+  const r = parseInt(full.slice(0, 2), 16);
+  const g = parseInt(full.slice(2, 4), 16);
+  const b = parseInt(full.slice(4, 6), 16);
+  return (Math.max(r, g, b) - Math.min(r, g, b)) / 255;
+}
+
 export interface Hsl {
   /** Degrees [0,360); -1 for achromatic. */
   h: number;
