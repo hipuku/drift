@@ -17,13 +17,16 @@ const FORMATS: { id: ExportFormat; label: string }[] = [
   { id: "dtcg", label: "DTCG" },
 ];
 
-interface Props {
+interface Props<T extends string> {
   /** Returns the export text for a given format. */
-  render: (format: ExportFormat) => string;
+  render: (format: T) => string;
+  /** Override the tabs — e.g. to append a takeaway artefact like replacements. */
+  formats?: { id: T; label: string }[];
 }
 
-export function ExportPanel({ render }: Props) {
-  const [format, setFormat] = useState<ExportFormat>("css");
+export function ExportPanel<T extends string = ExportFormat>({ render, formats }: Props<T>) {
+  const tabs = formats ?? (FORMATS as unknown as { id: T; label: string }[]);
+  const [format, setFormat] = useState<T>(tabs[0]!.id);
   const [copied, setCopied] = useState(false);
 
   const text = render(format);
@@ -38,7 +41,7 @@ export function ExportPanel({ render }: Props) {
     <section className={styles.export} aria-label="Export">
       <div className={styles.head}>
         <div className={styles.formats} role="tablist" aria-label="Export format">
-          {FORMATS.map((f) => (
+          {tabs.map((f) => (
             <button
               key={f.id}
               type="button"

@@ -38,57 +38,84 @@
   margin-top: var(--space-3);
 }
 
-/* ── Merge threshold ─────────────────────────────────────────────────────── */
-.thresholds {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-3);
+/* ── Palette size ────────────────────────────────────────────────────────── */
+.sizer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
   margin-top: var(--space-7);
 }
 
-.threshold {
+.sizerLabel {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  text-align: left;
-  background: var(--color-surface-default);
-  border: var(--border-width-default) solid var(--color-border-default);
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
-  cursor: pointer;
-  transition:
-    border-color var(--duration-fast) var(--ease-move),
-    background var(--duration-fast) var(--ease-move);
-}
-
-.threshold:hover {
-  background: var(--color-surface-subtle);
-}
-
-.thresholdOn,
-.thresholdOn:hover {
-  border-color: var(--color-primary-default);
-  background: var(--color-primary-subtle);
-  color: var(--color-primary-on-subtle);
-}
-
-.threshold:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
-.thresholdVal {
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-12);
   color: var(--color-ink-tertiary);
 }
 
-.thresholdOn .thresholdVal {
-  color: var(--color-primary-on-subtle);
+.slider {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--color-primary-default);
 }
 
-@media (max-width: 34rem) {
-  .thresholds {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.sizerCount {
+  flex-shrink: 0;
+  color: var(--color-ink-primary);
+  font-weight: var(--weight-medium);
+}
+
+/* ── Safety line ─────────────────────────────────────────────────────────── */
+.safety {
+  margin-top: var(--space-5);
+}
+
+.safetyToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.safetyMore {
+  font-size: var(--text-12);
+  color: var(--color-ink-tertiary);
+  text-decoration: underline;
+}
+
+/* ── Card detail, on demand ──────────────────────────────────────────────── */
+.expand {
+  align-self: flex-start;
+  margin-top: var(--space-1);
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
+  color: var(--color-ink-tertiary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.expand:hover {
+  color: var(--color-ink-primary);
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: var(--border-width-default) solid var(--color-border-subtle);
 }
 
 /* ── Clusters ────────────────────────────────────────────────────────────── */
