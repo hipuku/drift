@@ -830,7 +830,9 @@ export function Audit({ audit, onBack }: Props) {
                 <td className={styles.chipPreviewCell}>
                   <span className={styles.shadowChip} style={{ boxShadow: sh.value }} />
                 </td>
-                <td className={`${styles.valueCell} ${styles.valueCellTrunc}`}>{sh.value}</td>
+                <td className={`${styles.valueCell} ${styles.valueCellTrunc}`} title={sh.value}>
+                  {sh.value}
+                </td>
                 <td className={styles.tagsCell}>
                   <span className={styles.tagChips}>
                     {(sh.tags ?? []).map((tg) => (
@@ -853,7 +855,9 @@ export function Audit({ audit, onBack }: Props) {
                 <td className={styles.chipPreviewCell}>
                   <span className={styles.gradientSwatch} style={{ backgroundImage: g.value }} />
                 </td>
-                <td className={`${styles.valueCell} ${styles.valueCellWrap}`}>{g.value}</td>
+                <td className={`${styles.valueCell} ${styles.valueCellTrunc}`} title={g.value}>
+                  {g.value}
+                </td>
                 <TagsCell tags={g.tags} />
                 <td className={styles.usageCell}>{g.count.toLocaleString()}×</td>
               </tr>
@@ -924,15 +928,7 @@ export function Audit({ audit, onBack }: Props) {
                     {c.passAAA ? "AAA" : c.passAA ? "AA" : c.passAALarge ? "AA large only" : "Fails AA"}
                   </Badge>
                 </td>
-                <td className={styles.tagsCell}>
-                  <span className={styles.tagChips}>
-                    {c.sampleTags.map((tg) => (
-                      <span key={tg} className={styles.tagChip}>
-                        {tg}
-                      </span>
-                    ))}
-                  </span>
-                </td>
+                <TagsCell tags={c.sampleTags} />
                 <td className={styles.usageCell}>{c.count.toLocaleString()}×</td>
               </tr>
             ))}
@@ -1080,20 +1076,27 @@ export function Audit({ audit, onBack }: Props) {
 }
 
 /** A table with a header row and divider lines, used by every scalar token tab. */
+/**
+ * Every inventory table. Wrapped in an overflow-x container so a wide row —
+ * a long shadow string, a site with many element tags — scrolls inside the
+ * panel instead of stretching the page.
+ */
 function Table({ head, children, className }: { head: ReactNode[]; children: ReactNode; className?: string }) {
   return (
-    <table className={className ? `${styles.table} ${className}` : styles.table}>
-      <thead>
-        <tr>
-          {head.map((h, i) => (
-            <th key={i} className={i === head.length - 1 ? styles.thRight : undefined}>
-              {h}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>{children}</tbody>
-    </table>
+    <div className={styles.tableWrap}>
+      <table className={className ? `${styles.table} ${className}` : styles.table}>
+        <thead>
+          <tr>
+            {head.map((h, i) => (
+              <th key={i} className={i === head.length - 1 ? styles.thRight : undefined}>
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>{children}</tbody>
+      </table>
+    </div>
   );
 }
 
@@ -1121,15 +1124,36 @@ function deviceClass(px: number): string {
 }
 
 /** A table cell of element-tag chips — the shared attribution column. */
-function TagsCell({ tags }: { tags?: { tag: string; count: number }[] }) {
+/** Beyond this the chips stop informing and start pushing the row taller. */
+const MAX_TAG_CHIPS = 8;
+
+/**
+ * Element tags for a row. Accepts counted tags (most tables) or bare tag names
+ * (contrast pairs). Caps the visible chips so a site that uses one value on
+ * thirty element types doesn't turn one row into a paragraph — the rest are
+ * summarised in a titled "+N" chip.
+ */
+function TagsCell({ tags }: { tags?: ({ tag: string; count: number } | string)[] }) {
+  const all = (tags ?? []).map((t) => (typeof t === "string" ? { tag: t, count: null } : t));
+  const shown = all.slice(0, MAX_TAG_CHIPS);
+  const rest = all.slice(MAX_TAG_CHIPS);
   return (
     <td className={styles.tagsCell}>
       <span className={styles.tagChips}>
-        {(tags ?? []).map((tg) => (
-          <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
+        {shown.map((tg) => (
+          <span
+            key={tg.tag}
+            className={styles.tagChip}
+            title={tg.count != null ? `${tg.count.toLocaleString()}×` : undefined}
+          >
             {tg.tag}
           </span>
         ))}
+        {rest.length > 0 && (
+          <span className={styles.tagChip} title={rest.map((t) => t.tag).join(", ")}>
+            +{rest.length}
+          </span>
+        )}
       </span>
     </td>
   );
