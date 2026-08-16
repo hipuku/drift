@@ -193,5 +193,5 @@ npm run typecheck # tsc, no emit
 | Real-time | WebSockets (live crawl progress) |
 | Colour maths | `@haus/colour-utils` |
 
-See [DECISIONS.md](DECISIONS.md) for the architecture, the audit model, and the
+See [DESIGN.md](DESIGN.md) for the architecture, the audit model, and the
 reasoning behind each engineering choice.

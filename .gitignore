@@ -18,10 +18,8 @@ npm-debug.log*
 /playwright-report
 /playwright/.cache
 
-# Docker / local data
+# Local data
 redis-data
-
-# Local tooling
 
 # Redis local persistence
 appendonlydir/

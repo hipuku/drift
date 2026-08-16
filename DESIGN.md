@@ -265,7 +265,7 @@ It was cut so the product does one thing completely rather than two things
 partly. The audit is a claim Drift can defend on its own evidence; a proposal is
 a recommendation, and recommendations need a stronger warrant than "this is
 arithmetically tidier". The code remains in git history and the reasoning is
-kept in DECISIONS.md as the v2 direction.
+kept in DESIGN.md as the v2 direction.
 
 What survived the cut, because it belongs to measurement rather than
 recommendation:
