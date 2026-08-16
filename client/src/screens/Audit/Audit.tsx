@@ -30,7 +30,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { Button } from "../../components/Button/Button.js";
 import { Callout } from "../../components/Callout/Callout.js";
 import { Text } from "../../components/Text/Text.js";
 import type { AuditAuthored, AuditColourSwatch, CssUnit, SiteAudit } from "../../lib/api.js";
@@ -80,7 +79,6 @@ const TAB_ICON: Record<string, IconDefinition> = {
 
 interface Props {
   audit: SiteAudit;
-  onProposals?: () => void;
   onBack?: () => void;
 }
 
@@ -330,7 +328,7 @@ function LengthValue({ px, unit, children }: { px: number; unit: DisplayUnit; ch
   );
 }
 
-export function Audit({ audit, onProposals, onBack }: Props) {
+export function Audit({ audit, onBack }: Props) {
   const s = audit.summary;
   const t = audit.typography;
   const family = t.families[0]?.family ?? null;
@@ -552,11 +550,6 @@ export function Audit({ audit, onProposals, onBack }: Props) {
             <button type="button" className={styles.ghost} onClick={exportJson}>
               Export
             </button>
-            {onProposals && (
-              <Button variant="primary" onClick={onProposals}>
-                Fix it →
-              </Button>
-            )}
           </div>
         </div>
 

@@ -7,13 +7,6 @@ import type { SiteAudit } from "../lib/api.js";
 import { Audit } from "../screens/Audit/Audit.js";
 import { Configure } from "../screens/Configure/Configure.js";
 import { Crawling } from "../screens/Crawling/Crawling.js";
-import { ColourProposal } from "../screens/Proposals/ColourProposal.js";
-import { ProposalsHub } from "../screens/Proposals/ProposalsHub.js";
-import { RadiusProposal } from "../screens/Proposals/RadiusProposal.js";
-import { ShadowProposal } from "../screens/Proposals/ShadowProposal.js";
-import { SpacingProposal } from "../screens/Proposals/SpacingProposal.js";
-import { ZIndexProposal } from "../screens/Proposals/ZIndexProposal.js";
-import { TypeScaleProposal } from "../screens/Proposals/TypeScaleProposal.js";
 import { Failed, Thinking } from "../screens/Status/Status.js";
 import { ProductShell } from "../shell/ProductShell.js";
 import styles from "./DevHarness.module.css";
@@ -248,42 +241,7 @@ const STATES: HarnessState[] = [
   {
     id: "audit",
     label: "Audit",
-    render: () => <Audit audit={MOCK_SITE_AUDIT} onProposals={() => {}} />,
-  },
-  {
-    id: "proposals",
-    label: "Proposals · Hub",
-    render: () => <ProposalsHub onSelect={() => {}} audit={MOCK_SITE_AUDIT} />,
-  },
-  {
-    id: "type-scale",
-    label: "Proposal · Type",
-    render: (key) => <TypeScaleProposal key={key} typography={MOCK_SITE_AUDIT.typography} />,
-  },
-  {
-    id: "colour",
-    label: "Proposal · Colour",
-    render: (key) => <ColourProposal key={key} families={MOCK_SITE_AUDIT.colourFamilies} />,
-  },
-  {
-    id: "spacing",
-    label: "Proposal · Spacing",
-    render: (key) => <SpacingProposal key={key} spacing={MOCK_SITE_AUDIT.spacing} />,
-  },
-  {
-    id: "radius",
-    label: "Proposal · Radius",
-    render: (key) => <RadiusProposal key={key} radius={MOCK_SITE_AUDIT.radius} />,
-  },
-  {
-    id: "shadow",
-    label: "Proposal · Shadow",
-    render: (key) => <ShadowProposal key={key} shadow={MOCK_SITE_AUDIT.shadow} />,
-  },
-  {
-    id: "zindex",
-    label: "Proposal · Layering",
-    render: (key) => <ZIndexProposal key={key} zIndex={MOCK_SITE_AUDIT.zIndex ?? []} />,
+    render: () => <Audit audit={MOCK_SITE_AUDIT} />,
   },
   {
     id: "crawling",

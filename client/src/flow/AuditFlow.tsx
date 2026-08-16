@@ -1,13 +1,13 @@
 /**
- * The audit flow orchestrator (deterministic path).
+ * The audit flow orchestrator.
  *
- *   configure → crawling → audit (diagnosis) → proposals → (type | colour)
+ *   configure → crawling → audit (the inventory)
  *                    │          │
- *                    └──────────┴──────────────────────────────────────→ error
+ *                    └──────────┴───────────────────────────────────────→ error
  *
- * Crawl completion (WebSocket + poll) triggers the deterministic audit fetch.
- * The audit is the landing — the honest "what it is". Proposals are opened from
- * it on demand.
+ * Crawl completion (WebSocket + poll) triggers the audit fetch. The audit is
+ * the destination — the honest "what the site actually ships", closed by the
+ * token export.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -20,37 +20,9 @@ import { useCrawlProgress } from "../lib/useCrawlProgress.js";
 import { Audit } from "../screens/Audit/Audit.js";
 import { Configure } from "../screens/Configure/Configure.js";
 import { Crawling } from "../screens/Crawling/Crawling.js";
-import { ColourProposal } from "../screens/Proposals/ColourProposal.js";
-import { ProposalsHub, type ProposalKind } from "../screens/Proposals/ProposalsHub.js";
-import { RadiusProposal } from "../screens/Proposals/RadiusProposal.js";
-import { ShadowProposal } from "../screens/Proposals/ShadowProposal.js";
-import { SpacingProposal } from "../screens/Proposals/SpacingProposal.js";
-import { ZIndexProposal } from "../screens/Proposals/ZIndexProposal.js";
-import { TypeScaleProposal } from "../screens/Proposals/TypeScaleProposal.js";
 import { Failed, Thinking } from "../screens/Status/Status.js";
 
-type Phase =
-  | "configure"
-  | "crawling"
-  | "loading"
-  | "audit"
-  | "proposals"
-  | "proposals-type"
-  | "proposals-colour"
-  | "proposals-spacing"
-  | "proposals-radius"
-  | "proposals-shadow"
-  | "proposals-zindex"
-  | "error";
-
-const PROPOSAL_PHASE: Record<ProposalKind, Phase> = {
-  type: "proposals-type",
-  colour: "proposals-colour",
-  spacing: "proposals-spacing",
-  radius: "proposals-radius",
-  shadow: "proposals-shadow",
-  zindex: "proposals-zindex",
-};
+type Phase = "configure" | "crawling" | "loading" | "audit" | "error";
 
 function hostOf(raw: string): string {
   for (const candidate of [raw, `https://${raw}`]) {
@@ -79,8 +51,8 @@ export function AuditFlow() {
   }, []);
 
   // Forward navigation pushes a history entry so the browser Back button walks
-  // the flow (proposal → hub → audit) instead of leaving the app. Back buttons
-  // call history.back(); popstate is the single place that reacts to a pop.
+  // the flow instead of leaving the app. popstate is the single place that
+  // reacts to a pop.
   const go = useCallback((next: Phase) => {
     setPhase(next);
     window.history.pushState({ phase: next }, "");
@@ -95,7 +67,7 @@ export function AuditFlow() {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
-  // On crawl completion, fetch the deterministic audit and land on it.
+  // On crawl completion, fetch the audit and land on it.
   const loadAudit = useCallback(
     async (id: string) => {
       setPhase("loading");
@@ -138,12 +110,6 @@ export function AuditFlow() {
     [fail],
   );
 
-  // Opened from the audit. Every proposal derives from the audit itself, so
-  // there's nothing further to fetch.
-  const openProposals = useCallback(() => go("proposals"), [go]);
-
-  const back = useCallback(() => window.history.back(), []);
-
   const reset = useCallback(() => {
     loadedRef.current = false;
     setPhase("configure");
@@ -166,35 +132,7 @@ export function AuditFlow() {
         />
       );
     case "audit":
-      return audit ? <Audit audit={audit} onProposals={openProposals} onBack={reset} /> : null;
-    case "proposals":
-      return (
-        <ProposalsHub
-          onSelect={(kind) => go(PROPOSAL_PHASE[kind])}
-          onBack={back}
-          audit={audit ?? undefined}
-        />
-      );
-    case "proposals-type":
-      return audit ? <TypeScaleProposal typography={audit.typography} onBack={back} /> : null;
-    case "proposals-colour":
-      return audit ? <ColourProposal families={audit.colourFamilies} onBack={back} /> : null;
-    case "proposals-spacing":
-      return audit ? (
-        <SpacingProposal spacing={audit.spacing} onBack={back} />
-      ) : null;
-    case "proposals-radius":
-      return audit ? (
-        <RadiusProposal radius={audit.radius} onBack={back} />
-      ) : null;
-    case "proposals-shadow":
-      return audit ? (
-        <ShadowProposal shadow={audit.shadow} onBack={back} />
-      ) : null;
-    case "proposals-zindex":
-      return audit ? (
-        <ZIndexProposal zIndex={audit.zIndex ?? []} onBack={back} />
-      ) : null;
+      return audit ? <Audit audit={audit} onBack={reset} /> : null;
     case "error":
       return <Failed message={error} onRetry={reset} />;
   }
