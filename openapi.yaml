@@ -1,0 +1,389 @@
+openapi: 3.1.0
+info:
+  title: Drift API
+  version: 0.1.0
+  description: >
+    Drift crawls a live website and reports the design system it actually ships.
+    A crawl runs for minutes as a BullMQ job on Redis, so the flow is: enqueue a
+    crawl, then either poll the result endpoint or pass a `callbackUrl` webhook.
+    Live progress is also streamed over a WebSocket at the server root (not
+    modelled here — connect and receive JSON progress frames with `pagesCrawled`,
+    `maxPages`, `lastUrl`, `lastTitle`, `elementsTotal`; the `/crawl/{jobId}/result`
+    endpoint is the authority on completion).
+
+
+    No API key, no per-run cost, no model: every response is computed.
+  license:
+    name: MIT
+    url: https://github.com/hipuku/drift/blob/main/LICENSE
+  contact:
+    name: Drift
+    url: https://github.com/hipuku/drift
+
+servers:
+  - url: http://localhost:3001
+    description: >
+      Local backend (`npm run dev:server`, needs Redis + Playwright Chromium).
+      The deployed site at drift.hipuku.dev is a static fixture-replay demo and
+      does not expose a live API — run it locally to hit these endpoints.
+
+# The API is intentionally unauthenticated: every response is deterministic and
+# computed, there are no keys, and no per-run cost. An empty security requirement
+# documents that no credentials are needed.
+security: []
+
+paths:
+  /discover:
+    post:
+      summary: Resolve a URL and list candidate pages
+      description: >
+        Resolves the host (a site may only serve `www`, so follow `rootUrl`, not
+        the string you sent) and lists same-origin pages from the sitemap, or the
+        homepage's links as a fallback.
+      operationId: discover
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              properties:
+                url:
+                  type: string
+                  description: A URL or bare host. Absolute or `example.com` both work.
+                  example: stripe.com
+      responses:
+        "200":
+          description: Resolved origin and candidate pages.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DiscoverResult" }
+        "400":
+          description: '`url` is missing.'
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "422":
+          description: Invalid, unreachable, or non-http(s) URL — with a human-readable message.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+
+  /crawl:
+    post:
+      summary: Enqueue a crawl
+      description: >
+        Validates the URL at the edge (a bad URL is a 422, no job queued) and
+        enqueues a crawl. Poll `/crawl/{jobId}/result`, or pass a `callbackUrl`
+        to be notified. Page URLs must be absolute and same-origin; a relative or
+        absent `pages` list falls back to a breadth-first walk from the root
+        (capped at `MAX_CRAWL_PAGES = 10`).
+      operationId: enqueueCrawl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CrawlRequest" }
+      responses:
+        "202":
+          description: Crawl accepted; poll or await the webhook.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [jobId]
+                properties:
+                  jobId: { type: string, example: "24" }
+        "400":
+          description: '`url` is missing.'
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "422":
+          description: Unusable URL or invalid `callbackUrl` (validated at enqueue time).
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+      callbacks:
+        crawlFinished:
+          "{$request.body#/callbackUrl}":
+            post:
+              operationId: crawlFinishedCallback
+              summary: Crawl finished (webhook)
+              description: >
+                When a `callbackUrl` is given, Drift POSTs the finished audit
+                (`crawl.completed`) or the failure (`crawl.failed`). Headers carry
+                `x-drift-event` and, when `DRIFT_WEBHOOK_SECRET` is set,
+                `x-drift-signature` (`sha256=…`, HMAC of the raw body). The target
+                is SSRF-guarded and validated at enqueue time; delivery retries a
+                5xx, gives up on a 4xx, and never fails a crawl that succeeded.
+              requestBody:
+                content:
+                  application/json:
+                    schema: { $ref: "#/components/schemas/WebhookEvent" }
+              responses:
+                "2XX":
+                  description: Receiver acknowledged. A 4xx stops retries; a 5xx is retried.
+
+  /crawl/{jobId}/result:
+    get:
+      summary: Job status and raw crawl result
+      operationId: getCrawlResult
+      parameters:
+        - $ref: "#/components/parameters/JobId"
+      responses:
+        "200":
+          description: The job's status, and the raw crawl result once completed.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/JobResult" }
+        "404":
+          description: No such job.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+
+  /crawl/{jobId}/audit:
+    get:
+      summary: The full audit for a completed crawl
+      description: The design-token inventory, contrast findings, and summary. A `409` until the crawl finishes.
+      operationId: getAudit
+      parameters:
+        - $ref: "#/components/parameters/JobId"
+      responses:
+        "200":
+          description: The audit.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SiteAudit" }
+        "404":
+          description: No such job.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "409":
+          description: The crawl has not finished (never a 200 all-zeros audit).
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+
+  /crawl/{jobId}/typography:
+    get:
+      summary: Typography inventory only
+      operationId: getTypography
+      parameters:
+        - $ref: "#/components/parameters/JobId"
+      responses:
+        "200":
+          description: Deterministic typography inventory derived from the completed crawl.
+          content:
+            application/json:
+              schema: { type: object, description: "Font families, roles, sizes, weights, line-heights and letter-spacings in use." }
+        "404": { description: No such job., content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "409": { description: The crawl has not finished., content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /crawl/{jobId}/colours:
+    get:
+      summary: Colour clusters only
+      operationId: getColours
+      parameters:
+        - $ref: "#/components/parameters/JobId"
+      responses:
+        "200":
+          description: Perceptually clustered colours with usage.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clusters: { type: array, items: { type: object } }
+                  clusterCount: { type: integer }
+                  distinctColours: { type: integer }
+        "404": { description: No such job., content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "409": { description: The crawl has not finished., content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+webhooks:
+  crawlFinished:
+    post:
+      operationId: crawlFinishedWebhook
+      summary: Crawl completed or failed
+      description: Same payload as the per-request `callbacks` above; see `/crawl`.
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WebhookEvent" }
+      responses:
+        "2XX": { description: Acknowledged. }
+
+components:
+  parameters:
+    JobId:
+      name: jobId
+      in: path
+      required: true
+      schema: { type: string }
+      description: The id returned by `POST /crawl`.
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error: { type: string, description: A human-readable message. }
+      required: [error]
+
+    DiscoveredPage:
+      type: object
+      properties:
+        url: { type: string, format: uri }
+        path: { type: string, example: /pricing }
+        title: { type: string }
+      required: [url, path, title]
+
+    DiscoverResult:
+      type: object
+      properties:
+        rootUrl: { type: string, format: uri, description: "The resolved origin. Follow this, not the input." }
+        host: { type: string }
+        via:
+          type: string
+          enum: [sitemap, links]
+          description: How pages were found — a sitemap, or homepage anchors (fallback).
+        pages:
+          type: array
+          items: { $ref: "#/components/schemas/DiscoveredPage" }
+      required: [rootUrl, host, pages]
+
+    CrawlRequest:
+      type: object
+      required: [url]
+      properties:
+        url: { type: string, example: "https://stripe.com/" }
+        pages:
+          type: array
+          items: { type: string, format: uri }
+          description: Absolute, same-origin page URLs to crawl. Capped at 10.
+          example: ["https://stripe.com/", "https://stripe.com/pricing"]
+        maxPages:
+          type: integer
+          minimum: 1
+          maximum: 10
+          description: Page ceiling for the BFS fallback. Clamped to [1, 10].
+        callbackUrl:
+          type: string
+          format: uri
+          description: >
+            Public http(s) endpoint to POST the finished audit to. SSRF-guarded
+            (loopback/private/link-local refused unless allowlisted via
+            `DRIFT_WEBHOOK_ALLOWED_HOSTS`) and validated at enqueue time.
+
+    JobResult:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [queued, active, completed, failed]
+        result:
+          description: The raw crawl result once completed; null otherwise.
+          oneOf:
+            - $ref: "#/components/schemas/CrawlResult"
+            - type: "null"
+        error:
+          type: string
+          description: Present when status is `failed` (e.g. a crawl that reached zero pages).
+      required: [status]
+
+    CrawlResult:
+      type: object
+      properties:
+        rootUrl: { type: string, format: uri }
+        crawledAt: { type: string, format: date-time }
+        pages:
+          type: array
+          items:
+            type: object
+            properties:
+              url: { type: string, format: uri }
+              title: { type: string }
+              elementCount: { type: integer }
+      required: [rootUrl, crawledAt, pages]
+
+    AuditSummary:
+      type: object
+      description: Headline counts for the audit.
+      properties:
+        pages: { type: integer }
+        distinctColours: { type: integer }
+        colourFamilies: { type: integer }
+        colourNearDuplicates: { type: integer, description: Colours within ~2 ΔE of another (genuine redundancy). }
+        fontFamilies: { type: integer }
+        typeSizes: { type: integer }
+        fontWeights: { type: integer }
+        typeOffScale: { type: integer, description: Type sizes off the closest modular scale. }
+        spacings: { type: integer }
+        spacingOffGrid: { type: integer, description: Spacing values off a 4px grid. }
+        radii: { type: integer }
+        radiusNearDuplicates: { type: integer }
+        shadows: { type: integer }
+        contrastPairs: { type: integer, description: Distinct text/background pairs evaluated. }
+        contrastFailingAA: { type: integer, description: Pairs failing WCAG AA for normal text. }
+
+    ContrastFinding:
+      type: object
+      properties:
+        foreground: { type: string }
+        background: { type: string }
+        ratio: { type: number }
+        passAA: { type: boolean }
+        passAAA: { type: boolean }
+        passAALarge: { type: boolean }
+        count: { type: integer, description: Text elements using this exact pair. }
+        sampleTags: { type: array, items: { type: string } }
+        pages: { type: array, items: { type: string }, description: Pages this pair appears on. }
+
+    SiteAudit:
+      type: object
+      description: >
+        The full audit. `summary` and `contrast` are the machine-friendly
+        headline; the inventory arrays carry every deduplicated token in use,
+        attributed to the pages it appears on.
+      properties:
+        rootUrl: { type: string, format: uri }
+        summary: { $ref: "#/components/schemas/AuditSummary" }
+        colourFamilies: { type: array, items: { type: object }, description: "Colour families with swatches, usage and near-duplicate relations." }
+        typography: { type: object, description: "Families, roles, sizes, weights, line-heights, letter-spacings." }
+        spacing: { type: array, items: { type: object } }
+        radius: { type: array, items: { type: object } }
+        shadow: { type: array, items: { type: object } }
+        borders: { type: array, items: { type: object } }
+        opacity: { type: array, items: { type: object } }
+        zIndex: { type: array, items: { type: object } }
+        blur: { type: array, items: { type: object } }
+        gradients: { type: array, items: { type: object } }
+        motion: { type: object }
+        breakpoints: { type: array, items: { type: object } }
+        authored: { type: object, description: "How the site authors its tokens — units per category, plus its own custom properties." }
+        contrast:
+          type: array
+          items: { $ref: "#/components/schemas/ContrastFinding" }
+          description: Text/background pairs with their WCAG verdict, worst first.
+      required: [rootUrl, summary]
+
+    WebhookEvent:
+      oneOf:
+        - type: object
+          title: crawl.completed
+          properties:
+            event: { type: string, const: crawl.completed }
+            jobId: { type: string }
+            site: { type: string, format: uri }
+            audit: { $ref: "#/components/schemas/SiteAudit" }
+          required: [event, jobId, site, audit]
+        - type: object
+          title: crawl.failed
+          properties:
+            event: { type: string, const: crawl.failed }
+            jobId: { type: string }
+            site: { type: string, format: uri }
+            error: { type: string }
+          required: [event, jobId, site, error]

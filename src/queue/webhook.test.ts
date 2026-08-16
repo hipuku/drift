@@ -43,6 +43,21 @@ describe("assertDeliverable", () => {
       assertDeliverable("https://this-host-does-not-exist-4471.invalid/hook"),
     ).rejects.toThrow(/could not be resolved/);
   });
+
+  it("allows a loopback host when it is explicitly allowlisted", async () => {
+    // Off by default (the loopback test above proves that). Opt a host in and it
+    // is exempt from the private-address refusal — how a trusted internal or
+    // test receiver is permitted.
+    const prev = process.env.DRIFT_WEBHOOK_ALLOWED_HOSTS;
+    process.env.DRIFT_WEBHOOK_ALLOWED_HOSTS = "127.0.0.1, localhost";
+    try {
+      await expect(assertDeliverable("http://127.0.0.1:3001/hook")).resolves.toBeInstanceOf(URL);
+      await expect(assertDeliverable("http://localhost:3001/hook")).resolves.toBeInstanceOf(URL);
+    } finally {
+      if (prev === undefined) delete process.env.DRIFT_WEBHOOK_ALLOWED_HOSTS;
+      else process.env.DRIFT_WEBHOOK_ALLOWED_HOSTS = prev;
+    }
+  });
 });
 
 /**

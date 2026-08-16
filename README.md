@@ -53,7 +53,9 @@ multi-page Playwright crawl is far too long for a request/response cycle.
 ## API
 
 The backend is a standalone service. Every screen in the client is built on
-these endpoints, and they are equally usable from CI or a script.
+these endpoints, and they are equally usable from CI or a script. The full
+contract, including the webhook callbacks, is in [`openapi.yaml`](openapi.yaml)
+(OpenAPI 3.1) — open it in any OpenAPI viewer.
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -150,9 +152,12 @@ The URL is validated when you enqueue the crawl, not at delivery time, so a
 mistake is a `422` while you're still on the line. It must be public http(s):
 loopback, private ranges, and link-local addresses are refused, and the host is
 resolved before the check, since a public name can still point somewhere
-private. Delivery is retried on a network error or a `5xx` and given up on after
-a `4xx`; it is best-effort, and never fails a crawl that succeeded — the audit
-is on the API regardless.
+private. A trusted internal host can be allowlisted with the
+`DRIFT_WEBHOOK_ALLOWED_HOSTS` env var (comma-separated), which exempts it from
+that refusal — off by default, and how a loopback receiver is permitted in a
+test run. Delivery is retried on a network error or a `5xx` and given up on
+after a `4xx`; it is best-effort, and never fails a crawl that succeeded — the
+audit is on the API regardless.
 
 The audit's `summary` counts (e.g. `contrastFailingAA`) and per-pair `contrast`
 verdicts close the CI loop: crawl on deploy, receive the audit, and fail the

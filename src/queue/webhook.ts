@@ -46,8 +46,25 @@ function isPrivateAddress(address: string, family: number): boolean {
 }
 
 /**
+ * Hosts the operator has explicitly allowlisted via `DRIFT_WEBHOOK_ALLOWED_HOSTS`
+ * (comma-separated), exempt from the private-address refusal. Empty by default,
+ * so the SSRF guard is fully on unless someone opts a trusted internal host in —
+ * for example a receiver inside the same network, or a loopback receiver in a
+ * test run. Read fresh each call so tests and config can set it at runtime.
+ */
+function allowedHosts(): Set<string> {
+  return new Set(
+    (process.env.DRIFT_WEBHOOK_ALLOWED_HOSTS ?? "")
+      .split(",")
+      .map((h) => h.trim().toLowerCase())
+      .filter(Boolean),
+  );
+}
+
+/**
  * Throw unless the URL is a public http(s) endpoint. Resolves the host, because
- * a name can point anywhere — `localtest.me` resolves to 127.0.0.1.
+ * a name can point anywhere — `localtest.me` resolves to 127.0.0.1. A host in
+ * `DRIFT_WEBHOOK_ALLOWED_HOSTS` bypasses the private-address check.
  */
 export async function assertDeliverable(raw: string): Promise<URL> {
   let url: URL;
@@ -63,7 +80,8 @@ export async function assertDeliverable(raw: string): Promise<URL> {
   if (resolved.length === 0) {
     throw new Error("callbackUrl host could not be resolved.");
   }
-  if (resolved.some((r) => isPrivateAddress(r.address, r.family))) {
+  const allowlisted = allowedHosts().has(url.hostname.toLowerCase());
+  if (!allowlisted && resolved.some((r) => isPrivateAddress(r.address, r.family))) {
     throw new Error("callbackUrl must not point at a private or loopback address.");
   }
   return url;
