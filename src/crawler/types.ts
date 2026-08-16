@@ -123,6 +123,31 @@ export interface MediaBreakpoint {
   type: "min" | "max";
 }
 
+/** The token categories we read authored units for (from the CSSOM). */
+export type AuthoredCategoryName = "spacing" | "type" | "radius" | "border";
+
+/**
+ * A single authored declaration read from a stylesheet rule — the *value string
+ * as written* (`0.5rem`, `8px 16px`, `clamp(1rem, 2vw, 3rem)`), before unit
+ * classification. `getComputedStyle` throws this away; the CSSOM preserves it.
+ */
+export interface RawAuthoredDeclaration {
+  category: AuthoredCategoryName;
+  value: string;
+}
+
+/** A CSS custom property declared on :root / html — the site's own token. */
+export interface RawCustomProperty {
+  name: string;
+  value: string;
+}
+
+/** Authored values read from a page's stylesheets (raw strings, parsed Node-side). */
+export interface RawAuthoredCss {
+  declarations: RawAuthoredDeclaration[];
+  customProperties: RawCustomProperty[];
+}
+
 export interface PageExtraction {
   url: string;
   title: string;
@@ -130,6 +155,8 @@ export interface PageExtraction {
   elements: ExtractedElement[];
   /** Breakpoints from @media rules in accessible stylesheets. */
   breakpoints?: MediaBreakpoint[];
+  /** Authored values + custom properties read from the CSSOM. Absent pre-authored crawls. */
+  authored?: RawAuthoredCss;
 }
 
 export interface CrawlResult {

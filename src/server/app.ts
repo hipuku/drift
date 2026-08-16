@@ -1,25 +1,18 @@
 /**
  * HTTP API.
  *
- * Thin Express surface over the queue and the audit service. Dependencies are
- * injected so the app is testable without Redis, BullMQ, or a live model.
+ * Thin, deterministic Express surface over the crawl queue and the audit
+ * builders. Dependencies are injected so the app is testable without Redis or
+ * BullMQ. No model: every endpoint is computed.
  *
  *   POST /crawl                     enqueue a crawl, return { jobId }
  *   GET  /crawl/:jobId/result       fetch crawl status / result
- *   POST /audit/:jobId              run the audit (may pause for review)
- *   GET  /audit/:jobId/checkpoint   the pending review, if the audit paused
- *   POST /audit/:jobId/resume       resume with human judgments
+ *   GET  /crawl/:jobId/typography   deterministic typography inventory
+ *   GET  /crawl/:jobId/colours      deterministic colour clusters
+ *   GET  /crawl/:jobId/audit        the full deterministic audit
  */
 
 import express, { type Express, type NextFunction, type Request, type Response } from "express";
-import {
-  type Auditor,
-  CheckpointNotFoundError,
-  CrawlResultNotFoundError,
-} from "../agent/auditService.js";
-import { loadCheckpoint, type RedisLike } from "../agent/checkpoint.js";
-import { pendingReview } from "../agent/runner.js";
-import type { Judgment } from "../agent/types.js";
 import { collectAudit } from "../analysis/audit.js";
 import { clusterColours } from "../analysis/colours.js";
 import { collectTypography } from "../analysis/typography.js";
@@ -29,8 +22,6 @@ import type { CrawlJobs } from "../queue/crawlJobs.js";
 
 export interface AppDeps {
   jobs: CrawlJobs;
-  audit: Auditor;
-  redis: RedisLike;
   discover: (url: string) => Promise<DiscoverResult>;
 }
 
@@ -175,49 +166,8 @@ export function createApp(deps: AppDeps): Express {
     }),
   );
 
-  app.post(
-    "/audit/:jobId",
-    wrap(async (req, res) => {
-      const outcome = await deps.audit.start(String(req.params.jobId));
-      res.json(outcome);
-    }),
-  );
-
-  app.get(
-    "/audit/:jobId/checkpoint",
-    wrap(async (req, res) => {
-      const checkpoint = await loadCheckpoint(deps.redis, String(req.params.jobId));
-      if (!checkpoint) {
-        res.status(404).json({ error: "no pending checkpoint" });
-        return;
-      }
-      res.json(pendingReview(checkpoint));
-    }),
-  );
-
-  app.post(
-    "/audit/:jobId/resume",
-    wrap(async (req, res) => {
-      const judgments = req.body?.judgments;
-      if (!Array.isArray(judgments)) {
-        res.status(400).json({ error: "judgments array is required" });
-        return;
-      }
-      const outcome = await deps.audit.resume(String(req.params.jobId), judgments as Judgment[]);
-      res.json(outcome);
-    }),
-  );
-
-  // Map known domain errors to status codes.
+  // Any uncaught handler rejection becomes a calm 500.
   app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-    if (err instanceof CrawlResultNotFoundError) {
-      res.status(409).json({ error: err.message });
-      return;
-    }
-    if (err instanceof CheckpointNotFoundError) {
-      res.status(404).json({ error: err.message });
-      return;
-    }
     const message = err instanceof Error ? err.message : "internal error";
     res.status(500).json({ error: message });
   });

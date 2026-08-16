@@ -1,14 +1,11 @@
 /**
  * BullMQ-backed crawl job access.
  *
- * Wraps the queue behind two narrow interfaces so the HTTP layer and the audit
- * service depend on small contracts, not on BullMQ directly: CrawlJobs (enqueue
- * + fetch result) for the API, and CrawlResultSource (the agent's input) for
- * the auditor. One adapter satisfies both.
+ * Wraps the queue behind a narrow interface so the HTTP layer depends on a small
+ * contract, not on BullMQ directly: CrawlJobs (enqueue + fetch result).
  */
 
 import type { Queue } from "bullmq";
-import type { CrawlResultSource } from "../agent/auditService.js";
 import type { CrawlResult } from "../crawler/types.js";
 import { enqueueCrawl, type CrawlJobData } from "./crawlQueue.js";
 
@@ -17,7 +14,7 @@ export interface CrawlJobs {
   getResult(jobId: string): Promise<{ status: string; result?: CrawlResult }>;
 }
 
-export class BullCrawlJobs implements CrawlJobs, CrawlResultSource {
+export class BullCrawlJobs implements CrawlJobs {
   constructor(private readonly queue: Queue<CrawlJobData>) {}
 
   async enqueue(data: CrawlJobData): Promise<string> {
@@ -34,10 +31,5 @@ export class BullCrawlJobs implements CrawlJobs, CrawlResultSource {
       return { status, result: job.returnvalue as CrawlResult };
     }
     return { status };
-  }
-
-  async getCrawlResult(jobId: string): Promise<CrawlResult | null> {
-    const { result } = await this.getResult(jobId);
-    return result ?? null;
   }
 }

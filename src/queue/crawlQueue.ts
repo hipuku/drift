@@ -34,8 +34,10 @@ export function createCrawlQueue(): Queue<CrawlJobData> {
   return new Queue<CrawlJobData>(CRAWL_QUEUE_NAME, {
     connection: redisConnection(),
     defaultJobOptions: {
-      attempts: 2,
-      backoff: { type: "exponential", delay: 2000 },
+      // No retry. A crawl that fails by exhausting memory OOM-crashes the whole
+      // worker process; BullMQ would then re-run the same heavy job on restart,
+      // turning one crash into a poison-message loop. One attempt, no backoff.
+      attempts: 1,
       // Keep recent results briefly; drop the rest to bound Redis memory.
       removeOnComplete: { age: 3600, count: 100 },
       removeOnFail: { age: 86_400 },

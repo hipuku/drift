@@ -1,5 +1,5 @@
 /**
- * Shared interstitials: the agent-working spinner and the terminal error card.
+ * Shared interstitials: the working spinner and the terminal error card.
  * Small, presentational, used by AuditFlow between the substantive screens.
  */
 
@@ -13,7 +13,7 @@ interface ThinkingProps {
   detail: string;
 }
 
-/** Indeterminate "agent is working" state — running or resuming the audit. */
+/** Indeterminate "working" state — shown while the crawl/aggregation runs. */
 export function Thinking({ title, detail }: ThinkingProps) {
   return (
     <div className={styles.screen}>

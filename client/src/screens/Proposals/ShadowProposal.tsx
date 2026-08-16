@@ -1,21 +1,23 @@
 /**
- * Shadow proposal (Layer 2, "what it could be") — an elevation ladder.
+ * Shadow proposal (Layer 2, "what it could be") — consolidate into an elevation
+ * ladder.
  *
  * Orders the site's ad-hoc shadows by computed elevation and names them as a
- * ladder (sm…). Toggle Current↔Proposed: Current shows every observed shadow in
- * elevation order, flagging ones that fold into a level they aren't the
- * representative of; Proposed shows the clean named ladder with the shadows that
- * consolidate into each level. Previews render on a fixed light canvas so the
- * shadows read regardless of theme. Export as CSS / Tailwind / DTCG.
+ * ladder (sm…). Toggle Current↔Proposed via the shared ProposalScaffold:
+ * Current shows every observed shadow in elevation order, flagging ones that
+ * fold into a level they aren't the representative of; Proposed shows the clean
+ * named ladder with the shadows that consolidate into each level. Previews
+ * render on a fixed light canvas so the shadows read regardless of theme.
  */
 
 import { useMemo, useState } from "react";
-import { Text } from "../../components/Text/Text.js";
 import { Badge } from "../../components/Badge/Badge.js";
 import { ExportPanel } from "../../components/ExportPanel/ExportPanel.js";
+import { Text } from "../../components/Text/Text.js";
 import type { AuditShadowUsage } from "../../lib/api.js";
 import { exportStringTokens, type StringTokenEntry, type StringTokenGroup } from "../../lib/exportTokens.js";
 import { buildElevationLadder, elevationWeight, parseShadow } from "../../lib/shadowScale.js";
+import { ProposalScaffold } from "./ProposalScaffold.js";
 import styles from "./ShadowProposal.module.css";
 
 const GROUP: StringTokenGroup = { group: "shadow", dtcgType: "shadow", tailwindKey: "boxShadow" };
@@ -71,57 +73,27 @@ export function ShadowProposal({ shadow, onBack }: Props) {
         });
 
   return (
-    <main className={styles.page}>
-      <header className={styles.head}>
-        {onBack && (
-          <button type="button" className={styles.back} onClick={onBack}>
-            ← Back to proposals
-          </button>
-        )}
-        <Text role="heading-lg" as="h1">
-          What your shadows could be
-        </Text>
-        <Text role="body" as="p" className={styles.intro}>
-          <strong>{usages.length}</strong> distinct shadow{usages.length === 1 ? "" : "s"} form a{" "}
+    <ProposalScaffold
+      onBack={onBack}
+      title="What your shadows could be"
+      intro={
+        <>
+          <strong>{usages.length}</strong> shadow{usages.length === 1 ? "" : "s"} in use · order into a{" "}
           <strong>{ladder.length}</strong>-level elevation ladder
           {foldable > 0 ? (
             <>
               {" "}
-              · <strong>{foldable}</strong> consolidate
+              · <strong>{foldable}</strong> to consolidate
             </>
           ) : null}
           .
-        </Text>
-      </header>
-
-      {/* Apply toggle */}
-      <div className={styles.applyRow}>
-        <div className={styles.toggle} role="tablist" aria-label="Preview">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={!applied}
-            className={!applied ? `${styles.tab} ${styles.tabOn}` : styles.tab}
-            onClick={() => setApplied(false)}
-          >
-            Current
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={applied}
-            className={applied ? `${styles.tab} ${styles.tabOn}` : styles.tab}
-            onClick={() => setApplied(true)}
-          >
-            Proposed
-          </button>
-        </div>
-        <Text role="label-sm" className={styles.applyHint}>
-          {applied ? "Elevation ladder applied" : "Showing the site's current shadows"}
-        </Text>
-      </div>
-
-      {/* Elevation ladder — previews on a fixed light canvas */}
+        </>
+      }
+      applied={applied}
+      onAppliedChange={setApplied}
+      hint={applied ? "Elevation ladder applied" : "Showing the site's current shadows"}
+      exportPanel={<ExportPanel render={(format) => exportStringTokens(GROUP, exportEntries, format)} />}
+    >
       <div className={styles.ladder}>
         {rows.map((row) => (
           <div key={row.key} className={styles.row}>
@@ -144,8 +116,6 @@ export function ShadowProposal({ shadow, onBack }: Props) {
           </div>
         ))}
       </div>
-
-      <ExportPanel render={(format) => exportStringTokens(GROUP, exportEntries, format)} />
-    </main>
+    </ProposalScaffold>
   );
 }

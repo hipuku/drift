@@ -2,8 +2,8 @@
  * Redis connection for BullMQ.
  *
  * Reads REDIS_URL (e.g. redis://127.0.0.1:6379) and falls back to a local
- * default. The same connection backs the queue, the workers, and — later —
- * checkpoint state storage, so it is defined once here.
+ * default. The same connection backs the queue and the workers, so it is
+ * defined once here.
  */
 
 import type { ConnectionOptions } from "bullmq";

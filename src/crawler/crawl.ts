@@ -15,14 +15,25 @@
  */
 
 import { chromium, type BrowserContext, type Browser } from "playwright";
-import { extractBreakpoints, extractLinks, extractRawElements } from "./extract.js";
+import {
+  extractAuthoredDeclarations,
+  extractBreakpoints,
+  extractLinks,
+  extractRawElements,
+} from "./extract.js";
 import { normaliseElement } from "./normalise.js";
 import type { CrawlOptions, CrawlResult, PageExtraction } from "./types.js";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
 
-/** Hard ceiling on pages per crawl — bounds time, memory, and politeness. */
-export const MAX_CRAWL_PAGES = 40;
+/**
+ * Hard ceiling on pages per crawl — bounds time, memory, and politeness.
+ * Kept modest while the pipeline still retains every page's raw elements
+ * (memory scales with elements × pages). Raises to ~25 once the crawl aggregates
+ * incrementally. The design language lives in the shared stylesheet, so a handful
+ * of pages already captures the system; more pages only add attribution.
+ */
+export const MAX_CRAWL_PAGES = 10;
 
 export function clampPages(n: number): number {
   if (!Number.isFinite(n)) return 1;
@@ -62,7 +73,11 @@ async function visit(context: BrowserContext, url: string, timeout: number): Pro
     const elements = rawElements.map(normaliseElement);
     const hrefs = await page.evaluate(extractLinks);
     const breakpoints = await page.evaluate(extractBreakpoints);
-    return { extraction: { url, title, elementCount: elements.length, elements, breakpoints }, hrefs };
+    const authored = await page.evaluate(extractAuthoredDeclarations);
+    return {
+      extraction: { url, title, elementCount: elements.length, elements, breakpoints, authored },
+      hrefs,
+    };
   } catch (err) {
     // A single failed page should not abort the crawl; skip and continue.
     process.stderr.write(`  ! skipped ${url}: ${err instanceof Error ? err.message : String(err)}\n`);

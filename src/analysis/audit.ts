@@ -16,6 +16,7 @@ import {
   type ColourRole,
 } from "./colours.js";
 import { deltaE } from "@haus/colour-utils";
+import { summariseAuthored, type AuthoredSummary } from "./authored.js";
 import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "./typeScale.js";
 import type { CrawlResult } from "../crawler/types.js";
 
@@ -220,6 +221,8 @@ export interface SiteAudit {
   gradients?: StringTagUsage[];
   motion?: MotionUsage;
   breakpoints?: BreakpointUsage[];
+  /** How the site authors its tokens (units per category) + its own custom properties. */
+  authored?: AuthoredSummary;
 }
 
 // ── Colour family classification ─────────────────────────────────────────────
@@ -408,6 +411,18 @@ function collectTypography(result: CrawlResult): SiteAudit["typography"] {
  */
 const MIN_TOKEN_PX = 1;
 
+/**
+ * Quantise a resolved px value before it becomes a token key. A single authored
+ * value (e.g. `0.125rem`) resolves to sub-pixel-different pixels across contexts
+ * (`1.96195` vs `1.96209`), which would otherwise surface as separate tokens.
+ * Rounding to 2 dp merges those resolution artifacts without conflating values
+ * that genuinely differ (real tokens differ by ≥1px). It does *not* clean up the
+ * fractional value itself — that needs the authored unit (read from the CSSOM).
+ */
+function quantize(px: number): number {
+  return Math.round(px * 100) / 100;
+}
+
 interface SpacingTally {
   count: number;
   properties: Map<SpacingProperty, number>;
@@ -416,7 +431,8 @@ interface SpacingTally {
 
 function collectSpacing(result: CrawlResult): SpacingUsage[] {
   const values = new Map<number, SpacingTally>();
-  const record = (v: number, property: SpacingProperty, tag: string) => {
+  const record = (raw: number, property: SpacingProperty, tag: string) => {
+    const v = quantize(raw);
     if (v < MIN_TOKEN_PX) return;
     let t = values.get(v);
     if (!t) {
@@ -457,7 +473,8 @@ function collectRadius(result: CrawlResult): RadiusUsage[] {
   const tally = new Map<number, { count: number; tags: Map<string, number> }>();
   for (const page of result.pages) {
     for (const el of page.elements) {
-      for (const v of el.styles.borderRadius) {
+      for (const raw of el.styles.borderRadius) {
+        const v = quantize(raw);
         if (v < MIN_TOKEN_PX) continue;
         let t = tally.get(v);
         if (!t) {
@@ -502,7 +519,8 @@ function collectBorders(result: CrawlResult): BorderUsage[] {
     for (const el of page.elements) {
       const widths = el.styles.borderWidths;
       if (!widths) continue;
-      widths.forEach((w, i) => {
+      widths.forEach((raw, i) => {
+        const w = quantize(raw);
         if (w < MIN_TOKEN_PX) return;
         let t = tally.get(w);
         if (!t) {
@@ -714,6 +732,7 @@ export function collectAudit(result: CrawlResult): SiteAudit {
   const gradients = collectGradients(result);
   const motion = collectMotion(result);
   const breakpoints = collectBreakpoints(result);
+  const authored = summariseAuthored(result.pages);
 
   const distinctColours = colourFamilies.reduce((n, f) => n + f.swatches.length, 0);
   // Redundancy = colours indistinguishable from another (tight ΔE), so a
@@ -749,5 +768,7 @@ export function collectAudit(result: CrawlResult): SiteAudit {
     gradients,
     motion,
     breakpoints,
+    authored:
+      authored.categories.length || authored.customProperties.length ? authored : undefined,
   };
 }

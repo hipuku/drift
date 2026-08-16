@@ -1,20 +1,22 @@
 /**
- * Z-index proposal (Layer 2, "what it could be") — a named layering ladder.
+ * Z-index proposal (Layer 2, "what it could be") — consolidate onto a named
+ * layering ladder.
  *
  * Maps the site's arbitrary stacking values onto a canonical, evenly-spaced
- * ladder (dropdown…toast) by order. Toggle Current↔Proposed: Current shows the
- * site's raw z-index values with the layer each maps to; Proposed shows the
- * clean ladder. Bars encode stacking *order* (rank), not raw magnitude, so a
- * stray 9999 doesn't flatten the rest. Export as CSS / Tailwind / DTCG.
+ * ladder (dropdown…toast) by order. Toggle Current↔Proposed via the shared
+ * ProposalScaffold: Current shows the site's raw z-index values with the layer
+ * each maps to; Proposed shows the clean ladder. Bars encode stacking *order*
+ * (rank), not raw magnitude, so a stray 9999 doesn't flatten the rest.
  */
 
 import { useMemo, useState } from "react";
-import { Text } from "../../components/Text/Text.js";
 import { Badge } from "../../components/Badge/Badge.js";
 import { ExportPanel } from "../../components/ExportPanel/ExportPanel.js";
+import { Text } from "../../components/Text/Text.js";
 import type { AuditNumberTagUsage } from "../../lib/api.js";
 import { exportTokens, type TokenEntry, type TokenGroup } from "../../lib/exportTokens.js";
 import { assignLayers } from "../../lib/zIndexScale.js";
+import { ProposalScaffold } from "./ProposalScaffold.js";
 import styles from "./ZIndexProposal.module.css";
 
 const GROUP: TokenGroup = { group: "z", type: "number", tailwindKey: "zIndex" };
@@ -47,19 +49,13 @@ export function ZIndexProposal({ zIndex, onBack }: Props) {
   }));
 
   return (
-    <main className={styles.page}>
-      <header className={styles.head}>
-        {onBack && (
-          <button type="button" className={styles.back} onClick={onBack}>
-            ← Back to proposals
-          </button>
-        )}
-        <Text role="heading-lg" as="h1">
-          What your layering could be
-        </Text>
-        <Text role="body" as="p" className={styles.intro}>
-          <strong>{assignments.length}</strong> stacking value{assignments.length === 1 ? "" : "s"} map to a named
-          ladder
+    <ProposalScaffold
+      onBack={onBack}
+      title="What your layering could be"
+      intro={
+        <>
+          <strong>{assignments.length}</strong> stacking value{assignments.length === 1 ? "" : "s"} in use · map to a
+          named ladder
           {inflated > 0 ? (
             <>
               {" "}
@@ -67,37 +63,13 @@ export function ZIndexProposal({ zIndex, onBack }: Props) {
             </>
           ) : null}
           .
-        </Text>
-      </header>
-
-      {/* Apply toggle */}
-      <div className={styles.applyRow}>
-        <div className={styles.toggle} role="tablist" aria-label="Preview">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={!applied}
-            className={!applied ? `${styles.tab} ${styles.tabOn}` : styles.tab}
-            onClick={() => setApplied(false)}
-          >
-            Current
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={applied}
-            className={applied ? `${styles.tab} ${styles.tabOn}` : styles.tab}
-            onClick={() => setApplied(true)}
-          >
-            Proposed
-          </button>
-        </div>
-        <Text role="label-sm" className={styles.applyHint}>
-          {applied ? "Named ladder applied" : "Showing the site's current z-index values"}
-        </Text>
-      </div>
-
-      {/* Layer ladder — highest layer on top */}
+        </>
+      }
+      applied={applied}
+      onAppliedChange={setApplied}
+      hint={applied ? "Named ladder applied" : "Showing the site's current z-index values"}
+      exportPanel={<ExportPanel render={(format) => exportTokens(GROUP, exportEntries, format)} />}
+    >
       <div className={styles.ladder}>
         {rows
           .slice()
@@ -126,8 +98,6 @@ export function ZIndexProposal({ zIndex, onBack }: Props) {
             </div>
           ))}
       </div>
-
-      <ExportPanel render={(format) => exportTokens(GROUP, exportEntries, format)} />
-    </main>
+    </ProposalScaffold>
   );
 }

@@ -7,7 +7,7 @@ import styles from "./Configure.module.css";
 
 const VISIBLE = 10;
 /** Mirrors the backend's MAX_CRAWL_PAGES ceiling (how many pages one audit visits). */
-const CRAWL_CEILING = 40;
+const CRAWL_CEILING = 10;
 
 interface DiscoveredPage {
   url: string;

@@ -35,10 +35,10 @@ function crawl(elements: ExtractedElement[]): CrawlResult {
 describe("collectAudit", () => {
   const audit = collectAudit(
     crawl([
-      el({ tag: "h1", color: "#111111", fontFamily: "Inter", fontSize: 32, fontWeight: 700, padding: [8, 0, 8, 0], borderRadius: [4], boxShadow: "0 1px 2px rgba(0,0,0,.1)" }, true, "h1"),
-      el({ tag: "p", color: "#1a1a1a", fontFamily: "Inter", fontSize: 16, fontWeight: 400, padding: [4, 0, 4, 0] }, true, "p"),
-      el({ tag: "p", color: "#1b1b1b", fontFamily: "Inter", fontSize: 16, fontWeight: 400 }, true, "p"),
-      el({ tag: "a", color: "#2563eb", fontFamily: "Inter", fontSize: 16, fontWeight: 500 }, true, "a"),
+      el({ color: "#111111", fontFamily: "Inter", fontSize: 32, fontWeight: 700, padding: [8, 0, 8, 0], borderRadius: [4], boxShadow: "0 1px 2px rgba(0,0,0,.1)" }, true, "h1"),
+      el({ color: "#1a1a1a", fontFamily: "Inter", fontSize: 16, fontWeight: 400, padding: [4, 0, 4, 0] }, true, "p"),
+      el({ color: "#1b1b1b", fontFamily: "Inter", fontSize: 16, fontWeight: 400 }, true, "p"),
+      el({ color: "#2563eb", fontFamily: "Inter", fontSize: 16, fontWeight: 500 }, true, "a"),
       el({ backgroundColor: "#ffffff" }, true, "div"),
     ]),
   );
@@ -71,5 +71,27 @@ describe("collectAudit", () => {
     expect(audit.spacing.map((s) => s.value)).toContain(8);
     expect(audit.radius.map((r) => r.value)).toContain(4);
     expect(audit.shadow.length).toBe(1);
+  });
+
+  it("merges sub-pixel resolution artifacts into one quantised token", () => {
+    // The same authored value (e.g. 0.125rem) resolves to sub-pixel-different
+    // pixels across contexts; these must collapse to one token, not several.
+    const a = collectAudit(
+      crawl([
+        el({ padding: [1.96195, 0, 0, 0] }, true, "input"),
+        el({ padding: [1.96209, 0, 0, 0] }, true, "input"),
+        el({ borderRadius: [3.4597] }, false, "div"),
+        el({ borderRadius: [3.46015] }, false, "div"),
+      ]),
+    );
+    const spacings = a.spacing.filter((s) => Math.round(s.value) === 2);
+    expect(spacings).toHaveLength(1);
+    expect(spacings[0]!.value).toBe(1.96);
+    expect(spacings[0]!.count).toBe(2);
+
+    const radii = a.radius.filter((r) => Math.round(r.value) === 3);
+    expect(radii).toHaveLength(1);
+    expect(radii[0]!.value).toBe(3.46);
+    expect(radii[0]!.count).toBe(2);
   });
 });

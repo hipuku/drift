@@ -1,10 +1,10 @@
 /**
  * The backend contract, client side.
  *
- * Mirrors the server's request/response shapes (src/agent/types.ts,
- * src/queue/crawlQueue.ts) and wraps every call to the `/api` proxy in a thin
- * helper that surfaces the server's friendly `error` string. Kept in one place
- * so the screens fetch through typed functions, never raw URLs.
+ * Mirrors the server's request/response shapes (src/queue/crawlQueue.ts,
+ * src/analysis/*) and wraps every call to the `/api` proxy in a thin helper that
+ * surfaces the server's friendly `error` string. Kept in one place so the
+ * screens fetch through typed functions, never raw URLs. Deterministic — no model.
  */
 
 // ── Wire types (mirror the backend) ─────────────────────────────────────────
@@ -24,32 +24,6 @@ export interface CrawlResultMeta {
   pages: { url: string; title: string; elementCount: number }[];
 }
 
-export interface ReviewItem {
-  id: string;
-  summary: string;
-}
-
-export type JudgmentDecision = "intentional_variant" | "consolidation_target";
-
-export interface Judgment {
-  id: string;
-  decision: JudgmentDecision;
-}
-
-export interface ReportFinding {
-  severity: "low" | "medium" | "high";
-  area: "colour" | "contrast" | "spacing" | "typography" | "shadow" | "other";
-  description: string;
-  recommendation: string;
-}
-
-export interface AuditReport {
-  healthScore: number;
-  summary: string;
-  findings: ReportFinding[];
-  consolidationOpportunities: string[];
-}
-
 /** The deterministic typography inventory (mirrors src/analysis/typography.ts). */
 export interface TypographyInventory {
   families: { family: string; count: number; pages: string[] }[];
@@ -57,16 +31,6 @@ export interface TypographyInventory {
   baseSizePx: number | null;
   primaryFamily: string | null;
 }
-
-/**
- * What `/audit` and `/audit/:id/resume` return. The server's checkpoint outcome
- * also carries the serialised agent state; the client only needs the question
- * and items, so the extra fields are intentionally not modelled here.
- */
-export type AgentOutcome =
-  | { status: "checkpoint"; question: string; items: ReviewItem[] }
-  | { status: "report"; report: AuditReport; findings?: unknown }
-  | { status: "aborted"; reason: string };
 
 // ── Fetch helpers ───────────────────────────────────────────────────────────
 
@@ -313,6 +277,26 @@ export interface SiteAudit {
   breakpoints?: AuditBreakpointUsage[]; // media-query widths, px
   gradients?: AuditStringTagUsage[]; // raw gradient declarations
   motion?: AuditMotion;
+  authored?: AuditAuthored; // authored units per category + the site's own custom properties
+}
+
+/** How the site authors its tokens — read from the CSSOM, not computed px. */
+export type CssUnit =
+  | "px" | "rem" | "em" | "percent" | "vw" | "vh" | "vmin" | "vmax"
+  | "ch" | "ex" | "unitless" | "clamp" | "calc" | "zero" | "other";
+
+export interface AuditAuthoredCategory {
+  category: "spacing" | "type" | "radius" | "border";
+  units: { unit: CssUnit; count: number }[];
+  dominant: CssUnit | null;
+  total: number;
+}
+
+export interface AuditAuthored {
+  categories: AuditAuthoredCategory[];
+  customProperties: { name: string; value: string }[];
+  /** True when type is dominantly authored in px — an accessibility risk. */
+  typeInPx: boolean;
 }
 
 /** The full deterministic audit for a completed crawl. */
@@ -320,16 +304,6 @@ export async function getAudit(jobId: string): Promise<SiteAudit> {
   const res = await fetch(`/api/crawl/${encodeURIComponent(jobId)}/audit`);
   if (!res.ok) throw await failure(res);
   return (await res.json()) as SiteAudit;
-}
-
-/** Run the audit for a completed crawl. May pause for human review. */
-export function startAudit(jobId: string): Promise<AgentOutcome> {
-  return postJson(`/audit/${encodeURIComponent(jobId)}`, {});
-}
-
-/** Resume a paused audit with the human's judgments. */
-export function resumeAudit(jobId: string, judgments: Judgment[]): Promise<AgentOutcome> {
-  return postJson(`/audit/${encodeURIComponent(jobId)}/resume`, { judgments });
 }
 
 /** The progress WebSocket lives on the same origin as `/api`, under `/ws`. */

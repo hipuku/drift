@@ -1,17 +1,17 @@
 /**
- * Spacing proposal (Layer 2, "what it could be") — snap to a base grid.
+ * Spacing proposal (Layer 2, "what it could be") — consolidate to a base grid.
  *
  * Detects the base unit the site's spacing is already closest to (4 vs 8px),
- * builds a clean ramp covering the observed range, and renders a scale of
- * bars. Toggle Current↔Proposed: Current shows the site's ad-hoc values with
- * off-grid ones flagged (and the step they'd snap to); Proposed shows the clean
- * ramp. Export as CSS vars / Tailwind spacing / DTCG. Fully deterministic.
+ * builds a clean ramp covering the observed range, and renders a scale of bars.
+ * Toggle Current↔Proposed via the shared ProposalScaffold: Current shows the
+ * site's ad-hoc values with off-grid ones flagged (and the step they'd snap to);
+ * Proposed shows the clean ramp. Fully deterministic.
  */
 
 import { useMemo, useState } from "react";
-import { Text } from "../../components/Text/Text.js";
 import { Badge } from "../../components/Badge/Badge.js";
 import { ExportPanel } from "../../components/ExportPanel/ExportPanel.js";
+import { Text } from "../../components/Text/Text.js";
 import type { AuditSpacingUsage } from "../../lib/api.js";
 import { exportTokens, type TokenEntry, type TokenGroup } from "../../lib/exportTokens.js";
 import { robustMax } from "../../lib/stats.js";
@@ -22,6 +22,7 @@ import {
   detectBaseUnit,
   type BaseUnit,
 } from "../../lib/spacingScale.js";
+import { ProposalScaffold } from "./ProposalScaffold.js";
 import styles from "./SpacingProposal.module.css";
 
 const GROUP: TokenGroup = { group: "space", type: "dimension", tailwindKey: "spacing" };
@@ -74,19 +75,38 @@ export function SpacingProposal({ spacing, onBack }: Props) {
           };
         });
 
-  return (
-    <main className={styles.page}>
-      <header className={styles.head}>
-        {onBack && (
-          <button type="button" className={styles.back} onClick={onBack}>
-            ← Back to proposals
+  const controls = (
+    <div className={styles.bases} role="radiogroup" aria-label="Base unit">
+      {BASE_UNITS.map((u) => {
+        const active = u === base;
+        const isDetected = detected?.base === u;
+        return (
+          <button
+            key={u}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            className={active ? `${styles.baseBtn} ${styles.baseOn}` : styles.baseBtn}
+            onClick={() => setBase(u)}
+          >
+            <Text role="label">{u}px grid</Text>
+            <Text role="mono" className={styles.baseVal}>
+              {u}·n
+            </Text>
+            {isDetected && <span className={styles.detected}>detected</span>}
           </button>
-        )}
-        <Text role="heading-lg" as="h1">
-          What your spacing could be
-        </Text>
-        <Text role="body" as="p" className={styles.intro}>
-          <strong>{values.length}</strong> distinct spacing value{values.length === 1 ? "" : "s"}
+        );
+      })}
+    </div>
+  );
+
+  return (
+    <ProposalScaffold
+      onBack={onBack}
+      title="What your spacing could be"
+      intro={
+        <>
+          <strong>{values.length}</strong> spacing value{values.length === 1 ? "" : "s"} in use
           {detected ? (
             <>
               {" "}
@@ -96,65 +116,18 @@ export function SpacingProposal({ spacing, onBack }: Props) {
           {offGrid > 0 ? (
             <>
               {" "}
-              · <strong>{offGrid}</strong> sit off it
+              · <strong>{offGrid}</strong> to consolidate
             </>
           ) : null}
           .
-        </Text>
-      </header>
-
-      {/* Base-unit picker */}
-      <div className={styles.bases} role="radiogroup" aria-label="Base unit">
-        {BASE_UNITS.map((u) => {
-          const active = u === base;
-          const isDetected = detected?.base === u;
-          return (
-            <button
-              key={u}
-              type="button"
-              role="radio"
-              aria-checked={active}
-              className={active ? `${styles.baseBtn} ${styles.baseOn}` : styles.baseBtn}
-              onClick={() => setBase(u)}
-            >
-              <Text role="label">{u}px grid</Text>
-              <Text role="mono" className={styles.baseVal}>
-                {u}·n
-              </Text>
-              {isDetected && <span className={styles.detected}>detected</span>}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Apply toggle */}
-      <div className={styles.applyRow}>
-        <div className={styles.toggle} role="tablist" aria-label="Preview">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={!applied}
-            className={!applied ? `${styles.tab} ${styles.tabOn}` : styles.tab}
-            onClick={() => setApplied(false)}
-          >
-            Current
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={applied}
-            className={applied ? `${styles.tab} ${styles.tabOn}` : styles.tab}
-            onClick={() => setApplied(true)}
-          >
-            Proposed
-          </button>
-        </div>
-        <Text role="label-sm" className={styles.applyHint}>
-          {applied ? `${base}px grid applied` : "Showing the site's current values"}
-        </Text>
-      </div>
-
-      {/* Spacing rail */}
+        </>
+      }
+      controls={controls}
+      applied={applied}
+      onAppliedChange={setApplied}
+      hint={applied ? `${base}px grid applied` : "Showing the site's current values"}
+      exportPanel={<ExportPanel render={(format) => exportTokens(GROUP, exportEntries, format)} />}
+    >
       <div className={styles.ladder}>
         {rows.map((row) => (
           <div key={row.key} className={styles.row}>
@@ -180,8 +153,6 @@ export function SpacingProposal({ spacing, onBack }: Props) {
           </div>
         ))}
       </div>
-
-      <ExportPanel render={(format) => exportTokens(GROUP, exportEntries, format)} />
-    </main>
+    </ProposalScaffold>
   );
 }

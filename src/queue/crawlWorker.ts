@@ -40,6 +40,12 @@ export function createCrawlWorker(
         },
       });
     },
-    { connection: redisConnection(), concurrency },
+    {
+      connection: redisConnection(),
+      concurrency,
+      // A job whose worker died (e.g. OOM) is "stalled". Re-running it just
+      // reproduces the crash, so fail it immediately rather than looping.
+      maxStalledCount: 0,
+    },
   );
 }

@@ -3,9 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, type ReactNode } from "react";
 import { Text } from "../components/Text/Text.js";
 import { Foundation } from "../foundation/Foundation.js";
-import type { AuditReport, ReviewItem, SiteAudit } from "../lib/api.js";
+import type { SiteAudit } from "../lib/api.js";
 import { Audit } from "../screens/Audit/Audit.js";
-import { Checkpoint } from "../screens/Checkpoint/Checkpoint.js";
 import { Configure } from "../screens/Configure/Configure.js";
 import { Crawling } from "../screens/Crawling/Crawling.js";
 import { ColourProposal } from "../screens/Proposals/ColourProposal.js";
@@ -15,7 +14,6 @@ import { ShadowProposal } from "../screens/Proposals/ShadowProposal.js";
 import { SpacingProposal } from "../screens/Proposals/SpacingProposal.js";
 import { ZIndexProposal } from "../screens/Proposals/ZIndexProposal.js";
 import { TypeScaleProposal } from "../screens/Proposals/TypeScaleProposal.js";
-import { Report } from "../screens/Report/Report.js";
 import { Failed, Thinking } from "../screens/Status/Status.js";
 import { ProductShell } from "../shell/ProductShell.js";
 import styles from "./DevHarness.module.css";
@@ -27,41 +25,6 @@ interface HarnessState {
 }
 
 // ── Fixtures for the screens that normally receive live data ─────────────────
-const MOCK_REVIEW: ReviewItem[] = [
-  { id: "grey-cluster", summary: "Four near-identical greys, each used once on the pricing page." },
-  { id: "blue-cta", summary: "Two blues within ΔE 3 split across the primary and secondary CTAs." },
-];
-
-const MOCK_REPORT: AuditReport = {
-  healthScore: 72,
-  summary:
-    "The palette is mostly disciplined, but a cluster of greys and two accent blues show drift. Contrast passes AA across the board except for one muted caption style.",
-  findings: [
-    {
-      severity: "high",
-      area: "contrast",
-      description: "Caption text (#9aa0a6 on #ffffff) fails WCAG AA at 3.1:1.",
-      recommendation: "Darken captions to at least #6b7178 to reach 4.5:1.",
-    },
-    {
-      severity: "medium",
-      area: "colour",
-      description: "Four greys within ΔE 4 are used interchangeably for borders.",
-      recommendation: "Consolidate to a single neutral-200 border token.",
-    },
-    {
-      severity: "low",
-      area: "typography",
-      description: "Two body sizes (15px and 16px) appear on the same page.",
-      recommendation: "Pick one base size and map the other to a scale step.",
-    },
-  ],
-  consolidationOpportunities: [
-    "Merge the four border greys into one token.",
-    "Unify the two CTA blues on a single primary.",
-  ],
-};
-
 // A messy site: many near-blacks, two blues, ad-hoc type + spacing.
 const MOCK_SITE_AUDIT: SiteAudit = {
   rootUrl: "https://example.com",
@@ -263,6 +226,21 @@ const MOCK_SITE_AUDIT: SiteAudit = {
       { value: "cubic-bezier(0.34, 1.56, 0.64, 1)", count: 6, tags: [{ tag: "div", count: 6 }] },
     ],
   },
+  authored: {
+    categories: [
+      { category: "spacing", dominant: "rem", total: 42, units: [{ unit: "rem", count: 34 }, { unit: "px", count: 8 }] },
+      { category: "type", dominant: "px", total: 18, units: [{ unit: "px", count: 14 }, { unit: "rem", count: 4 }] },
+      { category: "radius", dominant: "px", total: 9, units: [{ unit: "px", count: 9 }] },
+      { category: "border", dominant: "px", total: 6, units: [{ unit: "px", count: 6 }] },
+    ],
+    customProperties: [
+      { name: "--color-primary", value: "#2563eb" },
+      { name: "--color-ink", value: "#111111" },
+      { name: "--space-4", value: "1rem" },
+      { name: "--radius-md", value: "8px" },
+    ],
+    typeInPx: true,
+  },
 };
 
 const STATES: HarnessState[] = [
@@ -319,32 +297,12 @@ const STATES: HarnessState[] = [
   },
   {
     id: "auditing",
-    label: "Auditing",
+    label: "Reading",
     render: () => (
       <Thinking
-        title="Auditing the design system"
-        detail="Clustering colours, checking contrast, and classifying what it finds."
+        title="Reading the design system"
+        detail="Aggregating every colour, size, and spacing value in use across the crawled pages."
       />
-    ),
-  },
-  {
-    id: "checkpoint",
-    label: "Checkpoint",
-    render: (key) => (
-      <Checkpoint
-        key={key}
-        question="Are these near-identical colours intentional variants or accidental drift?"
-        items={MOCK_REVIEW}
-        submitting={false}
-        onResolve={(j) => console.log("judgments", j)}
-      />
-    ),
-  },
-  {
-    id: "report",
-    label: "Report",
-    render: () => (
-      <Report report={MOCK_REPORT} rootUrl="https://example.com" onRestart={() => {}} />
     ),
   },
   {

@@ -1,20 +1,21 @@
 /**
- * Radius proposal (Layer 2, "what it could be") — fit to a canonical ramp.
+ * Radius proposal (Layer 2, "what it could be") — consolidate onto a named ramp.
  *
  * Fits the site's observed corner radii onto a fixed named ramp (none…2xl, plus
  * a `full` pill when warranted) and previews each as a rounded tile. Toggle
- * Current↔Proposed: Current shows the site's radii with off-ramp ones flagged
- * and the token they'd fold into; Proposed shows the clean ramp, noting where
- * several current values consolidate into one. Export as CSS / Tailwind / DTCG.
+ * Current↔Proposed via the shared ProposalScaffold: Current shows the site's
+ * radii with off-ramp ones flagged and the token they'd fold into; Proposed
+ * shows the clean ramp, noting where several current values consolidate into one.
  */
 
 import { useMemo, useState } from "react";
-import { Text } from "../../components/Text/Text.js";
 import { Badge } from "../../components/Badge/Badge.js";
 import { ExportPanel } from "../../components/ExportPanel/ExportPanel.js";
+import { Text } from "../../components/Text/Text.js";
 import type { AuditRadiusUsage } from "../../lib/api.js";
 import { exportTokens, type TokenEntry, type TokenGroup } from "../../lib/exportTokens.js";
 import { buildRadiusRamp, classifyAgainstRamp } from "../../lib/radiusScale.js";
+import { ProposalScaffold } from "./ProposalScaffold.js";
 import styles from "./RadiusProposal.module.css";
 
 const GROUP: TokenGroup = { group: "radius", type: "dimension", tailwindKey: "borderRadius" };
@@ -73,57 +74,27 @@ export function RadiusProposal({ radius, onBack }: Props) {
         }));
 
   return (
-    <main className={styles.page}>
-      <header className={styles.head}>
-        {onBack && (
-          <button type="button" className={styles.back} onClick={onBack}>
-            ← Back to proposals
-          </button>
-        )}
-        <Text role="heading-lg" as="h1">
-          What your radii could be
-        </Text>
-        <Text role="body" as="p" className={styles.intro}>
-          <strong>{values.length}</strong> distinct radi{values.length === 1 ? "us" : "i"} fit a{" "}
+    <ProposalScaffold
+      onBack={onBack}
+      title="What your radii could be"
+      intro={
+        <>
+          <strong>{values.length}</strong> radi{values.length === 1 ? "us" : "i"} in use · fold into a{" "}
           <strong>{ramp.length}</strong>-step ramp
           {offRamp > 0 ? (
             <>
               {" "}
-              · <strong>{offRamp}</strong> sit off it
+              · <strong>{offRamp}</strong> to consolidate
             </>
           ) : null}
           .
-        </Text>
-      </header>
-
-      {/* Apply toggle */}
-      <div className={styles.applyRow}>
-        <div className={styles.toggle} role="tablist" aria-label="Preview">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={!applied}
-            className={!applied ? `${styles.tab} ${styles.tabOn}` : styles.tab}
-            onClick={() => setApplied(false)}
-          >
-            Current
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={applied}
-            className={applied ? `${styles.tab} ${styles.tabOn}` : styles.tab}
-            onClick={() => setApplied(true)}
-          >
-            Proposed
-          </button>
-        </div>
-        <Text role="label-sm" className={styles.applyHint}>
-          {applied ? "Canonical ramp applied" : "Showing the site's current radii"}
-        </Text>
-      </div>
-
-      {/* Radius tiles */}
+        </>
+      }
+      applied={applied}
+      onAppliedChange={setApplied}
+      hint={applied ? "Canonical ramp applied" : "Showing the site's current radii"}
+      exportPanel={<ExportPanel render={(format) => exportTokens(GROUP, exportEntries, format)} />}
+    >
       <div className={styles.ladder}>
         {rows.map((row) => (
           <div key={row.key} className={styles.row}>
@@ -148,8 +119,6 @@ export function RadiusProposal({ radius, onBack }: Props) {
           </div>
         ))}
       </div>
-
-      <ExportPanel render={(format) => exportTokens(GROUP, exportEntries, format)} />
-    </main>
+    </ProposalScaffold>
   );
 }

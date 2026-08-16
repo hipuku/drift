@@ -17,7 +17,6 @@ import {
   faBorderStyle,
   faChartSimple,
   faCircleHalfStroke,
-  faCircleInfo,
   faClone,
   faDesktop,
   faDroplet,
@@ -32,8 +31,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Button } from "../../components/Button/Button.js";
+import { Callout } from "../../components/Callout/Callout.js";
 import { Text } from "../../components/Text/Text.js";
-import type { AuditColourSwatch, SiteAudit } from "../../lib/api.js";
+import type { AuditAuthored, AuditColourSwatch, CssUnit, SiteAudit } from "../../lib/api.js";
 import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
 import styles from "./Audit.module.css";
 
@@ -189,6 +189,147 @@ function usageText(count: number, totalPages: number, tokenPages?: number): stri
   return usageChips(count, totalPages, tokenPages).join(" · ");
 }
 
+/** Display label for a CSS unit. */
+const UNIT_LABEL: Partial<Record<CssUnit, string>> = {
+  percent: "%",
+  unitless: "unitless",
+  clamp: "clamp()",
+  calc: "calc()",
+};
+const unitLabel = (u: CssUnit): string => UNIT_LABEL[u] ?? u;
+
+const CATEGORY_LABEL: Record<AuditAuthored["categories"][number]["category"], string> = {
+  spacing: "Spacing",
+  type: "Type",
+  radius: "Radius",
+  border: "Border",
+};
+
+/**
+ * Whether a custom-property value is a concrete colour we can render as a swatch.
+ * Skips var()/calc() forms — they can't resolve in this document, so they'd paint
+ * an empty box.
+ */
+function colourish(value: string): boolean {
+  const v = value.trim().toLowerCase();
+  if (v.includes("var(") || v.includes("calc(")) return false;
+  return /^(#|rgba?\(|hsla?\(|hwb\(|oklch\(|oklab\(|lab\(|lch\(|color\()/.test(v);
+}
+
+/**
+ * How the site authors its tokens — read from the CSSOM, so it reflects intent
+ * (`rem`, `%`, `clamp()`), not the resolved px the rest of the audit shows. The
+ * accessibility flag fires when font-size is authored in px (won't respect zoom).
+ * The declared custom properties are the site's own tokens, listed as shipped.
+ */
+function AuthoringSummary({ authored }: { authored: AuditAuthored }) {
+  const [open, setOpen] = useState(false);
+  const props = authored.customProperties;
+  const hasContent = authored.categories.length > 0 || props.length > 0;
+  if (!hasContent) return null;
+  return (
+    <div className={styles.authoring}>
+      <Text role="label-sm" className={styles.healthKicker}>
+        Authoring
+      </Text>
+      {authored.categories.length > 0 && (
+        <div className={styles.unitRow}>
+          {authored.categories.map((c) => (
+            <span key={c.category} className={styles.unitChip}>
+              <span className={styles.unitCat}>{CATEGORY_LABEL[c.category]}</span>
+              <span className={styles.unitVal}>{c.dominant ? unitLabel(c.dominant) : "—"}</span>
+            </span>
+          ))}
+        </div>
+      )}
+      {authored.typeInPx && (
+        <Callout variant="warning">
+          Font size is authored in <strong>px</strong> — it won&rsquo;t scale with the reader&rsquo;s
+          browser font size or zoom. Prefer <strong>rem</strong>.
+        </Callout>
+      )}
+      {props.length > 0 && (
+        <div className={styles.authoredProps}>
+          <button
+            type="button"
+            className={styles.authoredToggle}
+            aria-expanded={open}
+            onClick={() => setOpen((o) => !o)}
+          >
+            <span className={styles.authoredCaret} aria-hidden="true">
+              {open ? "▾" : "▸"}
+            </span>
+            Declares <strong>{props.length}</strong> CSS custom{" "}
+            {plural(props.length, "property", "properties")} — the site&rsquo;s own tokens
+          </button>
+          {open && (
+            <ul className={styles.propList}>
+              {props.map((p) => (
+                <li key={p.name} className={styles.propRow}>
+                  {colourish(p.value) && (
+                    <span className={styles.propSwatch} style={{ background: p.value }} aria-hidden="true" />
+                  )}
+                  <code className={styles.propName}>{p.name}</code>
+                  <span className={styles.propValue} title={p.value}>
+                    {p.value}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** rem is root-relative; we assume the near-universal 16px root. */
+const REM_BASE = 16;
+/** px → rem, trailing zeros trimmed. */
+function toRem(px: number): string {
+  return `${+(px / REM_BASE).toFixed(4)}rem`;
+}
+
+/** Which unit the scalar tables show as the primary value. */
+type DisplayUnit = "px" | "rem";
+
+/** Segmented px / rem switch shown above the scalar tables. */
+function UnitToggle({ unit, onChange }: { unit: DisplayUnit; onChange: (u: DisplayUnit) => void }) {
+  return (
+    <div className={styles.unitToggle} role="group" aria-label="Display unit">
+      {(["px", "rem"] as const).map((u) => (
+        <button
+          key={u}
+          type="button"
+          className={`${styles.unitBtn} ${unit === u ? styles.unitBtnOn : ""}`}
+          aria-pressed={unit === u}
+          onClick={() => onChange(u)}
+        >
+          {u}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * A length value in the selected unit, with the other unit as a muted note (C2).
+ * Both are always shown — px is what shipped, rem is the accessibility-relevant
+ * form. `children` is the off-scale/off-grid dot, kept inside the primary span so
+ * its positioning is unchanged.
+ */
+function LengthValue({ px, unit, children }: { px: number; unit: DisplayUnit; children?: ReactNode }) {
+  const primary = unit === "px" ? `${px}px` : toRem(px);
+  const alt = unit === "px" ? toRem(px) : `${px}px`;
+  return (
+    <span className={styles.sizeValue}>
+      {primary}
+      {children}
+      <span className={styles.valueAlt}>{alt}</span>
+    </span>
+  );
+}
+
 export function Audit({ audit, onProposals, onBack }: Props) {
   const s = audit.summary;
   const t = audit.typography;
@@ -216,6 +357,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
   }, [s, audit]);
 
   const [tab, setTab] = useState("overview");
+  const [displayUnit, setDisplayUnit] = useState<DisplayUnit>("px");
   const [selectedHex, setSelectedHex] = useState<string | null>(null);
   const [flashHex, setFlashHex] = useState<string | null>(null);
 
@@ -437,6 +579,11 @@ export function Audit({ audit, onProposals, onBack }: Props) {
       </header>
 
       <div className={styles.panel} key={tab}>
+        {["type", "spacing", "radius", "border"].includes(tab) && (
+          <div className={styles.tableTools}>
+            <UnitToggle unit={displayUnit} onChange={setDisplayUnit} />
+          </div>
+        )}
         {tab === "overview" && (
           <>
             <div className={styles.health}>
@@ -488,6 +635,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                 );
               })}
             </div>
+            {audit.authored && <AuthoringSummary authored={audit.authored} />}
           </>
         )}
 
@@ -556,10 +704,9 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                       </span>
                     </td>
                     <td className={styles.valueCell}>
-                      <span className={styles.sizeValue}>
-                        {r.px}px
+                      <LengthValue px={r.px} unit={displayUnit}>
                         {off && <span className={styles.offScaleDot} title="Off the closest scale" />}
-                      </span>
+                      </LengthValue>
                     </td>
                     <td className={styles.valueCell}>
                       {weights.length ? [...weights].sort((a, b) => a - b).join(" · ") : "—"}
@@ -585,20 +732,7 @@ export function Audit({ audit, onProposals, onBack }: Props) {
           <>
             <SpacingRuler values={audit.spacing.map((v) => v.value)} />
             <Table
-              head={[
-                <span
-                  key="preview"
-                  className={styles.headInfo}
-                  title="Bar length is relative to the largest value, not actual pixels."
-                >
-                  Preview
-                  <FontAwesomeIcon icon={faCircleInfo} className={styles.infoIcon} />
-                </span>,
-                "Value",
-                "Attribute",
-                "Tags",
-                "Uses",
-              ]}
+              head={["Preview", "Value", "Attribute", "Tags", "Uses"]}
             >
             {audit.spacing.map((v) => (
               <tr key={v.value}>
@@ -606,10 +740,9 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                   <span className={styles.bar} style={{ width: `${Math.max((v.value / maxSpace) * 100, 4)}%` }} />
                 </td>
                 <td className={styles.valueCell}>
-                  <span className={styles.sizeValue}>
-                    {v.value}px
+                  <LengthValue px={v.value} unit={displayUnit}>
                     {offGridSet.has(v.value) && <span className={styles.offScaleDot} title="Off the 4px grid" />}
-                  </span>
+                  </LengthValue>
                 </td>
                 <td className={styles.tagsCell}>
                   <span className={styles.tagChips}>
@@ -644,12 +777,11 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                   <span className={styles.radiusChip} style={{ borderRadius: `${v.value}px` }} />
                 </td>
                 <td className={styles.valueCell}>
-                  <span className={styles.sizeValue}>
-                    {v.value}px
+                  <LengthValue px={v.value} unit={displayUnit}>
                     {radiusNearDupSet.has(v.value) && (
                       <span className={styles.offScaleDot} title="Near-duplicate of another radius" />
                     )}
-                  </span>
+                  </LengthValue>
                 </td>
                 <td className={styles.tagsCell}>
                   <span className={styles.tagChips}>
@@ -712,12 +844,11 @@ export function Audit({ audit, onProposals, onBack }: Props) {
                   <span className={styles.borderChip} style={{ borderWidth: `${b.value}px` }} />
                 </td>
                 <td className={styles.valueCell}>
-                  <span className={styles.sizeValue}>
-                    {b.value}px
+                  <LengthValue px={b.value} unit={displayUnit}>
                     {borderNearDupSet.has(b.value) && (
                       <span className={styles.offScaleDot} title="Near-duplicate of another width" />
                     )}
-                  </span>
+                  </LengthValue>
                 </td>
                 <td className={styles.tagsCell}>
                   <span className={styles.tagChips}>
