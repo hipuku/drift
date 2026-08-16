@@ -1549,3 +1549,11 @@
   font-size: var(--text-12);
   color: var(--color-ink-tertiary);
 }
+
+/* The automatically-chosen option — "closest" ratio / "detected" grid. Named on
+   the chip rather than in a separate title, so the strip is the whole story. */
+.scaleChipBest {
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
+  color: var(--color-primary-default);
+}

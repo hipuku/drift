@@ -394,10 +394,42 @@ export function Audit({ audit, onBack }: Props) {
   const typeBasePx = t.sizes.length
     ? t.sizes.reduce((a, b) => (b.count > a.count ? b : a)).px
     : 16;
-  const bestRatio = useMemo(
-    () => detectClosestRatio(t.sizes.map((z) => z.px), typeBasePx)?.ratio ?? null,
-    [t.sizes, typeBasePx],
-  );
+  /**
+   * The closest scale is the one the fewest sizes miss, with mean relative error
+   * as the tie-break. Ranking purely by mean error (what detectClosestRatio
+   * returns) can crown a ratio that fits most sizes tightly but tips a couple
+   * over the tolerance — leaving the option marked "closest" showing a higher
+   * off-count than its neighbours, which reads as a bug.
+   */
+  const bestRatio = useMemo(() => {
+    const px = t.sizes.map((z) => z.px);
+    if (px.length < 2) return null;
+    const errorOf = (ratio: number) => {
+      const ln = Math.log(ratio);
+      const others = px.filter((v) => Math.abs(v - typeBasePx) > 0.01);
+      if (!others.length) return Number.POSITIVE_INFINITY;
+      let total = 0;
+      for (const v of others) {
+        const n = Math.round(Math.log(v / typeBasePx) / ln);
+        total += Math.abs(v - typeBasePx * ratio ** n) / v;
+      }
+      return total / others.length;
+    };
+    let best: { id: string; name: string; ratio: number } | null = null;
+    let bestOff = Number.POSITIVE_INFINITY;
+    let bestErr = Number.POSITIVE_INFINITY;
+    for (const r of RATIOS) {
+      const scale = buildScaleToCover(typeBasePx, r.ratio, Math.min(...px), Math.max(...px));
+      const off = classifyAgainstScale(px, scale).filter((m) => !m.onScale).length;
+      const err = errorOf(r.ratio);
+      if (off < bestOff || (off === bestOff && err < bestErr)) {
+        best = r;
+        bestOff = off;
+        bestErr = err;
+      }
+    }
+    return best;
+  }, [t.sizes, typeBasePx]);
   const [ratioId, setRatioId] = useState<string | null>(null);
   const activeRatio = RATIOS.find((r) => r.id === ratioId) ?? bestRatio;
 
@@ -1368,12 +1400,9 @@ function TypeRuler({
   const lo = Math.log(scale[0]!.px);
   const hi = Math.log(scale.at(-1)!.px);
   const pos = (v: number) => (hi > lo ? ((Math.log(v) - lo) / (hi - lo)) * 100 : 50);
-  const off = marks.filter((m) => !m.onScale).length;
 
   return (
     <Ruler
-      title={`${activeRatio.name} (×${activeRatio.ratio})${activeRatio.id === bestRatioId ? " · closest" : ""}`}
-      note={off > 0 ? `${off} off-scale` : "all on scale"}
       ticks={scale.map((s) => ({ px: s.px, pos: pos(s.px) }))}
       dots={marks.map((m) => ({ px: m.px, pos: pos(m.px), on: m.onScale, nearest: m.nearestPx }))}
       options={
@@ -1385,6 +1414,7 @@ function TypeRuler({
             best: r.id === bestRatioId,
           }))}
           activeId={activeRatio.id}
+          bestLabel="closest"
           onSelect={onSelect}
         />
       }
@@ -1400,10 +1430,13 @@ function TypeRuler({
 function ScaleOptions({
   options,
   activeId,
+  bestLabel,
   onSelect,
 }: {
   options: { id: string; label: string; off: number; best?: boolean }[];
   activeId: string;
+  /** What to call the automatic pick — "closest" for a ratio, "detected" for a grid. */
+  bestLabel: string;
   onSelect: (id: string) => void;
 }) {
   return (
@@ -1419,6 +1452,7 @@ function ScaleOptions({
         >
           <span>{o.label}</span>
           <span className={styles.scaleChipCount}>{o.off === 0 ? "all on" : `${o.off} off`}</span>
+          {o.best && <span className={styles.scaleChipBest}>{bestLabel}</span>}
         </button>
       ))}
     </div>
@@ -1458,12 +1492,9 @@ function SpacingRuler({
 
   const onGrid = (v: number) => Math.abs(v - Math.round(v / base) * base) <= 0.5;
   const pos = (v: number) => (max > 0 ? (v / max) * 100 : 0);
-  const off = values.filter((v) => !onGrid(v)).length;
 
   return (
     <Ruler
-      title={`${base}px grid${base === detectedBase ? " · detected" : ""}`}
-      note={off > 0 ? `${off} off grid` : "all on grid"}
       ticks={ticks.map((t) => ({ px: t, pos: pos(t) }))}
       dots={values.map((v) => ({ px: v, pos: pos(v), on: onGrid(v) }))}
       options={
@@ -1475,6 +1506,7 @@ function SpacingRuler({
             best: b === detectedBase,
           }))}
           activeId={String(base)}
+          bestLabel="detected"
           onSelect={(id) => onSelect(Number(id))}
         />
       }
@@ -1490,29 +1522,22 @@ interface RulerMark {
 }
 
 function Ruler({
-  title,
-  note,
   ticks,
   dots,
   options,
 }: {
-  title: string;
-  note: string;
   ticks: { px: number; pos: number }[];
   dots: RulerMark[];
-  /** Reference-scale picker, shown under the track. */
+  /**
+   * Reference-scale picker. It heads the ruler rather than sitting under it:
+   * each option already names the scale and its off-count, so a separate title
+   * and note would say the same thing twice.
+   */
   options?: ReactNode;
 }) {
   return (
     <div className={styles.ruler}>
-      <div className={styles.rulerHead}>
-        <Text role="label-sm" className={styles.rulerTitle}>
-          {title}
-        </Text>
-        <Text role="label-xs" className={styles.rulerNote}>
-          {note}
-        </Text>
-      </div>
+      {options}
       <div className={styles.rulerTrack}>
         <div className={styles.rulerLine} />
         {ticks.map((t) => (
@@ -1529,7 +1554,6 @@ function Ruler({
           />
         ))}
       </div>
-      {options}
     </div>
   );
 }
