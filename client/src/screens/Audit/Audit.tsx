@@ -1069,7 +1069,7 @@ export function Audit({ audit, onBack }: Props) {
                 <td className={styles.chipPreviewCell}>
                   <span className={styles.gradientSwatch} style={{ backgroundImage: g.value }} />
                 </td>
-                <td className={`${styles.valueCell} ${styles.valueCellTrunc}`} title={g.value}>
+                <td className={`${styles.valueCell} ${styles.valueCellWrap}`} title={g.value}>
                   {g.value}
                 </td>
                 <TagsCell tags={g.tags} />
