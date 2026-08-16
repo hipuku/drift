@@ -36,7 +36,7 @@ import { Badge } from "../../components/Badge/Badge.js";
 import { Callout } from "../../components/Callout/Callout.js";
 import { Text } from "../../components/Text/Text.js";
 import type { AuditAuthored, AuditColourSwatch, CssUnit, SiteAudit } from "../../lib/api.js";
-import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
+import { RATIOS, buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
 import styles from "./Audit.module.css";
 
 /** ΔE below which two colours are effectively identical (mirrors the analysis). */
@@ -385,11 +385,50 @@ export function Audit({ audit, onBack }: Props) {
 
   const maxSpace = audit.spacing.reduce((m, v) => Math.max(m, v.value), 1);
   const maxBp = audit.breakpoints?.reduce((m, v) => Math.max(m, v.value), 1) ?? 1;
-  // Spacing values that miss the 4px grid — mirrors the ruler's red dots.
-  const offGridSet = useMemo(() => {
-    const onGrid = (v: number) => Math.abs(v - Math.round(v / 4) * 4) <= 0.5;
-    return new Set(audit.spacing.filter((s) => !onGrid(s.value)).map((s) => s.value));
-  }, [audit.spacing]);
+  // ── Reference scales ────────────────────────────────────────────────────────
+  // "Off-scale" is a measurement against a reference, so the reference is
+  // selectable: compare the system against any named ratio, or against a 4px or
+  // 8px grid. The selection drives this section's ruler and table together; the
+  // Overview verdict stays pinned to the automatic best fit, so exploring a
+  // hypothetical never rewrites the diagnosis.
+  const typeBasePx = t.sizes.length
+    ? t.sizes.reduce((a, b) => (b.count > a.count ? b : a)).px
+    : 16;
+  const bestRatio = useMemo(
+    () => detectClosestRatio(t.sizes.map((z) => z.px), typeBasePx)?.ratio ?? null,
+    [t.sizes, typeBasePx],
+  );
+  const [ratioId, setRatioId] = useState<string | null>(null);
+  const activeRatio = RATIOS.find((r) => r.id === ratioId) ?? bestRatio;
+
+  /** Sizes that miss a given ratio — the ruler's red dots and the table's. */
+  const offScaleFor = useCallback(
+    (ratio: number): Set<number> => {
+      const px = t.sizes.map((z) => z.px);
+      if (px.length < 2) return new Set();
+      const scale = buildScaleToCover(typeBasePx, ratio, Math.min(...px), Math.max(...px));
+      return new Set(classifyAgainstScale(px, scale).filter((m) => !m.onScale).map((m) => m.px));
+    },
+    [t.sizes, typeBasePx],
+  );
+  const offScalePx = useMemo(
+    () => (activeRatio ? offScaleFor(activeRatio.ratio) : new Set<number>()),
+    [activeRatio, offScaleFor],
+  );
+
+  const offGridFor = useCallback(
+    (base: number): Set<number> => {
+      const onGrid = (v: number) => Math.abs(v - Math.round(v / base) * base) <= 0.5;
+      return new Set(audit.spacing.filter((sp) => !onGrid(sp.value)).map((sp) => sp.value));
+    },
+    [audit.spacing],
+  );
+  // An 8px grid is a subset of a 4px one, so "nothing misses 8" is the stronger
+  // statement and the honest default when it holds.
+  const detectedBase = offGridFor(8).size === 0 && audit.spacing.length > 0 ? 8 : 4;
+  const [spacingBase, setSpacingBase] = useState<number | null>(null);
+  const activeBase = spacingBase ?? detectedBase;
+  const offGridSet = useMemo(() => offGridFor(activeBase), [offGridFor, activeBase]);
   // Radii within ~1px of a smaller one — the redundancy the audit counts.
   const radiusNearDupSet = useMemo(() => {
     const sorted = audit.radius.map((r) => r.value).sort((a, b) => a - b);
@@ -680,7 +719,6 @@ export function Audit({ audit, onBack }: Props) {
   // the ruler and the tab count, with every weight and the tags that use it.
   const scaleRows = [...t.sizes].sort((a, b) => b.px - a.px);
   // Sizes that miss the closest modular scale — mirrors the ruler's red dots.
-  const offScalePx = useMemo(() => offScaleSizes(t.sizes), [t.sizes]);
 
   /**
    * Lead each scalar table with the unit the site actually authors in, rather
@@ -842,7 +880,13 @@ export function Audit({ audit, onBack }: Props) {
               ))}
             </div>
 
-            <TypeRuler sizes={t.sizes} />
+            <TypeRuler
+              sizes={t.sizes}
+              activeRatio={activeRatio}
+              bestRatioId={bestRatio?.id ?? null}
+              offCountFor={(ratio) => offScaleFor(ratio).size}
+              onSelect={setRatioId}
+            />
 
             <Table head={["Scale", "Size", "Weight", "Tags", "Uses"]}>
               {scaleRows.map((r) => {
@@ -887,7 +931,13 @@ export function Audit({ audit, onBack }: Props) {
 
         {tab === "spacing" && (
           <>
-            <SpacingRuler values={audit.spacing.map((v) => v.value)} />
+            <SpacingRuler
+              values={audit.spacing.map((v) => v.value)}
+              base={activeBase}
+              detectedBase={detectedBase}
+              offCountFor={(b) => offGridFor(b).size}
+              onSelect={setSpacingBase}
+            />
             <Table
               head={["Preview", "Value", "Attribute", "Tags", "Uses"]}
             >
@@ -1291,30 +1341,29 @@ function TagsCell({ tags }: { tags?: ({ tag: string; count: number } | string)[]
   );
 }
 
-/** Distinct sizes that miss the closest modular scale — same basis as TypeRuler. */
-function offScaleSizes(sizes: { px: number; count: number }[]): Set<number> {
-  if (sizes.length < 2) return new Set();
-  const px = sizes.map((s) => s.px);
-  const base = sizes.reduce((a, b) => (b.count > a.count ? b : a)).px;
-  const fit = detectClosestRatio(px, base);
-  if (!fit) return new Set();
-  const scale = buildScaleToCover(base, fit.ratio.ratio, Math.min(...px), Math.max(...px));
-  return new Set(classifyAgainstScale(px, scale).filter((m) => !m.onScale).map((m) => m.px));
-}
-
 /**
  * Type scale ruler — the visual evidence for the "off-scale" verdict. Sizes are
  * plotted on a log axis against the closest modular scale's steps; sizes that
  * miss a step sit between ticks in red.
  */
-function TypeRuler({ sizes }: { sizes: { px: number; count: number }[] }) {
-  if (sizes.length < 2) return null;
+function TypeRuler({
+  sizes,
+  activeRatio,
+  bestRatioId,
+  offCountFor,
+  onSelect,
+}: {
+  sizes: { px: number; count: number }[];
+  activeRatio: { id: string; name: string; ratio: number } | null;
+  bestRatioId: string | null;
+  offCountFor: (ratio: number) => number;
+  onSelect: (id: string) => void;
+}) {
+  if (sizes.length < 2 || !activeRatio) return null;
   const px = sizes.map((s) => s.px);
   const base = sizes.reduce((a, b) => (b.count > a.count ? b : a)).px;
-  const fit = detectClosestRatio(px, base);
-  if (!fit) return null;
 
-  const scale = buildScaleToCover(base, fit.ratio.ratio, Math.min(...px), Math.max(...px));
+  const scale = buildScaleToCover(base, activeRatio.ratio, Math.min(...px), Math.max(...px));
   const marks = classifyAgainstScale(px, scale);
   const lo = Math.log(scale[0]!.px);
   const hi = Math.log(scale.at(-1)!.px);
@@ -1323,11 +1372,56 @@ function TypeRuler({ sizes }: { sizes: { px: number; count: number }[] }) {
 
   return (
     <Ruler
-      title={`Closest scale · ${fit.ratio.name} (×${fit.ratio.ratio})`}
+      title={`${activeRatio.name} (×${activeRatio.ratio})${activeRatio.id === bestRatioId ? " · closest" : ""}`}
       note={off > 0 ? `${off} off-scale` : "all on scale"}
       ticks={scale.map((s) => ({ px: s.px, pos: pos(s.px) }))}
       dots={marks.map((m) => ({ px: m.px, pos: pos(m.px), on: m.onScale, nearest: m.nearestPx }))}
+      options={
+        <ScaleOptions
+          options={RATIOS.map((r) => ({
+            id: r.id,
+            label: r.name,
+            off: offCountFor(r.ratio),
+            best: r.id === bestRatioId,
+          }))}
+          activeId={activeRatio.id}
+          onSelect={onSelect}
+        />
+      }
     />
+  );
+}
+
+/**
+ * The reference-scale picker. Each option carries how many values miss it, so
+ * the row itself answers "which scale is this system actually on?" — picking is
+ * secondary to comparing.
+ */
+function ScaleOptions({
+  options,
+  activeId,
+  onSelect,
+}: {
+  options: { id: string; label: string; off: number; best?: boolean }[];
+  activeId: string;
+  onSelect: (id: string) => void;
+}) {
+  return (
+    <div className={styles.scaleOptions} role="tablist" aria-label="Compare against scale">
+      {options.map((o) => (
+        <button
+          key={o.id}
+          type="button"
+          role="tab"
+          aria-selected={o.id === activeId}
+          className={o.id === activeId ? `${styles.scaleChip} ${styles.scaleChipOn}` : styles.scaleChip}
+          onClick={() => onSelect(o.id)}
+        >
+          <span>{o.label}</span>
+          <span className={styles.scaleChipCount}>{o.off === 0 ? "all on" : `${o.off} off`}</span>
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -1340,26 +1434,50 @@ function niceStep(target: number): number {
 }
 
 /** Spacing grid ruler — values on a linear axis against the 4px grid. */
-function SpacingRuler({ values }: { values: number[] }) {
+function SpacingRuler({
+  values,
+  base,
+  detectedBase,
+  offCountFor,
+  onSelect,
+}: {
+  values: number[];
+  base: number;
+  detectedBase: number;
+  offCountFor: (base: number) => number;
+  onSelect: (base: number) => void;
+}) {
   if (values.length === 0) return null;
-  const base = 4;
   const max = Math.max(...values, base);
   const gridStep = max / base > 24 ? base * 2 : base;
-  // Keep the 4/8px grid ticks for normal ranges; only when they'd smear into an
+  // Keep the grid ticks for normal ranges; only when they'd smear into an
   // unreadable strip (a large range) fall back to ~10 round ticks.
   const step = max / gridStep > 24 ? niceStep(max / 12) : gridStep;
   const ticks: number[] = [];
-  for (let v = 0; v <= max; v += step) ticks.push(v);
+  for (let v = 0; v <= max; v += step) ticks.push(Math.round(v));
+
   const onGrid = (v: number) => Math.abs(v - Math.round(v / base) * base) <= 0.5;
   const pos = (v: number) => (max > 0 ? (v / max) * 100 : 0);
   const off = values.filter((v) => !onGrid(v)).length;
 
   return (
     <Ruler
-      title="4px grid"
+      title={`${base}px grid${base === detectedBase ? " · detected" : ""}`}
       note={off > 0 ? `${off} off grid` : "all on grid"}
       ticks={ticks.map((t) => ({ px: t, pos: pos(t) }))}
       dots={values.map((v) => ({ px: v, pos: pos(v), on: onGrid(v) }))}
+      options={
+        <ScaleOptions
+          options={[4, 8].map((b) => ({
+            id: String(b),
+            label: `${b}px grid`,
+            off: offCountFor(b),
+            best: b === detectedBase,
+          }))}
+          activeId={String(base)}
+          onSelect={(id) => onSelect(Number(id))}
+        />
+      }
     />
   );
 }
@@ -1376,11 +1494,14 @@ function Ruler({
   note,
   ticks,
   dots,
+  options,
 }: {
   title: string;
   note: string;
   ticks: { px: number; pos: number }[];
   dots: RulerMark[];
+  /** Reference-scale picker, shown under the track. */
+  options?: ReactNode;
 }) {
   return (
     <div className={styles.ruler}>
@@ -1408,6 +1529,7 @@ function Ruler({
           />
         ))}
       </div>
+      {options}
     </div>
   );
 }
