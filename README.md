@@ -214,7 +214,7 @@ VITE_DEMO_MODE=true npm --prefix client run build
 | Crawler | Playwright (headless Chromium) |
 | Job queue | BullMQ on Redis |
 | Real-time | WebSockets (live crawl progress) |
-| Colour maths | `@haus/colour-utils` |
+| Colour maths | `haus-colour-utils` |
 
 See [DESIGN.md](DESIGN.md) for the architecture, the audit model, and the
 reasoning behind each engineering choice.

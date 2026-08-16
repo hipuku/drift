@@ -2,7 +2,7 @@ import type { ElementType, ReactNode } from "react";
 import styles from "./Text.module.css";
 
 /**
- * The type roles, mirroring haus's typography scale. Appearance is chosen by
+ * The type roles, from drift's typography scale. Appearance is chosen by
  * role; the rendered element (and thus document semantics / accessibility) is
  * chosen independently via `as`. An <h1> and a hero callout can both be
  * `display`; a visually small section heading on an <h2> uses `heading-sm`.

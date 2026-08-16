@@ -69,7 +69,7 @@ export function Foundation() {
           Design foundation
         </Text>
         <Text role="mono" as="p" className={styles.note}>
-          consuming <strong>haus</strong> · juniper accent · stack sans · text + notch
+          drift design foundation · juniper accent · stack sans · text + notch
         </Text>
       </header>
 

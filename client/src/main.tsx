@@ -8,8 +8,7 @@ import "@fontsource-variable/stack-sans-notch";
 import "@fontsource/fira-code/400.css";
 import "@fontsource/fira-code/500.css";
 
-// haus design tokens, vendored (see tokens/README.md) so Drift builds
-// standalone — @haus/tokens is not published to npm.
+// Drift's design tokens — the base.* layers (see tokens/README.md).
 import "./tokens/primitives.css";
 import "./tokens/semantics.css";
 import "./tokens/motion.css";

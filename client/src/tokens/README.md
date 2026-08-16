@@ -1,8 +1,12 @@
-# Vendored haus tokens
+# drift design tokens
 
-These three files are copied from [`haus`](https://github.com/hipuku/haus)
-(`packages/tokens/src/`). They are vendored rather than installed because
-`@haus/tokens` is not published to npm, and vendoring lets drift build
-standalone on any host (Cloudflare, Vercel, CI) with no sibling checkout.
+Drift's own three-layer token foundation, as plain CSS custom properties:
 
-Only the CSS custom properties (`--space-*`, `--text-*`, etc.) are used.
+- `primitives.css` — raw values (`base.primitives` layer)
+- `semantics.css` — intent aliases (`base.semantics` layer)
+- `motion.css` — easing and durations (`base.motion` layer)
+
+The brand skin that themes these for drift's cool, editorial identity lives in
+`../styles/drift.css` (the `drift.*` layers, declared after `base.*` so they win
+on overlap). Perceptual colour maths is the only external dependency — the
+published `haus-colour-utils` package, consumed by the backend, not here.

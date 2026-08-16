@@ -1,9 +1,9 @@
-/* ─── haus / motion ──────────────────────────────────────────────────────────
+/* ─── drift tokens · motion ───────────────────────────────────────────────────
    Easing curves and durations.
    All animation tokens live here — components must not hardcode values.
    ─────────────────────────────────────────────────────────────────────────── */
 
-@layer haus.motion {
+@layer base.motion {
 
   :root {
 

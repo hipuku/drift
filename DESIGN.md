@@ -87,7 +87,7 @@ is a token. Everything is ranked by usage, deduplicated, and attributed to pages
 
 | Category | How it aggregates |
 |---|---|
-| Colour | Tallied by role (text / background / border) and page, then clustered by CIEDE2000 via `@haus/colour-utils`; near-duplicates and opacity variants are distinguished |
+| Colour | Tallied by role (text / background / border) and page, then clustered by CIEDE2000 via `haus-colour-utils`; near-duplicates and opacity variants are distinguished |
 | Contrast | Every distinct text/background pair with its WCAG ratio and AA/AAA verdict, worst first |
 | Typography | Families, the size set with weights and line-heights, and the real role→size map read from element tags |
 | Spacing | Distinct padding / margin / gap values, quantised and deduplicated |
@@ -213,7 +213,7 @@ Playwright's Chromium adds roughly 300MB to an image if installed naively. The D
 
 Confidence: High on the shape; unbuilt, so unproven.
 
-### @haus/colour-utils: the audit's colour science, one published package
+### haus-colour-utils: the audit's colour science, one published package
 
 The audit's perceptual work — CIEDE2000 near-duplicate clustering and WCAG contrast — is real colour science that would be error-prone to reimplement, so it lives in one dependency the backend consumes: the published `haus-colour-utils`. It is pure ESM with one browser-safe dependency and no Node builtins, and ships its own types.
 

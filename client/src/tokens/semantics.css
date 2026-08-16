@@ -1,4 +1,4 @@
-/* ─── haus / semantics ───────────────────────────────────────────────────────
+/* ─── drift tokens · semantics ────────────────────────────────────────────────
    Intent aliases. Light mode only.
    No component references a primitive directly.
    No raw values live in this file.
@@ -10,7 +10,7 @@
    · Every interactive scale has a disabled state.
    ─────────────────────────────────────────────────────────────────────────── */
 
-@layer haus.semantics {
+@layer base.semantics {
 
   :root {
     color-scheme: light;

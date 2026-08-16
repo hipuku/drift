@@ -1,10 +1,10 @@
-/* ─── haus / primitives ──────────────────────────────────────────────────────
+/* ─── drift tokens · primitives ───────────────────────────────────────────────
    Raw values only. No component or semantic meaning.
    Nothing outside this file should define raw values.
    Components must never reference these directly — use semantics.css.
    ─────────────────────────────────────────────────────────────────────────── */
 
-@layer haus.primitives {
+@layer base.primitives {
 
   :root {
 

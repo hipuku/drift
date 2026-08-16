@@ -1,12 +1,12 @@
-/* ─── drift / layer ──────────────────────────────────────────────────────────
-   Drift consumes the haus design system and re-skins it for a *cool, editorial*
-   identity, in both light and dark.
+/* ─── drift / brand layer ─────────────────────────────────────────────────────
+   The base token layer (tokens/*.css) defines drift's foundation; this layer
+   re-skins it for a *cool, editorial* identity, in both light and dark.
 
-   The haus base is built on Damson (a warm-ish purple near-black). Drift remaps
+   The base primitives start from a warm-ish purple near-black. This layer remaps
    the semantic surface / ink / border tokens onto a cool neutral ramp (a
    blue-slate) and themes the primary role with a confident cool accent. Because
-   the `drift` cascade layer is declared after haus's layers (see import order in
-   main.tsx), these definitions win where they overlap — without forking haus.
+   the `drift.*` cascade layers are declared after the `base.*` layers (see import
+   order in main.tsx), these definitions win where they overlap.
 
    Both ramps are theme-agnostic in name (--neutral-*, --accent-*) so switching
    the whole palette warm↔cool is only ever a values edit. The accent is
