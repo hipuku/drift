@@ -1,14 +1,12 @@
 # Drift — design
 
-How Drift is put together and why. The architecture first, then the decisions
-behind it, then the one layer that was built and deliberately removed.
+How Drift is put together and why: the architecture, then the decisions behind
+it, then the one layer that was built and deliberately removed.
 
-One constraint runs through all of it: Drift is a **deterministic pipeline over a
-slow, failure-prone crawl of a site you don't control**. Every choice that keeps
-that path computed, memory-bounded, and legible wins over a heavier one that
-would add capability. (The agentic drift-classification work some of these
-decisions once anchored — pause/resume at a human checkpoint — has moved to
-`loom`.)
+One constraint runs through all of it — Drift is a **deterministic pipeline over
+a slow, failure-prone crawl of a site you don't control**. Any choice that keeps
+that path computed, memory-bounded, and legible beats a heavier one that adds
+capability.
 
 ---
 
@@ -106,24 +104,18 @@ told which scale they happen to sit on.
 ### Authored units
 
 `getComputedStyle` returns **resolved px** — the browser has already collapsed
-whatever was authored (`rem`, `em`, `%`, `clamp()`) into one number. That is lossy
-in two ways that matter:
+whatever was authored (`rem`, `em`, `%`, `clamp()`) into one number. That loses
+two things worth having. A rem-authored site reads as a pile of px, and sub-pixel
+artefacts (`1.96195px` vs `1.96209px` — one `0.125rem` resolved in two contexts)
+get promoted to distinct "tokens". And sites increasingly ship
+`:root { --color-primary }` themselves — the site's *real* token names, sitting
+in the stylesheet, ignored.
 
-- **Unit-blindness.** A rem-authored site reads as a pile of px, and sub-pixel
-  resolution artefacts (`1.96195px` vs `1.96209px` — one `0.125rem` resolved in
-  two contexts) get promoted to distinct "tokens". Only `rem` is recoverable from
-  px; `em`, `%` and `clamp()` are gone.
-- **Declared tokens ignored.** Sites increasingly ship `:root { --color-primary }`
-  themselves. Those are the site's *real* token names, and they are sitting in the
-  stylesheet.
-
-So the extractor also walks the CSSOM for authored declarations and custom
-properties. The audit then reports the dominant unit per category, leads each
-scalar table with the unit the site actually authors in, and flags `font-size`
-authored in `px` as an accessibility risk — it won't respect user zoom.
-
-Resolved values are quantised deterministically before any of this, and
-near-identical values cluster into one representative weighted by usage.
+So the extractor also walks the CSSOM. The audit reports the dominant unit per
+category, leads each scalar table with the unit the site actually authors in, and
+flags `font-size` authored in `px` as an accessibility risk, since it won't
+respect user zoom. Resolved values are quantised before any of this, and
+near-identical ones cluster into a single representative weighted by usage.
 
 **Not built:** multi-viewport crawling (one width, so the responsive system is
 invisible) and interactive states (`getComputedStyle` sees only the resting
@@ -166,22 +158,19 @@ sequenceDiagram
     A-->>C: 409 until finished
 ```
 
-The shape decisions worth stating:
+Four rules hold that shape together:
 
-- **Crawls are jobs, not requests.** A capped Playwright crawl runs for minutes,
-  so `POST /crawl` returns `202 {jobId}` and the work happens on the queue.
 - **Two channels, one authority.** WebSocket frames carry progress for liveness;
-  `/crawl/:id/result` is the authoritative completion signal. A dropped socket
+  `/crawl/:id/result` is the authoritative completion signal, so a dropped socket
   degrades to polling rather than hanging the UI.
-- **Validation at the edge.** `/crawl` rejects an unusable URL with `422` rather
-  than queueing a job that can only fail, matching `/discover`.
-- **Zero pages is a failure.** A crawl that reached nothing returns
-  `status: "failed"` with the reason, and `/audit` returns `409` — an unreachable
-  site must never read as a successfully audited empty one.
-- **Webhooks are best-effort and guarded.** The callback URL is caller-supplied,
-  so it is an SSRF vector: it must be public http(s), and the host is resolved
-  before the check because a public name can still point at `127.0.0.1`. Delivery
-  retries a `5xx`, gives up on a `4xx`, and never fails a crawl that succeeded.
+- **Validation at the edge.** An unusable URL is a `422`, not a queued job that
+  can only fail.
+- **Zero pages is a failure.** An unreachable site must never read as a
+  successfully audited empty one.
+- **Webhooks are guarded and best-effort.** The callback URL is caller-supplied,
+  so it is an SSRF vector: public http(s) only, with the host resolved *before*
+  the check, because a public name can still point at `127.0.0.1`. Delivery never
+  fails a crawl that succeeded.
 
 Endpoints are documented in [README.md](README.md).
 
@@ -198,19 +187,13 @@ made with full awareness of what they replace.
 
 Core and hipuku.dev are Next.js apps, so Next was the default to beat. It loses here for a structural reason, not a preference one. Drift needs three things that want a single long-lived process: a persistent WebSocket connection feeding live crawl progress, Playwright workers driving headless Chromium, and BullMQ workers pulling jobs off a queue. Next.js API routes are request-scoped and, in their natural deployment target, serverless — there is no durable process to own a WebSocket server or a worker pool, and cold starts actively fight against both. Running Next purely as a custom server to host all this would be using the framework for none of the things it is good at while inheriting its constraints. Express is a thin, well-understood process that does exactly one job: stay alive and own the sockets and the queue workers. The frontend is a separate Vite SPA (see below), so there is no SSR requirement pulling back toward Next.
 
-Confidence: High.
-
 ### Frontend: Vite SPA over Next.js
 
 Drift's frontend is a single surface — crawl configuration, a live progress view, the audit, and the proposals. There are no public, SEO-relevant, server-rendered pages; the valuable output is generated per-run and streamed, not statically rendered. That removes the main reasons to reach for Next. A Vite + React SPA talking to the Express API over HTTP and WebSocket keeps the two halves cleanly separated and the build fast. It also makes the architecture legible at a glance: a server process and a client process, no blurred middle.
 
-Confidence: High.
-
 ### Job queue: BullMQ over pg-boss and in-memory
 
 A crawl is slow, failure-prone, and must not run on the request thread — it needs a real queue with retries, concurrency limits, and progress reporting. Three options were weighed. An **in-memory queue** was rejected immediately: it cannot survive a restart, and a queued crawl should outlive one. **pg-boss** (Postgres-backed) is appealing for keeping the dependency count down, but it would add a second stateful store, and **BullMQ** — the mature Redis-backed queue — brings first-class concurrency control, retry/backoff, and an events stream that maps naturally onto the per-page WebSocket progress updates. One Redis, one queue, no extra database.
-
-Confidence: High.
 
 ### Real-time transport: WebSockets over SSE
 
@@ -221,8 +204,6 @@ Confidence: High on keeping WebSockets. The honest caveat: if Drift were frozen 
 ### Infrastructure built in isolation, one new piece at a time
 
 Drift combines BullMQ, WebSockets, Playwright, and Redis. The failure mode is integrating them together and being unable to tell which layer broke. The rule: build each piece standalone and add at most one new infrastructure dependency per step. Order — Playwright crawler + CSS extraction with no queue and no UI; then `colour-utils` clustering as a pure function; then BullMQ + Redis around the crawler; then the WebSocket layer; then Docker. Each step is independently testable, and a regression points at exactly one newly added piece.
-
-Confidence: High.
 
 ### Docker multi-stage build to contain the Chromium binary
 
@@ -295,7 +276,7 @@ It was cut so the product does one thing completely rather than two things
 partly. The audit is a claim Drift can defend on its own evidence; a proposal is
 a recommendation, and recommendations need a stronger warrant than "this is
 arithmetically tidier". The code remains in git history and the reasoning is
-kept in DESIGN.md as the v2 direction.
+kept below as the v2 brief.
 
 What survived the cut, because it belongs to measurement rather than
 recommendation:
@@ -308,71 +289,12 @@ recommendation:
   not a suggestion.
 - **The export.** Reduced to one JSON artefact that leads with the diagnosis.
 
-The decisions below governed that layer. They are kept because the reasoning
-still holds and the layer is the documented v2 brief, not because the code ships
-today.
+The decisions that governed it, kept because the reasoning still holds:
 
-The decisions below governed that layer. They are kept because the reasoning
-still holds and it is the documented v2 brief, not because the code ships today.
-
-### Proposals are reductive, never generative
-
-Every token a proposal emits is a value the site already ships. Drift slims a palette or a scale down; it never invents a colour or a size. This replaces an earlier plan to generate an OKLCH tonal ramp from the primary colour. The reason is a product one, not a technical one: consolidating *preserves* the design and can be applied today, whereas generating a ramp *changes* the design and needs a level of buy-in a diagnostic tool has not earned. Mixing the two would make every output suspect, because the user could no longer tell which colours were theirs. Generation is kept as a possible future "Systematise" mode — explicitly opt-in, clearly labelled, never the default.
-
-Confidence: High. This is the constraint that makes the output trustworthy.
-
-### Colour merging is evidence-gated, not threshold-only
-
-The first implementation clustered at CIEDE2000 ΔE 8 and named the result `color-1..N`. Both halves were wrong. ΔE 8 is intent-blind — it cheerfully merges a default and its hover state, because it only knows perceptual distance, not why two colours differ. Merging is now gated on three things together: the colours must be within ΔE 2 (at or below the just-noticeable difference, so the merge is invisible), they must be doing the same job, and neither may be an opacity variant of the other.
-
-The same-job rule matters more than it first appears. Two colours a user cannot tell apart still deserve separate tokens when one is a border and the other a surface — they become two names sharing one value, which is how a real system expresses "the border happens to match the surface" without welding them together and losing the ability to change one later.
-
-ΔE is exposed as a readout, not a control. A user does not arrive wanting a perceptual distance of 3; they want fewer colours.
-
-Confidence: High on the gating. Medium on the default of 2 — real sites often need 3–5 before near-blacks collapse, which is why the control exists.
-
-### Contrast reports what passes, not what fails
-
-The obvious design — list the pairs that fail AA — was actively harmful. A twenty-token palette fails in most of its combinations, so the panel shouted about twenty problems that were not problems, because nobody was going to put that text on that background anyway. The real failures drowned in false alarms.
-
-Inverting it fixes both halves at once. The same computation, reported as the combinations that *pass*, becomes a pairing guide: here is what you can safely use. Nonsense pairings disappear on their own, because they do not pass, so no heuristic is needed to filter them out. It also changes the emotional register from accusation to assistance, which suits a tool whose job is to help someone dig out of technical debt.
-
-Confidence: High.
-
-### Semantic naming: usage leads, contrast breaks ties
-
-Names are inferred from what a colour is observed doing — its dominant role (text / background / border), how much of the site it carries, and whether it reads as a neutral or a hue. Usage leads because it is evidence of intent: a colour used as a background 697 times is a surface, whatever its contrast says.
-
-Contrast is a tie-breaker only. When a colour's roles are genuinely split, contrast against the page background decides ink-versus-surface rather than leaving it to a coin flip. It never overrides clear usage.
-
-Two failure modes were found on real data and fixed. Telling a neutral from a hue cannot use HSL saturation, which inflates at extreme lightness — a near-black with a faint cast computed to 0.155 and got named "info". Plain RGB spread has no such failure mode. And status names (success/warning/danger/info) are only considered when there are enough hue families to form a plausible set, because a site with one stray amber has a warm accent, or a warm brand, not a lone "warning".
-
-The default matters even though names are editable, because the goal is to reduce the work the user has to do.
-
-Confidence: Medium. The heuristics are defensible and now survive real sites, but naming is the one genuinely subjective step, which is why every name is editable in place.
-
-### Type proposals are role-first; the modular ratio is optional
-
-Drift crawls websites, and a website's type system is a semantic hierarchy — h1–h6, body, small, button — not an abstract modular ladder. Leading with ratios was an application mindset imported into a website tool.
-
-The proposal now leads with the roles the site actually renders, at their real size and weight, in the site's own font, exported as semantic tokens. The modular ratio becomes an optional second step that regularises those roles onto even ratio steps anchored at body. This uses tag attribution the crawler already collected and the earlier proposal discarded, which is precisely the information generic type tools cannot have.
-
-Proposed sizes round to whole pixels. A type token of 39.8px is nobody's idea of a clean scale, and rounding keeps the diff honest: only genuinely off roles move.
-
-Confidence: High for websites. Would want revisiting if Drift ever targets web applications, where a tighter functional scale is more appropriate.
-
-### Controls are expressed as outcomes, not mechanisms
-
-An early colour proposal exposed a ΔE threshold picker, a contrast panel, a migration panel and dense token cards — six concepts deep, all in the tool's vocabulary rather than the user's. The correction generalises: a control should be measured in the unit the user cares about.
-
-Palette size is therefore a slider measured in *tokens*, with ΔE shown only as a readout. Because several thresholds can produce the same palette, the ladder is precomputed and de-duplicated so every slider stop is a real change rather than a dead zone. Supporting detail is progressively disclosed — contrast collapses to one line that opens a rail, and the migration map lives in Export, because it is a takeaway artefact rather than something to study on the page.
-
-Two personas justify the split: the inheritor, who owns a site they did not build and wants an answer, and the systems owner, who wants control and evidence. The screen must rest quiet for the first and open up for the second.
-
-Confidence: High on the principle. The per-merge override the systems owner really wants ("keep these two apart") is still unbuilt; the global control covers most cases.
-
-### Proposals derive from the audit, not from separate endpoints
-
-Colour and type proposals originally fetched their own inventories. Both now read from the audit payload, as spacing, radius, shadow and z-index always did. The audit already carries the role and tag attribution the good proposals depend on, so the separate endpoints were both a round-trip and a second, weaker source of truth. Two fetches disappeared and every proposal now has access to the same evidence.
-
-Confidence: High.
+- **Proposals are reductive, never generative** — Every token a proposal emits is a value the site already ships.
+- **Colour merging is evidence-gated, not threshold-only** — The first implementation clustered at CIEDE2000 ΔE 8 and named the result `color-1..N`.
+- **Contrast reports what passes, not what fails** — The obvious design — list the pairs that fail AA — was actively harmful.
+- **Semantic naming: usage leads, contrast breaks ties** — Names are inferred from what a colour is observed doing — its dominant role (text / background / border), how much of the site it carries, and whether it reads as a neutral or a hue.
+- **Type proposals are role-first; the modular ratio is optional** — Drift crawls websites, and a website's type system is a semantic hierarchy — h1–h6, body, small, button — not an abstract modular ladder.
+- **Controls are expressed as outcomes, not mechanisms** — An early colour proposal exposed a ΔE threshold picker, a contrast panel, a migration panel and dense token cards — six concepts deep, all in the tool's vocabulary rather than the user's.
+- **Proposals derive from the audit, not from separate endpoints** — Colour and type proposals originally fetched their own inventories.
