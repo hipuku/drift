@@ -48,7 +48,7 @@ discover (sitemap / links)    resolve the host, list candidate pages
 ```
 
 Crawls run as **BullMQ jobs on Redis** with **WebSocket** progress, because a
-40-page Playwright crawl is far too long for a request/response cycle.
+multi-page Playwright crawl is far too long for a request/response cycle.
 
 ## API
 
@@ -137,7 +137,7 @@ POST /crawl
   "event": "crawl.completed",
   "jobId": "24",
   "site": "https://stripe.com/",
-  "audit": { "health": "…", "findings": [ … ], "summary": { … } }
+  "audit": { "summary": { "pages": 6, "contrastFailingAA": 40, "…": "…" }, "colourFamilies": [ … ], "contrast": [ … ] }
 }
 ```
 
@@ -154,8 +154,11 @@ private. Delivery is retried on a network error or a `5xx` and given up on after
 a `4xx`; it is best-effort, and never fails a crawl that succeeded — the audit
 is on the API regardless.
 
-Together with the export's `findings[].severity`, that closes the CI loop: crawl
-on deploy, receive the audit, fail the build on a `review`.
+The audit's `summary` counts (e.g. `contrastFailingAA`) and per-pair `contrast`
+verdicts close the CI loop: crawl on deploy, receive the audit, and fail the
+build when a threshold is crossed. (The plain-language `health` / `findings`
+diagnosis is assembled in the app when you open or export a run, not in this
+payload.)
 
 ### Live progress
 
