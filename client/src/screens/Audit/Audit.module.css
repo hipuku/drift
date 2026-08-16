@@ -389,9 +389,12 @@
 }
 
 .authoredToggle {
-  display: inline-flex;
+  /* Full width so the chevron can sit at the far end of the row. */
+  display: flex;
+  width: 100%;
   align-items: baseline;
   gap: var(--space-2);
+  text-align: left;
   padding: 0;
   border: none;
   background: none;
@@ -408,6 +411,7 @@
 }
 
 .authoredCaret {
+  margin-left: auto;
   color: var(--color-ink-tertiary);
   font-size: var(--text-12);
 }
@@ -416,8 +420,6 @@
   list-style: none;
   margin: var(--space-3) 0 0;
   padding: 0;
-  max-height: 20rem;
-  overflow-y: auto;
   border: var(--border-width-default) solid var(--color-border-subtle);
   border-radius: var(--radius-md);
 }
@@ -986,6 +988,12 @@
   overflow-x: auto;
 }
 
+/* Stacked tables in one section (durations then easings) need air between them,
+   or the second table's header reads as a row of the first. */
+.tableWrap + .tableWrap {
+  margin-top: var(--space-8);
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -1129,6 +1137,17 @@
   gap: var(--space-2);
 }
 
+
+/* An off-scale / off-grid / near-duplicate marker, inline with the value.
+   Deliberately a dot, not a labelled badge — the tables carry one per row and
+   labels crowd the value they annotate. The title carries the meaning. */
+.offScaleDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-error-default);
+}
 
 /* Tags-that-use-this-value — chips of element tag names. */
 .tagsCell {

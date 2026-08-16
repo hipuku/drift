@@ -267,11 +267,13 @@ function AuthoringSummary({ authored }: { authored: AuditAuthored }) {
             aria-expanded={open}
             onClick={() => setOpen((o) => !o)}
           >
-            <span className={styles.authoredCaret} aria-hidden="true">
-              {open ? "▾" : "▸"}
+            <span>
+              Declares <strong>{props.length}</strong> CSS custom{" "}
+              {plural(props.length, "property", "properties")} — the site&rsquo;s own tokens
             </span>
-            Declares <strong>{props.length}</strong> CSS custom{" "}
-            {plural(props.length, "property", "properties")} — the site&rsquo;s own tokens
+            <span className={styles.authoredCaret} aria-hidden="true">
+              {open ? "▴" : "▾"}
+            </span>
           </button>
           {open && (
             <ul className={styles.propList}>
@@ -753,8 +755,9 @@ export function Audit({ audit, onBack }: Props) {
                       </span>
                     </td>
                     <td className={styles.valueCell}>
-                      <LengthValue px={r.px} unit={unitFor("type")} />
-                      {off && <Badge variant="warning">off-scale</Badge>}
+                      <LengthValue px={r.px} unit={unitFor("type")}>
+                        {off && <span className={styles.offScaleDot} title="Off the closest scale" />}
+                      </LengthValue>
                     </td>
                     <td className={styles.valueCell}>
                       {weights.length ? [...weights].sort((a, b) => a - b).join(" · ") : "—"}
@@ -788,8 +791,9 @@ export function Audit({ audit, onBack }: Props) {
                   <span className={styles.bar} style={{ width: `${Math.max((v.value / maxSpace) * 100, 4)}%` }} />
                 </td>
                 <td className={styles.valueCell}>
-                  <LengthValue px={v.value} unit={unitFor("spacing")} />
-                  {offGridSet.has(v.value) && <Badge variant="warning">off-grid</Badge>}
+                  <LengthValue px={v.value} unit={unitFor("spacing")}>
+                    {offGridSet.has(v.value) && <span className={styles.offScaleDot} title="Off the 4px grid" />}
+                  </LengthValue>
                 </td>
                 <td className={styles.tagsCell}>
                   <span className={styles.tagChips}>
@@ -824,8 +828,11 @@ export function Audit({ audit, onBack }: Props) {
                   <span className={styles.radiusChip} style={{ borderRadius: `${v.value}px` }} />
                 </td>
                 <td className={styles.valueCell}>
-                  <LengthValue px={v.value} unit={unitFor("radius")} />
-                  {radiusNearDupSet.has(v.value) && <Badge variant="warning">near-duplicate</Badge>}
+                  <LengthValue px={v.value} unit={unitFor("radius")}>
+                    {radiusNearDupSet.has(v.value) && (
+                      <span className={styles.offScaleDot} title="Near-duplicate of another radius" />
+                    )}
+                  </LengthValue>
                 </td>
                 <td className={styles.tagsCell}>
                   <span className={styles.tagChips}>
@@ -892,8 +899,11 @@ export function Audit({ audit, onBack }: Props) {
                   <span className={styles.borderChip} style={{ borderWidth: `${b.value}px` }} />
                 </td>
                 <td className={styles.valueCell}>
-                  <LengthValue px={b.value} unit={unitFor("border")} />
-                  {borderNearDupSet.has(b.value) && <Badge variant="warning">near-duplicate</Badge>}
+                  <LengthValue px={b.value} unit={unitFor("border")}>
+                    {borderNearDupSet.has(b.value) && (
+                      <span className={styles.offScaleDot} title="Near-duplicate of another width" />
+                    )}
+                  </LengthValue>
                 </td>
                 <td className={styles.tagsCell}>
                   <span className={styles.tagChips}>
