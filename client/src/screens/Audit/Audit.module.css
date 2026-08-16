@@ -1303,25 +1303,8 @@
   margin-bottom: var(--space-10);
 }
 
-.rulerHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
-}
 
-.rulerTitle {
-  color: var(--color-ink-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
 
-.rulerNote {
-  color: var(--color-ink-tertiary);
-  font-family: var(--font-mono);
-  white-space: nowrap;
-}
 
 .rulerTrack {
   position: relative;
@@ -1501,7 +1484,7 @@
 .scaleOptions {
   display: flex;
   gap: var(--space-2);
-  margin-top: var(--space-4);
+  margin-bottom: var(--space-6);
   /* One line, scrolled — same behaviour as the tab strip above. */
   overflow-x: auto;
   scrollbar-width: none;
