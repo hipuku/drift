@@ -16,6 +16,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: drift
+
+      # The client's token layer (@haus/tokens) is a file: dependency on a
+      # sibling checkout and is not published, unlike haus-colour-utils. Until it
+      # is, the runner has to reproduce the local layout: haus next to drift.
+      - name: Check out haus (provides @haus/tokens)
+        uses: actions/checkout@v4
+        with:
+          repository: hipuku/haus
+          token: ${{ secrets.GH_PAT }}
+          path: haus
 
       - uses: actions/setup-node@v4
         with:
@@ -23,20 +35,23 @@ jobs:
           cache: npm
 
       - name: Install backend
+        working-directory: drift
         run: npm ci
 
       - name: Typecheck backend
+        working-directory: drift
         run: npm run typecheck
 
       # No Redis service container: the suite is unit-level and only parses the
       # connection URL. The BDD suite in drift-tests is what needs a live Redis.
       - name: Test backend
+        working-directory: drift
         run: npm test
 
       - name: Install client
-        working-directory: client
-        run: npm ci
+        working-directory: drift/client
+        run: npm install
 
       - name: Build client
-        working-directory: client
+        working-directory: drift/client
         run: npm run build
