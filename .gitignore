@@ -1,0 +1,29 @@
+node_modules
+dist
+build
+.DS_Store
+*.local
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Playwright
+/test-results
+/playwright-report
+/playwright/.cache
+
+# Docker / local data
+redis-data
+
+# Local tooling
+
+# Redis local persistence
+appendonlydir/
+dump.rdb
+*.rdb
