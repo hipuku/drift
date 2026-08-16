@@ -6,13 +6,13 @@
  * background a reader sees behind it (the effective background resolved during
  * extraction), and evaluate WCAG contrast.
  *
- * WCAG evaluation is delegated to @haus/colour-utils (the shared, tested
+ * WCAG evaluation is delegated to haus-colour-utils (the shared, tested
  * implementation). The value added here is pairing and aggregation: dedupe to
  * distinct foreground/background pairs, count how many text elements use each,
  * track tags and pages, and surface the worst-contrast pairs first.
  */
 
-import { wcagContrast } from "@haus/colour-utils";
+import { wcagContrast } from "haus-colour-utils";
 import type { CrawlResult } from "../crawler/types.js";
 
 export interface ContrastFinding {

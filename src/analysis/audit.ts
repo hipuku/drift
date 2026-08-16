@@ -15,7 +15,7 @@ import {
   type ColourElementUsage,
   type ColourRole,
 } from "./colours.js";
-import { deltaE } from "@haus/colour-utils";
+import { deltaE } from "haus-colour-utils";
 import { summariseAuthored, type AuthoredSummary } from "./authored.js";
 import { collectContrastFindings, type ContrastFinding } from "./contrast.js";
 import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "./typeScale.js";

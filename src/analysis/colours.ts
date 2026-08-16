@@ -5,7 +5,7 @@
  * walk the extraction, tally every colour by where and how often it appears,
  * then group the distinct colours by CIEDE2000 perceptual distance.
  *
- * Perceptual clustering is delegated to @haus/colour-utils (the shared,
+ * Perceptual clustering is delegated to haus-colour-utils (the shared,
  * tested implementation). The value added here is usage accounting: how many
  * times each colour appears, in which role (text / background / border), and
  * on which pages. clusterByPerceptualDistance dedupes its input, so frequency
@@ -13,7 +13,7 @@
  * must be tracked here, before clustering, and folded back in afterward.
  */
 
-import { clusterByPerceptualDistance } from "@haus/colour-utils";
+import { clusterByPerceptualDistance } from "haus-colour-utils";
 import type { CrawlResult } from "../crawler/types.js";
 
 export type ColourRole = "text" | "background" | "border";
