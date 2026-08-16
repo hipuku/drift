@@ -65,6 +65,9 @@ these endpoints, and they are equally usable from CI or a script.
 | `GET` | `/crawl/:jobId/colours` | Colour clusters only. |
 | `WS` | `/` | Live crawl progress for a job. |
 
+A crawl runs for minutes, so a caller that isn't a browser has two options: poll
+`/crawl/:jobId/result`, or pass a `callbackUrl` and be told when it's done.
+
 ### Discover
 
 ```http
@@ -119,6 +122,40 @@ reason:
 ```
 
 `GET /crawl/:jobId/audit` returns `409` until the crawl has finished.
+
+### Webhooks
+
+Pass a `callbackUrl` and Drift POSTs the finished audit to it — no polling.
+
+```http
+POST /crawl
+{ "url": "https://stripe.com/", "callbackUrl": "https://ci.example.com/drift" }
+```
+
+```json
+{
+  "event": "crawl.completed",
+  "jobId": "24",
+  "site": "https://stripe.com/",
+  "audit": { "health": "…", "findings": [ … ], "summary": { … } }
+}
+```
+
+A crawl that fails delivers `crawl.failed` with an `error` instead, so the
+receiver always hears back either way. Headers carry `x-drift-event`, and
+`x-drift-signature` (`sha256=…`, HMAC of the raw body) when
+`DRIFT_WEBHOOK_SECRET` is set — verify it before trusting the payload.
+
+The URL is validated when you enqueue the crawl, not at delivery time, so a
+mistake is a `422` while you're still on the line. It must be public http(s):
+loopback, private ranges, and link-local addresses are refused, and the host is
+resolved before the check, since a public name can still point somewhere
+private. Delivery is retried on a network error or a `5xx` and given up on after
+a `4xx`; it is best-effort, and never fails a crawl that succeeded — the audit
+is on the API regardless.
+
+Together with the export's `findings[].severity`, that closes the CI loop: crawl
+on deploy, receive the audit, fail the build on a `review`.
 
 ### Live progress
 

@@ -14,6 +14,7 @@
 
 import express, { type Express, type NextFunction, type Request, type Response } from "express";
 import { collectAudit } from "../analysis/audit.js";
+import { assertDeliverable } from "../queue/webhook.js";
 import { clusterColours } from "../analysis/colours.js";
 import { collectTypography } from "../analysis/typography.js";
 import { MAX_CRAWL_PAGES } from "../crawler/crawl.js";
@@ -83,9 +84,24 @@ export function createApp(deps: AppDeps): Express {
         res.status(422).json({ error: "That doesn\u2019t look like a valid web address." });
         return;
       }
+      // Optional webhook target. Validated here — while the caller is still on
+      // the line to be told why — rather than discovered at delivery time.
+      const callbackUrl = req.body?.callbackUrl;
+      if (callbackUrl !== undefined) {
+        if (typeof callbackUrl !== "string") {
+          res.status(422).json({ error: "callbackUrl must be a string." });
+          return;
+        }
+        try {
+          await assertDeliverable(callbackUrl);
+        } catch (err) {
+          res.status(422).json({ error: err instanceof Error ? err.message : "Invalid callbackUrl." });
+          return;
+        }
+      }
       const pages = readPages(req.body?.pages);
       const maxPages = clampPages(pages?.length ?? req.body?.maxPages);
-      const jobId = await deps.jobs.enqueue({ url, maxPages, pages });
+      const jobId = await deps.jobs.enqueue({ url, maxPages, pages, callbackUrl });
       res.status(202).json({ jobId });
     }),
   );

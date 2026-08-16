@@ -17,6 +17,8 @@ export interface CrawlJobData {
   maxPages: number;
   /** Exact pages to crawl (user selection / all). Absent → BFS from root. */
   pages?: string[];
+  /** Where to POST the finished audit, for callers that shouldn't poll. */
+  callbackUrl?: string;
 }
 
 /** Progress payload reported per page crawled. */
