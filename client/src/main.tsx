@@ -8,10 +8,11 @@ import "@fontsource-variable/stack-sans-notch";
 import "@fontsource/fira-code/400.css";
 import "@fontsource/fira-code/500.css";
 
-// haus design system — Drift is its first true consumer.
-import "@haus/tokens/primitives.css";
-import "@haus/tokens/semantics.css";
-import "@haus/tokens/motion.css";
+// haus design tokens, vendored (see tokens/README.md) so Drift builds
+// standalone — @haus/tokens is not published to npm.
+import "./tokens/primitives.css";
+import "./tokens/semantics.css";
+import "./tokens/motion.css";
 
 // Drift's thin layer on top: accent, fonts, tool tokens.
 import "./styles/drift.css";

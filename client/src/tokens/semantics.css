@@ -1,0 +1,162 @@
+/* ─── haus / semantics ───────────────────────────────────────────────────────
+   Intent aliases. Light mode only.
+   No component references a primitive directly.
+   No raw values live in this file.
+
+   Naming rules:
+   · Brand colour uses a role name at this layer: primary (aronia).
+     Palette names only appear in primitives.css.
+   · Every surface token has a paired on-* text token.
+   · Every interactive scale has a disabled state.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@layer haus.semantics {
+
+  :root {
+    color-scheme: light;
+  }
+
+  :root {
+
+    /* ── Surface ──────────────────────────────────────────────────────────── */
+    --color-surface-default:  var(--damson-0);
+    --color-surface-subtle:   var(--damson-100);
+    --color-surface-raised:   var(--damson-0);    /* elevation via shadow, not colour */
+    --color-surface-overlay:  var(--damson-50);   /* modal / popover — barely off-white */
+    --color-surface-sunken:   var(--damson-200);
+    --color-surface-inverse:  var(--damson-900);  /* dark chip, tooltip bg in light mode */
+    --color-surface-disabled: var(--damson-100);
+
+    /* ── Ink (text) ───────────────────────────────────────────────────────── */
+    --color-ink-primary:    var(--damson-900);
+    --color-ink-secondary:  var(--damson-700);
+    --color-ink-tertiary:   var(--damson-500);
+    --color-ink-disabled:   var(--damson-400);
+    --color-ink-inverse:    var(--damson-0);
+    --color-ink-link:       var(--aronia-500);
+    --color-ink-on-aronia:  var(--damson-0);
+
+    /* ── Border ───────────────────────────────────────────────────────────── */
+    --color-border-subtle:   var(--damson-100);
+    --color-border-default:  var(--damson-200);
+    --color-border-strong:   var(--damson-300);
+    --color-border-focus:    var(--color-primary-default);
+    --color-border-disabled: var(--damson-200);
+
+    /* ── Primary — Aronia ─────────────────────────────────────────────────── */
+    --color-primary-default:   var(--aronia-500);
+    --color-primary-hover:     var(--aronia-600);
+    --color-primary-pressed:   var(--aronia-700);
+    --color-primary-subtle:    var(--aronia-100);
+    --color-primary-on-subtle: var(--aronia-700);
+    --color-primary-disabled:  var(--damson-200);
+
+    /* ── Feedback — Info (Elderberry · Indigo) ────────────────────────────── */
+    --color-info-subtle:     var(--elderberry-100);
+    --color-info-border:     var(--elderberry-200);
+    --color-info-default:    var(--elderberry-500);
+    --color-info-on-subtle:  var(--elderberry-700);
+    --color-info-on-default: var(--damson-0);
+    --color-info-emphasis:   var(--elderberry-900);
+
+    /* ── Feedback — Success (Greengage · Green) ───────────────────────────── */
+    --color-success-subtle:     var(--greengage-100);
+    --color-success-border:     var(--greengage-200);
+    --color-success-default:    var(--greengage-500);
+    --color-success-on-subtle:  var(--greengage-700);
+    --color-success-on-default: var(--damson-900);  /* dark text — greengage-500 fails with white */
+    --color-success-solid:      var(--greengage-700);  /* 700-level: white text passes at 6.82:1 */
+    --color-success-emphasis:   var(--greengage-900);
+
+    /* ── Feedback — Warning (Mango · Golden) ──────────────────────────────── */
+    --color-warning-subtle:     var(--mango-100);
+    --color-warning-border:     var(--mango-200);
+    --color-warning-default:    var(--mango-500);
+    --color-warning-on-subtle:  var(--mango-700);
+    --color-warning-on-default: var(--damson-900);  /* dark text — mango-500 fails with white */
+    --color-warning-solid:      var(--mango-700);   /* 700-level: white text passes at 7.05:1 */
+    --color-warning-emphasis:   var(--mango-900);
+
+    /* ── Feedback — Error (Cherry · Red) ─────────────────────────────────── */
+    --color-error-subtle:     var(--cherry-100);
+    --color-error-border:     var(--cherry-200);
+    --color-error-default:    var(--cherry-500);
+    --color-error-on-subtle:  var(--cherry-700);
+    --color-error-on-default: var(--damson-0);
+    --color-error-emphasis:   var(--cherry-900);
+
+    /* ── Backdrop (Modal, Drawer, etc.) ──────────────────────────────────── */
+    /* Relative colour syntax: damson-950's l/c/h at --opacity-overlay alpha  */
+    --color-backdrop: oklch(from var(--damson-950) l c h / var(--opacity-overlay));
+
+    /* ── Inverse surface interactions (UI placed on dark/inverted surfaces) ── */
+    /* Relative colour syntax: white (damson-0) at three opacity levels.      */
+    /* Opacity fractions here are interaction-layer values, not raw colours.  */
+    --color-border-inverse:        oklch(from var(--damson-0) l c h / 0.30);
+    --color-border-inverse-hover:  oklch(from var(--damson-0) l c h / 0.50);
+    --color-surface-inverse-hover: oklch(from var(--damson-0) l c h / 0.10);
+
+    /* ── Focus ring ───────────────────────────────────────────────────────── */
+    /* Inner ring matches surface (creates gap), outer ring is focus colour   */
+    --shadow-focus: 0 0 0 2px var(--color-surface-default), 0 0 0 4px var(--color-border-focus);
+
+    /* ── Typography roles ─────────────────────────────────────────────────── */
+    /* Use all four props together. Components must not mix roles.            */
+
+    --type-label-xs-size:     var(--text-11);
+    --type-label-xs-weight:   var(--weight-medium);
+    --type-label-xs-leading:  var(--leading-normal);
+    --type-label-xs-tracking: var(--tracking-widest);
+
+    --type-label-sm-size:     var(--text-12);
+    --type-label-sm-weight:   var(--weight-medium);
+    --type-label-sm-leading:  var(--leading-normal);
+    --type-label-sm-tracking: var(--tracking-wide);
+
+    --type-label-size:        var(--text-13);
+    --type-label-weight:      var(--weight-medium);
+    --type-label-leading:     var(--leading-normal);
+    --type-label-tracking:    var(--tracking-normal);
+
+    --type-body-sm-size:      var(--text-13);
+    --type-body-sm-weight:    var(--weight-regular);
+    --type-body-sm-leading:   var(--leading-relaxed);
+    --type-body-sm-tracking:  var(--tracking-normal);
+
+    --type-body-size:         var(--text-14);
+    --type-body-weight:       var(--weight-regular);
+    --type-body-leading:      var(--leading-relaxed);
+    --type-body-tracking:     var(--tracking-normal);
+
+    --type-body-lg-size:      var(--text-16);
+    --type-body-lg-weight:    var(--weight-regular);
+    --type-body-lg-leading:   var(--leading-loose);
+    --type-body-lg-tracking:  var(--tracking-normal);
+
+    --type-heading-sm-size:     var(--text-16);
+    --type-heading-sm-weight:   var(--weight-semibold);
+    --type-heading-sm-leading:  var(--leading-compact);
+    --type-heading-sm-tracking: var(--tracking-tight);
+
+    --type-heading-size:        var(--text-20);
+    --type-heading-weight:      var(--weight-semibold);
+    --type-heading-leading:     var(--leading-snug);
+    --type-heading-tracking:    var(--tracking-tight);
+
+    --type-heading-lg-size:     var(--text-24);
+    --type-heading-lg-weight:   var(--weight-semibold);
+    --type-heading-lg-leading:  var(--leading-tighter);
+    --type-heading-lg-tracking: var(--tracking-tight);
+
+    --type-display-size:        var(--text-30);
+    --type-display-weight:      var(--weight-bold);
+    --type-display-leading:     var(--leading-tight);
+    --type-display-tracking:    var(--tracking-tight);
+
+    --type-mono-size:           var(--text-13);
+    --type-mono-weight:         var(--weight-regular);
+    --type-mono-leading:        var(--leading-loose);
+    --type-mono-tracking:       var(--tracking-normal);
+
+  }
+}
