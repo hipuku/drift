@@ -2,7 +2,6 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ReactNode } from "react";
-import { ThemeControls } from "./ThemeControls.js";
 import logo from "../assets/drift-logo.svg";
 import styles from "./ProductShell.module.css";
 
@@ -45,7 +44,6 @@ export function ProductShell({ children, onHome, trailing }: ProductShellProps) 
           >
             <FontAwesomeIcon icon={faGlobe} />
           </a>
-          <ThemeControls />
           {trailing}
         </div>
       </header>

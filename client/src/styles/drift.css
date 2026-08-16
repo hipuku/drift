@@ -66,76 +66,11 @@
 }
 
 @layer drift.semantics {
-  /* ── Light theme (default) ─────────────────────────────────────────────── */
-  :root {
-    /* Surfaces — cool paper. */
-    --color-surface-default:  var(--neutral-0);
-    --color-surface-subtle:   var(--neutral-50);
-    --color-surface-raised:   var(--neutral-0);
-    --color-surface-overlay:  var(--neutral-0);
-    --color-surface-sunken:   var(--neutral-100);
-    --color-surface-inverse:  var(--neutral-900);
-    --color-surface-disabled: var(--neutral-100);
 
-    /* Ink — cool near-black, never pure. */
-    --color-ink-primary:   var(--neutral-900);
-    --color-ink-secondary: var(--neutral-700);
-    --color-ink-tertiary:  var(--neutral-500);
-    --color-ink-disabled:  var(--neutral-400);
-    --color-ink-inverse:   var(--neutral-0);
-    --color-ink-link:      var(--accent-700);
-
-    /* Borders. */
-    --color-border-subtle:   var(--neutral-100);
-    --color-border-default:  var(--neutral-200);
-    --color-border-strong:   var(--neutral-300);
-    --color-border-disabled: var(--neutral-200);
-
-    /* Brand role → Accent. */
-    --color-primary-default:   var(--accent-600);
-    --color-primary-hover:     var(--accent-700);
-    --color-primary-pressed:   var(--accent-800);
-    --color-primary-subtle:    var(--accent-100);
-    --color-primary-on-subtle: var(--accent-800);
-    --color-primary-disabled:  var(--neutral-200);
-
-    /* ── Atmosphere ── cool wash + faint blueprint grid, tinted to the accent. */
-    --drift-app-bg:
-      radial-gradient(120% 85% at 50% -15%, var(--accent-50) 0%, transparent 55%),
-      radial-gradient(90% 60% at 100% 0%, var(--neutral-50) 0%, transparent 50%),
-      var(--neutral-100);
-    --drift-grid-line: oklch(50% 0.02 255 / 0.05);
-    --drift-grid-size: 32px;
-
-    /* ── Elevation ── cool-tinted, layered shadows. */
-    --shadow-sm: 0 1px 2px oklch(30% 0.03 260 / 0.08);
-    --shadow-md:
-      0 1px 2px oklch(30% 0.03 260 / 0.07),
-      0 6px 16px -6px oklch(30% 0.04 260 / 0.15);
-    --shadow-lg:
-      0 1px 3px oklch(30% 0.03 260 / 0.08),
-      0 12px 28px -8px oklch(30% 0.04 260 / 0.18);
-    --shadow-xl:
-      0 2px 4px oklch(30% 0.03 260 / 0.09),
-      0 24px 48px -12px oklch(30% 0.05 260 / 0.22);
-    --drift-card-border: oklch(45% 0.03 260 / 0.10);
-
-    /* ── Tool tokens ── */
-    --drift-mono: var(--font-mono);
-    --drift-data-size: var(--text-12);
-    --drift-severity-high:   var(--color-error-default);
-    --drift-severity-medium: var(--color-warning-default);
-    --drift-severity-low:    var(--color-ink-tertiary);
-    --drift-alert-surface: color-mix(in oklab, var(--drift-severity-high) 10%, var(--color-surface-default));
-    --drift-alert-ink:     color-mix(in oklab, var(--drift-severity-high) 70%, var(--color-ink-primary));
-    --drift-warn-surface:  color-mix(in oklab, var(--drift-severity-medium) 14%, var(--color-surface-default));
-    --drift-warn-ink:      color-mix(in oklab, var(--drift-severity-medium) 78%, var(--color-ink-primary));
-  }
-
-  /* ── Dark theme ─────────────────────────────────────────────────────────
+  /* ── Theme ──────────────────────────────────────────────────────────────
      Cool charcoal, not cold black. Page sits darker than cards so cards float;
      in the dark, borders (not shadows) do most of the elevation work. */
-  :root[data-theme="dark"] {
+  :root {
     color-scheme: dark;
 
     --color-surface-default:  var(--neutral-900);   /* cards */
@@ -181,5 +116,16 @@
 
     --drift-alert-surface: color-mix(in oklab, var(--drift-severity-high) 18%, var(--color-surface-default));
     --drift-warn-surface:  color-mix(in oklab, var(--drift-severity-medium) 20%, var(--color-surface-default));
+
+    /* Not theme-dependent — severity hues, mono ramp, grid metrics. */
+    --color-primary-disabled:  var(--neutral-200);
+    --drift-grid-size: 32px;
+    --drift-mono: var(--font-mono);
+    --drift-data-size: var(--text-12);
+    --drift-severity-high:   var(--color-error-default);
+    --drift-severity-medium: var(--color-warning-default);
+    --drift-severity-low:    var(--color-ink-tertiary);
+    --drift-alert-ink:     color-mix(in oklab, var(--drift-severity-high) 70%, var(--color-ink-primary));
+    --drift-warn-ink:      color-mix(in oklab, var(--drift-severity-medium) 78%, var(--color-ink-primary));
   }
 }
