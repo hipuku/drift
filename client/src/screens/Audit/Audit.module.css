@@ -462,35 +462,9 @@
 }
 
 /* ── px / rem unit toggle + secondary-unit annotation ────────────────────── */
-.tableTools {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: var(--space-4);
-}
 
-.unitToggle {
-  display: inline-flex;
-  background: var(--color-surface-sunken);
-  border-radius: var(--radius-md);
-  padding: 2px;
-}
 
-.unitBtn {
-  border: none;
-  background: transparent;
-  padding: var(--space-1) var(--space-3);
-  border-radius: calc(var(--radius-md) - 2px);
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
-  color: var(--color-ink-secondary);
-  cursor: pointer;
-}
 
-.unitBtnOn {
-  background: var(--color-surface-default);
-  color: var(--color-ink-primary);
-  box-shadow: var(--shadow-sm);
-}
 
 .valueAlt {
   margin-left: var(--space-2);
@@ -1155,15 +1129,8 @@
   gap: var(--space-2);
 }
 
-.offScaleDot {
-  width: 0.5rem;
-  height: 0.5rem;
-  flex-shrink: 0;
-  border-radius: var(--radius-full);
-  background: var(--color-error-default);
-}
 
-/* Tags-that-use-this-size — chips of element tag names. */
+/* Tags-that-use-this-value — chips of element tag names. */
 .tagsCell {
   vertical-align: middle;
   /* Chips wrap within a sane column width instead of pushing the table wide. */

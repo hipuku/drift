@@ -302,26 +302,9 @@ function toRem(px: number): string {
 }
 
 /** Which unit the scalar tables show as the primary value. */
+/** Which unit leads a scalar value. Both are always shown; this picks the primary. */
 type DisplayUnit = "px" | "rem";
 
-/** Segmented px / rem switch shown above the scalar tables. */
-function UnitToggle({ unit, onChange }: { unit: DisplayUnit; onChange: (u: DisplayUnit) => void }) {
-  return (
-    <div className={styles.unitToggle} role="group" aria-label="Display unit">
-      {(["px", "rem"] as const).map((u) => (
-        <button
-          key={u}
-          type="button"
-          className={`${styles.unitBtn} ${unit === u ? styles.unitBtnOn : ""}`}
-          aria-pressed={unit === u}
-          onClick={() => onChange(u)}
-        >
-          {u}
-        </button>
-      ))}
-    </div>
-  );
-}
 
 /**
  * A length value in the selected unit, with the other unit as a muted note (C2).
@@ -371,7 +354,6 @@ export function Audit({ audit, onBack }: Props) {
   }, [s, audit]);
 
   const [tab, setTab] = useState("overview");
-  const [displayUnit, setDisplayUnit] = useState<DisplayUnit>("px");
   const [selectedHex, setSelectedHex] = useState<string | null>(null);
   const [flashHex, setFlashHex] = useState<string | null>(null);
 
@@ -543,12 +525,45 @@ export function Audit({ audit, onBack }: Props) {
     });
   }
 
+  /**
+   * The audit as data. Wrapped in a small envelope — what was audited, when, and
+   * by what — so the file still explains itself months later, detached from the
+   * app that produced it. The inventory itself is the audit shape verbatim.
+   */
   const exportJson = () => {
-    const blob = new Blob([JSON.stringify(audit, null, 2)], { type: "application/json" });
+    const host = hostOf(audit.rootUrl);
+    const generatedAt = new Date();
+    const payload = {
+      $schema: "https://drift.hipuku.dev/schema/audit-v1.json",
+      tool: "drift",
+      version: 1,
+      site: { url: audit.rootUrl, host, pages: s.pages },
+      generatedAt: generatedAt.toISOString(),
+      summary: audit.summary,
+      inventory: {
+        colourFamilies: audit.colourFamilies,
+        typography: audit.typography,
+        spacing: audit.spacing,
+        radius: audit.radius,
+        shadow: audit.shadow,
+        borders: audit.borders,
+        opacity: audit.opacity,
+        zIndex: audit.zIndex,
+        blur: audit.blur,
+        gradients: audit.gradients,
+        motion: audit.motion,
+        breakpoints: audit.breakpoints,
+        contrast: audit.contrast,
+      },
+      authored: audit.authored,
+    };
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const href = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = href;
-    a.download = `drift-audit-${hostOf(audit.rootUrl)}.json`;
+    // Dated so successive audits of the same site sort and don't overwrite.
+    a.download = `drift-audit-${host}-${generatedAt.toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(href);
   };
@@ -558,6 +573,20 @@ export function Audit({ audit, onBack }: Props) {
   const scaleRows = [...t.sizes].sort((a, b) => b.px - a.px);
   // Sizes that miss the closest modular scale — mirrors the ruler's red dots.
   const offScalePx = useMemo(() => offScaleSizes(t.sizes), [t.sizes]);
+
+  /**
+   * Lead each scalar table with the unit the site actually authors in, rather
+   * than a toggle the reader has to discover. `authored` reads the real unit
+   * per category off the stylesheets, so a rem-authored type scale reads in rem
+   * and a px-authored one reads in px — the choice is a finding, not a setting.
+   */
+  const unitFor = useCallback(
+    (category: AuditAuthored["categories"][number]["category"]): DisplayUnit =>
+      audit.authored?.categories.find((c) => c.category === category)?.dominant === "rem"
+        ? "rem"
+        : "px",
+    [audit.authored],
+  );
 
   return (
     <div className={styles.page}>
@@ -604,11 +633,6 @@ export function Audit({ audit, onBack }: Props) {
       </header>
 
       <div className={styles.panel} key={tab}>
-        {["type", "spacing", "radius", "border"].includes(tab) && (
-          <div className={styles.tableTools}>
-            <UnitToggle unit={displayUnit} onChange={setDisplayUnit} />
-          </div>
-        )}
         {tab === "overview" && (
           <>
             <div className={styles.health}>
@@ -729,9 +753,8 @@ export function Audit({ audit, onBack }: Props) {
                       </span>
                     </td>
                     <td className={styles.valueCell}>
-                      <LengthValue px={r.px} unit={displayUnit}>
-                        {off && <span className={styles.offScaleDot} title="Off the closest scale" />}
-                      </LengthValue>
+                      <LengthValue px={r.px} unit={unitFor("type")} />
+                      {off && <Badge variant="warning">off-scale</Badge>}
                     </td>
                     <td className={styles.valueCell}>
                       {weights.length ? [...weights].sort((a, b) => a - b).join(" · ") : "—"}
@@ -765,9 +788,8 @@ export function Audit({ audit, onBack }: Props) {
                   <span className={styles.bar} style={{ width: `${Math.max((v.value / maxSpace) * 100, 4)}%` }} />
                 </td>
                 <td className={styles.valueCell}>
-                  <LengthValue px={v.value} unit={displayUnit}>
-                    {offGridSet.has(v.value) && <span className={styles.offScaleDot} title="Off the 4px grid" />}
-                  </LengthValue>
+                  <LengthValue px={v.value} unit={unitFor("spacing")} />
+                  {offGridSet.has(v.value) && <Badge variant="warning">off-grid</Badge>}
                 </td>
                 <td className={styles.tagsCell}>
                   <span className={styles.tagChips}>
@@ -802,11 +824,8 @@ export function Audit({ audit, onBack }: Props) {
                   <span className={styles.radiusChip} style={{ borderRadius: `${v.value}px` }} />
                 </td>
                 <td className={styles.valueCell}>
-                  <LengthValue px={v.value} unit={displayUnit}>
-                    {radiusNearDupSet.has(v.value) && (
-                      <span className={styles.offScaleDot} title="Near-duplicate of another radius" />
-                    )}
-                  </LengthValue>
+                  <LengthValue px={v.value} unit={unitFor("radius")} />
+                  {radiusNearDupSet.has(v.value) && <Badge variant="warning">near-duplicate</Badge>}
                 </td>
                 <td className={styles.tagsCell}>
                   <span className={styles.tagChips}>
@@ -873,11 +892,8 @@ export function Audit({ audit, onBack }: Props) {
                   <span className={styles.borderChip} style={{ borderWidth: `${b.value}px` }} />
                 </td>
                 <td className={styles.valueCell}>
-                  <LengthValue px={b.value} unit={displayUnit}>
-                    {borderNearDupSet.has(b.value) && (
-                      <span className={styles.offScaleDot} title="Near-duplicate of another width" />
-                    )}
-                  </LengthValue>
+                  <LengthValue px={b.value} unit={unitFor("border")} />
+                  {borderNearDupSet.has(b.value) && <Badge variant="warning">near-duplicate</Badge>}
                 </td>
                 <td className={styles.tagsCell}>
                   <span className={styles.tagChips}>
@@ -924,7 +940,7 @@ export function Audit({ audit, onBack }: Props) {
                 </td>
                 <td className={styles.valueCell}>{c.ratio.toFixed(2)}:1</td>
                 <td>
-                  <Badge variant={c.passAA ? "neutral" : c.passAALarge ? "warning" : "danger"}>
+                  <Badge variant={c.passAA ? "neutral" : "danger"}>
                     {c.passAAA ? "AAA" : c.passAA ? "AA" : c.passAALarge ? "AA large only" : "Fails AA"}
                   </Badge>
                 </td>
