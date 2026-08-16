@@ -412,8 +412,10 @@
 
 .authoredCaret {
   margin-left: auto;
+  align-self: center;
+  flex-shrink: 0;
   color: var(--color-ink-tertiary);
-  font-size: var(--text-12);
+  font-size: var(--text-14);
 }
 
 .propList {

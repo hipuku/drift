@@ -16,6 +16,8 @@ import {
   faBolt,
   faBorderStyle,
   faChartSimple,
+  faChevronDown,
+  faChevronUp,
   faCircleHalfStroke,
   faClone,
   faDesktop,
@@ -271,9 +273,10 @@ function AuthoringSummary({ authored }: { authored: AuditAuthored }) {
               Declares <strong>{props.length}</strong> CSS custom{" "}
               {plural(props.length, "property", "properties")} — the site&rsquo;s own tokens
             </span>
-            <span className={styles.authoredCaret} aria-hidden="true">
-              {open ? "▴" : "▾"}
-            </span>
+            <FontAwesomeIcon
+              icon={open ? faChevronUp : faChevronDown}
+              className={styles.authoredCaret}
+            />
           </button>
           {open && (
             <ul className={styles.propList}>
