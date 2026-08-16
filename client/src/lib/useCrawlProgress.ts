@@ -95,7 +95,8 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
     let timer: ReturnType<typeof setTimeout> | undefined;
     const poll = async () => {
       try {
-        const { status, result } = await getCrawlStatus(jobId);
+        const payload = await getCrawlStatus(jobId);
+        const { status, result } = payload;
         if (!liveRef.current) return;
         if (status === "completed") {
           setState((s) => ({ ...s, phase: "completed", result }));
@@ -107,7 +108,9 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
             phase: "failed",
             error:
               status === "failed"
-                ? "The crawl couldn’t finish — the site may have been slow to load or blocked automated visits. Try again, or pick fewer pages."
+                ? // Prefer the worker's reason; it names what actually happened.
+                  (payload.error ??
+                  "The crawl couldn’t finish — the site may have been slow to load or blocked automated visits. Try again, or pick fewer pages.")
                 : "That crawl job has expired. Start a new audit.",
           }));
           return;

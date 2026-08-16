@@ -61,6 +61,8 @@ export function startCrawl(url: string, pages: string[]): Promise<{ jobId: strin
 export interface CrawlStatus {
   status: string; // queued | active | completed | failed | not_found | …
   result: CrawlResultMeta | null;
+  /** Why a failed crawl failed, when the worker gave a reason. */
+  error?: string;
 }
 
 /** Poll the crawl's status/result. Authoritative source of crawl completion. */

@@ -11,7 +11,7 @@ import { enqueueCrawl, type CrawlJobData } from "./crawlQueue.js";
 
 export interface CrawlJobs {
   enqueue(data: CrawlJobData): Promise<string>;
-  getResult(jobId: string): Promise<{ status: string; result?: CrawlResult }>;
+  getResult(jobId: string): Promise<{ status: string; result?: CrawlResult; error?: string }>;
 }
 
 export class BullCrawlJobs implements CrawlJobs {
@@ -23,12 +23,17 @@ export class BullCrawlJobs implements CrawlJobs {
     return job.id;
   }
 
-  async getResult(jobId: string): Promise<{ status: string; result?: CrawlResult }> {
+  async getResult(jobId: string): Promise<{ status: string; result?: CrawlResult; error?: string }> {
     const job = await this.queue.getJob(jobId);
     if (!job) return { status: "not_found" };
     const status = await job.getState();
     if (status === "completed") {
       return { status, result: job.returnvalue as CrawlResult };
+    }
+    // Carry the worker's reason through — it says which of "unreachable",
+    // "blocked", or "nothing there" actually happened.
+    if (status === "failed" && job.failedReason) {
+      return { status, error: job.failedReason };
     }
     return { status };
   }

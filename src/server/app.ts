@@ -72,6 +72,17 @@ export function createApp(deps: AppDeps): Express {
         res.status(400).json({ error: "url is required" });
         return;
       }
+      // Reject an unusable URL here rather than queueing a job that can only
+      // fail — /discover already validates up front, and the two should agree.
+      try {
+        const parsed = new URL(/^https?:\/\//i.test(url.trim()) ? url.trim() : `https://${url.trim()}`);
+        if (!/^https?:$/.test(parsed.protocol) || !parsed.hostname.includes(".")) {
+          throw new Error("unsupported");
+        }
+      } catch {
+        res.status(422).json({ error: "That doesn\u2019t look like a valid web address." });
+        return;
+      }
       const pages = readPages(req.body?.pages);
       const maxPages = clampPages(pages?.length ?? req.body?.maxPages);
       const jobId = await deps.jobs.enqueue({ url, maxPages, pages });
@@ -98,12 +109,12 @@ export function createApp(deps: AppDeps): Express {
   app.get(
     "/crawl/:jobId/result",
     wrap(async (req, res) => {
-      const { status, result } = await deps.jobs.getResult(String(req.params.jobId));
+      const { status, result, error } = await deps.jobs.getResult(String(req.params.jobId));
       if (status === "not_found") {
         res.status(404).json({ error: "job not found" });
         return;
       }
-      res.json({ status, result: result ?? null });
+      res.json({ status, result: result ?? null, ...(error ? { error } : {}) });
     }),
   );
 

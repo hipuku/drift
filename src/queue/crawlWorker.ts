@@ -23,7 +23,7 @@ export function createCrawlWorker(
       const { url, maxPages, pages } = job.data;
 
       let elementsTotal = 0;
-      return crawl(url, {
+      const result = await crawl(url, {
         maxPages,
         pages,
         onPage: async (page, index) => {
@@ -39,6 +39,16 @@ export function createCrawlWorker(
           await job.updateProgress(progress);
         },
       });
+
+      // Reaching no pages is a failed crawl, not an empty one — the site was
+      // unreachable, blocked us, or every selected page 404'd. Failing here
+      // keeps the job status honest for anything reading the API directly.
+      if (result.pages.length === 0) {
+        throw new Error(
+          "Couldn't read any pages — the site may be slow to load, blocking automated visits, or the selected pages may no longer exist.",
+        );
+      }
+      return result;
     },
     {
       connection: redisConnection(),

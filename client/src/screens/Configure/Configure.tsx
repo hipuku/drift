@@ -192,7 +192,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                placeholder="studiooptics.com.au"
+                placeholder="stripe.com"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
               />
