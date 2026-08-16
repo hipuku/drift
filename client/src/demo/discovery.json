@@ -1,0 +1,37 @@
+{
+  "rootUrl": "https://stripe.com/",
+  "host": "stripe.com",
+  "via": "sitemap",
+  "pages": [
+    {
+      "path": "/",
+      "url": "https://stripe.com",
+      "title": "Stripe | Financial Infrastructure"
+    },
+    {
+      "path": "/pricing",
+      "url": "https://stripe.com/pricing",
+      "title": "Pricing & Fees"
+    },
+    {
+      "path": "/payments",
+      "url": "https://stripe.com/payments",
+      "title": "Payments"
+    },
+    {
+      "path": "/billing",
+      "url": "https://stripe.com/billing",
+      "title": "Billing"
+    },
+    {
+      "path": "/connect",
+      "url": "https://stripe.com/connect",
+      "title": "Connect"
+    },
+    {
+      "path": "/customers",
+      "url": "https://stripe.com/customers",
+      "title": "Customers"
+    }
+  ]
+}

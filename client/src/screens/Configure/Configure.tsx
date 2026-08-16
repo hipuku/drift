@@ -3,6 +3,8 @@ import { Button } from "../../components/Button/Button.js";
 import { Callout } from "../../components/Callout/Callout.js";
 import { Text } from "../../components/Text/Text.js";
 import { TextField } from "../../components/TextField/TextField.js";
+import { discoverPages } from "../../lib/api.js";
+import { DEMO_CAPTURED, DEMO_MODE, DEMO_SITE } from "../../demo/index.js";
 import styles from "./Configure.module.css";
 
 const VISIBLE = 10;
@@ -68,16 +70,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
     setStep("discovering");
     setError(null);
     try {
-      const res = await fetch("/api/discover", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ url: url.trim() }),
-      });
-      if (!res.ok) {
-        const body = (await res.json().catch(() => ({}))) as { error?: string };
-        throw new Error(body.error ?? `Discovery failed (${res.status})`);
-      }
-      const data = (await res.json()) as { pages: DiscoveredPage[]; rootUrl?: string; host?: string };
+      const data = await discoverPages(url);
       setPages(data.pages);
       setResolvedUrl(data.rootUrl ?? url.trim());
       setResolvedHost(data.host ?? "");
@@ -173,6 +166,15 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
             <Text role="heading-lg" as="h1">
               Diagnose a site
             </Text>
+            {DEMO_MODE && (
+              <div className={styles.demoNote}>
+                <strong>Demo.</strong> The crawler is a headless browser behind a
+                job queue, so it isn&rsquo;t left running on a public URL. This
+                build replays a real audit of <strong>{DEMO_SITE}</strong>{" "}
+                captured in {DEMO_CAPTURED} — the inventory, verdicts and export
+                are the genuine output. Run it locally to audit any site.
+              </div>
+            )}
             <Text role="body" as="p" className={styles.intro}>
               Paste a URL. Drift finds the site’s pages and lets you pick which ones to audit —
               then reports where the design system has drifted.

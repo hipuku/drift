@@ -7,6 +7,17 @@
  * screens fetch through typed functions, never raw URLs. Deterministic — no model.
  */
 
+import {
+  DEMO_MODE,
+  demoAudit,
+  demoCrawlStatus,
+  demoDiscover,
+  demoStartCrawl,
+  type DiscoveryResponse,
+} from "../demo/index.js";
+
+export type { DiscoveryResponse };
+
 // ── Wire types (mirror the backend) ─────────────────────────────────────────
 
 export interface CrawlProgress {
@@ -55,7 +66,23 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
  * Returns the BullMQ job id used by every later call.
  */
 export function startCrawl(url: string, pages: string[]): Promise<{ jobId: string }> {
+  if (DEMO_MODE) return Promise.resolve(demoStartCrawl());
   return postJson("/crawl", { url, pages, maxPages: pages.length });
+}
+
+/**
+ * Resolve a URL and list its pages. Lives here rather than in the screen so the
+ * demo switch has a single place to sit, alongside the other calls.
+ */
+export async function discoverPages(url: string): Promise<DiscoveryResponse> {
+  if (DEMO_MODE) return demoDiscover();
+  const res = await fetch("/api/discover", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ url: url.trim() }),
+  });
+  if (!res.ok) throw await failure(res);
+  return (await res.json()) as DiscoveryResponse;
 }
 
 export interface CrawlStatus {
@@ -67,6 +94,7 @@ export interface CrawlStatus {
 
 /** Poll the crawl's status/result. Authoritative source of crawl completion. */
 export async function getCrawlStatus(jobId: string): Promise<CrawlStatus> {
+  if (DEMO_MODE) return demoCrawlStatus();
   const res = await fetch(`/api/crawl/${encodeURIComponent(jobId)}/result`);
   if (!res.ok) throw await failure(res);
   return (await res.json()) as CrawlStatus;
@@ -322,6 +350,7 @@ export interface AuditAuthored {
 
 /** The full deterministic audit for a completed crawl. */
 export async function getAudit(jobId: string): Promise<SiteAudit> {
+  if (DEMO_MODE) return demoAudit();
   const res = await fetch(`/api/crawl/${encodeURIComponent(jobId)}/audit`);
   if (!res.ok) throw await failure(res);
   return (await res.json()) as SiteAudit;

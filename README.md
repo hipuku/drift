@@ -182,6 +182,21 @@ npm test          # unit tests
 npm run typecheck # tsc, no emit
 ```
 
+## The deployed demo
+
+Drift's engine is a Playwright crawler behind a Redis-backed queue — not
+something to leave running on a public URL, and not free to host. So the
+deployed build ships a **real audit captured from a real crawl** and replays it.
+
+Everything downstream of the crawl is the genuine output, because it *is* the
+genuine output: the inventory, the verdicts and the export all come from that
+capture. Only the network round-trip is stubbed, and the UI says so rather than
+pretending to crawl on demand. Run it locally to audit any site.
+
+```bash
+VITE_DEMO_MODE=true npm --prefix client run build
+```
+
 ## Stack
 
 | Layer | Choice |
