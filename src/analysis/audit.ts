@@ -17,6 +17,7 @@ import {
 } from "./colours.js";
 import { deltaE } from "@haus/colour-utils";
 import { summariseAuthored, type AuthoredSummary } from "./authored.js";
+import { collectContrastFindings, type ContrastFinding } from "./contrast.js";
 import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "./typeScale.js";
 import type { CrawlResult } from "../crawler/types.js";
 
@@ -197,6 +198,10 @@ export interface AuditSummary {
   /** Radius values within ~1px of another (accidental near-duplicates). */
   radiusNearDuplicates: number;
   shadows: number;
+  /** Distinct text/background pairs evaluated for contrast. */
+  contrastPairs: number;
+  /** Pairs failing WCAG AA for normal-size text — the accessibility headline. */
+  contrastFailingAA: number;
 }
 
 export interface SiteAudit {
@@ -223,6 +228,8 @@ export interface SiteAudit {
   breakpoints?: BreakpointUsage[];
   /** How the site authors its tokens (units per category) + its own custom properties. */
   authored?: AuthoredSummary;
+  /** Text/background pairs with their WCAG contrast verdict, worst first. */
+  contrast?: ContrastFinding[];
 }
 
 // ── Colour family classification ─────────────────────────────────────────────
@@ -733,6 +740,7 @@ export function collectAudit(result: CrawlResult): SiteAudit {
   const motion = collectMotion(result);
   const breakpoints = collectBreakpoints(result);
   const authored = summariseAuthored(result.pages);
+  const contrast = collectContrastFindings(result);
 
   const distinctColours = colourFamilies.reduce((n, f) => n + f.swatches.length, 0);
   // Redundancy = colours indistinguishable from another (tight ΔE), so a
@@ -755,6 +763,8 @@ export function collectAudit(result: CrawlResult): SiteAudit {
       radii: radius.length,
       radiusNearDuplicates: countNearDuplicates(radius.map((r) => r.value)),
       shadows: shadow.length,
+      contrastPairs: contrast.length,
+      contrastFailingAA: contrast.filter((c) => !c.passAA).length,
     },
     colourFamilies,
     typography,
@@ -770,5 +780,6 @@ export function collectAudit(result: CrawlResult): SiteAudit {
     breakpoints,
     authored:
       authored.categories.length || authored.customProperties.length ? authored : undefined,
+    contrast: contrast.length ? contrast : undefined,
   };
 }

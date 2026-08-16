@@ -248,6 +248,10 @@ export interface SiteAudit {
     /** Radius values within ~1px of another. */
     radiusNearDuplicates?: number;
     shadows: number;
+    /** Distinct text/background pairs evaluated for contrast. */
+    contrastPairs?: number;
+    /** Pairs failing WCAG AA for normal text — the accessibility headline. */
+    contrastFailingAA?: number;
     // Optional extended categories — present only when extracted.
     borders?: number;
     opacities?: number;
@@ -278,6 +282,21 @@ export interface SiteAudit {
   gradients?: AuditStringTagUsage[]; // raw gradient declarations
   motion?: AuditMotion;
   authored?: AuditAuthored; // authored units per category + the site's own custom properties
+  contrast?: AuditContrastFinding[]; // text/background pairs with WCAG verdicts, worst first
+}
+
+/** A text/background colour pair as shipped, with its WCAG verdict. */
+export interface AuditContrastFinding {
+  foreground: string;
+  background: string;
+  ratio: number;
+  passAA: boolean;
+  passAAA: boolean;
+  passAALarge: boolean;
+  /** Text elements using this exact pair. */
+  count: number;
+  sampleTags: string[];
+  pages: string[];
 }
 
 /** How the site authors its tokens — read from the CSSOM, not computed px. */

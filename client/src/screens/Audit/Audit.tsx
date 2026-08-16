@@ -30,6 +30,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { Badge } from "../../components/Badge/Badge.js";
 import { Callout } from "../../components/Callout/Callout.js";
 import { Text } from "../../components/Text/Text.js";
 import type { AuditAuthored, AuditColourSwatch, CssUnit, SiteAudit } from "../../lib/api.js";
@@ -64,6 +65,7 @@ const VERDICT_TAB: Record<string, string> = {
 const TAB_ICON: Record<string, IconDefinition> = {
   overview: faChartSimple,
   colour: faPalette,
+  contrast: faCircleHalfStroke,
   type: faFont,
   spacing: faRulerHorizontal,
   radius: faShapes,
@@ -133,6 +135,17 @@ function healthLine(s: SiteAudit["summary"], extendedDrift: string[] = []): stri
     else clean.push("radius");
   }
   if (s.shadows > 0) clean.push("shadows"); // no redundancy signal — treated as holding
+
+  // Contrast is the one finding with a user-facing consequence, so it leads the
+  // problem list rather than joining the sprawl counts.
+  const failingAA = s.contrastFailingAA ?? 0;
+  if ((s.contrastPairs ?? 0) > 0) {
+    if (failingAA > 0)
+      problems.unshift(
+        `${failingAA} of ${s.contrastPairs} text/background pairs fail WCAG AA`,
+      );
+    else clean.push("contrast");
+  }
 
   const tail = extendedDrift.length ? ` Also drifting: ${joinList(extendedDrift)}.` : "";
 
@@ -338,6 +351,9 @@ export function Audit({ audit, onBack }: Props) {
     const list = [
       { id: "overview", label: "Overview", count: null as number | null },
       { id: "colour", label: "Colour", count: s.distinctColours },
+      ...(audit.contrast?.length
+        ? [{ id: "contrast", label: "Contrast", count: audit.contrast.length }]
+        : []),
       { id: "type", label: "Type", count: s.typeSizes },
       { id: "spacing", label: "Spacing", count: s.spacings },
     ];
@@ -445,6 +461,22 @@ export function Audit({ audit, onBack }: Props) {
           : "no near-duplicates",
       ],
     },
+    ...((s.contrastPairs ?? 0) > 0
+      ? [
+          {
+            label: "Contrast",
+            n: s.contrastPairs!,
+            // A failing pair is a reader who can't read the page — the one
+            // finding that warrants "review" outright rather than "watch".
+            verdict: ((s.contrastFailingAA ?? 0) > 0 ? "review" : "good") as Verdict,
+            chips: [
+              (s.contrastFailingAA ?? 0) > 0
+                ? `${s.contrastFailingAA} ${plural(s.contrastFailingAA!, "pair")} fail AA`
+                : "all pairs pass AA",
+            ],
+          },
+        ]
+      : []),
     {
       label: "Type",
       n: s.typeSizes,
@@ -862,6 +894,46 @@ export function Audit({ audit, onBack }: Props) {
                   </span>
                 </td>
                 <td className={styles.usageCell}>{b.count.toLocaleString()}×</td>
+              </tr>
+            ))}
+          </Table>
+        )}
+
+        {tab === "contrast" && audit.contrast && (
+          <Table head={["Sample", "Pair", "Ratio", "WCAG", "Tags", "Uses"]}>
+            {audit.contrast.map((c) => (
+              <tr key={`${c.foreground}|${c.background}`}>
+                <td className={styles.chipPreviewCell}>
+                  <span
+                    className={styles.contrastSample}
+                    style={{ background: c.background, color: c.foreground }}
+                  >
+                    Aa
+                  </span>
+                </td>
+                <td className={styles.valueCell}>
+                  <span className={styles.contrastPair}>
+                    {c.foreground}
+                    <span className={styles.contrastOn}>on</span>
+                    {c.background}
+                  </span>
+                </td>
+                <td className={styles.valueCell}>{c.ratio.toFixed(2)}:1</td>
+                <td>
+                  <Badge variant={c.passAA ? "neutral" : c.passAALarge ? "warning" : "danger"}>
+                    {c.passAAA ? "AAA" : c.passAA ? "AA" : c.passAALarge ? "AA large only" : "Fails AA"}
+                  </Badge>
+                </td>
+                <td className={styles.tagsCell}>
+                  <span className={styles.tagChips}>
+                    {c.sampleTags.map((tg) => (
+                      <span key={tg} className={styles.tagChip}>
+                        {tg}
+                      </span>
+                    ))}
+                  </span>
+                </td>
+                <td className={styles.usageCell}>{c.count.toLocaleString()}×</td>
               </tr>
             ))}
           </Table>

@@ -1470,3 +1470,30 @@
     left: calc(100% - 0.7rem);
   }
 }
+
+/* Contrast — a live specimen of the pair as the site actually renders it, so
+   the verdict is visible, not just asserted. */
+.contrastSample {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.contrastPair {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+}
+
+.contrastOn {
+  color: var(--color-ink-tertiary);
+}
