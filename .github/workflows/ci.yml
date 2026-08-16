@@ -33,6 +33,11 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          # drift and haus are checked out into sibling subfolders, so the lock
+          # files aren't at the workspace root where the cache looks by default.
+          cache-dependency-path: |
+            drift/package-lock.json
+            drift/client/package-lock.json
 
       - name: Install backend
         working-directory: drift
