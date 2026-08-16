@@ -531,19 +531,122 @@ export function Audit({ audit, onBack }: Props) {
   }
 
   /**
-   * The audit as data. Wrapped in a small envelope — what was audited, when, and
-   * by what — so the file still explains itself months later, detached from the
-   * app that produced it. The inventory itself is the audit shape verbatim.
+   * The audit as data — for machines, not readers: a CI check to assert on, two
+   * runs to diff, or a model to reason over. So it leads with the *diagnosis*
+   * (health, findings, verdicts) and the rules those rest on, and keeps the full
+   * inventory underneath as the evidence. Exporting the inventory alone would
+   * make the consumer re-derive the judgement Drift already made.
    */
   const exportJson = () => {
     const host = hostOf(audit.rootUrl);
     const generatedAt = new Date();
+
+    const typeFit = detectClosestRatio(
+      t.sizes.map((z) => z.px),
+      t.sizes.length ? t.sizes.reduce((a, b) => (b.count > a.count ? b : a)).px : 16,
+    );
+
+    // Only genuine problems become findings; `verdicts` below carries the full
+    // per-category picture, including the categories that are holding.
+    const findings: unknown[] = [];
+    const failingAA = s.contrastFailingAA ?? 0;
+    if (failingAA > 0) {
+      findings.push({
+        id: "contrast-fails-aa",
+        category: "contrast",
+        severity: "review",
+        title: `${failingAA} of ${s.contrastPairs} text/background ${plural(s.contrastPairs ?? 0, "pair")} fail WCAG AA`,
+        count: failingAA,
+        of: s.contrastPairs,
+        evidence: (audit.contrast ?? [])
+          .filter((c) => !c.passAA)
+          .map((c) => ({
+            foreground: c.foreground,
+            background: c.background,
+            ratio: Number(c.ratio.toFixed(2)),
+            uses: c.count,
+          })),
+      });
+    }
+    if (s.colourNearDuplicates > 0) {
+      findings.push({
+        id: "colour-near-duplicates",
+        category: "colour",
+        severity: redundancyVerdict(s.colourNearDuplicates),
+        title: `${s.colourNearDuplicates} of ${s.distinctColours} colours are indistinguishable from another`,
+        count: s.colourNearDuplicates,
+        of: s.distinctColours,
+        evidence: audit.colourFamilies
+          .flatMap((f) => f.swatches)
+          .filter((w) => w.nearest && w.nearest.deltaE < INDISTINGUISHABLE_DELTA_E)
+          .map((w) => ({ hex: w.hex, nearest: w.nearest!.hex, deltaE: Number(w.nearest!.deltaE.toFixed(2)) })),
+      });
+    }
+    const offScaleCount = s.typeOffScale ?? 0;
+    if (offScaleCount > 0) {
+      findings.push({
+        id: "type-off-scale",
+        category: "type",
+        severity: redundancyVerdict(offScaleCount),
+        title: `${offScaleCount} of ${s.typeSizes} type sizes fall off the closest modular scale`,
+        count: offScaleCount,
+        of: s.typeSizes,
+        evidence: [...offScalePx].map((px) => ({ px })),
+      });
+    }
+    const offGridCount = s.spacingOffGrid ?? 0;
+    if (offGridCount > 0) {
+      findings.push({
+        id: "spacing-off-grid",
+        category: "spacing",
+        severity: redundancyVerdict(offGridCount),
+        title: `${offGridCount} of ${s.spacings} spacing values miss the 4px grid`,
+        count: offGridCount,
+        of: s.spacings,
+        evidence: [...offGridSet].map((px) => ({ px })),
+      });
+    }
+    const radiusDupCount = s.radiusNearDuplicates ?? 0;
+    if (radiusDupCount > 0) {
+      findings.push({
+        id: "radius-near-duplicates",
+        category: "radius",
+        severity: "watch",
+        title: `${radiusDupCount} of ${s.radii} radii nearly repeat`,
+        count: radiusDupCount,
+        of: s.radii,
+        evidence: [...radiusNearDupSet].map((px) => ({ px })),
+      });
+    }
+
     const payload = {
       $schema: "https://drift.hipuku.dev/schema/audit-v1.json",
       tool: "drift",
       version: 1,
       site: { url: audit.rootUrl, host, pages: s.pages },
       generatedAt: generatedAt.toISOString(),
+
+      // The diagnosis, in the same words the report uses.
+      health: healthLine(s, extendedDrift),
+      findings,
+      verdicts: verdicts.map((v) => ({
+        category: v.label,
+        count: v.n,
+        verdict: v.verdict,
+        detail: v.chips,
+      })),
+
+      // What the verdicts were measured against, so the numbers are anchored.
+      rules: {
+        colour: { indistinguishableDeltaE: INDISTINGUISHABLE_DELTA_E, metric: "CIEDE2000" },
+        type: {
+          closestRatio: typeFit ? { name: typeFit.ratio.name, ratio: typeFit.ratio.ratio } : null,
+        },
+        spacing: { gridBasePx: 4, tolerancePx: 0.5 },
+        radius: { nearDuplicateTolerancePx: 1 },
+        contrast: { standard: "WCAG 2.1", threshold: "AA (4.5:1 normal, 3:1 large)" },
+      },
+
       summary: audit.summary,
       inventory: {
         colourFamilies: audit.colourFamilies,
