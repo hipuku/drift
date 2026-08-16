@@ -189,7 +189,7 @@ Core and hipuku.dev are Next.js apps, so Next was the default to beat. It loses 
 
 ### Frontend: Vite SPA over Next.js
 
-Drift's frontend is a single surface — crawl configuration, a live progress view, the audit, and the proposals. There are no public, SEO-relevant, server-rendered pages; the valuable output is generated per-run and streamed, not statically rendered. That removes the main reasons to reach for Next. A Vite + React SPA talking to the Express API over HTTP and WebSocket keeps the two halves cleanly separated and the build fast. It also makes the architecture legible at a glance: a server process and a client process, no blurred middle.
+Drift's frontend is a single surface — crawl configuration, a live progress view, and the audit (originally with a proposals layer, since cut — see below). There are no public, SEO-relevant, server-rendered pages; the valuable output is generated per-run and streamed, not statically rendered. That removes the main reasons to reach for Next. A Vite + React SPA talking to the Express API over HTTP and WebSocket keeps the two halves cleanly separated and the build fast. It also makes the architecture legible at a glance: a server process and a client process, no blurred middle.
 
 ### Job queue: BullMQ over pg-boss and in-memory
 
@@ -213,13 +213,11 @@ Playwright's Chromium adds roughly 300MB to an image if installed naively. The D
 
 Confidence: High on the shape; unbuilt, so unproven.
 
-### @haus/colour-utils is linked into the client, with a type shim
+### @haus/colour-utils: the audit's colour science, one published package
 
-The colour proposal re-clusters live as the user moves the size slider, so the CIEDE2000 and WCAG maths has to run in the browser. Reimplementing CIEDE2000 client-side would be duplicated, error-prone colour science, so the package is linked into the client the same way it is into the server. It is pure ESM with one browser-safe dependency and no Node builtins.
+The audit's perceptual work — CIEDE2000 near-duplicate clustering and WCAG contrast — is real colour science that would be error-prone to reimplement, so it lives in one dependency the backend consumes: the published `haus-colour-utils`. It is pure ESM with one browser-safe dependency and no Node builtins, and ships its own types.
 
-It ships TypeScript source rather than built declarations, which the client's stricter compiler options reject, so the client carries a declaration shim mirroring the server's: tsconfig `paths` points type resolution at the shim while Vite, which ignores tsconfig paths, bundles the real source. Both shims disappear when the package publishes built declarations.
-
-Confidence: High, though the shim is a bridge and is documented as one in both copies.
+*(Earlier this ran in the browser too: the cut colour proposal re-clustered live as the user moved a size slider, so the package was linked into the client the same way as the server — via a hand-written declaration shim, because it then shipped TypeScript source the client's stricter compiler rejected. With the proposal cut and the package now publishing built types, both the client link and the shim are gone; colour-utils is backend-only.)*
 
 ---
 
@@ -227,7 +225,7 @@ Confidence: High, though the shim is a bridge and is documented as one in both c
 
 ### Audit reads authored CSS, not only computed styles
 
-The first audit read every value from `getComputedStyle`, which returns resolved px. It was fast and truly "as rendered", but lossy in four ways at once: it discards the authored unit (a `rem`-based system reads as a pile of px, and one authored value resolves to several sub-pixel-different "tokens" like `1.96195px` vs `1.96209px`), it ignores the site's own declared `--*` custom properties, it sees only one viewport and only the resting state, and it captures JS-set inline noise (e.g. a GSAP frame). You cannot recover `em`/`%`/`vw`/`clamp()` from a px number — only `rem` is derivable (`px ÷ root font-size`) — so the fix is to read the CSS source (CSSOM) alongside the computed pass, which `extractBreakpoints` already proves is feasible. Computed styles stay the truth of *what rendered*; authored CSS supplies *what was written*, the real token names, and the interactive states. The proposal depends on this: off-scale / off-grid judgments are invalid on the wrong unit, so units land in the audit before any proposal, and the proposal recommends a unit per category (type in `rem` for zoom accessibility).
+The first audit read every value from `getComputedStyle`, which returns resolved px. It was fast and truly "as rendered", but lossy in four ways at once: it discards the authored unit (a `rem`-based system reads as a pile of px, and one authored value resolves to several sub-pixel-different "tokens" like `1.96195px` vs `1.96209px`), it ignores the site's own declared `--*` custom properties, it sees only one viewport and only the resting state, and it captures JS-set inline noise (e.g. a GSAP frame). You cannot recover `em`/`%`/`vw`/`clamp()` from a px number — only `rem` is derivable (`px ÷ root font-size`) — so the fix is to read the CSS source (CSSOM) alongside the computed pass, which `extractBreakpoints` already proves is feasible. Computed styles stay the truth of *what rendered*; authored CSS supplies *what was written*, the real token names, and the interactive states. The audit's verdicts depend on this: off-scale / off-grid judgments are invalid on the wrong unit, so the authored units land in the audit itself. (The cut proposal layer went further, recommending a unit per category — type in `rem` for zoom accessibility.)
 
 Confidence: High on the direction. Medium on per-element rule matching — the pragmatic route collects declared token sets per property rather than resolving the full cascade per element.
 
