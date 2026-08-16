@@ -1044,7 +1044,7 @@ export function Audit({ audit, onBack }: Props) {
                 <td className={styles.chipPreviewCell}>
                   <span className={styles.shadowChip} style={{ boxShadow: sh.value }} />
                 </td>
-                <td className={`${styles.valueCell} ${styles.valueCellTrunc}`} title={sh.value}>
+                <td className={`${styles.valueCell} ${styles.valueCellWrap}`} title={sh.value}>
                   {sh.value}
                 </td>
                 <td className={styles.tagsCell}>
