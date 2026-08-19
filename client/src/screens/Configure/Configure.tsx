@@ -194,7 +194,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                placeholder="stripe.com"
+                placeholder="picocss.com"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
               />

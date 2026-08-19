@@ -22,9 +22,9 @@ motion, and breakpoints, plus the *authored* units read from the stylesheets
 
 **The diagnosis** — where the system has drifted, in plain terms:
 
-> 3 of 7 text/background pairs fail WCAG AA, 1 of 6 colours are near-duplicates,
-> 6 of 10 type sizes fall off the scale, and 9 of 17 spacing values miss the 4px
-> grid. Radius holds steady.
+> 1 of 28 text/background pairs fail WCAG AA, 4 of 31 colours are
+> near-duplicates, 6 of 11 type sizes fall off the scale, and 12 of 20 spacing
+> values miss the 4px grid. Radius and shadows hold steady.
 
 Every claim is measured against a stated reference — a named modular ratio for
 type, a 4px or 8px grid for spacing, CIEDE2000 for colour, WCAG 2.1 for
@@ -74,15 +74,15 @@ A crawl runs for minutes, so a caller that isn't a browser has two options: poll
 
 ```http
 POST /discover
-{ "url": "stripe.com" }
+{ "url": "picocss.com" }
 ```
 
 ```json
 {
-  "rootUrl": "https://stripe.com/",
-  "host": "stripe.com",
-  "via": "sitemap",
-  "pages": [{ "path": "/", "url": "https://stripe.com/" }]
+  "rootUrl": "https://picocss.com/",
+  "host": "picocss.com",
+  "via": "links",
+  "pages": [{ "path": "/", "url": "https://picocss.com/" }]
 }
 ```
 
@@ -95,8 +95,8 @@ a human-readable `error`.
 ```http
 POST /crawl
 {
-  "url": "https://stripe.com/",
-  "pages": ["https://stripe.com/", "https://stripe.com/pricing"],
+  "url": "https://picocss.com/",
+  "pages": ["https://picocss.com/", "https://picocss.com/docs"],
   "maxPages": 2
 }
 ```
@@ -131,15 +131,15 @@ Pass a `callbackUrl` and Drift POSTs the finished audit to it — no polling.
 
 ```http
 POST /crawl
-{ "url": "https://stripe.com/", "callbackUrl": "https://ci.example.com/drift" }
+{ "url": "https://picocss.com/", "callbackUrl": "https://ci.example.com/drift" }
 ```
 
 ```json
 {
   "event": "crawl.completed",
   "jobId": "24",
-  "site": "https://stripe.com/",
-  "audit": { "summary": { "pages": 6, "contrastFailingAA": 40, "…": "…" }, "colourFamilies": [ … ], "contrast": [ … ] }
+  "site": "https://picocss.com/",
+  "audit": { "summary": { "pages": 2, "contrastFailingAA": 1, "…": "…" }, "colourFamilies": [ … ], "contrast": [ … ] }
 }
 ```
 

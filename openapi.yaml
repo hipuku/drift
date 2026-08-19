@@ -52,7 +52,7 @@ paths:
                 url:
                   type: string
                   description: A URL or bare host. Absolute or `example.com` both work.
-                  example: stripe.com
+                  example: picocss.com
       responses:
         "200":
           description: Resolved origin and candidate pages.
@@ -258,12 +258,12 @@ components:
       type: object
       required: [url]
       properties:
-        url: { type: string, example: "https://stripe.com/" }
+        url: { type: string, example: "https://picocss.com/" }
         pages:
           type: array
           items: { type: string, format: uri }
           description: Absolute, same-origin page URLs to crawl. Capped at 10.
-          example: ["https://stripe.com/", "https://stripe.com/pricing"]
+          example: ["https://picocss.com/", "https://picocss.com/docs"]
         maxPages:
           type: integer
           minimum: 1

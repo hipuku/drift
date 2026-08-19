@@ -1,37 +1,17 @@
 {
-  "rootUrl": "https://stripe.com/",
-  "host": "stripe.com",
-  "via": "sitemap",
+  "rootUrl": "https://picocss.com/",
+  "host": "picocss.com",
+  "via": "links",
   "pages": [
     {
+      "url": "https://picocss.com/",
       "path": "/",
-      "url": "https://stripe.com",
-      "title": "Stripe | Financial Infrastructure"
+      "title": "Home"
     },
     {
-      "path": "/pricing",
-      "url": "https://stripe.com/pricing",
-      "title": "Pricing & Fees"
-    },
-    {
-      "path": "/payments",
-      "url": "https://stripe.com/payments",
-      "title": "Payments"
-    },
-    {
-      "path": "/billing",
-      "url": "https://stripe.com/billing",
-      "title": "Billing"
-    },
-    {
-      "path": "/connect",
-      "url": "https://stripe.com/connect",
-      "title": "Connect"
-    },
-    {
-      "path": "/customers",
-      "url": "https://stripe.com/customers",
-      "title": "Customers"
+      "url": "https://picocss.com/docs",
+      "path": "/docs",
+      "title": "Get Started"
     }
   ]
 }
