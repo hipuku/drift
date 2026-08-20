@@ -15,13 +15,12 @@
  */
 
 import { chromium, type BrowserContext, type Browser } from "playwright";
+import { extractRawElements, normaliseElement } from "haus-style-probe";
 import {
   extractAuthoredDeclarations,
   extractBreakpoints,
   extractLinks,
-  extractRawElements,
 } from "./extract.js";
-import { normaliseElement } from "./normalise.js";
 import type { CrawlOptions, CrawlResult, PageExtraction } from "./types.js";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -68,7 +67,10 @@ async function visit(context: BrowserContext, url: string, timeout: number): Pro
     // don't wait on images / fonts / third-party scripts, which is what makes
     // slow sites blow past the timeout.
     await page.goto(url, { waitUntil: "domcontentloaded", timeout });
-    const rawElements = await page.evaluate(extractRawElements);
+    // Explicit empty options: no `root`, so the probe walks the whole
+    // document. Playwright's no-argument overload types the parameter as
+    // `void`, which the probe's optional options argument does not accept.
+    const rawElements = await page.evaluate(extractRawElements, {});
     const title = await page.title();
     const elements = rawElements.map(normaliseElement);
     const hrefs = await page.evaluate(extractLinks);

@@ -1,121 +1,19 @@
 /**
- * The raw extraction contract.
+ * The crawl contract.
  *
- * This is the boundary between the crawler and everything downstream
- * (clustering, contrast checking, reporting). Two shapes live here:
+ * The per-element shapes — RawElement, ElementStyle, ExtractedElement — now
+ * live in `haus-style-probe`, the shared measuring tool. They are re-exported
+ * here so the rest of drift keeps importing its contract from one place, and
+ * so the seam is visible: everything below this re-export is crawl-specific
+ * (pages, sitemaps, discovery, authored CSS) and belongs to drift alone.
  *
- *  - RawElement      what the in-browser extractor returns: untouched
- *                    getComputedStyle strings, no parsing in the page context.
- *  - ExtractedElement what the Node-side normaliser produces: typed,
- *                     unit-normalised values ready for analysis.
- *
- * Keeping raw strings on one side and normalised values on the other means
- * the normalisation is pure, runs outside the browser, and is unit-testable
- * without launching Chromium.
+ * The probe answers "what is this element rendering?". This module answers
+ * "what did we find across a site?".
  */
 
-/** Untouched computed-style strings for a single element, gathered in-page. */
-export interface RawElement {
-  tag: string;
-  /** True when the element has non-whitespace direct text (a contrast candidate). */
-  hasText: boolean;
-  raw: {
-    color: string;
-    backgroundColor: string;
-    /** Nearest non-transparent ancestor background (incl. self); page canvas as fallback. */
-    effectiveBackgroundColor: string;
-    borderTopColor: string;
-    borderRightColor: string;
-    borderBottomColor: string;
-    borderLeftColor: string;
-    borderTopWidth: string;
-    borderRightWidth: string;
-    borderBottomWidth: string;
-    borderLeftWidth: string;
-    fontFamily: string;
-    fontSize: string;
-    fontWeight: string;
-    lineHeight: string;
-    letterSpacing: string;
-    borderTopLeftRadius: string;
-    borderTopRightRadius: string;
-    borderBottomRightRadius: string;
-    borderBottomLeftRadius: string;
-    boxShadow: string;
-    paddingTop: string;
-    paddingRight: string;
-    paddingBottom: string;
-    paddingLeft: string;
-    marginTop?: string;
-    marginRight?: string;
-    marginBottom?: string;
-    marginLeft?: string;
-    rowGap?: string;
-    columnGap?: string;
-    opacity?: string;
-    zIndex?: string;
-    filter?: string;
-    backdropFilter?: string;
-    backgroundImage?: string;
-    transitionDuration?: string;
-    transitionTimingFunction?: string;
-  };
-}
+export type { RawElement, ElementStyle, ExtractedElement } from "haus-style-probe";
 
-/** Normalised, typed styles for a single element. Nulls mean "not set / not meaningful". */
-export interface ElementStyle {
-  /** Hex, lowercase. Includes a trailing alpha pair when alpha < 1. Null when fully transparent. */
-  color: string | null;
-  backgroundColor: string | null;
-  /**
-   * The background a reader actually sees behind this element's text:
-   * the nearest non-transparent ancestor background, or the page canvas.
-   * This is the value to pair with `color` for contrast.
-   */
-  effectiveBackgroundColor: string | null;
-  /** Unique border colours across the four sides, nulls dropped. */
-  borderColor: string[];
-  /** First family in the stack, unquoted. */
-  fontFamily: string | null;
-  /** Pixels. */
-  fontSize: number | null;
-  /** Numeric weight (normal → 400, bold → 700). */
-  fontWeight: number | null;
-  /** Unitless ratio relative to font-size. Null for `normal`. */
-  lineHeight: number | null;
-  /** Em, relative to font-size. 0 for `normal`. */
-  letterSpacing: number;
-  /** Unique corner radii in pixels. */
-  borderRadius: number[];
-  /** Raw shadow value. Null for `none`. */
-  boxShadow: string | null;
-  /** [top, right, bottom, left] in pixels. */
-  padding: [number, number, number, number];
-  /** [top, right, bottom, left] in pixels. Can be negative. Absent on pre-margin crawls. */
-  margin?: [number, number, number, number];
-  /** Distinct flex/grid gap values (row + column) in pixels. Absent on pre-gap crawls. */
-  gap?: number[];
-  /** Border widths [top, right, bottom, left] in pixels. Absent on pre-border crawls. */
-  borderWidths?: [number, number, number, number];
-  /** Computed opacity, 0–1. 1 is the opaque default. */
-  opacity?: number;
-  /** Parsed z-index; null for `auto`. */
-  zIndex?: number | null;
-  /** Blur radii (px) from filter / backdrop-filter. */
-  blur?: number[];
-  /** Gradient declaration when background-image is a gradient; null otherwise. */
-  gradient?: string | null;
-  /** Transition durations in milliseconds (non-zero, distinct). */
-  motionDurations?: number[];
-  /** Transition timing functions (distinct). */
-  motionEasings?: string[];
-}
-
-export interface ExtractedElement {
-  tag: string;
-  hasText: boolean;
-  styles: ElementStyle;
-}
+import type { ExtractedElement } from "haus-style-probe";
 
 /** A min/max-width condition pulled from an @media rule. */
 export interface MediaBreakpoint {
