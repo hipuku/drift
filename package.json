@@ -18,8 +18,8 @@
   "dependencies": {
     "bullmq": "^5.78.1",
     "express": "^5.2.1",
-    "haus-colour-utils": "^0.1.0",
-    "haus-style-probe": "^0.1.0",
+    "haus-colour-utils": "^0.1.2",
+    "haus-style-probe": "^0.2.1",
     "ioredis": "^5.11.1",
     "playwright": "^1.48.0",
     "ws": "^8.21.0"
