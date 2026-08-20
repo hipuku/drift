@@ -359,7 +359,7 @@ export function Audit({ audit, onBack }: Props) {
   }, [s, audit]);
 
   const [tab, setTab] = useState("overview");
-  const [selectedHex, setSelectedHex] = useState<string | null>(null);
+  const [pickedHex, setSelectedHex] = useState<string | null>(null);
   const [flashHex, setFlashHex] = useState<string | null>(null);
 
   // Picking a neighbour from the rail: swap the detail to it, then scroll its
@@ -379,9 +379,10 @@ export function Audit({ audit, onBack }: Props) {
   }, [flashHex]);
 
   // The detail rail belongs to the Colour tab — leaving it closes the rail.
-  useEffect(() => {
-    if (tab !== "colour") setSelectedHex(null);
-  }, [tab]);
+  // Derived rather than cleared in an effect: the rail's visibility is a
+  // function of the current tab, so computing it during render avoids the
+  // extra pass a reset effect would schedule.
+  const selectedHex = tab === "colour" ? pickedHex : null;
 
   const maxSpace = audit.spacing.reduce((m, v) => Math.max(m, v.value), 1);
   const maxBp = audit.breakpoints?.reduce((m, v) => Math.max(m, v.value), 1) ?? 1;

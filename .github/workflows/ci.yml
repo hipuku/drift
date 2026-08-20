@@ -11,7 +11,7 @@ env:
 
 jobs:
   ci:
-    name: Typecheck, Test, Build
+    name: Lint, Typecheck, Test, Build
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +27,11 @@ jobs:
 
       - name: Install backend
         run: npm ci
+
+      # One config at the root covers both halves: the service under src/ and
+      # the client under client/src/.
+      - name: Lint
+        run: npm run lint
 
       - name: Typecheck backend
         run: npm run typecheck

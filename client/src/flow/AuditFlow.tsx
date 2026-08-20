@@ -81,6 +81,12 @@ export function AuditFlow() {
     [fail, go],
   );
 
+  // Orchestration: advance the flow when the crawl job reaches a terminal
+  // state. The job is an external system, so reacting to it in an effect is
+  // the intended use — the rule fires only because the transition happens to
+  // be expressed as setState. There is nothing to derive here; the flow moves
+  // once, guarded by loadedRef.
+  /* eslint-disable react-hooks/set-state-in-effect -- see the note above */
   useEffect(() => {
     if (phase !== "crawling" || !jobId) return;
     if (crawl.phase === "completed" && !loadedRef.current) {
@@ -94,6 +100,7 @@ export function AuditFlow() {
       fail(crawl.error ?? "The crawl failed.");
     }
   }, [phase, jobId, crawl.phase, crawl.error, loadAudit, fail]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleConfigure = useCallback(
     async (url: string, pages: string[]) => {

@@ -55,6 +55,13 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
     // state from a previous crawl lingers, and the next crawl's orchestrator
     // sees a stale "completed" and fetches the audit before the new job has
     // finished (a 409 "the crawl has not finished").
+    //
+    // set-state-in-effect is disabled rather than worked around: this effect
+    // subscribes to an external system (the progress socket), and the reset is
+    // the opening move of that subscription, not derived state. Deriving it
+    // during render would mean tracking the previous jobId purely to decide
+    // whether to discard a socket that this effect already owns.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setState({ phase: "running", progress: null, crawledPages: [], result: null, error: null });
     if (!jobId) return;
 
