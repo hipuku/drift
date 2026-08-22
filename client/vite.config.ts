@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -19,5 +20,14 @@ export default defineConfig({
         ws: true,
       },
     },
+  },
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: ["./src/test/setup.ts"],
+    // The screens import CSS. Parsing it costs time and proves nothing here:
+    // every assertion below is on behaviour, never on computed style.
+    css: false,
+    include: ["src/**/*.test.{ts,tsx}"],
   },
 });

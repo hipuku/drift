@@ -8,7 +8,7 @@
  * both and cleans them up on unmount or job change.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getCrawlStatus,
   progressSocketUrl,
@@ -45,12 +45,14 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
     error: null,
   });
 
-  // Guards async callbacks from writing after the effect for this job is torn
-  // down (job change or unmount), avoiding a state update on a stale job.
-  const liveRef = useRef(true);
-
   useEffect(() => {
-    liveRef.current = true;
+    // Guards async callbacks from writing after this effect is torn down, by
+    // unmount or by a job change. It must be local to the effect run, not a
+    // ref: on a job change React runs this effect's cleanup and the next
+    // effect's body in the same commit, so a shared ref is already back to
+    // true by the time a previous job's in-flight poll resolves, and the
+    // guard would let job-1's result land as job-2's state.
+    let live = true;
     // Reset on every job change — including to null. Otherwise a completed
     // state from a previous crawl lingers, and the next crawl's orchestrator
     // sees a stale "completed" and fetches the audit before the new job has
@@ -73,7 +75,7 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
         socket?.send(JSON.stringify({ type: "subscribe", jobId }));
       });
       socket.addEventListener("message", (event) => {
-        if (!liveRef.current) return;
+        if (!live) return;
         let msg: { type: string; data?: CrawlProgress };
         try {
           msg = JSON.parse(String(event.data));
@@ -104,7 +106,7 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
       try {
         const payload = await getCrawlStatus(jobId);
         const { status, result } = payload;
-        if (!liveRef.current) return;
+        if (!live) return;
         if (status === "completed") {
           setState((s) => ({ ...s, phase: "completed", result }));
           return;
@@ -123,7 +125,7 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
           return;
         }
       } catch (err) {
-        if (!liveRef.current) return;
+        if (!live) return;
         // Transient fetch error — keep polling rather than failing the run.
         void err;
       }
@@ -132,7 +134,7 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
     void poll();
 
     return () => {
-      liveRef.current = false;
+      live = false;
       if (timer) clearTimeout(timer);
       socket?.close();
     };
