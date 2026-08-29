@@ -297,7 +297,7 @@ function groupColoursByFamily(result: CrawlResult): ColourFamily[] {
       count: u.count,
       roles: u.roles,
       elements: u.elements,
-      pages: u.pages,
+      pages: [...u.pages].sort(),
       lightness: Math.round(hsl.l * 100),
     };
     const list = families.get(name);
@@ -309,21 +309,32 @@ function groupColoursByFamily(result: CrawlResult): ColourFamily[] {
     .map(([name, swatches]) => ({
       name,
       // Light → dark within a family, so shades read as a ramp.
-      swatches: swatches.sort((a, b) => b.lightness - a.lightness),
+      swatches: swatches.sort((a, b) => b.lightness - a.lightness || compareHex(a.hex, b.hex)),
       count: swatches.reduce((n, s) => n + s.count, 0),
     }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }
 
 // ── Typography aggregation ───────────────────────────────────────────────────
 
 const ROLE_TAGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6", "p", "button", "a", "small", "label", "blockquote", "li"]);
 
-function mode<T>(counts: Map<T, number>): T | undefined {
-  let best: T | undefined;
+/**
+ * Total order on hex values, used as the last key in every sort below. A Map
+ * iterates in insertion order, so without it the audit reflects the order the
+ * crawler happened to visit pages in, and two runs over an unchanged site can
+ * differ. Diffing two runs is the product, so every list it emits is ordered by
+ * the data alone.
+ */
+function compareHex(a: string, b: string): number {
+  return a.toLowerCase() < b.toLowerCase() ? -1 : a.toLowerCase() > b.toLowerCase() ? 1 : 0;
+}
+
+function mode(counts: Map<number, number>): number | undefined {
+  let best: number | undefined;
   let bestN = -1;
   for (const [k, n] of counts) {
-    if (n > bestN) {
+    if (n > bestN || (n === bestN && best !== undefined && k < best)) {
       bestN = n;
       best = k;
     }
@@ -387,21 +398,21 @@ function collectTypography(result: CrawlResult): SiteAudit["typography"] {
 
   const roleList: TypeRoleUsage[] = [...roles.entries()]
     .map(([tag, t]) => ({ tag, px: mode(t.sizes) ?? 0, weight: mode(t.weights) ?? null, count: t.count }))
-    .sort((a, b) => b.px - a.px);
+    .sort((a, b) => b.px - a.px || a.tag.localeCompare(b.tag));
 
   return {
     families: [...families.entries()]
       .map(([family, count]) => ({ family, count }))
-      .sort((a, b) => b.count - a.count),
+      .sort((a, b) => b.count - a.count || a.family.localeCompare(b.family)),
     roles: roleList,
     sizes: [...sizes.entries()]
       .map(([px, s]) => ({
         px,
         count: s.count,
-        weights: [...s.weights.entries()].sort((a, b) => b[1] - a[1]).map(([w]) => w),
+        weights: [...s.weights.entries()].sort((a, b) => b[1] - a[1] || a[0] - b[0]).map(([w]) => w),
         tags: [...s.tags.entries()]
           .map(([tag, count]) => ({ tag, count }))
-          .sort((a, b) => b.count - a.count),
+          .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag)),
       }))
       .sort((a, b) => a.px - b.px),
     weights: [...weights].sort((a, b) => a - b),
@@ -464,16 +475,18 @@ function collectSpacing(result: CrawlResult): SpacingUsage[] {
       value,
       count: t.count,
       properties: [...t.properties.entries()]
-        .sort((a, b) => b[1] - a[1])
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
         .map(([property, count]) => ({ property, count })),
-      tags: [...t.tags.entries()].sort((a, b) => b[1] - a[1]).map(([tag, count]) => ({ tag, count })),
+      tags: tagList(t.tags),
     }))
     .sort((a, b) => a.value - b.value);
 }
 
 /** Sort a tag→count map into a most-used-first list. */
 function tagList(tags: Map<string, number>): TagUsage[] {
-  return [...tags.entries()].sort((a, b) => b[1] - a[1]).map(([tag, count]) => ({ tag, count }));
+  return [...tags.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([tag, count]) => ({ tag, count }));
 }
 
 function collectRadius(result: CrawlResult): RadiusUsage[] {
@@ -515,7 +528,7 @@ function collectShadow(result: CrawlResult): ShadowUsage[] {
   }
   return [...tally.entries()]
     .map(([value, t]) => ({ value, count: t.count, tags: tagList(t.tags) }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value));
 }
 
 const BORDER_SIDES: BorderSide[] = ["top", "right", "bottom", "left"];
@@ -545,7 +558,9 @@ function collectBorders(result: CrawlResult): BorderUsage[] {
     .map(([value, t]) => ({
       value,
       count: t.count,
-      sides: [...t.sides.entries()].sort((a, b) => b[1] - a[1]).map(([side, count]) => ({ side, count })),
+      sides: [...t.sides.entries()]
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .map(([side, count]) => ({ side, count })),
       tags: tagList(t.tags),
     }))
     .sort((a, b) => a.value - b.value);
@@ -599,7 +614,7 @@ function collectBlur(result: CrawlResult): NumberTagUsage[] {
 
 function collectGradients(result: CrawlResult): StringTagUsage[] {
   const tally = tallyTagged(result, (el) => (el.styles.gradient ? [el.styles.gradient] : []));
-  return stringTagList(tally).sort((a, b) => b.count - a.count);
+  return stringTagList(tally).sort((a, b) => b.count - a.count || a.value.localeCompare(b.value));
 }
 
 function collectBreakpoints(result: CrawlResult): BreakpointUsage[] {
@@ -619,7 +634,9 @@ function collectBreakpoints(result: CrawlResult): BreakpointUsage[] {
     .map(([value, t]) => ({
       value,
       count: t.count,
-      types: [...t.types.entries()].sort((a, b) => b[1] - a[1]).map(([type, count]) => ({ type, count })),
+      types: [...t.types.entries()]
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .map(([type, count]) => ({ type, count })),
     }))
     .sort((a, b) => a.value - b.value);
 }
@@ -629,7 +646,7 @@ function collectMotion(result: CrawlResult): MotionUsage {
     (a, b) => a.value - b.value,
   );
   const easings = stringTagList(tallyTagged(result, (el) => el.styles.motionEasings ?? [])).sort(
-    (a, b) => b.count - a.count,
+    (a, b) => b.count - a.count || a.value.localeCompare(b.value),
   );
   return { durations, easings };
 }
@@ -646,7 +663,10 @@ function nearestColour(hex: string, all: string[]): ColourSwatch["nearest"] {
     } catch {
       continue;
     }
-    if (Number.isFinite(d) && (!best || d < best.deltaE)) best = { hex: other, deltaE: d };
+    if (!Number.isFinite(d)) continue;
+    if (!best || d < best.deltaE || (d === best.deltaE && compareHex(other, best.hex) < 0)) {
+      best = { hex: other, deltaE: d };
+    }
   }
   return best ? { hex: best.hex, deltaE: Math.round(best.deltaE * 10) / 10 } : undefined;
 }
@@ -680,7 +700,12 @@ function relatedColours(hex: string, all: string[]): ColourRelation[] {
       rels.push({ hex: other, deltaE: Math.round(d * 10) / 10, opacityVariant });
     }
   }
-  rels.sort((a, b) => Number(b.opacityVariant) - Number(a.opacityVariant) || a.deltaE - b.deltaE);
+  rels.sort(
+    (a, b) =>
+      Number(b.opacityVariant) - Number(a.opacityVariant) ||
+      a.deltaE - b.deltaE ||
+      compareHex(a.hex, b.hex),
+  );
   return rels;
 }
 

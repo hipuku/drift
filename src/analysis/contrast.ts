@@ -77,9 +77,14 @@ export function collectContrastFindings(result: CrawlResult): ContrastFinding[] 
         passAAA: c.passAAA,
         passAALarge: c.passAALarge,
         count: p.count,
-        sampleTags: [...p.tags],
-        pages: [...p.pages],
+        sampleTags: [...p.tags].sort(),
+        pages: [...p.pages].sort(),
       };
     })
-    .sort((a, b) => a.ratio - b.ratio);
+    .sort(
+      (a, b) =>
+        a.ratio - b.ratio ||
+        (a.foreground < b.foreground ? -1 : a.foreground > b.foreground ? 1 : 0) ||
+        (a.background < b.background ? -1 : a.background > b.background ? 1 : 0),
+    );
 }

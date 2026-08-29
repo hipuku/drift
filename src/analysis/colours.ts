@@ -115,10 +115,10 @@ export function collectColourUsage(result: CrawlResult): ColourUsage[] {
           const [tag, role] = k.split("|");
           return { tag: tag!, role: role as ColourRole, count };
         })
-        .sort((a, b) => b.count - a.count),
-      pages: [...e.pages],
+        .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag) || a.role.localeCompare(b.role)),
+      pages: [...e.pages].sort(),
     }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count || (a.hex < b.hex ? -1 : 1));
 }
 
 /**
@@ -149,11 +149,11 @@ export function clusterColours(result: CrawlResult, threshold = 8): ColourCluste
       }
       return {
         representative: cluster.representative,
-        members: cluster.members,
+        members: [...cluster.members].sort(),
         size: cluster.size,
         totalUsage,
-        pages: [...pages],
+        pages: [...pages].sort(),
       };
     })
-    .sort((a, b) => b.totalUsage - a.totalUsage);
+    .sort((a, b) => b.totalUsage - a.totalUsage || (a.representative < b.representative ? -1 : 1));
 }

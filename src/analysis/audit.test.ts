@@ -95,3 +95,54 @@ describe("collectAudit", () => {
     expect(radii[0]!.count).toBe(2);
   });
 });
+
+describe("collectAudit ordering", () => {
+  // A Map iterates in insertion order, so any list built from one reflects the
+  // order the crawler visited pages in unless every sort has a tie break. Drift
+  // exists to diff two runs, so an unchanged site must produce an identical
+  // audit however the crawl was scheduled.
+
+  it("reports the same role size whichever element the crawler saw first", () => {
+    const small = el({ fontSize: 16, fontWeight: 400 }, true, "p");
+    const large = el({ fontSize: 18, fontWeight: 400 }, true, "p");
+
+    const forwards = collectAudit(crawl([small, large])).typography.roles;
+    const backwards = collectAudit(crawl([large, small])).typography.roles;
+
+    expect(forwards).toEqual(backwards);
+    // The tie resolves to the smaller size, not to whichever arrived first.
+    expect(forwards[0]!.px).toBe(16);
+  });
+
+  it("is unchanged when the elements on a page are reordered", () => {
+    const elements = [
+      el({ color: "#111111", fontFamily: "Inter", fontSize: 16, fontWeight: 400, padding: [8, 0, 0, 0], borderRadius: [4], boxShadow: "0 1px 2px rgba(0,0,0,.1)" }, true, "p"),
+      el({ color: "#2563eb", fontFamily: "Roboto", fontSize: 18, fontWeight: 400, padding: [12, 0, 0, 0], borderRadius: [6], boxShadow: "0 2px 4px rgba(0,0,0,.1)" }, true, "p"),
+      el({ color: "#dc2626", fontFamily: "Inter", fontSize: 24, fontWeight: 700, effectiveBackgroundColor: "#ffffff" }, true, "h1"),
+      el({ color: "#16a34a", fontFamily: "Roboto", fontSize: 24, fontWeight: 700, effectiveBackgroundColor: "#ffffff" }, true, "h2"),
+    ];
+
+    expect(collectAudit(crawl([...elements].reverse()))).toEqual(collectAudit(crawl(elements)));
+  });
+
+  it("is unchanged when the pages arrive in a different order", () => {
+    const page = (url: string, elements: ExtractedElement[]) => ({
+      url,
+      title: url,
+      elementCount: elements.length,
+      elements,
+    });
+    const pages = [
+      page("https://example.com/a", [el({ color: "#111111", fontSize: 16, fontWeight: 400 }, true, "p")]),
+      page("https://example.com/b", [el({ color: "#2563eb", fontSize: 16, fontWeight: 400 }, true, "p")]),
+      page("https://example.com/c", [el({ color: "#dc2626", fontSize: 24, fontWeight: 700 }, true, "h1")]),
+    ];
+    const site = (order: typeof pages): CrawlResult => ({
+      rootUrl: "https://example.com",
+      crawledAt: "2026-01-01T00:00:00.000Z",
+      pages: order,
+    });
+
+    expect(collectAudit(site([...pages].reverse()))).toEqual(collectAudit(site(pages)));
+  });
+});
