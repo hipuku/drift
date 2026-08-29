@@ -193,3 +193,118 @@ describe("colour families", () => {
     expect(neutral!.swatches.map((s) => s.hex)).toEqual(["#ffffff", "#8a8f98", "#2b2b2b"]);
   });
 });
+
+describe("token thresholds", () => {
+  it("drops sub-pixel values and keeps 1px, either side of the floor", () => {
+    // Below 1px is browser rounding of a rem or a percentage, not a token.
+    const audit = collectAudit(crawl([el({ padding: [0.99, 1, 1.01, 0] }, false, "div")]));
+    expect(audit.spacing.map((s) => s.value)).toEqual([1, 1.01]);
+  });
+
+  it("counts a spacing value as off-grid only past 0.5px from a multiple of 4", () => {
+    const offGrid = (px: number) =>
+      collectAudit(crawl([el({ padding: [px, 0, 0, 0] }, false, "div")])).summary.spacingOffGrid;
+
+    expect(offGrid(4)).toBe(0);
+    expect(offGrid(8)).toBe(0);
+    expect(offGrid(4.5)).toBe(0); // exactly the tolerance, still on grid
+    expect(offGrid(4.51)).toBe(1);
+    expect(offGrid(6)).toBe(1);
+  });
+
+  it("counts radii as near-duplicates at exactly 1px apart, but not beyond", () => {
+    const nearDupes = (a: number, b: number) =>
+      collectAudit(
+        crawl([el({ borderRadius: [a] }, false, "div"), el({ borderRadius: [b] }, false, "div")]),
+      ).summary.radiusNearDuplicates;
+
+    expect(nearDupes(4, 4.9)).toBe(1);
+    expect(nearDupes(4, 5)).toBe(1); // the boundary is inclusive
+    expect(nearDupes(4, 5.1)).toBe(0);
+  });
+});
+
+describe("the collectors with no coverage", () => {
+  it("records opacity below 1 only, quantised to two places", () => {
+    const audit = collectAudit(
+      crawl([
+        el({ opacity: 1 }, false, "div"), // the default, not a token
+        el({ opacity: 0.5 }, false, "div"),
+        el({ opacity: 0.333 }, false, "div"),
+      ]),
+    );
+    expect(audit.opacity?.map((o) => o.value)).toEqual([0.5, 0.33]);
+  });
+
+  it("records z-index including negatives, lowest first, skipping auto", () => {
+    const audit = collectAudit(
+      crawl([
+        el({ zIndex: 10 }, false, "div"),
+        el({ zIndex: -1 }, false, "div"),
+        el({ zIndex: null }, false, "div"), // auto
+        el({ zIndex: 0 }, false, "div"),
+      ]),
+    );
+    expect(audit.zIndex?.map((z) => z.value)).toEqual([-1, 0, 10]);
+  });
+
+  it("attributes border widths to the sides that use them", () => {
+    // [top, right, bottom, left]; the zero is not a border.
+    const audit = collectAudit(crawl([el({ borderWidths: [1, 1, 0, 2] }, false, "table")]));
+
+    const borders = audit.borders ?? [];
+
+    expect(borders.map((b) => ({ value: b.value, count: b.count }))).toEqual([
+      { value: 1, count: 2 },
+      { value: 2, count: 1 },
+    ]);
+    expect(borders[0]?.sides.map((s) => s.side)).toEqual(["top", "right"]);
+    expect(borders[1]?.sides.map((s) => s.side)).toEqual(["left"]);
+  });
+
+  it("orders motion durations by value and easings by how often they are used", () => {
+    const audit = collectAudit(
+      crawl([
+        el({ motionDurations: [200, 150], motionEasings: ["ease"] }, false, "div"),
+        el({ motionEasings: ["ease", "linear"] }, false, "div"),
+      ]),
+    );
+    expect(audit.motion?.durations.map((d) => d.value)).toEqual([150, 200]);
+    expect(audit.motion?.easings.map((e) => e.value)).toEqual(["ease", "linear"]);
+    expect(audit.motion?.easings[0]?.count).toBe(2);
+  });
+
+  it("collects blur radii and gradients", () => {
+    const audit = collectAudit(
+      crawl([el({ blur: [4, 8], gradient: "linear-gradient(red,blue)" }, false, "div")]),
+    );
+    expect(audit.blur?.map((b) => b.value)).toEqual([4, 8]);
+    expect(audit.gradients?.map((g) => g.value)).toEqual(["linear-gradient(red,blue)"]);
+  });
+
+  it("splits a breakpoint into the min and max queries that use it", () => {
+    const audit = collectAudit({
+      rootUrl: "https://example.com",
+      crawledAt: "2026-01-01T00:00:00.000Z",
+      pages: [
+        {
+          url: "https://example.com",
+          title: "Home",
+          elementCount: 0,
+          elements: [],
+          breakpoints: [
+            { value: 768, type: "min" },
+            { value: 768, type: "max" },
+            { value: 1024, type: "min" },
+          ],
+        },
+      ],
+    });
+
+    const breakpoints = audit.breakpoints ?? [];
+
+    expect(breakpoints.map((b) => b.value)).toEqual([768, 1024]);
+    expect(breakpoints[0]?.count).toBe(2);
+    expect(breakpoints[0]?.types.map((t) => t.type).sort()).toEqual(["max", "min"]);
+  });
+});

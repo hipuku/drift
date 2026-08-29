@@ -120,14 +120,14 @@ export interface RadiusUsage {
   value: number;
   count: number;
   /** Element tags using this radius, most-used first. */
-  tags?: TagUsage[];
+  tags: TagUsage[];
 }
 
 export interface ShadowUsage {
   value: string;
   count: number;
   /** Element tags using this shadow, most-used first. */
-  tags?: TagUsage[];
+  tags: TagUsage[];
 }
 
 export type BorderSide = "top" | "right" | "bottom" | "left";
@@ -142,23 +142,23 @@ export interface BorderUsage {
   value: number;
   count: number;
   /** Which sides carry this width, most-used first. */
-  sides?: BorderSideUsage[];
+  sides: BorderSideUsage[];
   /** Element tags using this width, most-used first. */
-  tags?: TagUsage[];
+  tags: TagUsage[];
 }
 
 /** A numeric token value with element-tag attribution (opacity, z-index, blur, motion). */
 export interface NumberTagUsage {
   value: number;
   count: number;
-  tags?: TagUsage[];
+  tags: TagUsage[];
 }
 
 /** A string token value with element-tag attribution (gradient, easing). */
 export interface StringTagUsage {
   value: string;
   count: number;
-  tags?: TagUsage[];
+  tags: TagUsage[];
 }
 
 export interface MotionUsage {
@@ -176,7 +176,7 @@ export interface BreakpointUsage {
   value: number;
   count: number;
   /** min-width vs max-width split, most-used first. */
-  types?: BreakpointTypeUsage[];
+  types: BreakpointTypeUsage[];
 }
 
 // ── The whole audit ──────────────────────────────────────────────────────────
@@ -581,7 +581,9 @@ function collectBorders(result: CrawlResult): BorderUsage[] {
       value,
       count: t.count,
       sides: [...t.sides.entries()]
-        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        // Ties fall back to CSS order, top right bottom left, rather than
+        // alphabetical, which would read as right before top.
+        .sort((a, b) => b[1] - a[1] || BORDER_SIDES.indexOf(a[0]) - BORDER_SIDES.indexOf(b[0]))
         .map(([side, count]) => ({ side, count })),
       tags: tagList(t.tags),
     }))
