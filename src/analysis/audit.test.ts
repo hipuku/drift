@@ -146,3 +146,44 @@ describe("collectAudit ordering", () => {
     expect(collectAudit(site([...pages].reverse()))).toEqual(collectAudit(site(pages)));
   });
 });
+
+describe("colour families", () => {
+  const familiesOf = (hexes: string[]) =>
+    Object.fromEntries(
+      collectAudit(crawl(hexes.map((hex) => el({ color: hex }, true, "p"))))
+        .colourFamilies.flatMap((f) => f.swatches.map((s) => [s.hex, f.name] as const)),
+    );
+
+  it("keeps tinted neutrals out of the hue families", () => {
+    // Every one of these is a grey a design system would ship. HSL saturation
+    // put the first three in Blue and the fourth in Orange.
+    const families = familiesOf(["#0b0b14", "#101820", "#f7f7fa", "#12100e", "#8a8f98", "#2b2b2b"]);
+    for (const hex of Object.keys(families)) expect(families[hex]).toBe("Neutral");
+  });
+
+  it("puts pure sRGB red in Orange", () => {
+    // #ff0000 is OKLCH hue 29, and 29 is Orange. Perceptually correct and
+    // deliberate: widening Red to swallow it would pull genuine oranges in too.
+    expect(familiesOf(["#ff0000"])["#ff0000"]).toBe("Orange");
+  });
+
+  it("names the hue families a site actually uses", () => {
+    expect(familiesOf(["#2563eb", "#16a34a", "#dc2626"])).toEqual({
+      "#2563eb": "Blue",
+      "#16a34a": "Green",
+      "#dc2626": "Red",
+    });
+  });
+
+  it("sorts a family light to dark by OKLCH lightness", () => {
+    const neutral = collectAudit(
+      crawl([
+        el({ color: "#2b2b2b" }, true, "p"),
+        el({ color: "#ffffff" }, true, "p"),
+        el({ color: "#8a8f98" }, true, "p"),
+      ]),
+    ).colourFamilies.find((f) => f.name === "Neutral");
+
+    expect(neutral!.swatches.map((s) => s.hex)).toEqual(["#ffffff", "#8a8f98", "#2b2b2b"]);
+  });
+});

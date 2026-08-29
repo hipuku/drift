@@ -15,6 +15,7 @@ import {
   type ColourElementUsage,
   type ColourRole,
 } from "./colours.js";
+import chroma from "chroma-js";
 import { deltaE } from "haus-colour-utils";
 import { summariseAuthored, type AuthoredSummary } from "./authored.js";
 import { collectContrastFindings, type ContrastFinding } from "./contrast.js";
@@ -30,7 +31,7 @@ export interface ColourSwatch {
   /** Which element types use this colour, in which role. */
   elements: ColourElementUsage[];
   pages: string[];
-  /** 0–100 HSL lightness, for sorting within a family. */
+  /** 0–100 OKLCH lightness, for sorting within a family. */
   lightness: number;
   /** The perceptually-closest other colour on the site, and the ΔE to it. */
   nearest?: { hex: string; deltaE: number };
@@ -234,75 +235,88 @@ export interface SiteAudit {
 
 // ── Colour family classification ─────────────────────────────────────────────
 
-interface Hsl {
-  h: number; // 0–360
-  s: number; // 0–1
-  l: number; // 0–1
-}
+/**
+ * OKLCH chroma below which a colour is a neutral rather than a tinted hue.
+ * Matches vault's threshold so a hex gets the same family name in both apps.
+ *
+ * This was HSL saturation until 2026-08-29. HSL saturation is not a measure of
+ * chroma and inflates at the extremes of lightness, so the tinted greys every
+ * design system ships were classified as hues: #101820 and #f7f7fa both came
+ * out as Blue, #12100e as Orange, splitting a site's neutral ramp across four
+ * families. In OKLCH those sit at chroma 0.020, 0.004 and 0.005, while the
+ * least saturated real hue in the same sample is 0.170.
+ */
+const NEUTRAL_CHROMA = 0.03;
 
-/** Parse #rgb / #rrggbb / #rrggbbaa (alpha ignored) to HSL. Null if unparseable. */
-function hexToHsl(hex: string): Hsl | null {
-  let h = hex.trim().replace(/^#/, "");
-  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
-  if (h.length === 8) h = h.slice(0, 6);
-  if (h.length !== 6 || /[^0-9a-fA-F]/.test(h)) return null;
-
-  const r = parseInt(h.slice(0, 2), 16) / 255;
-  const g = parseInt(h.slice(2, 4), 16) / 255;
-  const b = parseInt(h.slice(4, 6), 16) / 255;
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  const l = (max + min) / 2;
-  let s = 0;
-  let hue = 0;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    if (max === r) hue = ((g - b) / d + (g < b ? 6 : 0)) * 60;
-    else if (max === g) hue = ((b - r) / d + 2) * 60;
-    else hue = ((r - g) / d + 4) * 60;
-  }
-  return { h: hue, s, l };
-}
-
-const HUE_BUCKETS: { name: string; max: number }[] = [
-  { name: "Red", max: 15 },
-  { name: "Orange", max: 45 },
-  { name: "Yellow", max: 70 },
-  { name: "Green", max: 160 },
-  { name: "Teal", max: 200 },
-  { name: "Blue", max: 260 },
-  { name: "Purple", max: 290 },
-  { name: "Pink", max: 345 },
+/**
+ * Named OKLCH hue families, ordered round the wheel from red; Red wraps 360.
+ * The bins are vault's, so a colour reads the same in both products.
+ *
+ * sRGB #ff0000 is OKLCH hue 29, which puts pure red in Orange. That is correct
+ * and deliberate: OKLCH hue is perceptual, and 29 is where a fire engine sits
+ * next to a tomato. Do not "fix" it by widening Red.
+ */
+const HUE_FAMILIES: { name: string; min: number; max: number }[] = [
+  { name: "Red", min: 345, max: 15 },
+  { name: "Orange", min: 15, max: 45 },
+  { name: "Yellow", min: 45, max: 90 },
+  { name: "Green", min: 90, max: 165 },
+  { name: "Cyan", min: 165, max: 200 },
+  { name: "Blue", min: 200, max: 255 },
+  { name: "Purple", min: 255, max: 300 },
+  { name: "Pink", min: 300, max: 345 },
 ];
 
-/** Low-chroma colours are neutrals; otherwise bucket by hue. */
-function familyName(hsl: Hsl): string {
-  if (hsl.s < 0.12) return "Neutral";
-  for (const bucket of HUE_BUCKETS) {
-    if (hsl.h < bucket.max) return bucket.name;
+interface SwatchGeometry {
+  family: string;
+  /** OKLCH lightness as 0-100. */
+  lightness: number;
+}
+
+/**
+ * Family and lightness for a hex, or null if it will not parse. Alpha is
+ * dropped: an opacity variant belongs in the same family as its base colour.
+ */
+function swatchGeometry(hex: string): SwatchGeometry | null {
+  let l: number;
+  let c: number;
+  let h: number;
+  try {
+    [l, c, h] = chroma(hex.slice(0, 7)).oklch();
+  } catch {
+    return null;
   }
-  return "Red"; // wraps past 345°
+  if (!Number.isFinite(l) || !Number.isFinite(c)) return null;
+  return { family: familyName(c, h), lightness: Math.round(l * 100) };
+}
+
+function familyName(c: number, h: number): string {
+  if (c < NEUTRAL_CHROMA || !Number.isFinite(h)) return "Neutral";
+  const hue = ((h % 360) + 360) % 360;
+  for (const f of HUE_FAMILIES) {
+    const inBin = f.min > f.max ? hue >= f.min || hue < f.max : hue >= f.min && hue < f.max;
+    if (inBin) return f.name;
+  }
+  return "Red";
 }
 
 function groupColoursByFamily(result: CrawlResult): ColourFamily[] {
   const families = new Map<string, ColourSwatch[]>();
 
   for (const u of collectColourUsage(result)) {
-    const hsl = hexToHsl(u.hex);
-    if (!hsl) continue;
-    const name = familyName(hsl);
+    const geometry = swatchGeometry(u.hex);
+    if (!geometry) continue;
     const swatch: ColourSwatch = {
       hex: u.hex,
       count: u.count,
       roles: u.roles,
       elements: u.elements,
       pages: [...u.pages].sort(),
-      lightness: Math.round(hsl.l * 100),
+      lightness: geometry.lightness,
     };
-    const list = families.get(name);
+    const list = families.get(geometry.family);
     if (list) list.push(swatch);
-    else families.set(name, [swatch]);
+    else families.set(geometry.family, [swatch]);
   }
 
   return [...families.entries()]
