@@ -249,22 +249,30 @@ export interface SiteAudit {
 const NEUTRAL_CHROMA = 0.03;
 
 /**
- * Named OKLCH hue families, ordered round the wheel from red; Red wraps 360.
- * The bins are vault's, so a colour reads the same in both products.
+ * Named OKLCH hue families, ordered round the wheel from red. Red wraps 360.
  *
- * sRGB #ff0000 is OKLCH hue 29, which puts pure red in Orange. That is correct
- * and deliberate: OKLCH hue is perceptual, and 29 is where a fire engine sits
- * next to a tomato. Do not "fix" it by widening Red.
+ * The boundaries are the midpoints between the measured OKLCH hues of the
+ * colours each family is named after: red 29, orange 71, yellow 110, green 142,
+ * cyan 195, blue 264, violet 293, magenta 328, pink 354.
+ *
+ * They are deliberately not the HSL numbers. OKLCH hue is a different wheel,
+ * and reusing HSL's boundaries (red 0, yellow 60, green 120, blue 240) offsets
+ * every family by roughly one place: #ff0000 lands in Orange, #ffff00 in Green
+ * and #0000ff in Purple. Checked against 27 canonical colours, tailwind's ramps
+ * included.
+ *
+ * This duplicates `hueFamily` in haus-colour-utils and should be deleted once
+ * that release is published and drift depends on it.
  */
 const HUE_FAMILIES: { name: string; min: number; max: number }[] = [
-  { name: "Red", min: 345, max: 15 },
-  { name: "Orange", min: 15, max: 45 },
-  { name: "Yellow", min: 45, max: 90 },
-  { name: "Green", min: 90, max: 165 },
-  { name: "Cyan", min: 165, max: 200 },
-  { name: "Blue", min: 200, max: 255 },
-  { name: "Purple", min: 255, max: 300 },
-  { name: "Pink", min: 300, max: 345 },
+  { name: "Red", min: 11, max: 50 },
+  { name: "Orange", min: 50, max: 90 },
+  { name: "Yellow", min: 90, max: 126 },
+  { name: "Green", min: 126, max: 168 },
+  { name: "Cyan", min: 168, max: 230 },
+  { name: "Blue", min: 230, max: 278 },
+  { name: "Purple", min: 278, max: 310 },
+  { name: "Pink", min: 310, max: 11 },
 ];
 
 interface SwatchGeometry {

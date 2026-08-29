@@ -161,10 +161,16 @@ describe("colour families", () => {
     for (const hex of Object.keys(families)) expect(families[hex]).toBe("Neutral");
   });
 
-  it("puts pure sRGB red in Orange", () => {
-    // #ff0000 is OKLCH hue 29, and 29 is Orange. Perceptually correct and
-    // deliberate: widening Red to swallow it would pull genuine oranges in too.
-    expect(familiesOf(["#ff0000"])["#ff0000"]).toBe("Orange");
+  it("names the primaries as themselves", () => {
+    // The bins are midpoints between measured OKLCH hues, not the HSL numbers.
+    // Reusing HSL's boundaries offsets every family by about one place, which is
+    // how #ff0000 gets called Orange and #0000ff gets called Purple.
+    expect(familiesOf(["#ff0000", "#ffff00", "#00ff00", "#0000ff"])).toEqual({
+      "#ff0000": "Red",
+      "#ffff00": "Yellow",
+      "#00ff00": "Green",
+      "#0000ff": "Blue",
+    });
   });
 
   it("names the hue families a site actually uses", () => {
