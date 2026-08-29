@@ -74,3 +74,43 @@ describe("collectContrastFindings", () => {
     expect(collectContrastFindings(result([noText, noBg]))).toEqual([]);
   });
 });
+
+describe("alpha", () => {
+  it("measures the colour a reader sees, not the one that was authored", () => {
+    // 50% black on white renders as #888888. Evaluated as though it were opaque
+    // it measures 18.88 and passes AAA; composited it measures 3.54 and fails
+    // AA. Muted secondary text is normally written this way, so a false pass
+    // here is the common case.
+    const [finding] = collectContrastFindings(result([text("p", "#11111180", "#ffffff")]));
+
+    expect(finding!.ratio).toBe(3.54);
+    expect(finding!.passAA).toBe(false);
+    expect(finding!.resolvedForeground).toBe("#888888");
+  });
+
+  it("composites a translucent background over the page", () => {
+    // The probe returns the first ancestor background with any alpha at all,
+    // uncomposited, so a 50% panel still arrives translucent.
+    const [finding] = collectContrastFindings(result([text("p", "#ffffff", "#00000080")]));
+
+    expect(finding!.resolvedBackground).toBe("#7f7f7f");
+    expect(finding!.passAA).toBe(false);
+  });
+
+  it("leaves an opaque pair alone and reports no resolved colours", () => {
+    const [finding] = collectContrastFindings(result([text("p", "#000000", "#ffffff")]));
+
+    expect(finding!.ratio).toBe(21);
+    expect(finding!.resolvedForeground).toBeUndefined();
+    expect(finding!.resolvedBackground).toBeUndefined();
+  });
+
+  it("puts a translucent pair either side of the AA boundary", () => {
+    // #767676 on white is 4.54, just over AA. The same ink at 60% is under it.
+    const pass = collectContrastFindings(result([text("p", "#767676", "#ffffff")]))[0]!;
+    const fail = collectContrastFindings(result([text("p", "#76767699", "#ffffff")]))[0]!;
+
+    expect(pass.passAA).toBe(true);
+    expect(fail.passAA).toBe(false);
+  });
+});
