@@ -1,4 +1,29 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+
+/**
+ * DNS is stubbed. Resolution is the platform's job, not ours — what this module
+ * actually decides is what to do with the address that comes back, and a test
+ * that reaches the real resolver tests the network instead, and fails without
+ * one. The table below is the resolver: a public name, a loopback name, and a
+ * name that does not resolve.
+ */
+vi.mock("node:dns/promises", () => ({
+  lookup: vi.fn(async (hostname: string) => {
+    const table: Record<string, { address: string; family: number }[]> = {
+      "example.com": [{ address: "93.184.216.34", family: 4 }],
+      localhost: [{ address: "127.0.0.1", family: 4 }],
+      "127.0.0.1": [{ address: "127.0.0.1", family: 4 }],
+      "10.0.0.1": [{ address: "10.0.0.1", family: 4 }],
+      "192.168.1.10": [{ address: "192.168.1.10", family: 4 }],
+      "172.16.0.5": [{ address: "172.16.0.5", family: 4 }],
+      "169.254.169.254": [{ address: "169.254.169.254", family: 4 }],
+    };
+    const hit = table[hostname.toLowerCase()];
+    if (!hit) throw Object.assign(new Error("ENOTFOUND"), { code: "ENOTFOUND" });
+    return hit;
+  }),
+}));
+
 import { assertDeliverable, deliver } from "./webhook.js";
 
 /**
