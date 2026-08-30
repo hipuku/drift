@@ -11,7 +11,8 @@
 
    The semantic layer above (semantics.css) stays local, because it is a theme
    rather than a duplicate: it shares 118 role names with haus's and resolves
-   five of them differently on purpose.
+   five of them differently on purpose: three radius roles, the overlay
+   elevation, and the widest inset.
    ─────────────────────────────────────────────────────────────────────────── */
 
 @layer base.primitives {

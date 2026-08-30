@@ -172,7 +172,7 @@ Four rules hold that shape together:
   the check, because a public name can still point at `127.0.0.1`. Delivery never
   fails a crawl that succeeded.
 
-Endpoints are documented in [README.md](README.md).
+The endpoint table is below, and `openapi.yaml` is the contract drift-tests pins.
 
 ---
 
@@ -326,9 +326,10 @@ it reads as a statement rather than a consequence of import order in `main.tsx`.
 
 The semantic tier covers colour, type, spacing, radius, elevation and motion.
 Drift's layer names 157 roles, 118 of which share a name with haus's 123. Five
-of the shared names resolve differently on purpose: Drift's controls are one
-radius step tighter and its overlay sits one shadow step lower. Thirty-nine
-roles are Drift's alone.
+of the shared names resolve differently on purpose: `--radius-control`,
+`--radius-surface` and `--radius-overlay` are one step tighter than haus's,
+`--elevation-overlay` sits one shadow step lower, and `--space-inset-2xl` is one
+space step smaller. Thirty-nine roles are Drift's alone.
 
 Spacing is aliased three ways, `inset` (padding), `gap` (between siblings) and
 `stack` (margin), over one ladder, so a
@@ -403,9 +404,11 @@ The audit's perceptual work, CIEDE2000 near-duplicate clustering and WCAG contra
 
 Since 0.2.1 the package also carries the OKLCH conversion and the hue-family bins
 that this file's audit used to declare itself. The bins were worked out here, from
-the measured OKLCH hues of the colours each family is named after, and they are the
-version that shipped: vault had reached for HSL's boundaries and misnamed 16 of 27
-canonical colours before it took these.
+the measured OKLCH hues of the colours each family is named after, and vault had
+reached for HSL's boundaries and misnamed 17 of 27 canonical colours before it took
+them. They are not the version that ships now: `haus-colour-utils` 0.3.0 refits the
+boundaries to 4,275 human-named colours, because a family is not always centred on
+the colour it is named after.
 
 *(Earlier this ran in the browser too: the cut colour proposal re-clustered live as the user moved a size slider, so the package was linked into the client the same way as the server, via a hand-written declaration shim, because it then shipped TypeScript source the client's stricter compiler rejected. With the proposal cut and the package now publishing built types, both the client link and the shim are gone; colour-utils is backend-only.)*
 
@@ -477,7 +480,7 @@ Confidence: High on the direction. Medium on per-element rule matching. The prag
 
 A crawl OOM'd the backend on a real content site, then crash-looped as BullMQ retried the poison job off Redis. The cause is not the page count. The pipeline retains every element of every page, so one animation-heavy page (tens of thousands of nodes) can exhaust the heap on its own. The fix is incremental aggregation (fold each page into token tallies, discard its raw elements) so memory scales with the number of *distinct tokens*, not elements × pages; plus a per-page element ceiling to cap a single monster page and a modest hard page cap.
 
-**What shipped:** the per-page element ceiling (`MAX_ELEMENTS = 12,000`) and the page cap, now `MAX_CRAWL_PAGES = 10`, down from 40. **Incremental aggregation is not built.** The pipeline still retains every extraction and audits at the end, so the page cap is doing the memory work. Raising the cap meaningfully requires the refactor first. "Crawl all pages" is not the goal: the design language lives in the shared stylesheet, so a handful of pages captures the system and more pages only add per-page attribution, so the scope picker should say so.
+**What shipped:** the page cap, now `MAX_CRAWL_PAGES = 10`, down from 40. **Neither incremental aggregation nor the per-page element ceiling is built**, and an earlier version of this paragraph said the ceiling had shipped when no such constant exists. The pipeline still retains every extraction and audits at the end, so the page cap is doing the memory work. Raising the cap meaningfully requires the refactor first. "Crawl all pages" is not the goal: the design language lives in the shared stylesheet, so a handful of pages captures the system and more pages only add per-page attribution, so the scope picker should say so.
 
 Confidence: High on the diagnosis. The cheap half shipped; the refactor is the outstanding half.
 
@@ -555,9 +558,12 @@ The decisions that governed it, kept because the reasoning still holds:
 
 # Known trade-offs / next
 
-**The type tier is bypassed in 94 places.** Eleven type roles exist, each bundling
-size, weight, leading and tracking, and 94 declarations across eight stylesheets
-reach past them for `--text-*`, `--font-*` and `--weight-*` directly. This is not
+**The type tier is bypassed in 89 places.** Eleven type roles exist, each bundling
+size, weight, leading and tracking, and 89 declarations across six stylesheets
+reach past them for `--text-*`, `--font-*` and `--weight-*` directly. Issue #1 says
+94 across eight, which was true before Badge and TextField moved to
+`haus-components`; the list can only shrink, so the issue is the number to
+distrust. This is not
 a find-and-replace: adopting a role changes leading and tracking as well as size,
 so each site is a judgement about whether the element wants the role or is
 deliberately off it. The exception list in `tokens.test.ts` is named and can only

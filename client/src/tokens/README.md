@@ -20,8 +20,9 @@ was a copy and it is gone.
 
 `semantics.css` is not a copy. It shares 118 role names with `haus-tokens`'
 semantic layer, which is what a role name is for, and resolves five of them
-differently on purpose: Drift's controls are one radius step tighter and its
-overlay sits one shadow step lower. Thirty-nine more roles are Drift's alone. A theme
+differently on purpose: the three radius roles are one step tighter than haus's,
+`--elevation-overlay` sits one shadow step lower, and `--space-inset-2xl` is one
+space step smaller. Thirty-nine more roles are Drift's alone. A theme
 over shared primitives is the shape the architecture is for.
 
 ## Why haus's semantic layer is loaded as well
