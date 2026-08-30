@@ -47,6 +47,15 @@ export type ColourRole = "text" | "background" | "border";
  * because it is a separate package that does not import from here. The two are
  * held in step by the client's `lib/contract.test.ts`, which reads this
  * declaration — so a rename or a change of form there needs updating too.
+ *
+ * ## What this module's tests cover, and what they do not
+ *
+ * The CIEDE2000 maths is haus-colour-utils', and is tested there against known
+ * pairs. Re-asserting it here would test the dependency twice and pin this
+ * module to an implementation it deliberately does not own. What is tested here
+ * is everything the delegation cannot cover: the usage accounting, which role a
+ * colour was seen in, how frequency survives a dedupe that discards it, and
+ * which background this records. Read the count as scope, not as neglect.
  */
 export const INDISTINGUISHABLE_DELTA_E = 2;
 

@@ -23,6 +23,14 @@
  * `colours.ts` records the authored background instead, because it inventories
  * what a site chose rather than what it renders. The two disagreeing is
  * intended; both rules are asserted in tests so neither drifts into the other.
+ *
+ * ## What this module's tests cover, and what they do not
+ *
+ * WCAG ratio arithmetic belongs to haus-colour-utils and is tested there. The
+ * tests here are of the pairing and the compositing decisions this module makes
+ * before handing anything over: which background to measure against, resolving
+ * alpha to the colour that actually reached the screen, folding identical pairs
+ * together, and ordering the worst first. Read the count as scope, not neglect.
  */
 
 import { wcagContrast } from "haus-colour-utils";
