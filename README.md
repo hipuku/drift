@@ -7,7 +7,7 @@ grouped, and mapped to the pages where it appears. Built with Node, Playwright a
 
 Live at [drift.hipuku.dev](https://drift.hipuku.dev).
 
-![Drift](screenshots/overview.png)
+![Drift](screenshots/dashboard.png)
 
 ## Features
 
@@ -88,6 +88,7 @@ VITE_DEMO_MODE=true npm --prefix client run build  # build the replaying bundle
 
 ## More
 
+- [`FEATURE.md`](./FEATURE.md) is a visual tour of everything Drift reports.
 - [`DESIGN.md`](./DESIGN.md) covers the architecture, the service contract and its endpoints,
   the design system, and the decisions behind the build.
 - [`openapi.yaml`](./openapi.yaml) is the full API contract, including the webhook callbacks

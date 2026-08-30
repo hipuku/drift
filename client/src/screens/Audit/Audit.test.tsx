@@ -63,25 +63,44 @@ describe("tabs", () => {
     expect(selectedTab()).toHaveAccessibleName(/Overview/);
   });
 
-  it("offers a tab per category the site actually uses", () => {
+  /**
+   * The rule, not the roster. Which optional categories a site exercises is a
+   * fact about that site on the day it was crawled — the bundled capture had a
+   * blur value in August and has none now — so listing them by hand pins the
+   * test to the fixture's incidents rather than to the behaviour. What should
+   * hold is that a category appears exactly when it has values, in a fixed
+   * order.
+   */
+  it("offers a tab per category the site actually uses, in a fixed order", () => {
     render(<Audit audit={audit} />);
-    // picocss.com exercises every optional category, so all thirteen appear.
-    expect(tabs().map((t) => t.textContent?.replace(/\d+$/, "").trim())).toEqual([
+
+    const optional: [string, boolean][] = [
+      ["Radius", audit.radius.length > 0],
+      ["Shadow", audit.shadow.length > 0],
+      ["Border", (audit.borders ?? []).length > 0],
+      ["Opacity", (audit.opacity ?? []).length > 0],
+      ["Z-index", (audit.zIndex ?? []).length > 0],
+      ["Blur", (audit.blur ?? []).length > 0],
+      ["Breakpoints", (audit.breakpoints ?? []).length > 0],
+      ["Gradient", (audit.gradients ?? []).length > 0],
+      [
+        "Motion",
+        (audit.motion?.durations.length ?? 0) + (audit.motion?.easings.length ?? 0) > 0,
+      ],
+    ];
+    const expected = [
       "Overview",
       "Colour",
-      "Contrast",
+      ...((audit.contrast ?? []).length > 0 ? ["Contrast"] : []),
       "Type",
       "Spacing",
-      "Radius",
-      "Shadow",
-      "Border",
-      "Opacity",
-      "Z-index",
-      "Blur",
-      "Breakpoints",
-      "Gradient",
-      "Motion",
-    ]);
+      ...optional.filter(([, present]) => present).map(([label]) => label),
+    ];
+
+    expect(tabs().map((t) => t.textContent?.replace(/\d+$/, "").trim())).toEqual(expected);
+    // Guard against the fixture degenerating to the point where this proves
+    // nothing: it should still exercise most of the optional categories.
+    expect(optional.filter(([, p]) => p).length).toBeGreaterThanOrEqual(6);
   });
 
   it("hides a category the site does not use", () => {
