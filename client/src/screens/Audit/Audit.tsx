@@ -16,8 +16,6 @@ import {
   faBolt,
   faBorderStyle,
   faChartSimple,
-  faChevronDown,
-  faChevronUp,
   faCircleHalfStroke,
   faClone,
   faDesktop,
@@ -31,33 +29,25 @@ import {
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { Callout } from "../../components/Callout/Callout.js";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Text } from "../../components/Text/Text.js";
 import type { AuditAuthored, SiteAudit } from "../../lib/api.js";
 import { RATIOS, buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
 import {
-  CATEGORY_LABEL,
   INDISTINGUISHABLE_DELTA_E,
   RADIUS_NEAR_DUPLICATE_PX,
-  VERDICT_TAB,
   cardId,
-  colourish,
   detectGridBase,
   extendedDriftAreas,
   healthLine,
   hostOf,
   nearDuplicates,
-  niceStep,
   offGrid,
   plural,
   redundancyVerdict,
-  unitLabel,
-  usageText,
   type DisplayUnit,
   type Verdict,
 } from "./auditModel.js";
-import { LengthValue, Table } from "./parts/tables.js";
 import {
   BlurSection,
   BorderSection,
@@ -71,6 +61,8 @@ import {
   ZIndexSection,
 } from "./sections/scalarSections.js";
 import { ColourCard, ColourDetail, ColourDrawerTitle } from "./parts/colour.js";
+import { OverviewSection } from "./sections/overviewSection.js";
+import { SpacingSection, TypeSection } from "./sections/scaleSections.js";
 import styles from "./Audit.module.css";
 
 /** An icon per token tab — gives the strip identity and speeds scanning. */
@@ -96,75 +88,6 @@ interface Props {
   onBack?: () => void;
 }
 
-/**
- * How the site authors its tokens — read from the CSSOM, so it reflects intent
- * (`rem`, `%`, `clamp()`), not the resolved px the rest of the audit shows. The
- * accessibility flag fires when font-size is authored in px (won't respect zoom).
- * The declared custom properties are the site's own tokens, listed as shipped.
- */
-function AuthoringSummary({ authored }: { authored: AuditAuthored }) {
-  const [open, setOpen] = useState(false);
-  const props = authored.customProperties;
-  const hasContent = authored.categories.length > 0 || props.length > 0;
-  if (!hasContent) return null;
-  return (
-    <div className={styles.authoring}>
-      <Text role="label-sm" className={styles.healthKicker}>
-        Authoring
-      </Text>
-      {authored.categories.length > 0 && (
-        <div className={styles.unitRow}>
-          {authored.categories.map((c) => (
-            <span key={c.category} className={styles.unitChip}>
-              <span className={styles.unitCat}>{CATEGORY_LABEL[c.category]}</span>
-              <span className={styles.unitVal}>{c.dominant ? unitLabel(c.dominant) : "—"}</span>
-            </span>
-          ))}
-        </div>
-      )}
-      {authored.typeInPx && (
-        <Callout variant="warning">
-          Font size is authored in <strong>px</strong> — it won&rsquo;t scale with the reader&rsquo;s
-          browser font size or zoom. Prefer <strong>rem</strong>.
-        </Callout>
-      )}
-      {props.length > 0 && (
-        <div className={styles.authoredProps}>
-          <button
-            type="button"
-            className={styles.authoredToggle}
-            aria-expanded={open}
-            onClick={() => setOpen((o) => !o)}
-          >
-            <span>
-              Declares <strong>{props.length}</strong> CSS custom{" "}
-              {plural(props.length, "property", "properties")} — the site&rsquo;s own tokens
-            </span>
-            <FontAwesomeIcon
-              icon={open ? faChevronUp : faChevronDown}
-              className={styles.authoredCaret}
-            />
-          </button>
-          {open && (
-            <ul className={styles.propList}>
-              {props.map((p) => (
-                <li key={p.name} className={styles.propRow}>
-                  {colourish(p.value) && (
-                    <span className={styles.propSwatch} style={{ background: p.value }} aria-hidden="true" />
-                  )}
-                  <code className={styles.propName}>{p.name}</code>
-                  <span className={styles.propValue} title={p.value}>
-                    {p.value}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
 
 
 export function Audit({ audit, onBack }: Props) {
@@ -222,7 +145,6 @@ export function Audit({ audit, onBack }: Props) {
   // extra pass a reset effect would schedule.
   const selectedHex = tab === "colour" ? pickedHex : null;
 
-  const maxSpace = audit.spacing.reduce((m, v) => Math.max(m, v.value), 1);
   // ── Reference scales ────────────────────────────────────────────────────────
   // "Off-scale" is a measurement against a reference, so the reference is
   // selectable: compare the system against any named ratio, or against a 4px or
@@ -268,8 +190,6 @@ export function Audit({ audit, onBack }: Props) {
     }
     return best;
   }, [t.sizes, typeBasePx]);
-  const [ratioId, setRatioId] = useState<string | null>(null);
-  const activeRatio = RATIOS.find((r) => r.id === ratioId) ?? bestRatio;
 
   /** Sizes that miss a given ratio — the ruler's red dots and the table's. */
   const offScaleFor = useCallback(
@@ -280,10 +200,6 @@ export function Audit({ audit, onBack }: Props) {
       return new Set(classifyAgainstScale(px, scale).filter((m) => !m.onScale).map((m) => m.px));
     },
     [t.sizes, typeBasePx],
-  );
-  const offScalePx = useMemo(
-    () => (activeRatio ? offScaleFor(activeRatio.ratio) : new Set<number>()),
-    [activeRatio, offScaleFor],
   );
 
   /**
@@ -304,9 +220,6 @@ export function Audit({ audit, onBack }: Props) {
 
   const spacingValues = useMemo(() => audit.spacing.map((sp) => sp.value), [audit.spacing]);
   const detectedBase = useMemo(() => detectGridBase(spacingValues), [spacingValues]);
-  const [spacingBase, setSpacingBase] = useState<number | null>(null);
-  const activeBase = spacingBase ?? detectedBase;
-  const offGridSet = useMemo(() => offGrid(spacingValues, activeBase), [spacingValues, activeBase]);
   /** The grid the diagnosis was made against — see diagnosisOffScalePx above. */
   const diagnosisOffGridSet = useMemo(
     () => offGrid(spacingValues, detectedBase),
@@ -570,7 +483,6 @@ export function Audit({ audit, onBack }: Props) {
 
   // Type scale rows — one per distinct size (largest first), so the table matches
   // the ruler and the tab count, with every weight and the tags that use it.
-  const scaleRows = [...t.sizes].sort((a, b) => b.px - a.px);
   // Sizes that miss the closest modular scale — mirrors the ruler's red dots.
 
   /**
@@ -633,59 +545,16 @@ export function Audit({ audit, onBack }: Props) {
 
       <div className={styles.panel} key={tab}>
         {tab === "overview" && (
-          <>
-            <div className={styles.health}>
-              <Text role="label-sm" className={styles.healthKicker}>
-                Design Health
-              </Text>
-              <Text role="heading-lg" as="p" className={styles.healthLine}>
-                {healthLine(s, extendedDrift)}
-              </Text>
-            </div>
-            <div className={styles.verdictGrid}>
-              {verdicts.map((v) => {
-                const id = VERDICT_TAB[v.label];
-                const hasTab = id != null && tabs.some((t) => t.id === id);
-                const className = `${styles.verdict} ${styles[v.verdict] ?? ""}${
-                  hasTab ? ` ${styles.verdictClickable}` : ""
-                }`;
-                const icon = id ? TAB_ICON[id] : undefined;
-                const body = (
-                  <>
-                    <span className={styles.verdictLabelRow}>
-                      {icon && (
-                        <FontAwesomeIcon icon={icon} className={styles.verdictIcon} aria-hidden="true" />
-                      )}
-                      <Text role="label" className={styles.verdictLabel}>
-                        {v.label}
-                      </Text>
-                    </span>
-                    <Text role="display" as="span" className={styles.verdictN}>
-                      {v.n}
-                    </Text>
-                    <div className={styles.pills}>
-                      {v.chips.map((c) => (
-                        <span key={c} className={styles.pill}>
-                          {c}
-                        </span>
-                      ))}
-                    </div>
-                  </>
-                );
-                return hasTab ? (
-                  <button key={v.label} type="button" className={className} onClick={() => setTab(id)}>
-                    {body}
-                  </button>
-                ) : (
-                  <div key={v.label} className={className}>
-                    {body}
-                  </div>
-                );
-              })}
-            </div>
-            {audit.authored && <AuthoringSummary authored={audit.authored} />}
-          </>
+          <OverviewSection
+            health={healthLine(s, extendedDrift)}
+            verdicts={verdicts}
+            authored={audit.authored}
+            tabIcon={TAB_ICON}
+            hasTab={(id) => tabs.some((tb) => tb.id === id)}
+            onGoToTab={setTab}
+          />
         )}
+
 
         {tab === "colour" && (
           <>
@@ -717,117 +586,20 @@ export function Audit({ audit, onBack }: Props) {
         )}
 
         {tab === "type" && (
-          <>
-            <Text role="label-sm" as="h3" className={styles.sectionLabel}>
-              Families
-            </Text>
-            <div className={styles.familyList}>
-              {t.families.map((f) => (
-                <div key={f.family} className={styles.familyRow}>
-                  <span className={styles.familyRowGlyph} style={{ fontFamily: `'${f.family}', var(--font-sans)` }}>
-                    Ag
-                  </span>
-                  <span className={styles.familyRowName}>{f.family}</span>
-                  <span className={styles.pill}>{usageText(f.count, s.pages)}</span>
-                </div>
-              ))}
-            </div>
-
-            <TypeRuler
-              sizes={t.sizes}
-              activeRatio={activeRatio}
-              bestRatioId={bestRatio?.id ?? null}
-              offCountFor={(ratio) => offScaleFor(ratio).size}
-              onSelect={setRatioId}
-            />
-
-            <Table head={["Scale", "Size", "Weight", "Tags", "Uses"]}>
-              {scaleRows.map((r) => {
-                const off = offScalePx.has(r.px);
-                // Guard against an older backend that omits weights/tags per size.
-                const weights = r.weights ?? [];
-                const tags = r.tags ?? [];
-                return (
-                  <tr key={r.px}>
-                    <td className={styles.typeScaleCell}>
-                      <span
-                        className={styles.typeSpecimen}
-                        style={{ fontSize: `${Math.min(r.px, 32)}px`, fontWeight: weights[0], fontFamily: fontStack }}
-                      >
-                        Ag
-                      </span>
-                    </td>
-                    <td className={styles.valueCell}>
-                      <LengthValue px={r.px} unit={unitFor("type")}>
-                        {off && <span className={styles.offScaleDot} title="Off the closest scale" />}
-                      </LengthValue>
-                    </td>
-                    <td className={styles.valueCell}>
-                      {weights.length ? [...weights].sort((a, b) => a - b).join(" · ") : "—"}
-                    </td>
-                    <td className={styles.tagsCell}>
-                      <span className={styles.tagChips}>
-                        {tags.map((tg) => (
-                          <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
-                            {tg.tag}
-                          </span>
-                        ))}
-                      </span>
-                    </td>
-                    <td className={styles.usageCell}>{r.count.toLocaleString()}×</td>
-                  </tr>
-                );
-              })}
-            </Table>
-          </>
+          <TypeSection
+            typography={t}
+            pages={s.pages}
+            fontStack={fontStack}
+            unit={unitFor("type")}
+            bestRatio={bestRatio}
+            offScaleFor={offScaleFor}
+          />
         )}
 
         {tab === "spacing" && (
-          <>
-            <SpacingRuler
-              values={audit.spacing.map((v) => v.value)}
-              base={activeBase}
-              detectedBase={detectedBase}
-              offCountFor={(b) => offGrid(spacingValues, b).size}
-              onSelect={setSpacingBase}
-            />
-            <Table
-              head={["Preview", "Value", "Attribute", "Tags", "Uses"]}
-            >
-            {audit.spacing.map((v) => (
-              <tr key={v.value}>
-                <td className={styles.spacingPreviewCell}>
-                  <span className={styles.bar} style={{ width: `${Math.max((v.value / maxSpace) * 100, 4)}%` }} />
-                </td>
-                <td className={styles.valueCell}>
-                  <LengthValue px={v.value} unit={unitFor("spacing")}>
-                    {offGridSet.has(v.value) && <span className={styles.offScaleDot} title="Off the 4px grid" />}
-                  </LengthValue>
-                </td>
-                <td className={styles.tagsCell}>
-                  <span className={styles.tagChips}>
-                    {(v.properties ?? []).map((p) => (
-                      <span key={p.property} className={styles.tagChip} title={`${p.count.toLocaleString()}×`}>
-                        {p.property}
-                      </span>
-                    ))}
-                  </span>
-                </td>
-                <td className={styles.tagsCell}>
-                  <span className={styles.tagChips}>
-                    {(v.tags ?? []).map((tg) => (
-                      <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
-                        {tg.tag}
-                      </span>
-                    ))}
-                  </span>
-                </td>
-                <td className={styles.usageCell}>{v.count.toLocaleString()}×</td>
-              </tr>
-            ))}
-            </Table>
-          </>
+          <SpacingSection spacing={audit.spacing} unit={unitFor("spacing")} />
         )}
+
 
         {tab === "radius" && <RadiusSection radius={audit.radius} unit={unitFor("radius")} />}
 
@@ -879,185 +651,6 @@ export function Audit({ audit, onBack }: Props) {
             </div>
           </aside>
         )}
-      </div>
-    </div>
-  );
-}
-
-
-/**
- * Type scale ruler — the visual evidence for the "off-scale" verdict. Sizes are
- * plotted on a log axis against the closest modular scale's steps; sizes that
- * miss a step sit between ticks in red.
- */
-function TypeRuler({
-  sizes,
-  activeRatio,
-  bestRatioId,
-  offCountFor,
-  onSelect,
-}: {
-  sizes: { px: number; count: number }[];
-  activeRatio: { id: string; name: string; ratio: number } | null;
-  bestRatioId: string | null;
-  offCountFor: (ratio: number) => number;
-  onSelect: (id: string) => void;
-}) {
-  if (sizes.length < 2 || !activeRatio) return null;
-  const px = sizes.map((s) => s.px);
-  const base = sizes.reduce((a, b) => (b.count > a.count ? b : a)).px;
-
-  const scale = buildScaleToCover(base, activeRatio.ratio, Math.min(...px), Math.max(...px));
-  const marks = classifyAgainstScale(px, scale);
-  const lo = Math.log(scale[0]!.px);
-  const hi = Math.log(scale.at(-1)!.px);
-  const pos = (v: number) => (hi > lo ? ((Math.log(v) - lo) / (hi - lo)) * 100 : 50);
-
-  return (
-    <Ruler
-      ticks={scale.map((s) => ({ px: s.px, pos: pos(s.px) }))}
-      dots={marks.map((m) => ({ px: m.px, pos: pos(m.px), on: m.onScale, nearest: m.nearestPx }))}
-      options={
-        <ScaleOptions
-          options={RATIOS.map((r) => ({
-            id: r.id,
-            label: r.name,
-            off: offCountFor(r.ratio),
-            best: r.id === bestRatioId,
-          }))}
-          activeId={activeRatio.id}
-          bestLabel="closest"
-          onSelect={onSelect}
-        />
-      }
-    />
-  );
-}
-
-/**
- * The reference-scale picker. Each option carries how many values miss it, so
- * the row itself answers "which scale is this system actually on?" — picking is
- * secondary to comparing.
- */
-function ScaleOptions({
-  options,
-  activeId,
-  bestLabel,
-  onSelect,
-}: {
-  options: { id: string; label: string; off: number; best?: boolean }[];
-  activeId: string;
-  /** What to call the automatic pick — "closest" for a ratio, "detected" for a grid. */
-  bestLabel: string;
-  onSelect: (id: string) => void;
-}) {
-  return (
-    <div className={styles.scaleOptions} role="tablist" aria-label="Compare against scale">
-      {options.map((o) => (
-        <button
-          key={o.id}
-          type="button"
-          role="tab"
-          aria-selected={o.id === activeId}
-          className={o.id === activeId ? `${styles.scaleChip} ${styles.scaleChipOn}` : styles.scaleChip}
-          onClick={() => onSelect(o.id)}
-        >
-          <span>{o.label}</span>
-          <span className={styles.scaleChipCount}>{o.off === 0 ? "all on" : `${o.off} off`}</span>
-          {o.best && <span className={styles.scaleChipBest}>{bestLabel}</span>}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-/** A "nice" round step (1/2/5 × 10ⁿ) near the target, for readable axis labels. */
-/** Spacing grid ruler — values on a linear axis against the 4px grid. */
-function SpacingRuler({
-  values,
-  base,
-  detectedBase,
-  offCountFor,
-  onSelect,
-}: {
-  values: number[];
-  base: number;
-  detectedBase: number;
-  offCountFor: (base: number) => number;
-  onSelect: (base: number) => void;
-}) {
-  if (values.length === 0) return null;
-  const max = Math.max(...values, base);
-  const gridStep = max / base > 24 ? base * 2 : base;
-  // Keep the grid ticks for normal ranges; only when they'd smear into an
-  // unreadable strip (a large range) fall back to ~10 round ticks.
-  const step = max / gridStep > 24 ? niceStep(max / 12) : gridStep;
-  const ticks: number[] = [];
-  for (let v = 0; v <= max; v += step) ticks.push(Math.round(v));
-
-  const onGrid = (v: number) => Math.abs(v - Math.round(v / base) * base) <= 0.5;
-  const pos = (v: number) => (max > 0 ? (v / max) * 100 : 0);
-
-  return (
-    <Ruler
-      ticks={ticks.map((t) => ({ px: t, pos: pos(t) }))}
-      dots={values.map((v) => ({ px: v, pos: pos(v), on: onGrid(v) }))}
-      options={
-        <ScaleOptions
-          options={[4, 8].map((b) => ({
-            id: String(b),
-            label: `${b}px grid`,
-            off: offCountFor(b),
-            best: b === detectedBase,
-          }))}
-          activeId={String(base)}
-          bestLabel="detected"
-          onSelect={(id) => onSelect(Number(id))}
-        />
-      }
-    />
-  );
-}
-
-interface RulerMark {
-  px: number;
-  pos: number;
-  on?: boolean;
-  nearest?: number;
-}
-
-function Ruler({
-  ticks,
-  dots,
-  options,
-}: {
-  ticks: { px: number; pos: number }[];
-  dots: RulerMark[];
-  /**
-   * Reference-scale picker. It heads the ruler rather than sitting under it:
-   * each option already names the scale and its off-count, so a separate title
-   * and note would say the same thing twice.
-   */
-  options?: ReactNode;
-}) {
-  return (
-    <div className={styles.ruler}>
-      {options}
-      <div className={styles.rulerTrack}>
-        <div className={styles.rulerLine} />
-        {ticks.map((t) => (
-          <span key={`t${t.px}`} className={styles.rulerTick} style={{ left: `${t.pos}%` }}>
-            <span className={styles.rulerTickLabel}>{t.px}</span>
-          </span>
-        ))}
-        {dots.map((d) => (
-          <span
-            key={`d${d.px}`}
-            className={d.on ? styles.rulerDot : `${styles.rulerDot} ${styles.rulerDotOff}`}
-            style={{ left: `${d.pos}%` }}
-            title={`${d.px}px${d.on ? "" : d.nearest != null ? ` · off scale (nearest ${d.nearest})` : " · off grid"}`}
-          />
-        ))}
       </div>
     </div>
   );
