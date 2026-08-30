@@ -176,6 +176,47 @@ Endpoints are documented in [README.md](README.md).
 
 ---
 
+## Design system
+
+Two token tiers, in cascade layers. `tokens/primitives.css` holds raw values and
+`tokens/semantics.css` holds intent aliases over them; a component reads the
+semantic layer and never a primitive. `styles/drift.css` declares a third and
+fourth layer, `drift.primitives` and `drift.semantics`, after both — it re-skins
+the neutral and primary ramps, the three font families and the four shadows for
+a cool editorial identity, and wins where it overlaps. Twenty-nine tokens are
+defined in both places on purpose. The base layer is the standalone foundation;
+the brand layer is what ships.
+
+The semantic tier covers colour, type, spacing, radius, elevation and motion.
+
+Spacing is the part worth explaining. It is aliased three ways — `inset`
+(padding), `gap` (between siblings), `stack` (margin) — over one ladder, so a
+step means the same size whichever role reads it. The split is not decoration:
+it is what lets inset, gap and stack be retuned independently later without
+opening every module to work out which `--space-3` meant which. Every spacing
+reference in the client was on one of those three properties when the tier was
+built, so the role is read off the CSS property rather than judged per site.
+
+Two spacing steps sit deliberately below the 4px grid, `--space-hairline` (1px)
+and `--space-tight` (2px). They are optical corrections inside small controls,
+where a 4px step is visibly too much and the value is doing the work of a border
+rather than of space. Named so they cannot be mistaken for the bottom of the
+scale.
+
+`--z-*`, `--border-width-*` and `--opacity-*` live in the semantic layer rather
+than the primitive one, and are not aliased. Their names already state intent and
+there is no scale beneath them: `--z-modal` is not one step of a ramp, it is the
+answer to "how high does a modal sit". An alias over those would be indirection
+with nothing on the other end.
+
+Two guards hold the layer, because CSS fails silently at both edges. An undefined
+`var()` is dropped and the property inherits, with no warning at build or in
+review — that is how `--duration-default`, which never existed, left five
+animations running instantly. And a CSS-module class that does not exist is a
+clean typecheck and an `undefined` at runtime. `client/src/tokens/tokens.test.ts`
+asserts that every custom property read is defined, and that no component reads a
+primitive outside a named exception list that can only shrink.
+
 # Decisions
 
 Recorded to explain the *why* — not as immutable rules, but so future changes are
@@ -296,3 +337,44 @@ The decisions that governed it, kept because the reasoning still holds:
 - **Type proposals are role-first; the modular ratio is optional** — Drift crawls websites, and a website's type system is a semantic hierarchy — h1–h6, body, small, button — not an abstract modular ladder.
 - **Controls are expressed as outcomes, not mechanisms** — An early colour proposal exposed a ΔE threshold picker, a contrast panel, a migration panel and dense token cards — six concepts deep, all in the tool's vocabulary rather than the user's.
 - **Proposals derive from the audit, not from separate endpoints** — Colour and type proposals originally fetched their own inventories.
+
+---
+
+# Known trade-offs / next
+
+**The type tier is bypassed in 94 places.** Eleven type roles exist, each bundling
+size, weight, leading and tracking, and 94 declarations across eight stylesheets
+reach past them for `--text-*`, `--font-*` and `--weight-*` directly. This is not
+a find-and-replace: adopting a role changes leading and tracking as well as size,
+so each site is a judgement about whether the element wants the role or is
+deliberately off it. The exception list in `tokens.test.ts` is named and can only
+shrink; new code cannot add to it.
+
+**The audit stylesheet is one 1542-line file** serving seven components. Splitting
+it was attempted and reverted: rules that mention a class without defining it —
+a `prefers-reduced-motion` block, an adjacency selector — carried class names into
+the shared module while the declarations stayed behind, and components resolved
+to classes that existed but styled nothing. The lesson is recorded rather than the
+attempt: static analysis of CSS Modules was not sufficient evidence, twice. If it
+is retried, ownership must be assigned per class by where its declarations are,
+and verified by comparing computed styles rather than by reading source.
+
+**The client hand-copies `haus-tokens`.** All 112 primitive names in
+`tokens/primitives.css` also exist in `haus-tokens`, with identical values, and
+nothing keeps them in step. They agree today by luck. This is the same class of
+problem Drift was built to detect, in Drift. The fix is to depend on the package,
+but it interacts with the semantic tier above: that tier does not exist in
+`haus-tokens` either, so adopting the package means either moving the tier into
+haus — where vault and loom would also get it — or keeping a local semantic layer
+over remote primitives, which is the same split ownership in a different place.
+Worth settling before the Figma library work mirrors either shape.
+
+**The bundled demo capture can go stale silently.** The deployed build replays a
+real audit, so the capture is the product's output rather than a fixture standing
+in for it — which means a fix to the analysis makes the shipped demo wrong, and
+the README quotes its figures. `npm run capture` makes recapturing one command and
+prints the figures the docs need, but nothing yet fails when the capture predates
+a change to the analysis that produced it.
+
+**`ioredis` is declared and never imported.** BullMQ carries its own and is the
+only thing that talks to Redis.
