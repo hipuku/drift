@@ -99,7 +99,7 @@ export function AuditFlow() {
     } else if (crawl.phase === "failed") {
       fail(crawl.error ?? "The crawl failed.");
     }
-  }, [phase, jobId, crawl.phase, crawl.error, loadAudit, fail]);
+  }, [phase, jobId, crawl.phase, crawl.error, crawl.result, loadAudit, fail]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleConfigure = useCallback(

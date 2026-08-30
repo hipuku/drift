@@ -47,6 +47,16 @@ export default defineConfig([
     files: ['client/src/**/*.{ts,tsx}'],
     extends: [reactHooks.configs.flat.recommended],
     languageOptions: { globals: globals.browser },
+    rules: {
+      // Errors, not warnings. A warning does not fail CI, so a count of them
+      // only ever grows — and both of the two this repo carried turned out to
+      // be real: each was a type declaring a field optional that is always
+      // present, so `?? []` built a new array every render and defeated the
+      // memo below it. A dependency warning is worth reading, which means it is
+      // worth being unable to ignore. Suppress a specific one at its own site,
+      // with a comment saying why, as AuditFlow.tsx does.
+      'react-hooks/exhaustive-deps': 'error',
+    },
   },
 
   {
