@@ -127,6 +127,23 @@ describe("deliver", () => {
     expect(fetchMock.mock.calls.length).toBeGreaterThan(1);
   });
 
+  /**
+   * The guard resolves the host and refuses private addresses. Following a
+   * redirect would check one address and visit another: a caller supplies a
+   * public URL that passes every check, and answers 302 with a Location of
+   * http://169.254.169.254/. Node's fetch follows redirects by default, so the
+   * refusal has to be asked for explicitly, and asserting it here is what stops
+   * it being quietly dropped later.
+   */
+  it("does not follow redirects, which would walk around the SSRF guard", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 302 });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(deliver("https://example.com/hook", payload)).resolves.toBe(false);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect((fetchMock.mock.calls[0]![1] as RequestInit).redirect).toBe("manual");
+  });
+
   it("signs the body when a secret is configured", async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 });
     vi.stubGlobal("fetch", fetchMock);

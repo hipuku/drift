@@ -10,7 +10,9 @@
  *  - **The URL is user-supplied**, so it is an SSRF vector: without a guard, a
  *    caller could make the server fetch its own metadata endpoint or something
  *    else on the private network. `assertDeliverable` rejects anything that
- *    isn't public http(s).
+ *    isn't public http(s), and delivery does not follow redirects — checking the
+ *    URL and then letting `fetch` chase a `302` somewhere else would check one
+ *    address and visit another.
  *  - **Delivery is best-effort**, and must never take the crawl down with it.
  *    Failures are retried a couple of times and then dropped; the audit is still
  *    available from the API either way.
@@ -123,9 +125,18 @@ export async function deliver(callbackUrl: string, payload: WebhookEvent): Promi
           ...(sig ? { "x-drift-signature": sig } : {}),
         },
         body,
+        // Do not follow redirects. `assertDeliverable` resolves the host and
+        // refuses private addresses, and `fetch` would otherwise undo that
+        // check: a public URL that answers 302 with a private Location is a
+        // guard that validates one address and visits another. Node's fetch
+        // follows by default, so this is the whole of the protection.
+        redirect: "manual",
         signal: AbortSignal.timeout(TIMEOUT_MS),
       });
       if (res.ok) return true;
+      // A redirect is a receiver pointing us somewhere we never checked. Not a
+      // transient failure, so retrying it is pointless as well as unsafe.
+      if (res.status >= 300 && res.status < 400) return false;
       // 4xx is the receiver rejecting us — retrying won't change their mind.
       if (res.status >= 400 && res.status < 500) return false;
     } catch {
