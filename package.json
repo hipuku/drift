@@ -7,6 +7,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "crawl": "tsx --tsconfig tsconfig.runtime.json src/index.ts",
+    "capture": "tsx --tsconfig tsconfig.runtime.json src/capture.ts",
     "discover": "tsx --tsconfig tsconfig.runtime.json src/crawler/discoverDemo.ts",
     "dev:server": "tsx --tsconfig tsconfig.runtime.json src/server/index.ts",
     "queue:demo": "tsx --tsconfig tsconfig.runtime.json src/queue/demo.ts",
