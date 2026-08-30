@@ -31,7 +31,7 @@
   height: 100%;
   border-radius: inherit;
   background: var(--color-primary-default);
-  transition: width var(--duration-default) var(--ease-move);
+  transition: width var(--duration-normal) var(--ease-move);
 }
 
 .meta {
@@ -71,7 +71,7 @@
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-2) 0;
-  animation: land var(--duration-default) var(--ease-move);
+  animation: land var(--duration-normal) var(--ease-move);
 }
 
 @keyframes land {

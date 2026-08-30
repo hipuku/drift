@@ -38,7 +38,7 @@
 
 .primary {
   background: var(--color-primary-default);
-  color: var(--color-ink-on-aronia);
+  color: var(--color-ink-on-primary);
   /* A soft accent-tinted lift so the primary action reads as raised. */
   box-shadow:
     0 1px 2px oklch(40% 0.05 200 / 0.20),

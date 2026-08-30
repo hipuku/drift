@@ -15,7 +15,7 @@
   width: 100%;
   max-width: 56rem;
   margin: 0 auto;
-  transition: max-width var(--duration-default) var(--ease-move);
+  transition: max-width var(--duration-normal) var(--ease-move);
 }
 
 .layoutOpen {
@@ -31,7 +31,7 @@
 .rail {
   flex-shrink: 0;
   width: 22rem;
-  animation: railIn var(--duration-default) var(--ease-move);
+  animation: railIn var(--duration-normal) var(--ease-move);
 }
 
 .railInner {
@@ -106,7 +106,7 @@
 /* Cross-fade the detail content when the selected colour changes (keyed by hex),
    so picking a neighbour glides rather than snaps. */
 .railFade {
-  animation: railFade var(--duration-default) var(--ease-move);
+  animation: railFade var(--duration-normal) var(--ease-move);
 }
 
 @keyframes railFade {
@@ -273,7 +273,7 @@
 /* ── Panel ───────────────────────────────────────────────────────────────── */
 .panel {
   margin-top: var(--space-8);
-  animation: fade var(--duration-default, 0.2s) var(--ease-move);
+  animation: fade var(--duration-normal) var(--ease-move);
 }
 
 @keyframes fade {
@@ -375,7 +375,7 @@
 
 .unitVal {
   font-family: var(--font-mono);
-  font-size: var(--text-sm, 0.875rem);
+  font-size: var(--text-14);
   color: var(--color-ink-primary);
 }
 
@@ -400,7 +400,7 @@
   background: none;
   color: var(--color-ink-secondary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm, 0.875rem);
+  font-size: var(--text-14);
   line-height: 1.5;
   text-align: left;
   cursor: pointer;

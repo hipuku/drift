@@ -34,7 +34,11 @@
     --color-ink-disabled:   var(--damson-400);
     --color-ink-inverse:    var(--damson-0);
     --color-ink-link:       var(--aronia-500);
-    --color-ink-on-aronia:  var(--damson-0);
+    /* Pairs with --color-primary-default, whatever the brand layer sets that to.
+       Named for the role, not the palette: this was --color-ink-on-aronia, which
+       stopped being true the moment drift.css re-skinned primary onto the accent
+       ramp — the token was still correct and its name was not. */
+    --color-ink-on-primary: var(--damson-0);
 
     /* ── Border ───────────────────────────────────────────────────────────── */
     --color-border-subtle:   var(--damson-100);

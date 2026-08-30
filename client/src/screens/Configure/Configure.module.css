@@ -211,7 +211,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-ink-on-aronia);
+  color: var(--color-ink-on-primary);
   flex-shrink: 0;
   transition:
     background var(--duration-fast) var(--ease-move),
