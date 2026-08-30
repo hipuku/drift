@@ -207,7 +207,7 @@
   width: 1.2rem;
   height: 1.2rem;
   border-radius: var(--radius-control);
-  border: 1.5px solid var(--color-border-strong);
+  border: var(--border-width-default) solid var(--color-border-strong);
   display: flex;
   align-items: center;
   justify-content: center;
