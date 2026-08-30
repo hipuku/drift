@@ -1,0 +1,127 @@
+/* ─── Audit · shared ───
+   Shared by more than one of the audit's sections.
+
+   Eight classes and their at-rules: the value and usage cells every inventory
+   table uses, the tag chip, the pill, the off-scale marker, the muted note. A
+   class earns a place here by being read from two files — everything read from
+   one lives with that file, so a section's styles can be found by opening it.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.muted {
+  color: var(--color-ink-tertiary);
+}
+
+/* ── Pills — the shared chip for card metadata and verdict detail ─────────── */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-gap-xs);
+  margin-top: var(--space-stack-2xs);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-inset-tight) var(--space-inset-xs);
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--color-ink-primary) 8%, transparent);
+  color: var(--color-ink-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* Spacing preview bar — narrower than the shared specimen cell so the Attribute
+   and Tags columns have room. */
+.spacingPreviewCell {
+  width: 22%;
+}
+
+.valueCell {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-primary);
+  white-space: nowrap;
+}
+
+.usageCell {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-tertiary);
+  white-space: nowrap;
+}
+
+
+/* An off-scale / off-grid / near-duplicate marker, inline with the value.
+   Deliberately a dot, not a labelled badge — the tables carry one per row and
+   labels crowd the value they annotate. The title carries the meaning. */
+.offScaleDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-error-default);
+}
+
+.tagChip {
+  padding: var(--space-inset-hairline) var(--space-inset-xs);
+  border-radius: var(--radius-control);
+  background: color-mix(in oklab, var(--color-ink-primary) 8%, transparent);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-secondary);
+  white-space: nowrap;
+}
+
+.familyRow .pill {
+  margin-left: auto;
+}
+
+/* Give the scale ruler (and, when there's no ruler, the table) room to breathe
+   below the family rows. */
+.familyList + .ruler,
+.familyList + .table {
+  margin-top: var(--space-stack-5xl);
+}
+@media (prefers-reduced-motion: reduce) {
+
+  .card,
+  .verdict {
+    transition: none;
+  }
+}
+
+/* Modifiers of the classes above.
+   They live here, not with the section that applies them, because each one has
+   to win against the base it modifies — `.pillDup` overrides `.pill`'s colours,
+   `.valueCellWrap` overrides `.valueCell`'s white-space — and both are single
+   class selectors, so the winner is whichever the browser sees last. Split
+   across two modules that is decided by import order, which is not something a
+   reader of either file can see. Adjacent to their base, it is just the cascade. */
+
+/* Long declarations (e.g. gradients) wrap onto multiple lines instead of clipping. */
+.valueCellWrap {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.pillDup {
+  background: color-mix(in oklab, var(--color-error-default) 16%, transparent);
+  color: var(--drift-alert-ink);
+}
+
+/* Colour cards are buttons (click to expand). */
+.cardBtn {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cardBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}

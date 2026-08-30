@@ -1,0 +1,102 @@
+/* ─── Audit · tables ───
+   The inventory table shell, the tag cell, the z-index ladder.
+   ─────────────────────────────────────────────────────────────────────── */
+
+/* ── px / rem unit toggle + secondary-unit annotation ────────────────────── */
+
+
+
+
+.valueAlt {
+  margin-left: var(--space-stack-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-tertiary);
+}
+
+/* ── Tables (scalar tokens) ──────────────────────────────────────────────── */
+/* Scroll a too-wide table inside the panel rather than stretching the page. */
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Stacked tables in one section (durations then easings) need air between them,
+   or the second table's header reads as a row of the first. */
+.tableWrap + .tableWrap {
+  margin-top: var(--space-stack-3xl);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-tertiary);
+  padding: 0 var(--space-inset-sm) var(--space-inset-sm);
+  border-bottom: var(--border-width-default) solid var(--color-border-default);
+}
+
+.table th.thRight {
+  text-align: right;
+}
+
+.table td {
+  padding: var(--space-inset-sm);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Z-index stacking ladder — offset layers, the frontmost accented. */
+.zLadder {
+  position: relative;
+  display: inline-block;
+  width: 3rem;
+  height: 2.25rem;
+}
+
+.zLayer {
+  position: absolute;
+  width: 1.6rem;
+  height: 1.1rem;
+  border-radius: var(--radius-control);
+  background: var(--color-surface-raised);
+  border: var(--border-width-default) solid var(--color-border-default);
+}
+
+.zLayerTop {
+  background: var(--color-primary-subtle);
+  border-color: var(--color-primary-default);
+}
+
+/* Size cell with an optional off-scale marker (mirrors the ruler's red dots). */
+.sizeValue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-gap-xs);
+}
+
+/* Tags-that-use-this-value — chips of element tag names. */
+.tagsCell {
+  vertical-align: middle;
+  /* Chips wrap within a sane column width instead of pushing the table wide. */
+  max-width: 18rem;
+}
+
+.tagChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-gap-xs);
+  row-gap: var(--space-gap-2xs);
+}

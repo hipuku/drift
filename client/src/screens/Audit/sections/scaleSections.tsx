@@ -17,7 +17,8 @@ import { RATIOS } from "../../../lib/typeScale.js";
 import { detectGridBase, offGrid, usageText, type DisplayUnit } from "../auditModel.js";
 import { SpacingRuler, TypeRuler } from "../parts/rulers.js";
 import { LengthValue, Table, TagsCell } from "../parts/tables.js";
-import styles from "../Audit.module.css";
+import styles from "./scale.module.css";
+import shared from "../shared.module.css";
 
 export function TypeSection({
   typography,
@@ -47,14 +48,14 @@ export function TypeSection({
       <Text role="label-sm" as="h3" className={styles.sectionLabel}>
         Families
       </Text>
-      <div className={styles.familyList}>
+      <div className={shared.familyList}>
         {typography.families.map((f) => (
-          <div key={f.family} className={styles.familyRow}>
+          <div key={f.family} className={shared.familyRow}>
             <span className={styles.familyRowGlyph} style={{ fontFamily: `'${f.family}', var(--font-sans)` }}>
               Ag
             </span>
             <span className={styles.familyRowName}>{f.family}</span>
-            <span className={styles.pill}>{usageText(f.count, pages)}</span>
+            <span className={shared.pill}>{usageText(f.count, pages)}</span>
           </div>
         ))}
       </div>
@@ -78,18 +79,18 @@ export function TypeSection({
                 Ag
               </span>
             </td>
-            <td className={styles.valueCell}>
+            <td className={shared.valueCell}>
               <LengthValue px={r.px} unit={unit}>
                 {offScalePx.has(r.px) && (
-                  <span className={styles.offScaleDot} title="Off the closest scale" />
+                  <span className={shared.offScaleDot} title="Off the closest scale" />
                 )}
               </LengthValue>
             </td>
-            <td className={styles.valueCell}>
+            <td className={shared.valueCell}>
               {r.weights.length ? [...r.weights].sort((a, b) => a - b).join(" · ") : "—"}
             </td>
             <TagsCell tags={r.tags} />
-            <td className={styles.usageCell}>{r.count.toLocaleString()}×</td>
+            <td className={shared.usageCell}>{r.count.toLocaleString()}×</td>
           </tr>
         ))}
       </Table>
@@ -123,19 +124,19 @@ export function SpacingSection({
       <Table head={["Preview", "Value", "Attribute", "Tags", "Uses"]}>
         {spacing.map((v) => (
           <tr key={v.value}>
-            <td className={styles.spacingPreviewCell}>
+            <td className={shared.spacingPreviewCell}>
               <span className={styles.bar} style={{ width: `${Math.max((v.value / max) * 100, 4)}%` }} />
             </td>
-            <td className={styles.valueCell}>
+            <td className={shared.valueCell}>
               <LengthValue px={v.value} unit={unit}>
                 {offGridSet.has(v.value) && (
-                  <span className={styles.offScaleDot} title={`Off the ${base}px grid`} />
+                  <span className={shared.offScaleDot} title={`Off the ${base}px grid`} />
                 )}
               </LengthValue>
             </td>
             <TagsCell tags={(v.properties ?? []).map((p) => ({ tag: p.property, count: p.count }))} />
             <TagsCell tags={v.tags} />
-            <td className={styles.usageCell}>{v.count.toLocaleString()}×</td>
+            <td className={shared.usageCell}>{v.count.toLocaleString()}×</td>
           </tr>
         ))}
       </Table>

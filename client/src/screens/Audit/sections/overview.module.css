@@ -1,0 +1,239 @@
+/* ─── Audit · overview ───
+   The overview: health line and verdict cards.
+
+   The verdict tints (good / watch / review / neutral / empty) are looked up by
+   name at runtime, so they are referenced only as `styles[v.verdict]` and no
+   static search will find them. Keep them here with the component that does it.
+   ─────────────────────────────────────────────────────────────────────── */
+
+/* ── Design Health ───────────────────────────────────────────────────────── */
+.health {
+  padding: var(--space-inset-2xl) var(--space-inset-3xl);
+  margin-bottom: var(--space-stack-xl);
+  border-radius: var(--radius-panel);
+  border: var(--border-width-default) solid
+    color-mix(in oklab, var(--color-primary-default) 22%, var(--drift-card-border));
+  background: var(--color-primary-subtle);
+}
+
+.healthKicker {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary-on-subtle);
+  margin-bottom: var(--space-stack-sm);
+}
+
+.healthLine {
+  color: var(--color-ink-primary);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* ── Authoring (authored units read from the CSSOM) ──────────────────────── */
+.authoring {
+  margin-top: var(--space-stack-xl);
+  padding: var(--space-inset-xl) var(--space-inset-2xl);
+  border-radius: var(--radius-panel);
+  border: var(--border-width-default) solid var(--drift-card-border);
+  background: color-mix(in oklab, var(--color-ink-primary) 3%, transparent);
+}
+
+.unitRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-gap-sm);
+  margin-bottom: var(--space-stack-md);
+}
+
+.unitChip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-gap-xs);
+  padding: var(--space-inset-xs) var(--space-inset-sm);
+  border-radius: var(--radius-surface);
+  background: color-mix(in oklab, var(--color-ink-primary) 6%, transparent);
+}
+
+.unitCat {
+  font-size: var(--text-12);
+  color: var(--color-ink-tertiary);
+}
+
+.unitVal {
+  font-family: var(--font-mono);
+  font-size: var(--text-14);
+  color: var(--color-ink-primary);
+}
+
+.authoredProps {
+  margin-top: var(--space-stack-md);
+}
+
+.authoredToggle {
+  /* Full width so the chevron can sit at the far end of the row. */
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  gap: var(--space-gap-xs);
+  text-align: left;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-ink-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-14);
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+}
+
+.authoredToggle:hover {
+  color: var(--color-ink-primary);
+}
+
+.authoredCaret {
+  margin-left: auto;
+  align-self: center;
+  flex-shrink: 0;
+  color: var(--color-ink-tertiary);
+  font-size: var(--text-14);
+}
+
+.propList {
+  list-style: none;
+  margin: var(--space-stack-sm) 0 0;
+  padding: 0;
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--radius-surface);
+}
+
+.propRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-gap-sm);
+  padding: var(--space-inset-xs) var(--space-inset-sm);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+}
+
+.propRow:last-child {
+  border-bottom: none;
+}
+
+.propSwatch {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  border-radius: var(--radius-control);
+  border: var(--border-width-default) solid color-mix(in oklab, var(--color-ink-primary) 15%, transparent);
+}
+
+.propName {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-primary);
+}
+
+.propValue {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-ink-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+/* ── Overview verdict cards ── equal size; colour + bottom rule = verdict ─── */
+.verdictGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: var(--space-gap-md);
+}
+
+.verdict {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-gap-xs);
+  padding: var(--space-inset-lg);
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--drift-card-border);
+  border-bottom-width: 3px;
+  border-radius: var(--radius-overlay);
+  transition: transform var(--motion-duration-micro) var(--motion-ease-standard), box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
+}
+
+.verdictClickable {
+  cursor: pointer;
+}
+
+.verdictClickable:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--elevation-overlay);
+}
+
+.verdictClickable:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.verdictLabelRow {
+  order: -1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-gap-xs);
+}
+
+.verdictIcon {
+  font-size: 0.85em;
+  color: var(--color-ink-tertiary);
+}
+
+.verdictLabel {
+  color: var(--color-ink-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: var(--text-12);
+}
+
+.verdictN {
+  line-height: 0.9;
+  font-size: clamp(2.5rem, 5vw, 3.25rem);
+  letter-spacing: -0.02em;
+  color: var(--color-ink-primary);
+}
+
+.good {
+  background: color-mix(in oklab, var(--color-success-default) 12%, var(--color-surface-default));
+  border-color: color-mix(in oklab, var(--color-success-default) 26%, var(--drift-card-border));
+  border-bottom-color: var(--color-success-default);
+}
+
+.watch {
+  background: color-mix(in oklab, var(--color-warning-default) 14%, var(--color-surface-default));
+  border-color: color-mix(in oklab, var(--color-warning-default) 30%, var(--drift-card-border));
+  border-bottom-color: var(--color-warning-default);
+}
+
+.review {
+  background: color-mix(in oklab, var(--color-error-default) 13%, var(--color-surface-default));
+  border-color: color-mix(in oklab, var(--color-error-default) 28%, var(--drift-card-border));
+  border-bottom-color: var(--color-error-default);
+}
+
+/* Greyed core-five card — the token category exists in the system's vocabulary
+   but isn't used on this site. */
+.empty {
+  opacity: 0.5;
+}
+
+.empty .verdictN {
+  color: var(--color-ink-tertiary);
+}

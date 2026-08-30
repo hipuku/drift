@@ -1,0 +1,198 @@
+/* ─── Audit · scalar ───
+   The scalar token tabs: previews, chips and the specimens they hold.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.shadowChip {
+  display: inline-block;
+  width: 3rem;
+  height: 2.5rem;
+  border-radius: var(--radius-surface);
+  background: var(--color-surface-raised);
+}
+
+.specimenCell {
+  width: 42%;
+}
+
+/* Fixed-size chip previews (radius, shadow) only need room for the chip, so the
+   Value/Tags/Uses columns don't get squeezed to the right. */
+.chipPreviewCell {
+  width: 6rem;
+}
+
+/* Gradient swatch preview (in the gradient table). */
+.gradientSwatch {
+  display: block;
+  width: 4rem;
+  height: 2rem;
+  border-radius: var(--radius-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 10%, transparent);
+}
+
+/* Motion tables share a fixed column layout so Durations and Easings align. */
+.motionTable {
+  table-layout: fixed;
+}
+
+/* Space the Easings table off the Durations table above it. */
+.motionTable + .motionTable {
+  margin-top: var(--space-stack-5xl);
+}
+
+.motionTable th:nth-child(1),
+.motionTable td:nth-child(1) {
+  width: 30%;
+}
+
+.motionTable th:nth-child(2),
+.motionTable td:nth-child(2) {
+  width: 24%;
+}
+
+.motionTable th:nth-child(4),
+.motionTable td:nth-child(4) {
+  width: 12%;
+}
+
+/* Breakpoint preview — a viewport/screen outline whose width scales with the
+   breakpoint, so the row reads as a device size. */
+.bpScreen {
+  display: block;
+  height: 1.6rem;
+  min-width: 1rem;
+  border-radius: var(--radius-control);
+  border: var(--border-width-thick) solid var(--color-border-strong);
+  background: var(--color-surface-raised);
+  box-shadow: inset 0 0.4rem 0 -0.3rem var(--color-border-default);
+}
+
+.radiusChip {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--color-primary-subtle);
+  border: var(--border-width-default) solid var(--color-primary-default);
+}
+
+.borderChip {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-surface);
+  border-style: solid;
+  border-color: var(--color-ink-primary);
+  background: var(--color-surface-default);
+}
+
+/* Transparency checker — fixed white/grey so the pattern is always visible
+   regardless of theme; the fill on top then shows how opaque the value is. */
+.checker {
+  display: inline-block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(45deg, #c3c8d0 25%, transparent 25%),
+    linear-gradient(-45deg, #c3c8d0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #c3c8d0 75%),
+    linear-gradient(-45deg, transparent 75%, #c3c8d0 75%);
+  background-size: 12px 12px;
+  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 14%, transparent);
+}
+
+.opacityFill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--color-primary-default);
+}
+
+.blurStage {
+  display: inline-block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+  background: repeating-linear-gradient(45deg, var(--color-primary-default) 0 8px, var(--accent-300) 8px 16px);
+  position: relative;
+}
+
+.blurGlass {
+  position: absolute;
+  inset: 0;
+}
+
+.motionTrack {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 9rem;
+  height: 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+}
+
+.motionDot,
+.easingDot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-default);
+  transform: translateY(-50%);
+}
+
+.motionDot { animation: slideTrack var(--dur, 200ms) var(--ease-move, ease) infinite alternate; }
+.easingDot { animation: slideTrack 1.4s var(--ease, ease) infinite alternate; }
+
+@keyframes slideTrack {
+  from { left: 0; }
+  to { left: calc(100% - 0.7rem); }
+}
+@media (max-width: 40rem) {
+
+  .specimenCell {
+    width: 30%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .motionDot,
+  .easingDot {
+    animation: none;
+    left: calc(100% - 0.7rem);
+  }
+}
+
+/* Contrast — a live specimen of the pair as the site actually renders it, so
+   the verdict is visible, not just asserted. */
+.contrastSample {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 28px;
+  border-radius: var(--radius-control);
+  border: var(--border-width-default) solid var(--color-border-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.contrastPair {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-gap-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+}
+
+.contrastOn {
+  color: var(--color-ink-tertiary);
+}

@@ -13,7 +13,8 @@
 
 import type { ReactNode } from "react";
 import { MAX_TAG_CHIPS, toRem, type DisplayUnit } from "../auditModel.js";
-import styles from "../Audit.module.css";
+import styles from "./tables.module.css";
+import shared from "../shared.module.css";
 
 /**
  * A length value in the selected unit, with the other unit as a muted note (C2).
@@ -41,7 +42,7 @@ export function LengthValue({ px, unit, children }: { px: number; unit: DisplayU
 export function Table({ head, children, className }: { head: ReactNode[]; children: ReactNode; className?: string }) {
   return (
     <div className={styles.tableWrap}>
-      <table className={className ? `${styles.table} ${className}` : styles.table}>
+      <table className={className ? `${shared.table} ${className}` : shared.table}>
         <thead>
           <tr>
             {head.map((h, i) => (
@@ -92,14 +93,14 @@ export function TagsCell({ tags }: { tags?: ({ tag: string; count: number } | st
         {shown.map((tg) => (
           <span
             key={tg.tag}
-            className={styles.tagChip}
+            className={shared.tagChip}
             title={tg.count != null ? `${tg.count.toLocaleString()}×` : undefined}
           >
             {tg.tag}
           </span>
         ))}
         {rest.length > 0 && (
-          <span className={styles.tagChip} title={rest.map((t) => t.tag).join(", ")}>
+          <span className={shared.tagChip} title={rest.map((t) => t.tag).join(", ")}>
             +{rest.length}
           </span>
         )}

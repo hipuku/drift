@@ -25,7 +25,8 @@ import {
   unitLabel,
   type Verdict,
 } from "../auditModel.js";
-import styles from "../Audit.module.css";
+import styles from "./overview.module.css";
+import shared from "../shared.module.css";
 
 export interface VerdictCard {
   label: string;
@@ -63,7 +64,7 @@ export function OverviewSection({
           {verdicts.map((v) => {
             const id = VERDICT_TAB[v.label];
             const linked = id != null && hasTab(id);
-            const className = `${styles.verdict} ${styles[v.verdict] ?? ""}${
+            const className = `${shared.verdict} ${styles[v.verdict] ?? ""}${
               linked ? ` ${styles.verdictClickable}` : ""
             }`;
             const icon = id ? tabIcon[id] : undefined;
@@ -80,9 +81,9 @@ export function OverviewSection({
                 <Text role="display" as="span" className={styles.verdictN}>
                   {v.n}
                 </Text>
-                <div className={styles.pills}>
+                <div className={shared.pills}>
                   {v.chips.map((c) => (
-                    <span key={c} className={styles.pill}>
+                    <span key={c} className={shared.pill}>
                       {c}
                     </span>
                   ))}

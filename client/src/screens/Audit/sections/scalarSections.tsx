@@ -24,7 +24,8 @@ import {
 } from "../auditModel.js";
 import { Badge } from "../../../components/Badge/Badge.js";
 import { LengthValue, Table, TagsCell, ZIndexLadder } from "../parts/tables.js";
-import styles from "../Audit.module.css";
+import styles from "./scalar.module.css";
+import shared from "../shared.module.css";
 
 export function RadiusSection({ radius, unit }: { radius: SiteAudit["radius"]; unit: DisplayUnit }) {
   const nearDup = nearDuplicates(radius.map((r) => r.value), RADIUS_NEAR_DUPLICATE_PX);
@@ -35,15 +36,15 @@ export function RadiusSection({ radius, unit }: { radius: SiteAudit["radius"]; u
           <td className={styles.chipPreviewCell}>
             <span className={styles.radiusChip} style={{ borderRadius: `${v.value}px` }} />
           </td>
-          <td className={styles.valueCell}>
+          <td className={shared.valueCell}>
             <LengthValue px={v.value} unit={unit}>
               {nearDup.has(v.value) && (
-                <span className={styles.offScaleDot} title="Near-duplicate of another radius" />
+                <span className={shared.offScaleDot} title="Near-duplicate of another radius" />
               )}
             </LengthValue>
           </td>
           <TagsCell tags={v.tags} />
-          <td className={styles.usageCell}>{v.count.toLocaleString()}×</td>
+          <td className={shared.usageCell}>{v.count.toLocaleString()}×</td>
         </tr>
       ))}
     </Table>
@@ -58,11 +59,11 @@ export function ShadowSection({ shadow }: { shadow: SiteAudit["shadow"] }) {
           <td className={styles.chipPreviewCell}>
             <span className={styles.shadowChip} style={{ boxShadow: sh.value }} />
           </td>
-          <td className={`${styles.valueCell} ${styles.valueCellWrap}`} title={sh.value}>
+          <td className={`${shared.valueCell} ${shared.valueCellWrap}`} title={sh.value}>
             {sh.value}
           </td>
           <TagsCell tags={sh.tags} />
-          <td className={styles.usageCell}>{sh.count.toLocaleString()}×</td>
+          <td className={shared.usageCell}>{sh.count.toLocaleString()}×</td>
         </tr>
       ))}
     </Table>
@@ -77,11 +78,11 @@ export function GradientSection({ gradients }: { gradients: NonNullable<SiteAudi
           <td className={styles.chipPreviewCell}>
             <span className={styles.gradientSwatch} style={{ backgroundImage: g.value }} />
           </td>
-          <td className={`${styles.valueCell} ${styles.valueCellWrap}`} title={g.value}>
+          <td className={`${shared.valueCell} ${shared.valueCellWrap}`} title={g.value}>
             {g.value}
           </td>
           <TagsCell tags={g.tags} />
-          <td className={styles.usageCell}>{g.count.toLocaleString()}×</td>
+          <td className={shared.usageCell}>{g.count.toLocaleString()}×</td>
         </tr>
       ))}
     </Table>
@@ -103,16 +104,16 @@ export function BorderSection({
           <td className={styles.chipPreviewCell}>
             <span className={styles.borderChip} style={{ borderWidth: `${b.value}px` }} />
           </td>
-          <td className={styles.valueCell}>
+          <td className={shared.valueCell}>
             <LengthValue px={b.value} unit={unit}>
               {nearDup.has(b.value) && (
-                <span className={styles.offScaleDot} title="Near-duplicate of another width" />
+                <span className={shared.offScaleDot} title="Near-duplicate of another width" />
               )}
             </LengthValue>
           </td>
           <TagsCell tags={b.sides.map((s) => ({ tag: s.side, count: s.count }))} />
           <TagsCell tags={b.tags} />
-          <td className={styles.usageCell}>{b.count.toLocaleString()}×</td>
+          <td className={shared.usageCell}>{b.count.toLocaleString()}×</td>
         </tr>
       ))}
     </Table>
@@ -132,21 +133,21 @@ export function ContrastSection({ contrast }: { contrast: NonNullable<SiteAudit[
               Aa
             </span>
           </td>
-          <td className={styles.valueCell}>
+          <td className={shared.valueCell}>
             <span className={styles.contrastPair}>
               {c.foreground}
               <span className={styles.contrastOn}>on</span>
               {c.background}
             </span>
           </td>
-          <td className={styles.valueCell}>{c.ratio.toFixed(2)}:1</td>
+          <td className={shared.valueCell}>{c.ratio.toFixed(2)}:1</td>
           <td>
             <Badge variant={c.passAA ? "neutral" : "danger"}>
               {c.passAAA ? "AAA" : c.passAA ? "AA" : c.passAALarge ? "AA large only" : "Fails AA"}
             </Badge>
           </td>
           <TagsCell tags={c.sampleTags} />
-          <td className={styles.usageCell}>{c.count.toLocaleString()}×</td>
+          <td className={shared.usageCell}>{c.count.toLocaleString()}×</td>
         </tr>
       ))}
     </Table>
@@ -163,9 +164,9 @@ export function OpacitySection({ opacity }: { opacity: NonNullable<SiteAudit["op
               <span className={styles.opacityFill} style={{ opacity: o.value }} />
             </span>
           </td>
-          <td className={styles.valueCell}>{o.value.toFixed(2)}</td>
+          <td className={shared.valueCell}>{o.value.toFixed(2)}</td>
           <TagsCell tags={o.tags} />
-          <td className={styles.usageCell}>{o.count.toLocaleString()}×</td>
+          <td className={shared.usageCell}>{o.count.toLocaleString()}×</td>
         </tr>
       ))}
     </Table>
@@ -181,9 +182,9 @@ export function ZIndexSection({ zIndex }: { zIndex: NonNullable<SiteAudit["zInde
           <td className={styles.chipPreviewCell}>
             <ZIndexLadder rank={rank.map.get(z.value) ?? 0} total={rank.total} />
           </td>
-          <td className={styles.valueCell}>{z.value}</td>
+          <td className={shared.valueCell}>{z.value}</td>
           <TagsCell tags={z.tags} />
-          <td className={styles.usageCell}>{z.count.toLocaleString()}×</td>
+          <td className={shared.usageCell}>{z.count.toLocaleString()}×</td>
         </tr>
       ))}
     </Table>
@@ -203,9 +204,9 @@ export function BlurSection({ blur }: { blur: NonNullable<SiteAudit["blur"]> }) 
               />
             </span>
           </td>
-          <td className={styles.valueCell}>{b.value}px</td>
+          <td className={shared.valueCell}>{b.value}px</td>
           <TagsCell tags={b.tags} />
-          <td className={styles.usageCell}>{b.count.toLocaleString()}×</td>
+          <td className={shared.usageCell}>{b.count.toLocaleString()}×</td>
         </tr>
       ))}
     </Table>
@@ -222,15 +223,15 @@ export function BreakpointSection({
     <Table head={["Preview", "Value", "Device", "Query", "Uses"]}>
       {breakpoints.map((bp) => (
         <tr key={bp.value}>
-          <td className={styles.spacingPreviewCell}>
+          <td className={shared.spacingPreviewCell}>
             <span className={styles.bpScreen} style={{ width: `${Math.max((bp.value / max) * 100, 10)}%` }} />
           </td>
-          <td className={styles.valueCell}>{bp.value}px</td>
-          <td className={styles.valueCell}>
-            <span className={styles.tagChip}>{deviceClass(bp.value)}</span>
+          <td className={shared.valueCell}>{bp.value}px</td>
+          <td className={shared.valueCell}>
+            <span className={shared.tagChip}>{deviceClass(bp.value)}</span>
           </td>
           <TagsCell tags={bp.types.map((t) => ({ tag: `${t.type}-width`, count: t.count }))} />
-          <td className={styles.usageCell}>{bp.count.toLocaleString()}×</td>
+          <td className={shared.usageCell}>{bp.count.toLocaleString()}×</td>
         </tr>
       ))}
     </Table>
@@ -248,9 +249,9 @@ export function MotionSection({ motion }: { motion: NonNullable<SiteAudit["motio
                 <span className={styles.motionDot} />
               </span>
             </td>
-            <td className={styles.valueCell}>{d.value}ms</td>
+            <td className={shared.valueCell}>{d.value}ms</td>
             <TagsCell tags={d.tags} />
-            <td className={styles.usageCell}>{d.count.toLocaleString()}×</td>
+            <td className={shared.usageCell}>{d.count.toLocaleString()}×</td>
           </tr>
         ))}
       </Table>
@@ -263,9 +264,9 @@ export function MotionSection({ motion }: { motion: NonNullable<SiteAudit["motio
                 <span className={styles.easingDot} />
               </span>
             </td>
-            <td className={`${styles.valueCell} ${styles.valueCellWrap}`}>{e.value}</td>
+            <td className={`${shared.valueCell} ${shared.valueCellWrap}`}>{e.value}</td>
             <TagsCell tags={e.tags} />
-            <td className={styles.usageCell}>{e.count.toLocaleString()}×</td>
+            <td className={shared.usageCell}>{e.count.toLocaleString()}×</td>
           </tr>
         ))}
       </Table>

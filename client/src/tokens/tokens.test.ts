@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
@@ -112,5 +112,45 @@ describe("the two-tier rule", () => {
     const stale = [...TYPE_TIER_DEBT].filter((n) => !read.has(n) || !primitives.has(n)).sort();
 
     expect(stale).toEqual([]);
+  });
+});
+
+/**
+ * Every `styles.x` resolves to a class that exists.
+ *
+ * A CSS module is typed as `Record<string, string>`, so `styles.typo` is a
+ * clean typecheck and an undefined at runtime, which React renders as the
+ * string "undefined" in the class list. The element loses its styling and
+ * nothing anywhere says so — not tsc, not eslint, not a test that asserts on
+ * roles and text.
+ *
+ * That was tolerable while each screen had one stylesheet. Splitting the audit
+ * screen into seven made it a live risk: a class moved between modules and a
+ * reference left behind fails exactly this way.
+ */
+describe("CSS module references", () => {
+  it("all resolve to a class the imported module defines", () => {
+    const files = filesUnder(SRC, [".tsx", ".ts"]).filter((f) => !/\.test\.tsx?$/.test(f));
+    const unresolved: string[] = [];
+
+    for (const file of files) {
+      const source = readFileSync(file, "utf8");
+      // Import lines are skipped, or an import of a stylesheet whose name ends
+      // in .module.css reads as a reference to a class called `module`.
+      const body = source
+        .split("\n")
+        .filter((l) => !l.startsWith("import "))
+        .join("\n");
+
+      for (const [, alias, spec] of source.matchAll(/import (\w+) from "([^"]+\.module\.css)"/g)) {
+        const stylesheet = resolve(dirname(file), spec!);
+        const defined = matches([stylesheet], /\.([a-zA-Z][a-zA-Z0-9]*)/g);
+        for (const [, name] of body.matchAll(new RegExp(`\\b${alias}\\.([a-zA-Z][a-zA-Z0-9]*)`, "g"))) {
+          if (!defined.has(name!)) unresolved.push(`${file}: ${alias}.${name!} (not in ${spec})`);
+        }
+      }
+    }
+
+    expect(unresolved).toEqual([]);
   });
 });

@@ -64,6 +64,7 @@ import { ColourCard, ColourDetail, ColourDrawerTitle } from "./parts/colour.js";
 import { OverviewSection } from "./sections/overviewSection.js";
 import { SpacingSection, TypeSection } from "./sections/scaleSections.js";
 import styles from "./Audit.module.css";
+import shared from "./shared.module.css";
 
 /** An icon per token tab — gives the strip identity and speeds scanning. */
 const TAB_ICON: Record<string, IconDefinition> = {
@@ -564,7 +565,7 @@ export function Audit({ audit, onBack }: Props) {
                   <Text role="heading-sm" as="h3">
                     {fam.name}
                   </Text>
-                  <Text role="label-sm" className={styles.muted}>
+                  <Text role="label-sm" className={shared.muted}>
                     {fam.swatches.length}
                   </Text>
                 </div>
