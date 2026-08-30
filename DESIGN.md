@@ -310,16 +310,25 @@ rather than hanging.
 
 ## Design system
 
-Two token tiers, in cascade layers. `tokens/primitives.css` holds raw values and
-`tokens/semantics.css` holds intent aliases over them; a component reads the
-semantic layer and never a primitive. `styles/drift.css` declares a third and
-fourth layer, `drift.primitives` and `drift.semantics`, after both. It re-skins
-the neutral and primary ramps, the three font families and the four shadows for
-a cool editorial identity, and wins where it overlaps. Twenty-nine tokens are
-defined in both places on purpose. The base layer is the standalone foundation;
-the brand layer is what ships.
+Two token tiers, in cascade layers, and the lower part of both ships in
+`haus-tokens`. The package supplies the primitives, the motion layer and a
+semantic layer; `tokens/primitives.css` holds the five primitives Drift
+overrides and `tokens/semantics.css` holds Drift's own intent aliases above
+haus's. A component reads the semantic layer and never a primitive.
+`styles/drift.css` declares a further two layers, `drift.primitives` and
+`drift.semantics`, after all of them. It re-skins the neutral and primary ramps,
+the three font families and the four shadows for a cool editorial identity, and
+wins where it overlaps. Twenty-six tokens are defined in both places on purpose.
+The layers below are the foundation; the brand layer is what ships.
+
+`tokens/layers.css` declares the order once, before anything opens a layer, so
+it reads as a statement rather than a consequence of import order in `main.tsx`.
 
 The semantic tier covers colour, type, spacing, radius, elevation and motion.
+Drift's layer names 157 roles, 118 of which share a name with haus's 123. Five
+of the shared names resolve differently on purpose: Drift's controls are one
+radius step tighter and its overlay sits one shadow step lower. Thirty-nine
+roles are Drift's alone.
 
 Spacing is aliased three ways, `inset` (padding), `gap` (between siblings) and
 `stack` (margin), over one ladder, so a
@@ -340,13 +349,16 @@ there is no scale beneath them: `--z-modal` is not one step of a ramp, it is the
 answer to "how high does a modal sit". An alias over those would be indirection
 with nothing on the other end.
 
-Two guards hold the layer, because CSS fails silently at both edges. An undefined
-`var()` is dropped and the property inherits, with no warning at build or in
-review. That is how `--duration-default`, which never existed, left five
+Three guards hold the layer, because CSS fails silently at both edges. An
+undefined `var()` is dropped and the property inherits, with no warning at build
+or in review. That is how `--duration-default`, which never existed, left five
 animations running instantly. And a CSS-module class that does not exist is a
 clean typecheck and an `undefined` at runtime. `client/src/tokens/tokens.test.ts`
-asserts that every custom property read is defined, and that no component reads a
-primitive outside a named exception list that can only shrink.
+asserts that every custom property read is defined, that no component reads a
+primitive outside a named exception list that can only shrink, and that
+`haus-components` reads no role Drift does not load. The third reads the
+installed package's `styles.css` rather than a copy of it, so a release that
+introduces a role fails the build with its name instead of dropping a shadow.
 
 # Decisions
 
@@ -396,6 +408,28 @@ version that shipped: vault had reached for HSL's boundaries and misnamed 16 of 
 canonical colours before it took these.
 
 *(Earlier this ran in the browser too: the cut colour proposal re-clustered live as the user moved a size slider, so the package was linked into the client the same way as the server, via a hand-written declaration shim, because it then shipped TypeScript source the client's stricter compiler rejected. With the proposal cut and the package now publishing built types, both the client link and the shim are gone; colour-utils is backend-only.)*
+
+
+### haus-tokens and haus-components: the layers below Drift's
+
+The client took `haus-tokens` for its primitive, motion and semantic layers, and
+`haus-components` for Badge and Input.
+
+The primitives were the clear case. `tokens/primitives.css` carried 103 custom
+properties, 100 of which existed in the package with identical values and nothing
+keeping them in step. They agreed by luck, which is the problem Drift was built to
+detect, in Drift. Five remain here as Drift's overrides.
+
+The semantic layer was the argument. Drift's own is a theme rather than a copy, so
+it stays; haus's is imported below it because `haus-components` reads roles from
+it. The package's stylesheet reads 113 roles with no fallback, and the five Drift
+did not define are exactly the five haus declares that Drift does not. Declaring
+those five here would have been a new copy of the kind the primitives had just
+stopped being.
+
+Button stays local. Its raised primary variant is Drift's identity and the package
+has no vocabulary for it, so the swap covers the two components that were haus's
+restated and leaves the one that is not.
 
 ---
 
@@ -537,30 +571,6 @@ to classes that existed but styled nothing. The lesson is recorded rather than t
 attempt: static analysis of CSS Modules was not sufficient evidence, twice. If it
 is retried, ownership must be assigned per class by where its declarations are,
 and verified by comparing computed styles. Reading the source is what failed.
-
-**The client hand-copies `haus-tokens`' primitives.** 100 of the 103 custom
-properties in `tokens/primitives.css` also exist in `haus-tokens` with identical
-values, and nothing keeps them in step. They agree today by luck. This is the same
-class of problem Drift was built to detect, in Drift.
-
-Measured rather than assumed, and the measurement narrowed it. Only the primitives
-are a copy. The three that differ are Drift's: `--font-display`, `--space-hairline`
-and `--space-tight`, plus its own `--font-sans` and `--font-mono`. `motion.css` is
-identical, all 17 tokens.
-
-`semantics.css` is **not** a copy, and calling it one was the mistake in the
-original finding. 118 of its 157 roles share a name with haus's, which is the
-point of a role, and five resolve differently on purpose: Drift's controls are one
-radius step tighter and its overlay sits one shadow step lower. Twenty more are
-Drift's alone. That file is a theme over the primitives, which is what the
-architecture is for, and it stays.
-
-So the fix is narrower than it looked: consume `haus-tokens/primitives.css`, keep
-a short file for the five values Drift overrides, and leave the semantic layer
-where it is. The tier question that made this a decision is settled, because
-`haus-tokens` 0.2.0 has the tier now, and the shape it took is Drift's own: three
-spacing roles over one ladder, radius named for what is rounded, elevation for how
-high a thing sits.
 
 **The bundled demo capture can go stale silently.** The deployed build replays a
 real audit, so the capture is the product's own output. It is not a fixture standing in for one. A fix to the analysis therefore makes the shipped demo wrong, and
