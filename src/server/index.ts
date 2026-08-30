@@ -4,7 +4,7 @@
  * One long-lived process owning the HTTP API, the WebSocket progress server,
  * and the crawl worker. Fully deterministic — no API key required.
  *
- *   npm run dev
+ *   npm run dev:server
  */
 
 import http from "node:http";

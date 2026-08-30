@@ -2,22 +2,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
+  gap: var(--space-gap-xs);
   font-family: var(--font-sans);
   font-size: var(--type-label-size);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--type-label-tracking);
   line-height: 1;
-  padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-md);
+  padding: var(--space-inset-sm) var(--space-inset-lg);
+  border-radius: var(--radius-surface);
   border: var(--border-width-default) solid transparent;
   cursor: pointer;
   transition:
-    background var(--duration-fast) var(--ease-move),
-    border-color var(--duration-fast) var(--ease-move),
-    box-shadow var(--duration-fast) var(--ease-move),
-    transform var(--duration-fast) var(--ease-move),
-    color var(--duration-fast) var(--ease-move);
+    background var(--motion-duration-micro) var(--motion-ease-standard),
+    border-color var(--motion-duration-micro) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-micro) var(--motion-ease-standard),
+    transform var(--motion-duration-micro) var(--motion-ease-standard),
+    color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .button:focus-visible {
@@ -27,7 +27,7 @@
 
 .button:disabled {
   cursor: not-allowed;
-  opacity: var(--opacity-disabled);
+  opacity: var(--opacity-control-disabled);
   box-shadow: none;
   transform: none;
 }

@@ -1,7 +1,7 @@
 .screen {
   display: flex;
   justify-content: center;
-  padding: var(--space-20) var(--space-6);
+  padding: var(--space-inset-7xl) var(--space-inset-xl);
 }
 
 .card {
@@ -9,24 +9,24 @@
   max-width: 32rem;
   background: var(--color-surface-default);
   border: var(--border-width-default) solid var(--color-border-subtle);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-8);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--elevation-overlay);
+  padding: var(--space-inset-3xl);
 }
 
 .row {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-gap-md);
 }
 
 .detail {
   color: var(--color-ink-secondary);
-  margin-top: var(--space-4);
+  margin-top: var(--space-stack-md);
 }
 
 .callout {
-  margin: var(--space-5) 0 var(--space-6);
+  margin: var(--space-stack-lg) 0 var(--space-stack-xl);
 }
 
 .spinner {

@@ -1,7 +1,7 @@
 .screen {
   display: flex;
   justify-content: center;
-  padding: var(--space-20) var(--space-6);
+  padding: var(--space-inset-7xl) var(--space-inset-xl);
 }
 
 .card {
@@ -9,20 +9,20 @@
   max-width: 32rem;
   background: var(--color-surface-default);
   border: var(--border-width-default) solid var(--color-border-subtle);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-8);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--elevation-overlay);
+  padding: var(--space-inset-3xl);
 }
 
 .intro {
   color: var(--color-ink-secondary);
-  margin-top: var(--space-3);
+  margin-top: var(--space-stack-sm);
 }
 
 .track {
-  margin-top: var(--space-7);
+  margin-top: var(--space-stack-2xl);
   height: 0.5rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-surface);
   background: var(--color-surface-sunken);
   overflow: hidden;
 }
@@ -31,15 +31,15 @@
   height: 100%;
   border-radius: inherit;
   background: var(--color-primary-default);
-  transition: width var(--duration-normal) var(--ease-move);
+  transition: width var(--motion-duration-ui) var(--motion-ease-standard);
 }
 
 .meta {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-3);
-  margin-top: var(--space-3);
+  gap: var(--space-gap-sm);
+  margin-top: var(--space-stack-sm);
 }
 
 .count {
@@ -55,11 +55,11 @@
 /* ── Pages landing one by one ────────────────────────────────────────────── */
 .pageList {
   list-style: none;
-  margin: var(--space-6) 0 0;
+  margin: var(--space-stack-xl) 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-gap-2xs);
   max-height: 15rem;
   overflow: hidden;
   mask-image: linear-gradient(to bottom, black 70%, transparent);
@@ -69,9 +69,9 @@
 .pageRow {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) 0;
-  animation: land var(--duration-normal) var(--ease-move);
+  gap: var(--space-gap-sm);
+  padding: var(--space-inset-xs) 0;
+  animation: land var(--motion-duration-ui) var(--motion-ease-standard);
 }
 
 @keyframes land {
@@ -88,7 +88,7 @@
 .dot {
   width: 0.4rem;
   height: 0.4rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-pill);
   background: var(--color-primary-default);
   flex-shrink: 0;
 }

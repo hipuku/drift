@@ -1,14 +1,14 @@
 .callout {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
+  gap: var(--space-gap-sm);
+  padding: var(--space-inset-sm) var(--space-inset-md);
+  border-radius: var(--radius-surface);
   border: var(--border-width-default) solid;
 }
 
 .icon {
-  font-size: var(--icon-sm);
+  font-size: var(--size-icon-inline);
   margin-top: 0.1em;
   flex-shrink: 0;
 }

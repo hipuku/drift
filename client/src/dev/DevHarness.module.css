@@ -4,10 +4,10 @@
   background: none;
   border: none;
   padding: 0;
-  font-size: var(--icon-sm);
+  font-size: var(--size-icon-inline);
   color: var(--color-ink-tertiary);
   cursor: pointer;
-  transition: color var(--duration-fast) var(--ease-move);
+  transition: color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .opener:hover {
@@ -17,7 +17,7 @@
 .opener:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-control);
 }
 
 .backdrop {
@@ -35,14 +35,14 @@
   width: 17rem;
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
-  padding: var(--space-5);
+  gap: var(--space-gap-lg);
+  padding: var(--space-inset-lg);
   background: var(--color-surface-default);
   border-left: var(--border-width-default) solid var(--color-border-subtle);
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--elevation-popover);
   z-index: var(--z-modal);
   transform: translateX(100%);
-  transition: transform var(--duration-moderate) var(--ease-move);
+  transition: transform var(--motion-duration-panel) var(--motion-ease-standard);
 }
 
 .drawerOpen {
@@ -65,7 +65,7 @@
   background: none;
   border: none;
   padding: 0;
-  font-size: var(--icon-sm);
+  font-size: var(--size-icon-inline);
   color: var(--color-ink-tertiary);
   cursor: pointer;
 }
@@ -85,7 +85,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-gap-2xs);
 }
 
 .navItem {
@@ -94,11 +94,11 @@
   text-align: left;
   background: transparent;
   border: none;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
+  padding: var(--space-inset-xs) var(--space-inset-sm);
+  border-radius: var(--radius-surface);
   color: var(--color-ink-secondary);
   cursor: pointer;
-  transition: background var(--duration-fast) var(--ease-move);
+  transition: background var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .navItem:hover {

@@ -104,6 +104,111 @@
     /* Inner ring matches surface (creates gap), outer ring is focus colour   */
     --shadow-focus: 0 0 0 2px var(--color-surface-default), 0 0 0 4px var(--color-border-focus);
 
+    /* ── Spacing ──────────────────────────────────────────────────────────── */
+    /* Three roles, one ladder. A step means the same size whichever role it
+       is read through, so the tiers stay comparable — the point of splitting
+       them is that inset, gap and stack can later be retuned independently
+       (denser forms without denser page rhythm) without hunting through
+       modules to work out which --space-3 meant which. Only the steps in use
+       are named; add one when a component needs it, rather than reaching past
+       this layer for the primitive. */
+
+    /* Optical, below the 4px grid — see primitives.css. */
+    --space-inset-hairline: var(--space-hairline);
+    --space-inset-tight:    var(--space-tight);
+
+    /* Padding — space *inside* a component, between its edge and its content. */
+    --space-inset-2xs:         var(--space-1);       /* 4px */
+    --space-inset-xs:          var(--space-2);       /* 8px */
+    --space-inset-sm:          var(--space-3);       /* 12px */
+    --space-inset-md:          var(--space-4);       /* 16px */
+    --space-inset-lg:          var(--space-5);       /* 20px */
+    --space-inset-xl:          var(--space-6);       /* 24px */
+    --space-inset-2xl:         var(--space-7);       /* 28px */
+    --space-inset-3xl:         var(--space-8);       /* 32px */
+    --space-inset-5xl:         var(--space-12);      /* 48px */
+    --space-inset-6xl:         var(--space-16);      /* 64px */
+    --space-inset-7xl:         var(--space-20);      /* 80px */
+
+    /* Gap — space *between* siblings laid out together (flex and grid). */
+    --space-gap-2xs:           var(--space-1);       /* 4px */
+    --space-gap-xs:            var(--space-2);       /* 8px */
+    --space-gap-sm:            var(--space-3);       /* 12px */
+    --space-gap-md:            var(--space-4);       /* 16px */
+    --space-gap-lg:            var(--space-5);       /* 20px */
+    --space-gap-2xl:           var(--space-7);       /* 28px */
+    --space-gap-3xl:           var(--space-8);       /* 32px */
+
+    /* Stack — margin between blocks in normal flow, usually vertical. */
+    --space-stack-2xs:         var(--space-1);       /* 4px */
+    --space-stack-xs:          var(--space-2);       /* 8px */
+    --space-stack-sm:          var(--space-3);       /* 12px */
+    --space-stack-md:          var(--space-4);       /* 16px */
+    --space-stack-lg:          var(--space-5);       /* 20px */
+    --space-stack-xl:          var(--space-6);       /* 24px */
+    --space-stack-2xl:         var(--space-7);       /* 28px */
+    --space-stack-3xl:         var(--space-8);       /* 32px */
+    --space-stack-4xl:         var(--space-10);      /* 40px */
+    --space-stack-5xl:         var(--space-12);      /* 48px */
+
+    /* ── Radius ───────────────────────────────────────────────────────────── */
+    /* Named for what is being rounded. The scale steps are a vocabulary of
+       sizes; these say which size a thing of each kind takes, so a control and
+       a card cannot drift apart by one step without someone choosing to. */
+    --radius-control: var(--radius-sm);    /* inputs, buttons, chips */
+    --radius-surface: var(--radius-md);    /* cards, panels, table wells */
+    --radius-overlay: var(--radius-lg);    /* popovers, drawers */
+    --radius-panel:   var(--radius-xl);    /* the largest containers */
+    --radius-pill:    var(--radius-full);  /* fully-rounded: badges, avatars */
+
+    /* ── Elevation ────────────────────────────────────────────────────────── */
+    /* Height above the page, not shadow size. A component asks to sit at a
+       level; how that level is drawn is this layer's business, which is what
+       lets the brand layer restyle every shadow at once. */
+    --elevation-raised:  var(--shadow-sm);  /* lifted off the page: cards */
+    --elevation-overlay: var(--shadow-md);  /* above content: dropdowns */
+    --elevation-modal:   var(--shadow-lg);  /* above everything: dialogs */
+    --elevation-popover: var(--shadow-xl);  /* the highest surfaces */
+
+    /* ── Motion ───────────────────────────────────────────────────────────── */
+    /* Named for what is moving. The durations differ because the distances do:
+       a chip's colour change should be over before it is noticed, a panel
+       sliding in should be followed by the eye. */
+    --motion-duration-micro: var(--duration-fast);      /* hover, focus, check */
+    --motion-duration-ui:    var(--duration-normal);    /* reveals, tab changes */
+    --motion-duration-panel: var(--duration-moderate);  /* drawers, modals */
+    --motion-ease-standard:  var(--ease-move);          /* the default curve */
+
+    /* ── Sizing and state ─────────────────────────────────────────────────── */
+    --size-icon-inline:        var(--icon-sm);          /* an icon set in text */
+    --opacity-control-disabled: var(--opacity-disabled);
+
+    /* ── Stacking, border width and state ─────────────────────────────────── */
+    /* These arrived from primitives.css, where they did not belong: their names
+       already say what they are for rather than what they are. There is no
+       underlying scale to alias them from — `--z-modal` is not one step of a
+       z-index ramp, it is the answer to "how high does a modal sit" — so an
+       alias layer over them would be indirection with nothing on the other end.
+       Moving them is the fix; a component reading one is reading a semantic. */
+
+    /* ── Z-index ──────────────────────────────────────────────────────────────── */
+    --z-base:     0;
+    --z-raised:   10;
+    --z-dropdown: 100;
+    --z-sticky:   200;
+    --z-overlay:  300;
+    --z-modal:    400;
+    --z-toast:    500;
+    --z-tooltip:  600;
+
+    /* ── Border width ─────────────────────────────────────────────────────────── */
+    --border-width-default: 1px;
+    --border-width-thick:   2px;
+
+    /* ── Opacity ──────────────────────────────────────────────────────────────── */
+    --opacity-disabled: 0.4;
+    --opacity-overlay:  0.6;
+
     /* ── Typography roles ─────────────────────────────────────────────────── */
     /* Use all four props together. Components must not mix roles.            */
 

@@ -59,3 +59,58 @@ describe("custom properties", () => {
     expect([...read].filter((n) => !defined.has(n))).toContain("--not-a-token");
   });
 });
+
+/**
+ * Components read semantics, never primitives (SIGNATURE §4).
+ *
+ * The rule was aspirational until the semantic tier covered spacing, radius,
+ * elevation and motion; before that a component had nowhere else to go. Now it
+ * does, so this holds the line: 196 spacing reads, 61 radius, 21 elevation and
+ * 70 motion were migrated, and a new one should not appear without a decision.
+ *
+ * The exceptions are the type tier, which exists but is bypassed by bare
+ * `font-size` and `font-family` declarations. Those are not a mechanical swap —
+ * a type role carries size, weight, leading and tracking together, so adopting
+ * one changes how the text sits, site by site. They are listed rather than
+ * ignored: the list should only ever get shorter.
+ */
+const TYPE_TIER_DEBT = new Set([
+  "--font-sans",
+  "--font-mono",
+  "--font-display",
+  "--text-11",
+  "--text-12",
+  "--text-13",
+  "--text-14",
+  "--text-24",
+  "--weight-medium",
+  "--weight-semibold",
+]);
+
+describe("the two-tier rule", () => {
+  it("keeps components off the primitives", () => {
+    const primitives = matches(
+      [resolve(SRC, "tokens/primitives.css")],
+      /^\s*(--[a-z0-9-]+)\s*:/gm,
+    );
+    const read = matches(filesUnder(SRC, [".module.css"]), /var\((--[a-z0-9-]+)/g);
+
+    const reaching = [...read].filter((n) => primitives.has(n) && !TYPE_TIER_DEBT.has(n)).sort();
+
+    expect(reaching).toEqual([]);
+  });
+
+  it("keeps the recorded exceptions honest", () => {
+    // A name that is no longer read, or no longer a primitive, should leave the
+    // list — otherwise the debt looks larger than it is and stops being read.
+    const primitives = matches(
+      [resolve(SRC, "tokens/primitives.css")],
+      /^\s*(--[a-z0-9-]+)\s*:/gm,
+    );
+    const read = matches(filesUnder(SRC, [".module.css"]), /var\((--[a-z0-9-]+)/g);
+
+    const stale = [...TYPE_TIER_DEBT].filter((n) => !read.has(n) || !primitives.has(n)).sort();
+
+    expect(stale).toEqual([]);
+  });
+});

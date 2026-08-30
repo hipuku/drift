@@ -1,11 +1,11 @@
 .page {
   max-width: 60rem;
   margin: 0 auto;
-  padding: var(--space-16) var(--space-6) var(--space-20);
+  padding: var(--space-inset-6xl) var(--space-inset-xl) var(--space-inset-7xl);
 }
 
 .header {
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--space-stack-5xl);
 }
 
 /* These set only colour/layout; <Text> owns the type properties via roles. */
@@ -15,12 +15,12 @@
 
 .subtitle {
   color: var(--color-ink-primary);
-  margin-top: var(--space-3);
+  margin-top: var(--space-stack-sm);
 }
 
 .note {
   color: var(--color-ink-tertiary);
-  margin-top: var(--space-2);
+  margin-top: var(--space-stack-xs);
 }
 
 .note strong {
@@ -31,36 +31,36 @@
 .section {
   background: var(--color-surface-default);
   border: var(--border-width-default) solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  margin-bottom: var(--space-5);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-overlay);
+  padding: var(--space-inset-xl);
+  margin-bottom: var(--space-stack-lg);
+  box-shadow: var(--elevation-raised);
 }
 
 .sectionLabel {
   text-transform: uppercase;
   color: var(--color-ink-tertiary);
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-stack-lg);
 }
 
 /* ── Ramps ────────────────────────────────────────────────────────────────── */
 .ramp {
   display: flex;
-  gap: var(--space-2);
+  gap: var(--space-gap-xs);
   flex-wrap: wrap;
 }
 
 .chipWrap {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-gap-xs);
   align-items: center;
 }
 
 .chip {
   width: 3rem;
   height: 3rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-surface);
   border: var(--border-width-default) solid var(--color-border-subtle);
 }
 
@@ -73,16 +73,16 @@
 /* ── Feedback ─────────────────────────────────────────────────────────────── */
 .feedbackRow {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-gap-sm);
   flex-wrap: wrap;
 }
 
 .feedbackChip {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-full);
+  gap: var(--space-gap-xs);
+  padding: var(--space-inset-xs) var(--space-inset-sm);
+  border-radius: var(--radius-pill);
   border: var(--border-width-default) solid;
   font-size: var(--text-13);
   font-weight: var(--weight-medium);
@@ -91,21 +91,21 @@
 .dot {
   width: 0.5rem;
   height: 0.5rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-pill);
 }
 
 /* ── Surfaces ─────────────────────────────────────────────────────────────── */
 .surfaceRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-3);
+  gap: var(--space-gap-sm);
 }
 
 .surfaceCell {
   aspect-ratio: 3 / 2;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-surface);
   border: var(--border-width-default) solid var(--color-border-subtle);
-  padding: var(--space-3);
+  padding: var(--space-inset-sm);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -132,40 +132,40 @@
 .typeList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-gap-lg);
 }
 
 .typeRow {
   display: grid;
   grid-template-columns: 5rem 1fr;
-  gap: var(--space-4);
+  gap: var(--space-gap-md);
   align-items: baseline;
 }
 
 .spaceList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-gap-sm);
 }
 
 .spaceRow {
   display: grid;
   grid-template-columns: 5rem 1fr;
-  gap: var(--space-4);
+  gap: var(--space-gap-md);
   align-items: center;
 }
 
 .spaceBar {
   height: 0.75rem;
   background: var(--color-primary-default);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-control);
   display: block;
 }
 
 /* ── Boxes (radius, shadow) ───────────────────────────────────────────────── */
 .boxRow {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-gap-md);
   flex-wrap: wrap;
 }
 
@@ -186,7 +186,7 @@
   width: 4rem;
   height: 4rem;
   background: var(--color-surface-default);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-surface);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -30,7 +30,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-4) var(--space-6);
+  padding: var(--space-inset-md) var(--space-inset-xl);
   background: oklch(from var(--color-surface-default) l c h / 0.72);
   backdrop-filter: saturate(1.4) blur(12px);
   -webkit-backdrop-filter: saturate(1.4) blur(12px);
@@ -53,7 +53,7 @@
   height: 1.5rem;
   width: auto;
   opacity: 0.92;
-  transition: opacity var(--duration-fast) var(--ease-move);
+  transition: opacity var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .brand:hover .logo {
@@ -63,23 +63,23 @@
 .brand:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-control);
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
+  gap: var(--space-gap-lg);
 }
 
 .iconLink {
   display: inline-flex;
   align-items: center;
-  font-size: var(--icon-sm);
+  font-size: var(--size-icon-inline);
   color: var(--color-ink-tertiary);
   text-decoration: none;
   cursor: pointer;
-  transition: color var(--duration-fast) var(--ease-move);
+  transition: color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .iconLink:hover {
@@ -89,7 +89,7 @@
 .iconLink:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-control);
 }
 
 /* Content sits above the fixed grid layer. */

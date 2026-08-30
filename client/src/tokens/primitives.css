@@ -110,6 +110,15 @@
     --tracking-widest:   0.08em;
 
     /* ── Spacing scale (4px base) ────────────────────────────────────────────── */
+    /* Two steps sit deliberately below the grid. They are optical corrections
+       inside small controls — the vertical padding of a chip, a hairline rule —
+       where a 4px step is visibly too much and the value is doing the work of a
+       border rather than of space. Named so they cannot be mistaken for the
+       bottom of the scale, and aliased in semantics.css as inset-hairline and
+       inset-tight so a component still never reaches for a raw value. */
+    --space-hairline: 0.0625rem; /* 1px */
+    --space-tight:    0.125rem;  /* 2px */
+
     --space-1:  0.25rem;    /* 4px  */
     --space-2:  0.5rem;     /* 8px  */
     --space-3:  0.75rem;    /* 12px */
@@ -139,24 +148,6 @@
     --shadow-lg:   0 10px 15px -3px oklch(18% 0.003 290 / 0.10), 0 4px 6px -4px oklch(18% 0.003 290 / 0.07);
     --shadow-xl:   0 20px 25px -5px oklch(18% 0.003 290 / 0.10), 0 8px 10px -6px oklch(18% 0.003 290 / 0.10);
     /* --shadow-focus is in semantics.css — references semantic colour tokens */
-
-    /* ── Z-index ──────────────────────────────────────────────────────────────── */
-    --z-base:     0;
-    --z-raised:   10;
-    --z-dropdown: 100;
-    --z-sticky:   200;
-    --z-overlay:  300;
-    --z-modal:    400;
-    --z-toast:    500;
-    --z-tooltip:  600;
-
-    /* ── Border width ─────────────────────────────────────────────────────────── */
-    --border-width-default: 1px;
-    --border-width-thick:   2px;
-
-    /* ── Opacity ──────────────────────────────────────────────────────────────── */
-    --opacity-disabled: 0.4;
-    --opacity-overlay:  0.6;
 
     /* ── Icon sizes (Font Awesome — pairs with type scale) ────────────────────── */
     --icon-xs: 0.75rem;   /* 12px — label-xs */

@@ -24,6 +24,8 @@ import { INDISTINGUISHABLE_DELTA_E } from "../screens/Audit/auditModel.js";
 /** Resolved from the package root — vitest runs with cwd at client/, and under
  *  jsdom `import.meta.url` is not a file URL. */
 const SERVICE_COLOURS = resolve(process.cwd(), "../src/analysis/colours.ts");
+const SERVICE_AUDIT = resolve(process.cwd(), "../src/analysis/audit.ts");
+const CLIENT_API = resolve(process.cwd(), "src/lib/api.ts");
 
 /**
  * Pull an exported number literal out of the service source. Throws rather than
@@ -50,5 +52,64 @@ describe("the values this client mirrors from the service", () => {
 
   it("fails loudly when the service constant can no longer be found", () => {
     expect(() => declaredConstant("NO_SUCH_CONSTANT")).toThrow(/Could not find/);
+  });
+});
+
+/**
+ * Field optionality has to match too, and that is the half this file was
+ * missing.
+ *
+ * A mirrored type that says `tags?` where the service always sends `tags` costs
+ * every consumer a branch it does not need — the reason B1 made these required
+ * on the service. The client was not updated, and the cost was not theoretical:
+ * both of the repo's lint warnings traced to it, because `sw.elements ?? []`
+ * builds a new array on every render and defeats the memo below it. Five fields
+ * had drifted by the time anyone noticed, and nothing failed.
+ *
+ * Names, not structures. This compares the optionality of field names the two
+ * files share, which is coarse — it cannot see that a field moved interfaces —
+ * but it catches the drift that actually happens, which is a field going
+ * optional on one side and staying required on the other.
+ */
+
+/** Field names declared optional (`name?:`) and required (`name:`) in a source. */
+function fieldOptionality(file: string): { optional: Set<string>; required: Set<string> } {
+  const source = readFileSync(file, "utf8");
+  const optional = new Set<string>();
+  const required = new Set<string>();
+  for (const m of source.matchAll(/^ {2}([a-zA-Z][a-zA-Z0-9]*)(\??):/gm)) {
+    (m[2] === "?" ? optional : required).add(m[1]!);
+  }
+  return { optional, required };
+}
+
+describe("the wire types this client mirrors", () => {
+  const service = fieldOptionality(SERVICE_AUDIT);
+  const client = fieldOptionality(CLIENT_API);
+
+  it("finds fields on both sides to compare", () => {
+    // If a rename or a restructure leaves nothing shared, every assertion below
+    // passes vacuously and the guard silently stops guarding.
+    const shared = [...service.optional, ...service.required].filter(
+      (n) => client.optional.has(n) || client.required.has(n),
+    );
+    expect(shared.length).toBeGreaterThan(20);
+  });
+
+  it("does not declare optional what the service always sends", () => {
+    const lying = [...client.optional]
+      .filter((n) => service.required.has(n) && !service.optional.has(n))
+      .sort();
+
+    expect(lying).toEqual([]);
+  });
+
+  it("does not declare required what the service may omit", () => {
+    // The costlier direction: the client renders a field the payload lacks.
+    const overclaimed = [...client.required]
+      .filter((n) => service.optional.has(n) && !service.required.has(n))
+      .sort();
+
+    expect(overclaimed).toEqual([]);
   });
 });

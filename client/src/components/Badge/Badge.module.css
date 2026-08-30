@@ -1,9 +1,9 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-full);
+  gap: var(--space-gap-2xs);
+  padding: var(--space-inset-tight) var(--space-inset-xs);
+  border-radius: var(--radius-pill);
   font-family: var(--font-sans);
   font-size: var(--text-12);
   font-weight: var(--weight-medium);
