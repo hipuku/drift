@@ -3,15 +3,15 @@
  *
  * Two modes, sharing one per-page extractor:
  *
- *  1. Explicit pages — when the caller passes a `pages` list (the user's picked
+ *  1. Explicit pages: when the caller passes a `pages` list (the user's picked
  *     pages, or all discovered pages), the crawler visits exactly those URLs.
  *     This is how a chosen deep page actually gets crawled.
- *  2. Breadth-first (fallback) — with no `pages`, it walks same-origin links
+ *  2. Breadth-first (fallback): with no `pages`, it walks same-origin links
  *     from the root up to the page cap. Used when discovery found nothing to
  *     pick from.
  *
  * Either way it drives the in-page extractor, normalises Node-side, and owns the
- * browser lifecycle and nothing else — no queue, no sockets, no analysis.
+ * browser lifecycle and nothing else: no queue, no sockets, no analysis.
  */
 
 import { chromium, type BrowserContext, type Browser } from "playwright";
@@ -26,7 +26,7 @@ import type { CrawlOptions, CrawlResult, PageExtraction } from "./types.js";
 const DEFAULT_TIMEOUT_MS = 30_000;
 
 /**
- * Hard ceiling on pages per crawl — bounds time, memory, and politeness.
+ * Hard ceiling on pages per crawl, bounding time, memory and politeness.
  * Kept modest while the pipeline still retains every page's raw elements
  * (memory scales with elements × pages). Raises to ~25 once the crawl aggregates
  * incrementally. The design language lives in the shared stylesheet, so a handful
@@ -63,7 +63,7 @@ interface Visit {
 async function visit(context: BrowserContext, url: string, timeout: number): Promise<Visit | null> {
   const page = await context.newPage();
   try {
-    // "domcontentloaded" (not "load") — stylesheets are applied by then, but we
+    // "domcontentloaded" rather than "load": stylesheets are applied by then, but we
     // don't wait on images / fonts / third-party scripts, which is what makes
     // slow sites blow past the timeout.
     await page.goto(url, { waitUntil: "domcontentloaded", timeout });

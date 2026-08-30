@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { SubscriptionRegistry } from "./subscriptions.js";
 
-// Plain objects stand in for clients — the registry is client-type agnostic.
+// Plain objects stand in for clients, since the registry is client-type agnostic.
 const client = (name: string) => ({ name });
 
 describe("SubscriptionRegistry", () => {

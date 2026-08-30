@@ -4,7 +4,7 @@
  * Mirrors the server's request/response shapes (src/queue/crawlQueue.ts,
  * src/analysis/*) and wraps every call to the `/api` proxy in a thin helper that
  * surfaces the server's friendly `error` string. Kept in one place so the
- * screens fetch through typed functions, never raw URLs. Deterministic — no model.
+ * screens fetch through typed functions, never raw URLs. Deterministic, with no model.
  */
 
 import {
@@ -100,7 +100,7 @@ export async function getCrawlStatus(jobId: string): Promise<CrawlStatus> {
   return (await res.json()) as CrawlStatus;
 }
 
-/** The typography inventory for a completed crawl — seeds the type proposals. */
+/** The typography inventory for a completed crawl, which seeds the type proposals. */
 export async function getTypography(jobId: string): Promise<TypographyInventory> {
   const res = await fetch(`/api/crawl/${encodeURIComponent(jobId)}/typography`);
   if (!res.ok) throw await failure(res);
@@ -122,7 +122,7 @@ export interface ColourInventory {
   distinctColours: number;
 }
 
-/** The colour inventory for a completed crawl — seeds the consolidation proposal. */
+/** The colour inventory for a completed crawl, which seeds the consolidation proposal. */
 export async function getColours(jobId: string): Promise<ColourInventory> {
   const res = await fetch(`/api/crawl/${encodeURIComponent(jobId)}/colours`);
   if (!res.ok) throw await failure(res);
@@ -147,14 +147,14 @@ export interface AuditColourSwatch {
   lightness: number;
   /** The perceptually-closest other colour on the site, and the ΔE to it. */
   nearest?: { hex: string; deltaE: number };
-  /** Every colour worth relating this one to — opacity variants and near-duplicates. */
+  /** Every colour worth relating this one to: opacity variants and near-duplicates. */
   related?: AuditColourRelation[];
 }
 
 export interface AuditColourRelation {
   hex: string;
   deltaE: number;
-  /** Same RGB base as the subject — differs only in alpha. */
+  /** Same RGB base as the subject, differing only in alpha. */
   opacityVariant: boolean;
 }
 
@@ -239,7 +239,7 @@ export interface AuditBorderUsage {
   tags: AuditTagUsage[];
 }
 
-/** Motion tokens — the timing and the curves transitions are built from. */
+/** Motion tokens: the timing and the curves transitions are built from. */
 export interface AuditNumberTagUsage {
   value: number;
   count: number;
@@ -280,9 +280,9 @@ export interface SiteAudit {
     shadows: number;
     /** Distinct text/background pairs evaluated for contrast. */
     contrastPairs?: number;
-    /** Pairs failing WCAG AA for normal text — the accessibility headline. */
+    /** Pairs failing WCAG AA for normal text: the accessibility headline. */
     contrastFailingAA?: number;
-    // Optional extended categories — present only when extracted.
+    // Optional extended categories, present only when extracted.
     borders?: number;
     opacities?: number;
     zIndices?: number;
@@ -329,7 +329,7 @@ export interface AuditContrastFinding {
   pages: string[];
 }
 
-/** How the site authors its tokens — read from the CSSOM, not computed px. */
+/** How the site authors its tokens, read from the CSSOM rather than computed px. */
 export type CssUnit =
   | "px" | "rem" | "em" | "percent" | "vw" | "vh" | "vmin" | "vmax"
   | "ch" | "ex" | "unitless" | "clamp" | "calc" | "zero" | "other";
@@ -350,7 +350,7 @@ export interface AuditAuthoredCategory {
 export interface AuditAuthored {
   categories: AuditAuthoredCategory[];
   customProperties: { name: string; value: string }[];
-  /** True when type is dominantly authored in px — an accessibility risk. */
+  /** True when type is dominantly authored in px, which is an accessibility risk. */
   typeInPx: boolean;
 }
 

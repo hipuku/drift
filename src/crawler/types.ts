@@ -1,7 +1,7 @@
 /**
  * The crawl contract.
  *
- * The per-element shapes — RawElement, ElementStyle, ExtractedElement — now
+ * The per-element shapes (RawElement, ElementStyle, ExtractedElement) now
  * live in `haus-style-probe`, the shared measuring tool. They are re-exported
  * here so the rest of drift keeps importing its contract from one place, and
  * so the seam is visible: everything below this re-export is crawl-specific
@@ -25,7 +25,7 @@ export interface MediaBreakpoint {
 export type AuthoredCategoryName = "spacing" | "type" | "radius" | "border";
 
 /**
- * A single authored declaration read from a stylesheet rule — the *value string
+ * A single authored declaration read from a stylesheet rule: the *value string
  * as written* (`0.5rem`, `8px 16px`, `clamp(1rem, 2vw, 3rem)`), before unit
  * classification. `getComputedStyle` throws this away; the CSSOM preserves it.
  */
@@ -34,7 +34,7 @@ export interface RawAuthoredDeclaration {
   value: string;
 }
 
-/** A CSS custom property declared on :root / html — the site's own token. */
+/** A CSS custom property declared on :root / html: the site's own token. */
 export interface RawCustomProperty {
   name: string;
   value: string;
@@ -81,7 +81,7 @@ export interface DiscoverResult {
   rootUrl: string;
   host: string;
   pages: DiscoveredPage[];
-  /** How the pages were found — a sitemap, or homepage anchors (fallback). */
+  /** How the pages were found: a sitemap, or homepage anchors (fallback). */
   via?: "sitemap" | "links";
 }
 

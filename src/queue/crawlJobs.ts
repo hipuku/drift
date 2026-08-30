@@ -30,7 +30,7 @@ export class BullCrawlJobs implements CrawlJobs {
     if (status === "completed") {
       return { status, result: job.returnvalue as CrawlResult };
     }
-    // Carry the worker's reason through — it says which of "unreachable",
+    // Carry the worker's reason through: it says which of "unreachable",
     // "blocked", or "nothing there" actually happened.
     if (status === "failed" && job.failedReason) {
       return { status, error: job.failedReason };

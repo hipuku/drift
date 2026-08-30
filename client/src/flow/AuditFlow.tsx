@@ -6,7 +6,7 @@
  *                    └──────────┴───────────────────────────────────────→ error
  *
  * Crawl completion (WebSocket + poll) triggers the audit fetch. The audit is
- * the destination — the honest "what the site actually ships", closed by the
+ * the destination, the honest "what the site actually ships", closed by the
  * token export.
  */
 
@@ -83,7 +83,7 @@ export function AuditFlow() {
 
   // Orchestration: advance the flow when the crawl job reaches a terminal
   // state. The job is an external system, so reacting to it in an effect is
-  // the intended use — the rule fires only because the transition happens to
+  // the intended use: the rule fires only because the transition happens to
   // be expressed as setState. There is nothing to derive here; the flow moves
   // once, guarded by loadedRef.
   /* eslint-disable react-hooks/set-state-in-effect -- see the note above */

@@ -7,7 +7,7 @@ info:
     A crawl runs for minutes as a BullMQ job on Redis, so the flow is: enqueue a
     crawl, then either poll the result endpoint or pass a `callbackUrl` webhook.
     Live progress is also streamed over a WebSocket at the server root (not
-    modelled here — connect and receive JSON progress frames with `pagesCrawled`,
+    modelled here. Connect and receive JSON progress frames with `pagesCrawled`,
     `maxPages`, `lastUrl`, `lastTitle`, `elementsTotal`; the `/crawl/{jobId}/result`
     endpoint is the authority on completion).
 
@@ -25,7 +25,7 @@ servers:
     description: >
       Local backend (`npm run dev:server`, needs Redis + Playwright Chromium).
       The deployed site at drift.hipuku.dev is a static fixture-replay demo and
-      does not expose a live API — run it locally to hit these endpoints.
+      does not expose a live API; run it locally to hit these endpoints.
 
 # The API is intentionally unauthenticated: every response is deterministic and
 # computed, there are no keys, and no per-run cost. An empty security requirement
@@ -65,7 +65,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
         "422":
-          description: Invalid, unreachable, or non-http(s) URL — with a human-readable message.
+          description: Invalid, unreachable, or non-http(s) URL, with a human-readable message.
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
@@ -248,7 +248,7 @@ components:
         via:
           type: string
           enum: [sitemap, links]
-          description: How pages were found — a sitemap, or homepage anchors (fallback).
+          description: How pages were found: a sitemap, or homepage anchors (fallback).
         pages:
           type: array
           items: { $ref: "#/components/schemas/DiscoveredPage" }

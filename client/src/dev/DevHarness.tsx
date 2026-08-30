@@ -272,7 +272,7 @@ const STATES: HarnessState[] = [
 ];
 
 /**
- * Internal harness — a dev-only drawer for viewing each state in isolation,
+ * Internal harness: a dev-only drawer for viewing each state in isolation,
  * opened from the top bar. Not mounted in production; the product is just the
  * ProductShell + the active flow.
  */

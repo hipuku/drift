@@ -104,7 +104,7 @@
   color: var(--color-ink-tertiary);
 }
 
-/* Manual "add a page" row — for pages discovery missed. */
+/* Manual "add a page" row, for pages discovery missed. */
 .addRow {
   display: flex;
   align-items: center;
@@ -230,7 +230,7 @@
   min-width: 0;
 }
 
-/* The one place mono earns its place — an actual URL path. */
+/* The one place mono earns its place: an actual URL path. */
 .path {
   color: var(--color-ink-tertiary);
 }
@@ -279,7 +279,7 @@
   }
 }
 
-/* Demo banner — the deployed build replays a captured audit, and says so. */
+/* Demo banner: the deployed build replays a captured audit, and says so. */
 .demoNote {
   margin-top: var(--space-stack-md);
   padding: var(--space-inset-sm) var(--space-inset-md);

@@ -1,7 +1,7 @@
 /**
  * The WebSocket wire protocol.
  *
- * The socket carries progress and lifecycle signals only — small, frequent
+ * The socket carries progress and lifecycle signals only: small, frequent
  * messages. The crawl result itself is fetched out of band (over HTTP), not
  * pushed down the socket, so a large payload never travels this channel.
  */

@@ -215,7 +215,7 @@
   margin-top: var(--space-stack-3xl);
   border-bottom: var(--border-width-default) solid var(--color-border-subtle);
   overflow-x: auto;
-  /* Hide the native horizontal scrollbar — it scrolls by trackpad/wheel and a
+  /* Hide the native horizontal scrollbar: it scrolls by trackpad/wheel and a
      partially-cut tab signals there's more. */
   scrollbar-width: none;
 }
@@ -297,7 +297,7 @@
   margin-top: var(--space-stack-5xl);
 }
 
-/* ── Pills — the shared chip for card metadata and verdict detail ─────────── */
+/* ── Pills: the shared chip for card metadata and verdict detail ─────────── */
 .pills {
   display: flex;
   flex-wrap: wrap;
@@ -557,7 +557,7 @@
   border-bottom-color: var(--color-error-default);
 }
 
-/* Greyed core-five card — the token category exists in the system's vocabulary
+/* Greyed core-five card: the token category exists in the system's vocabulary
    but isn't used on this site. */
 .empty {
   opacity: 0.5;
@@ -656,7 +656,7 @@
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 10%, transparent);
 }
 
-/* ── Colour detail — the full-width strip that unfolds under a selected swatch */
+/* ── Colour detail: the full-width strip that unfolds under a selected swatch */
 /* ── Colour drawer content ───────────────────────────────────────────────── */
 .drawerContent {
   display: flex;
@@ -723,7 +723,7 @@
   background: color-mix(in oklab, var(--color-error-default) 10%, var(--color-surface-default));
 }
 
-/* Checker underlay — invisible behind an opaque swatch, shows through a
+/* Checker underlay: invisible behind an opaque swatch, showing through a
    translucent one so an opacity variant reads as translucent, not just darker. */
 .nearSwatchWrap {
   display: block;
@@ -1037,7 +1037,7 @@
   width: 7rem;
 }
 
-/* Spacing preview bar — narrower than the shared specimen cell so the Attribute
+/* Spacing preview bar, narrower than the shared specimen cell so the Attribute
    and Tags columns have room. */
 .spacingPreviewCell {
   width: 22%;
@@ -1049,7 +1049,7 @@
   width: 6rem;
 }
 
-/* Z-index stacking ladder — offset layers, the frontmost accented. */
+/* Z-index stacking ladder: offset layers, the frontmost accented. */
 .zLadder {
   position: relative;
   display: inline-block;
@@ -1141,7 +1141,7 @@
 
 
 /* An off-scale / off-grid / near-duplicate marker, inline with the value.
-   Deliberately a dot, not a labelled badge — the tables carry one per row and
+   Deliberately a dot rather than a labelled badge: the tables carry one per row and
    labels crowd the value they annotate. The title carries the meaning. */
 .offScaleDot {
   width: 0.5rem;
@@ -1151,7 +1151,7 @@
   background: var(--color-error-default);
 }
 
-/* Tags-that-use-this-value — chips of element tag names. */
+/* Tags-that-use-this-value: chips of element tag names. */
 .tagsCell {
   vertical-align: middle;
   /* Chips wrap within a sane column width instead of pushing the table wide. */
@@ -1197,7 +1197,7 @@
   min-width: 4px;
 }
 
-/* Breakpoint preview — a viewport/screen outline whose width scales with the
+/* Breakpoint preview: a viewport/screen outline whose width scales with the
    breakpoint, so the row reads as a device size. */
 .bpScreen {
   display: block;
@@ -1227,7 +1227,7 @@
   background: var(--color-surface-default);
 }
 
-/* Transparency checker — fixed white/grey so the pattern is always visible
+/* Transparency checker: fixed white/grey so the pattern is always visible
    regardless of theme; the fill on top then shows how opaque the value is. */
 .checker {
   display: inline-block;
@@ -1298,7 +1298,7 @@
   to { left: calc(100% - 0.7rem); }
 }
 
-/* ── Scale / grid ruler — the visual evidence behind the verdicts ─────────── */
+/* ── Scale / grid ruler: the visual evidence behind the verdicts ─────────── */
 .ruler {
   margin-bottom: var(--space-stack-4xl);
 }
@@ -1370,7 +1370,7 @@
   z-index: 1;
 }
 
-/* ── Type families — full-width rows: specimen + name, then usage pill ────── */
+/* ── Type families: full-width rows, specimen and name, then usage pill ───── */
 .familyList {
   display: flex;
   flex-direction: column;
@@ -1451,7 +1451,7 @@
   }
 }
 
-/* Contrast — a live specimen of the pair as the site actually renders it, so
+/* Contrast: a live specimen of the pair as the site actually renders it, so
    the verdict is visible, not just asserted. */
 .contrastSample {
   display: inline-flex;
@@ -1479,13 +1479,13 @@
 }
 
 /* Reference-scale picker under a ruler. Each option carries its own off-count,
-   so the row reads as a comparison — which scale this system is actually on —
+   so the row reads as a comparison, showing which scale this system is on,
    rather than a bare setting. */
 .scaleOptions {
   display: flex;
   gap: var(--space-gap-xs);
   margin-bottom: var(--space-stack-xl);
-  /* One line, scrolled — same behaviour as the tab strip above. */
+  /* One line, scrolled, the same behaviour as the tab strip above. */
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -1533,7 +1533,7 @@
   color: var(--color-ink-tertiary);
 }
 
-/* The automatically-chosen option — "closest" ratio / "detected" grid. Named on
+/* The automatically-chosen option: "closest" ratio / "detected" grid. Named on
    the chip rather than in a separate title, so the strip is the whole story. */
 .scaleChipBest {
   font-family: var(--font-sans);

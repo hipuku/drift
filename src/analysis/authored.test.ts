@@ -32,7 +32,7 @@ describe("extractUnits", () => {
     expect(extractUnits("min(2rem, 5vw)")).toEqual(["calc"]);
   });
 
-  it("ignores var() references — their unit is indirected, not the token-name digits", () => {
+  it("ignores var() references, whose unit is indirected rather than in the token name", () => {
     expect(extractUnits("var(--space-4)")).toEqual([]);
     expect(extractUnits("var(--space-4) var(--space-2)")).toEqual([]);
   });
@@ -112,7 +112,7 @@ describe("summariseAuthored", () => {
       page({
         declarations: [{ category: "type", value: "16px" }], // real font-size
         customProperties: [
-          { name: "--text-primary", value: "#2563eb" }, // a colour — must NOT fold
+          { name: "--text-primary", value: "#2563eb" }, // a colour: must NOT fold
           { name: "--text-lg", value: "1.125rem" }, // a real font-size token
         ],
       }),

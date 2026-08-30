@@ -2,7 +2,7 @@
  * Live crawl progress for one job.
  *
  * Two channels, two jobs. The WebSocket carries per-page progress as it happens
- * — nice-to-have, best-effort. A poll of `/crawl/:id/result` is the
+ * Nice to have, and best effort. A poll of `/crawl/:id/result` is the
  * authoritative signal for completion or failure, so a dropped socket (or a
  * crawl that finishes before we subscribe) never strands the UI. The hook owns
  * both and cleans them up on unmount or job change.
@@ -53,7 +53,7 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
     // true by the time a previous job's in-flight poll resolves, and the
     // guard would let job-1's result land as job-2's state.
     let live = true;
-    // Reset on every job change — including to null. Otherwise a completed
+    // Reset on every job change, including to null. Otherwise a completed
     // state from a previous crawl lingers, and the next crawl's orchestrator
     // sees a stale "completed" and fetches the audit before the new job has
     // finished (a 409 "the crawl has not finished").
@@ -119,14 +119,14 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
               status === "failed"
                 ? // Prefer the worker's reason; it names what actually happened.
                   (payload.error ??
-                  "The crawl couldn’t finish — the site may have been slow to load or blocked automated visits. Try again, or pick fewer pages.")
+                  "The crawl couldn’t finish. The site may have been slow to load, or it blocked automated visits. Try again, or pick fewer pages.")
                 : "That crawl job has expired. Start a new audit.",
           }));
           return;
         }
       } catch (err) {
         if (!live) return;
-        // Transient fetch error — keep polling rather than failing the run.
+        // Transient fetch error: keep polling rather than failing the run.
         void err;
       }
       timer = setTimeout(poll, POLL_INTERVAL_MS);

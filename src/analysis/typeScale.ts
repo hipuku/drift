@@ -1,8 +1,8 @@
 /**
- * Type-scale proposals — the deterministic Layer-2 generator for type.
+ * Type-scale proposals: the deterministic Layer-2 generator for type.
  *
  * Given a base size (from the typography inventory), project it onto canonical
- * modular scales: size = base · ratio^n. The site's own sizes are the seed — we
+ * modular scales: size = base · ratio^n. The site's own sizes are the seed, so we
  * generate just enough steps to cover the range actually in use, detect which
  * named ratio the current sizes are *closest* to, and flag which current sizes
  * fall off a chosen scale. All arithmetic; no model. Export formatters render the
@@ -113,7 +113,7 @@ export interface SizeClassification {
 
 /**
  * Flag which current sizes sit on a chosen scale and which drift off it.
- * Tolerance is in px (default 0.75 — finer than a typical rounding step).
+ * Tolerance is in px (default 0.75, finer than a typical rounding step).
  */
 export function classifyAgainstScale(
   sizes: number[],

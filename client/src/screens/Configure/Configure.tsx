@@ -59,7 +59,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
     const found = await runDiscovery(url);
     if (!found) return;
     // The selection is this screen's concern, not the hook's. Default to the
-    // homepage — the single most representative page.
+    // homepage, the single most representative page.
     setSelected(new Set(found[0] ? [found[0].path] : []));
     setShowAll(false);
     setQuery("");
@@ -80,7 +80,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
   const clear = () => setSelected(new Set());
 
   // Add a page discovery missed (deep, unlinked, or not in the sitemap). Accepts
-  // only a path or slug ("/about", "pricing") — the origin is already fixed by
+  // only a path or slug ("/about", "pricing"); the origin is already fixed by
   // the site URL above, so a full URL or domain is rejected as ambiguous.
   const addPage = () => {
     const raw = addUrl.trim();
@@ -92,7 +92,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
       setAddError("Enter a URL for the site first.");
       return;
     }
-    // Reject anything that carries its own origin — scheme, protocol-relative,
+    // Reject anything that carries its own origin: scheme, protocol-relative,
     // or a leading domain segment ("example.com/about").
     const firstSeg = raw.replace(/^\//, "").split(/[/?#]/)[0] ?? "";
     if (/^[a-z][a-z0-9+.-]*:\/\//i.test(raw) || raw.startsWith("//") || firstSeg.includes(".")) {

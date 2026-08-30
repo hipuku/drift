@@ -1,10 +1,10 @@
 /**
- * The Audit — the deterministic "what it is" diagnosis.
+ * The Audit: the deterministic "what it is" diagnosis.
  *
  * Aggregates a crawl into an exhaustive inventory: every colour (grouped by
  * family so the near-blacks sit together), every type size/weight/line-height
  * plus the real role→size map read from element tags, and every spacing, radius
- * and shadow value. The summary counts the sprawl. No model — this is the honest
+ * and shadow value. The summary counts the sprawl. No model: this is the honest
  * picture of what the site actually ships, before any proposal.
  */
 
@@ -35,14 +35,14 @@ export interface ColourSwatch {
   lightness: number;
   /** The perceptually-closest other colour on the site, and the ΔE to it. */
   nearest?: { hex: string; deltaE: number };
-  /** Every colour worth relating this one to — opacity variants and near-duplicates. */
+  /** Every colour worth relating this one to: opacity variants and near-duplicates. */
   related?: ColourRelation[];
 }
 
 export interface ColourRelation {
   hex: string;
   deltaE: number;
-  /** Same RGB base as the subject — differs only in alpha. */
+  /** Same RGB base as the subject, differing only in alpha. */
   opacityVariant: boolean;
 }
 
@@ -185,7 +185,7 @@ export interface AuditSummary {
   pages: number;
   distinctColours: number;
   colourFamilies: number;
-  /** Colours indistinguishable from another (ΔE < ~2) — genuine redundancy. */
+  /** Colours indistinguishable from another (ΔE < ~2): genuine redundancy. */
   colourNearDuplicates: number;
   fontFamilies: number;
   typeSizes: number;
@@ -201,7 +201,7 @@ export interface AuditSummary {
   shadows: number;
   /** Distinct text/background pairs evaluated for contrast. */
   contrastPairs: number;
-  /** Pairs failing WCAG AA for normal-size text — the accessibility headline. */
+  /** Pairs failing WCAG AA for normal-size text: the accessibility headline. */
   contrastFailingAA: number;
 }
 
@@ -447,7 +447,7 @@ function collectTypography(result: CrawlResult): SiteAudit["typography"] {
 
 /**
  * Minimum px for a value to count as a real design token. Sub-pixel values are
- * browser rounding of rem/em/percent (e.g. 0.4375px) — noise, not tokens.
+ * browser rounding of rem/em/percent (e.g. 0.4375px), which is noise rather than tokens.
  */
 const MIN_TOKEN_PX = 1;
 
@@ -457,7 +457,7 @@ const MIN_TOKEN_PX = 1;
  * (`1.96195` vs `1.96209`), which would otherwise surface as separate tokens.
  * Rounding to 2 dp merges those resolution artifacts without conflating values
  * that genuinely differ (real tokens differ by ≥1px). It does *not* clean up the
- * fractional value itself — that needs the authored unit (read from the CSSOM).
+ * fractional value itself, which needs the authored unit (read from the CSSOM).
  */
 function quantize(px: number): number {
   return Math.round(px * 100) / 100;
@@ -733,7 +733,7 @@ function relatedColours(hex: string, all: string[]): ColourRelation[] {
   return rels;
 }
 
-// ── Redundancy signals — the honest basis for the health verdicts ────────────
+// ── Redundancy signals: the honest basis for the health verdicts ─────────────
 
 const SPACING_GRID_PX = 4;
 
@@ -742,7 +742,7 @@ function countOffGrid(values: number[], base = SPACING_GRID_PX): number {
   return values.filter((v) => Math.abs(v - Math.round(v / base) * base) > 0.5).length;
 }
 
-/** Count values within `within`px of a neighbour (single-linkage) — accidental near-dupes. */
+/** Count values within `within`px of a neighbour (single-linkage): accidental near-dupes. */
 function countNearDuplicates(values: number[], within = 1): number {
   const sorted = [...values].sort((a, b) => a - b);
   let clusters = 0;

@@ -1,5 +1,5 @@
 /**
- * Badge — the one pill used across the app. Before this, the audit, hub, and
+ * Badge: the one pill used across the app. Before this, the audit, hub, and
  * every proposal hand-rolled their own pills with drifting colours, radii, and
  * weights. This is the canonical shape (matching the audit's token pills):
  * pill-radius, 12px, with semantic variants for the meaning being conveyed.

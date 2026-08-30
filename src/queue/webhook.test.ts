@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 /**
- * DNS is stubbed. Resolution is the platform's job, not ours — what this module
+ * DNS is stubbed. Resolution is the platform's job; what this module
  * actually decides is what to do with the address that comes back, and a test
  * that reaches the real resolver tests the network instead, and fails without
  * one. The table below is the resolver: a public name, a loopback name, and a
@@ -29,7 +29,7 @@ import { assertDeliverable, deliver } from "./webhook.js";
 /**
  * The callback URL comes from the caller, so it is an SSRF vector: without a
  * guard, a request could make the server fetch something on its own network.
- * These cover the shapes that matter — the scheme, and where the host actually
+ * These cover the shapes that matter: the scheme, and where the host actually
  * resolves to (a public name can still point at 127.0.0.1).
  */
 describe("assertDeliverable", () => {
@@ -71,7 +71,7 @@ describe("assertDeliverable", () => {
 
   it("allows a loopback host when it is explicitly allowlisted", async () => {
     // Off by default (the loopback test above proves that). Opt a host in and it
-    // is exempt from the private-address refusal — how a trusted internal or
+    // is exempt from the private-address refusal, which is how a trusted internal or
     // test receiver is permitted.
     const prev = process.env.DRIFT_WEBHOOK_ALLOWED_HOSTS;
     process.env.DRIFT_WEBHOOK_ALLOWED_HOSTS = "127.0.0.1, localhost";
@@ -86,8 +86,8 @@ describe("assertDeliverable", () => {
 });
 
 /**
- * Delivery itself can't be exercised against localhost — the guard above exists
- * precisely to stop that — so the transport is checked against a stubbed fetch.
+ * Delivery itself can't be exercised against localhost, since the guard above
+ * exists precisely to stop that, so the transport is checked against a stubbed fetch.
  */
 describe("deliver", () => {
   const payload = {
@@ -111,7 +111,7 @@ describe("deliver", () => {
     expect(JSON.parse(init.body as string)).toEqual(payload);
   });
 
-  it("does not retry a 4xx — the receiver rejected us on purpose", async () => {
+  it("does not retry a 4xx, since the receiver rejected us on purpose", async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 400 });
     vi.stubGlobal("fetch", fetchMock);
 

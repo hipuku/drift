@@ -36,7 +36,7 @@ const ROLE_CLASS: Record<TypeRole, string> = {
 
 interface TextProps {
   role: TypeRole;
-  /** The element to render — defaults to span. Use h1–h3, p, etc. for semantics. */
+  /** The element to render. Defaults to span; use h1–h3, p, etc. for semantics. */
   as?: ElementType;
   className?: string;
   children: ReactNode;

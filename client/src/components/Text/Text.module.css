@@ -1,4 +1,4 @@
-/* Type roles — each consumes the four-property role tokens together
+/* Type roles: each consumes the four-property role tokens together
    (size + weight + leading + tracking) and sets the family for its group:
    display/heading → Drift's display face; body/label → house sans; mono → Fira. */
 

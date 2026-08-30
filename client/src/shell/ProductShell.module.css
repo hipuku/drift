@@ -7,7 +7,7 @@
   background-attachment: fixed;
 }
 
-/* Faint measurement grid over the wash — fades toward the lower edge so it
+/* Faint measurement grid over the wash, fading toward the lower edge so it
    never competes with content. Pointer-events off; purely atmospheric. */
 .shell::before {
   content: "";

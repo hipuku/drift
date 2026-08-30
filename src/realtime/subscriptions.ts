@@ -2,7 +2,7 @@
  * Job subscription registry.
  *
  * Tracks which clients want events for which job. Kept deliberately free of
- * WebSocket and Redis concerns so the routing logic — the part with the bugs —
+ * WebSocket and Redis concerns so the routing logic, the part with the bugs,
  * is pure and unit-testable. Generic over the client type for that reason.
  *
  * Maintains both directions (job → clients, client → jobs) so that a

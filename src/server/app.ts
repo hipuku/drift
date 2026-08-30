@@ -26,12 +26,12 @@ export interface AppDeps {
   discover: (url: string) => Promise<DiscoverResult>;
 }
 
-// Turn raw crawler/Playwright failures into a calm, user-facing message —
+// Turn raw crawler/Playwright failures into a calm, user-facing message.
 // never leak "page.goto: net::ERR_… Call log:" to the client.
 function friendlyDiscoverError(err: unknown): string {
   const m = err instanceof Error ? err.message : String(err);
   if (/ERR_NAME_NOT_RESOLVED|ENOTFOUND|getaddrinfo/i.test(m))
-    return "We couldn’t find that site — check the URL for typos.";
+    return "We couldn’t find that site. Check the URL for typos.";
   if (/timeout|ERR_TIMED_OUT|timed out/i.test(m))
     return "That site took too long to respond. Try again in a moment.";
   if (/ERR_CONNECTION|ECONNREFUSED|ECONNRESET/i.test(m))
@@ -74,7 +74,7 @@ export function createApp(deps: AppDeps): Express {
         return;
       }
       // Reject an unusable URL here rather than queueing a job that can only
-      // fail — /discover already validates up front, and the two should agree.
+      // fail: /discover already validates up front, and the two should agree.
       try {
         const parsed = new URL(/^https?:\/\//i.test(url.trim()) ? url.trim() : `https://${url.trim()}`);
         if (!/^https?:$/.test(parsed.protocol) || !parsed.hostname.includes(".")) {
@@ -84,8 +84,8 @@ export function createApp(deps: AppDeps): Express {
         res.status(422).json({ error: "That doesn\u2019t look like a valid web address." });
         return;
       }
-      // Optional webhook target. Validated here — while the caller is still on
-      // the line to be told why — rather than discovered at delivery time.
+      // Optional webhook target. Validated here, while the caller is still on
+      // the line to be told why, rather than discovered at delivery time.
       const callbackUrl = req.body?.callbackUrl;
       if (callbackUrl !== undefined) {
         if (typeof callbackUrl !== "string") {
@@ -175,7 +175,7 @@ export function createApp(deps: AppDeps): Express {
     }),
   );
 
-  // The full deterministic audit — every colour/size/spacing/radius/shadow in
+  // The full deterministic audit: every colour/size/spacing/radius/shadow in
   // use, grouped and summarised. The diagnosis shown before any proposal.
   app.get(
     "/crawl/:jobId/audit",

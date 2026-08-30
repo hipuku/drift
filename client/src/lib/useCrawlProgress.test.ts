@@ -339,7 +339,7 @@ describe("job change", () => {
     // Regression. The guard used to be a ref shared across effect runs. On a
     // job change React runs the old cleanup and the new effect body in one
     // commit, so the ref was already true again when job-1's poll resolved,
-    // and job-1's "completed" was written as job-2's state — the audit was
+    // and job-1's "completed" was written as job-2's state, so the audit was
     // then fetched for a crawl that had not finished (a 409).
     let resolveFirst!: (v: unknown) => void;
     const firstPoll = new Promise((r) => {

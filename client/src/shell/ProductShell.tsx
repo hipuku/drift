@@ -29,7 +29,7 @@ interface ProductShellProps {
 
 /**
  * The product's top-level chrome. Drift is a single-task tool, so navigation is
- * a slim top bar — brand left (→ new audit), quiet links right. Per-task actions
+ * a slim top bar: brand left (→ new audit), quiet links right. Per-task actions
  * (export, share) live inside the relevant state, not here.
  */
 export function ProductShell({ children, onHome, trailing }: ProductShellProps) {

@@ -2,7 +2,7 @@
  * Backend entry point.
  *
  * One long-lived process owning the HTTP API, the WebSocket progress server,
- * and the crawl worker. Fully deterministic — no API key required.
+ * and the crawl worker. Fully deterministic, with no API key required.
  *
  *   npm run dev:server
  */

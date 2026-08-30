@@ -6,8 +6,8 @@
  * an open crawler pointed at arbitrary sites by strangers is a liability.
  *
  * So the deployed build ships a real audit captured from a real crawl and
- * replays it. Everything downstream of the crawl — the aggregation, the
- * verdicts, the export — is the genuine output, because it *is* the genuine
+ * replays it. Everything downstream of the crawl (the aggregation, the
+ * verdicts, the export) is the genuine output, because it *is* the genuine
  * output; only the network round-trip is stubbed. The UI says so rather than
  * pretending to crawl on demand.
  *

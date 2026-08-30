@@ -5,7 +5,7 @@
  * wrote. The crawler reads the *authored* value strings from the CSSOM instead
  * (see `extractAuthoredDeclarations`); this module classifies those strings by
  * unit and aggregates them per category, so the audit can report how a site
- * actually authors its system — and flag `px` type as an accessibility risk.
+ * actually authors its system, and flag `px` type as an accessibility risk.
  *
  * Pure and Node-side: no DOM, unit-testable without Chromium.
  */
@@ -49,7 +49,7 @@ const NUM_UNIT = /(-?\d*\.?\d+)(px|rem|em|vw|vh|vmin|vmax|ch|ex|%)?/g;
 /**
  * Every unit appearing in an authored value string. A fluid/functional value
  * (`clamp`, `calc`, `min`, `max`) is reported as one marker rather than dug into
- * — the signal we want is "this site uses fluid values", not their innards.
+ * The signal we want is "this site uses fluid values" rather than their innards.
  * A bare `0` (`0`, `0px`) is unit-agnostic and reported as `zero` (dropped when
  * tallying). A bare non-zero number (`line-height: 1.5`) is `unitless`.
  */
@@ -58,7 +58,7 @@ export function extractUnits(rawValue: string): CssUnit[] {
   if (!v) return [];
   if (v.includes("clamp(")) return ["clamp"];
   if (v.includes("calc(") || v.includes("min(") || v.includes("max(")) return ["calc"];
-  // A `var(--token)` reference indirects its unit through the custom property —
+  // A `var(--token)` reference indirects its unit through the custom property,
   // the digits in the token name (`--space-4`) are not a unit. The real unit is
   // read from the custom property's own value instead (see summariseAuthored).
   if (v.includes("var(")) return [];
@@ -180,7 +180,7 @@ const CATEGORY_ORDER: AuthoredCategoryName[] = ["spacing", "type", "radius", "bo
 /**
  * Map a custom-property name to the category it authors, by prefix. A design
  * system that declares `--space-4: 1rem` is telling us its spacing unit directly
- * — more authoritative than any single usage — so these values feed the tally.
+ * They are more authoritative than any single usage, so they feed the tally.
  * Conservative: only unambiguous prefixes; colour/other tokens are ignored.
  */
 function categoryForCustomProp(name: string): AuthoredCategoryName | null {
@@ -194,7 +194,7 @@ function categoryForCustomProp(name: string): AuthoredCategoryName | null {
 
 /**
  * Units a declared token contributes to its category's tally. Only real lengths
- * (and fluid values) — so a token that matched a category prefix but holds a
+ * (and fluid values), so a token that matched a category prefix but holds a
  * colour or a ratio (`--text-primary: oklch(…)`, `--leading: 1.5`) can't pollute
  * the unit signal.
  */
@@ -206,7 +206,7 @@ function hasFoldableUnit(value: string): boolean {
 /**
  * Aggregate authored declarations + custom properties across every crawled page
  * into one summary. Custom properties are de-duplicated by name (first value
- * wins — they're declared once on :root and repeated per page).
+ * wins, since they're declared once on :root and repeated per page).
  */
 export function summariseAuthored(pages: PageExtraction[]): AuthoredSummary {
   const valuesByCategory = new Map<AuthoredCategoryName, string[]>();

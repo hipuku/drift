@@ -1,11 +1,11 @@
 /**
- * Typography aggregation — the deterministic Inventory for type.
+ * Typography aggregation: the deterministic Inventory for type.
  *
  * Walks the extraction and tallies what's actually *seen*: only elements with
  * direct rendered text count, so inherited font properties on layout wrappers
  * don't inflate the numbers. Produces the distinct font families and the size
  * ladder (each size with the weights and line-heights it appears at), plus the
- * detected base size — the most common text size, a reliable proxy for body —
+ * detected base size, the most common text size and a reliable proxy for body,
  * which seeds the type-scale proposals.
  */
 
@@ -31,7 +31,7 @@ export interface FontSizeUsage {
 export interface TypographyInventory {
   families: FontFamilyUsage[]; // most-used first
   sizes: FontSizeUsage[]; // smallest first
-  /** Most common text size — the body base that seeds the scale proposals. */
+  /** Most common text size: the body base that seeds the scale proposals. */
   baseSizePx: number | null;
   /** Most-used family. */
   primaryFamily: string | null;
@@ -59,7 +59,7 @@ export function collectTypography(result: CrawlResult): TypographyInventory {
 
   for (const page of result.pages) {
     for (const el of page.elements) {
-      // Only count elements that actually render text — that's where type is seen.
+      // Only count elements that actually render text, which is where type is seen.
       if (!el.hasText) continue;
       const s = el.styles;
 

@@ -5,7 +5,7 @@
  *
  * Requires a running Redis (REDIS_URL or localhost:6379). Enqueues one crawl,
  * runs a worker in the same process, logs progress and the final result, then
- * shuts down. Not a test — a way to exercise the real queue + worker loop.
+ * shuts down. A way to exercise the real queue and worker loop by hand.
  */
 
 import { createCrawlQueue, enqueueCrawl, type CrawlProgress } from "./crawlQueue.js";
@@ -19,7 +19,7 @@ const worker = createCrawlWorker(1);
 
 worker.on("progress", (_job, progress) => {
   const p = progress as CrawlProgress;
-  process.stdout.write(`  progress: ${p.pagesCrawled}/${p.maxPages} — ${p.lastUrl}\n`);
+  process.stdout.write(`  progress: ${p.pagesCrawled}/${p.maxPages} ${p.lastUrl}\n`);
 });
 
 const finished = new Promise<void>((resolve) => {

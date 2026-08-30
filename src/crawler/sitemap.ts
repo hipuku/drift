@@ -1,10 +1,10 @@
 /**
  * Sitemap-based page discovery.
  *
- * A homepage's anchors only reach pages linked from the homepage — deep pages
+ * A homepage's anchors only reach pages linked from the homepage, so deep pages
  * (e.g. /eye-conditions/glaucoma/) stay invisible. The reliable, polite way to
  * enumerate a site is its sitemap: fetch robots.txt, follow its `Sitemap:`
- * directive(s), and parse the XML — recursing through sitemap *index* files into
+ * directive(s), and parse the XML, recursing through sitemap *index* files into
  * their child sitemaps. This finds every published page in a couple of cheap
  * HTTP requests, no headless browser and no hammering the site.
  *
@@ -46,8 +46,8 @@ function decodeXmlEntities(s: string): string {
 
 /**
  * Parse a sitemap document. A file is either a `<sitemapindex>` (its `<loc>`s
- * point to child sitemaps) or a `<urlset>` (its `<loc>`s are pages) — never
- * both — so the root element decides how every `<loc>` is classified.
+ * point to child sitemaps) or a `<urlset>` (its `<loc>`s are pages), never
+ * both, so the root element decides how every `<loc>` is classified.
  */
 export function parseSitemapXml(xml: string): { pageUrls: string[]; childSitemaps: string[] } {
   const isIndex = /<sitemapindex[\s>]/i.test(xml);
@@ -64,7 +64,7 @@ export function parseSitemapXml(xml: string): { pageUrls: string[]; childSitemap
 /**
  * Whether a path is a real content page rather than CMS scaffolding. Sitemaps
  * often list author pages, taxonomy archives (category/tag), and dated blog
- * permalinks — noise for a *design* audit, since they reuse a template already
+ * permalinks, which are noise for a *design* audit, since they reuse a template already
  * captured by a real page. Heuristic and deliberately conservative.
  */
 export function isLikelyContentPath(path: string): boolean {
@@ -137,7 +137,7 @@ export function sitemapUrlsToPages(
 
 /**
  * Candidate URLs to try for a user's input, toggling www. Some sites resolve
- * only at www, others only at the apex — so we try both and let reachability
+ * only at www, others only at the apex, so we try both and let reachability
  * decide. Input may be a bare host ("example.com") or a full URL.
  */
 export function urlCandidates(input: string): string[] {

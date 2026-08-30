@@ -22,7 +22,7 @@ const ok = (body: unknown) =>
 const err = (status: number, body: unknown) =>
   ({ ok: false, status, json: async () => body }) as unknown as Response;
 
-/** A response whose body is not JSON at all — a proxy error page, say. */
+/** A response whose body is not JSON at all: a proxy error page, say. */
 const notJson = (status: number) =>
   ({
     ok: false,

@@ -13,7 +13,7 @@ interface ThinkingProps {
   detail: string;
 }
 
-/** Indeterminate "working" state — shown while the crawl/aggregation runs. */
+/** Indeterminate "working" state, shown while the crawl/aggregation runs. */
 export function Thinking({ title, detail }: ThinkingProps) {
   return (
     <div className={styles.screen}>

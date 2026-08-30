@@ -12,7 +12,7 @@
    the whole palette warm↔cool is only ever a values edit. The accent is
    generated as an OKLCH tonal ramp from two custom properties (--accent-h,
    --accent-c), so the live theme playground retunes the entire brand by changing
-   a hue and a chroma — the same OKLCH-ramp idea Drift ships as a product
+   a hue and a chroma, the same OKLCH-ramp idea Drift ships as a product
    feature, eaten as its own dog food.
    ─────────────────────────────────────────────────────────────────────────── */
 
@@ -21,12 +21,12 @@
     color-scheme: light;
 
     /* ── Accent seed ── Drift's brand blue (H≈239°, high chroma) ────────────
-       The entire accent ramp — every button, link, focus ring, and the
-       background glow — is generated from these two values. */
+       The entire accent ramp, every button, link, focus ring and the
+       background glow, is generated from these two values. */
     --accent-h: 239;
     --accent-c: 0.19;
 
-    /* Accent — a cool tonal ramp generated from the seed above. Lightness is
+    /* Accent: a cool tonal ramp generated from the seed above. Lightness is
        fixed per step (hue-agnostic, so white-on-anchor keeps its contrast
        whatever the hue); chroma scales off the seed. */
     --accent-50:  oklch(97%   calc(var(--accent-c) * 0.14) var(--accent-h));
@@ -35,12 +35,12 @@
     --accent-300: oklch(80%   calc(var(--accent-c) * 0.66) var(--accent-h));
     --accent-400: oklch(71%   calc(var(--accent-c) * 0.88) var(--accent-h));
     --accent-500: oklch(64%   calc(var(--accent-c) * 1.00) var(--accent-h));
-    --accent-600: oklch(53%   calc(var(--accent-c) * 0.96) var(--accent-h));  /* button anchor — white text clears AA */
+    --accent-600: oklch(53%   calc(var(--accent-c) * 0.96) var(--accent-h));  /* button anchor: white text clears AA */
     --accent-700: oklch(46%   calc(var(--accent-c) * 0.86) var(--accent-h));
     --accent-800: oklch(38%   calc(var(--accent-c) * 0.68) var(--accent-h));
     --accent-900: oklch(30%   calc(var(--accent-c) * 0.52) var(--accent-h));
 
-    /* Neutral — cool blue-slate ramp (H≈255, very low chroma). Replaces Damson
+    /* Neutral: cool blue-slate ramp (H≈255, very low chroma). Replaces Damson
        as the basis for every surface, ink, and border. Reads like cool paper /
        cool charcoal, not a warm template grey. */
     --neutral-0:   oklch(99.3% 0.003 250);
@@ -74,7 +74,7 @@
     color-scheme: dark;
 
     --color-surface-default:  var(--neutral-900);   /* cards */
-    --color-surface-subtle:   var(--neutral-950);   /* page bg — darker than cards */
+    --color-surface-subtle:   var(--neutral-950);   /* page bg, darker than cards */
     --color-surface-raised:   var(--neutral-800);
     --color-surface-overlay:  var(--neutral-800);
     --color-surface-sunken:   oklch(12% 0.012 266);
@@ -107,7 +107,7 @@
       var(--neutral-950);
     --drift-grid-line: oklch(85% 0.02 255 / 0.045);
 
-    /* In the dark, shadows barely read — lean on a visible hairline instead. */
+    /* In the dark, shadows barely read, so lean on a visible hairline instead. */
     --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.30);
     --shadow-md: 0 2px 4px oklch(0% 0 0 / 0.30), 0 8px 20px -8px oklch(0% 0 0 / 0.45);
     --shadow-lg: 0 2px 6px oklch(0% 0 0 / 0.35), 0 16px 34px -10px oklch(0% 0 0 / 0.55);
@@ -117,7 +117,7 @@
     --drift-alert-surface: color-mix(in oklab, var(--drift-severity-high) 18%, var(--color-surface-default));
     --drift-warn-surface:  color-mix(in oklab, var(--drift-severity-medium) 20%, var(--color-surface-default));
 
-    /* Not theme-dependent — severity hues, mono ramp, grid metrics. */
+    /* Not theme-dependent: severity hues, mono ramp, grid metrics. */
     --color-primary-disabled:  var(--neutral-200);
     --drift-grid-size: 32px;
     --drift-mono: var(--font-mono);

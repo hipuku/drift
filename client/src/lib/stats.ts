@@ -1,7 +1,7 @@
 /**
  * Small robust-statistics helpers shared across the fit-to-structure proposals.
  * A proposed ramp should cover the range the site actually uses, not the range
- * a stray outlier implies — one mis-captured `max-width: 1004px` shouldn't push
+ * a stray outlier implies: one mis-captured `max-width: 1004px` shouldn't push
  * a spacing (or radius) scale twelve steps past anything real.
  */
 

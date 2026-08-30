@@ -2,7 +2,7 @@
  * Pure normalisation of discovered anchors into a page list.
  *
  * Browser-free and deterministic. Real homepages link to far more than their
- * pages — per-item permalinks, vote/hide actions, query-string instances. The
+ * pages: per-item permalinks, vote/hide actions, query-string instances. The
  * goal here is to surface distinct *pages* (templates), not every anchor, so:
  *
  *  - links are grouped by pathname (so /item?id=1 and /item?id=2 collapse to

@@ -1,6 +1,6 @@
 /* ─── drift tokens · motion ───────────────────────────────────────────────────
    Easing curves and durations.
-   All animation tokens live here — components must not hardcode values.
+   All animation tokens live here; components must not hardcode values.
    ─────────────────────────────────────────────────────────────────────────── */
 
 @layer base.motion {
@@ -16,19 +16,19 @@
 
     /* ── Easing curves ────────────────────────────────────────────────────── */
 
-    /* Elements appearing — start slow, arrive with energy */
+    /* Elements appearing: start slow, arrive with energy */
     --ease-enter: cubic-bezier(0.00, 0.00, 0.20, 1.00);
 
-    /* Elements leaving — leave quickly, no lingering */
+    /* Elements leaving: quickly, with no lingering */
     --ease-exit:  cubic-bezier(0.40, 0.00, 1.00, 1.00);
 
-    /* Position changes within the UI — balanced, physical */
+    /* Position changes within the UI: balanced, physical */
     --ease-move:  cubic-bezier(0.40, 0.00, 0.20, 1.00);
 
-    /* Spring-like — slight overshoot for interactive feedback */
+    /* Spring-like: slight overshoot for interactive feedback */
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1.00);
 
-    /* Linear — for opacity fades where easing adds no value */
+    /* Linear: for opacity fades where easing adds no value */
     --ease-linear: linear;
 
     /* ── Composite motion tokens (duration + easing pairs) ─────────────────── */

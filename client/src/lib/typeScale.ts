@@ -1,5 +1,5 @@
 /**
- * Type-scale proposal math — client-side mirror of src/analysis/typeScale.ts.
+ * Type-scale proposal math: the client-side mirror of src/analysis/typeScale.ts.
  *
  * Lives here so the Apply interaction (pick a ratio, re-render the ladder) is
  * instant with no round-trip. Pure arithmetic. Keep in sync with the

@@ -1,5 +1,5 @@
 /**
- * In-page extraction — the crawl-specific half.
+ * In-page extraction: the crawl-specific half.
  *
  * The per-element style probe moved to `haus-style-probe`; what remains here is
  * what only a crawler needs: links to follow, breakpoints, and the authored
@@ -31,7 +31,7 @@ export function extractBreakpoints(): MediaBreakpoint[] {
     try {
       stack = sheet.cssRules ? Array.from(sheet.cssRules) : [];
     } catch {
-      continue; // cross-origin — not readable
+      continue; // cross-origin, not readable
     }
     while (stack.length) {
       const rule = stack.pop();
@@ -55,7 +55,7 @@ export function extractBreakpoints(): MediaBreakpoint[] {
 
 /**
  * Runs in the browser. Reads *authored* values from every accessible stylesheet
- * (the CSSOM), which `getComputedStyle` discards. Returns raw value strings —
+ * (the CSSOM), which `getComputedStyle` discards. Returns raw value strings:
  * unit classification happens Node-side. Cross-origin sheets throw on `.cssRules`
  * and are skipped, exactly as `extractBreakpoints` does.
  */
@@ -75,7 +75,7 @@ export function extractAuthoredDeclarations(): RawAuthoredCss {
     gap: "spacing",
     "row-gap": "spacing",
     "column-gap": "spacing",
-    // Only font-size — the type-scale unit people mean. Line-height (usually
+    // Only font-size, the type-scale unit people mean. Line-height (usually
     // unitless) and letter-spacing (usually em) would muddy the "Type" unit and,
     // worse, the px-font-size accessibility flag, so they're left out.
     "font-size": "type",
@@ -100,7 +100,7 @@ export function extractAuthoredDeclarations(): RawAuthoredCss {
     try {
       stack = sheet.cssRules ? Array.from(sheet.cssRules) : [];
     } catch {
-      continue; // cross-origin — not readable
+      continue; // cross-origin, not readable
     }
     while (stack.length) {
       const rule = stack.pop();

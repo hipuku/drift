@@ -3,7 +3,7 @@
  *
  * The spec is published as the service's interface, but until now nothing
  * proved the implementation matched it. A response shape could change in
- * app.ts and the spec would quietly become wrong — which is precisely the
+ * app.ts and the spec would quietly become wrong, which is precisely the
  * drift drift exists to catch, in drift's own repo.
  *
  * Every case here drives a real Express app over a real socket, then validates

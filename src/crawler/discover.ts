@@ -3,10 +3,10 @@
  *
  * Two strategies, in order:
  *
- *  1. Sitemap — fetch robots.txt, follow its Sitemap: directive(s), parse the
+ *  1. Sitemap: fetch robots.txt, follow its Sitemap: directive(s), parse the
  *     XML (recursing through index files). Reaches every published page,
  *     including deep ones a homepage never links to. Cheap HTTP, no browser.
- *  2. Homepage links (fallback) — when no sitemap is reachable, load the
+ *  2. Homepage links (fallback): when no sitemap is reachable, load the
  *     homepage in Playwright and read its anchors. Only reaches homepage-linked
  *     pages, but needs no sitemap.
  *
@@ -57,7 +57,7 @@ export async function discoverPages(
   options: { timeoutMs?: number; maxPages?: number } = {},
 ): Promise<DiscoverResult> {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
-  // Listing is cheap (sitemap parse / homepage anchors), so list generously —
+  // Listing is cheap (sitemap parse / homepage anchors), so list generously:
   // every page should be searchable in the picker. The audit itself is bounded
   // separately by MAX_CRAWL_PAGES. The high cap only guards pathological sitemaps.
   const maxPages = options.maxPages ?? 1000;
@@ -67,14 +67,14 @@ export async function discoverPages(
   const start = (await resolveReachableUrl(rootUrl, { timeoutMs })) ?? canonical(rootUrl);
   const host = new URL(start).host;
 
-  // 1. Sitemap first — reaches deep pages, no browser.
+  // 1. Sitemap first: it reaches deep pages, with no browser.
   const sitemapUrls = await discoverSitemapUrls(start, { timeoutMs });
   if (sitemapUrls) {
     const pages = sitemapUrlsToPages(start, sitemapUrls, maxPages);
     if (pages.length > 0) return { rootUrl: start, host, pages, via: "sitemap" };
   }
 
-  // 2. Fallback — homepage anchors.
+  // 2. Fallback: homepage anchors.
   const pages = await discoverViaLinks(start, timeoutMs, maxPages);
   return { rootUrl: start, host, pages, via: "links" };
 }
