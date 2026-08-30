@@ -21,8 +21,7 @@ import {
   usageText,
   type NearKind,
 } from "../auditModel.js";
-import styles from "./colour.module.css";
-import shared from "../shared.module.css";
+import styles from "../Audit.module.css";
 
 export function ColourCard({
   sw,
@@ -44,7 +43,7 @@ export function ColourCard({
     <button
       type="button"
       id={id}
-      className={`${shared.card} ${shared.cardBtn}${selected ? ` ${styles.cardOn}` : ""}${
+      className={`${styles.card} ${styles.cardBtn}${selected ? ` ${styles.cardOn}` : ""}${
         flash ? ` ${styles.cardFlash}` : ""
       }`}
       aria-pressed={selected}
@@ -55,9 +54,9 @@ export function ColourCard({
         <Text role="mono" className={styles.cardValue}>
           {sw.hex.toUpperCase()}
         </Text>
-        <span className={shared.pills}>
-          <span className={shared.pill}>{sw.count.toLocaleString()}× used</span>
-          {isDup && <span className={`${shared.pill} ${shared.pillDup}`}>≈ ΔE {sw.nearest!.deltaE}</span>}
+        <span className={styles.pills}>
+          <span className={styles.pill}>{sw.count.toLocaleString()}× used</span>
+          {isDup && <span className={`${styles.pill} ${styles.pillDup}`}>≈ ΔE {sw.nearest!.deltaE}</span>}
         </span>
       </span>
     </button>
@@ -79,7 +78,7 @@ export function ColourDrawerTitle({ sw, totalPages }: { sw: AuditColourSwatch; t
         <Text role="heading-sm" as="span" className={styles.drawerHex}>
           {sw.hex.toUpperCase()}
         </Text>
-        <Text role="label-xs" className={shared.muted}>
+        <Text role="label-xs" className={styles.muted}>
           {usageText(sw.count, totalPages, sw.pages.length)}
         </Text>
       </div>

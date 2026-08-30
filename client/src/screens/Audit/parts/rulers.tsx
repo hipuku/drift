@@ -16,8 +16,7 @@
 import type { ReactNode } from "react";
 import { RATIOS, buildScaleToCover, classifyAgainstScale } from "../../../lib/typeScale.js";
 import { niceStep } from "../auditModel.js";
-import styles from "./rulers.module.css";
-import shared from "../shared.module.css";
+import styles from "../Audit.module.css";
 
 /**
  * Type scale ruler — the visual evidence for the "off-scale" verdict. Sizes are
@@ -175,7 +174,7 @@ export function Ruler({
   options?: ReactNode;
 }) {
   return (
-    <div className={shared.ruler}>
+    <div className={styles.ruler}>
       {options}
       <div className={styles.rulerTrack}>
         <div className={styles.rulerLine} />
