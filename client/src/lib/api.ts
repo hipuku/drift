@@ -142,7 +142,7 @@ export interface AuditColourSwatch {
   count: number;
   roles: { text: number; background: number; border: number };
   /** Which element types use this colour, in which role. */
-  elements?: AuditColourElementUsage[];
+  elements: AuditColourElementUsage[];
   pages: string[];
   lightness: number;
   /** The perceptually-closest other colour on the site, and the ΔE to it. */

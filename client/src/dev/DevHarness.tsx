@@ -58,10 +58,10 @@ const MOCK_SITE_AUDIT: SiteAudit = {
           ],
         },
         {
-          hex: "#f5f5f5", count: 60, roles: { text: 0, background: 60, border: 0 }, pages: ["/"],
+          hex: "#f5f5f5", count: 60, roles: { text: 0, background: 60, border: 0 }, elements: [], pages: ["/"],
           lightness: 96, nearest: { hex: "#ffffff", deltaE: 2.7 },
         },
-        { hex: "#6b7280", count: 80, roles: { text: 80, background: 0, border: 0 }, pages: ["/"], lightness: 47 },
+        { hex: "#6b7280", count: 80, roles: { text: 80, background: 0, border: 0 }, elements: [], pages: ["/"], lightness: 47 },
         {
           hex: "#32302f", count: 200, roles: { text: 200, background: 0, border: 0 },
           pages: ["/", "/about"], lightness: 19, nearest: { hex: "#222222", deltaE: 3.1 },
@@ -73,12 +73,12 @@ const MOCK_SITE_AUDIT: SiteAudit = {
           ],
         },
         {
-          hex: "#222222", count: 140, roles: { text: 140, background: 0, border: 0 }, pages: ["/"],
+          hex: "#222222", count: 140, roles: { text: 140, background: 0, border: 0 }, elements: [], pages: ["/"],
           lightness: 13, nearest: { hex: "#1a1a1a", deltaE: 1.4 },
           related: [{ hex: "#1a1a1a", deltaE: 1.4, opacityVariant: false }],
         },
         {
-          hex: "#1a1a1a", count: 120, roles: { text: 120, background: 0, border: 0 }, pages: ["/"],
+          hex: "#1a1a1a", count: 120, roles: { text: 120, background: 0, border: 0 }, elements: [], pages: ["/"],
           lightness: 10, nearest: { hex: "#111111", deltaE: 1.3 },
           related: [
             { hex: "#111111", deltaE: 1.3, opacityVariant: false },
@@ -86,7 +86,7 @@ const MOCK_SITE_AUDIT: SiteAudit = {
           ],
         },
         {
-          hex: "#111111", count: 100, roles: { text: 100, background: 0, border: 0 }, pages: ["/"],
+          hex: "#111111", count: 100, roles: { text: 100, background: 0, border: 0 }, elements: [], pages: ["/"],
           lightness: 7, nearest: { hex: "#1a1a1a", deltaE: 1.3 },
           related: [{ hex: "#1a1a1a", deltaE: 1.3, opacityVariant: false }],
         },
@@ -108,7 +108,7 @@ const MOCK_SITE_AUDIT: SiteAudit = {
           ],
         },
         {
-          hex: "#2563eb", count: 36, roles: { text: 36, background: 0, border: 0 }, pages: ["/"],
+          hex: "#2563eb", count: 36, roles: { text: 36, background: 0, border: 0 }, elements: [], pages: ["/"],
           lightness: 53, nearest: { hex: "#3b82f6", deltaE: 8.4 },
         },
         {
