@@ -25,9 +25,20 @@ export function createCrawlWorker(
       const { url, maxPages, pages, callbackUrl } = job.data;
 
       let elementsTotal = 0;
-      // Delivery is best-effort and must never fail a crawl that succeeded.
+      // Delivery is best-effort and must never fail a crawl that succeeded — but
+      // best-effort is not the same as unobserved. `deliver` returns whether the
+      // receiver took it, and discarding that made a dropped callback invisible:
+      // the caller waits for a notification that will never come, and nothing on
+      // this side records that it did not arrive. Same channel the crawler uses
+      // for a skipped page, since this is the same kind of event.
       const notify = async (payload: WebhookEvent) => {
-        if (callbackUrl) await deliver(callbackUrl, payload);
+        if (!callbackUrl) return;
+        const delivered = await deliver(callbackUrl, payload);
+        if (!delivered) {
+          process.stderr.write(
+            `  ! webhook ${payload.event} for job ${job.id ?? "?"} was not delivered to ${callbackUrl}\n`,
+          );
+        }
       };
 
       let result: CrawlResult;
