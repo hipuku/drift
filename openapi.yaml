@@ -362,7 +362,7 @@ components:
         gradients: { type: array, items: { type: object } }
         motion: { type: object }
         breakpoints: { type: array, items: { type: object } }
-        authored: { type: object, description: "How the site authors its tokens — units per category, plus its own custom properties." }
+        authored: { type: object, description: "How the site authors its tokens: units and value strings per category, plus its own custom properties." }
         contrast:
           type: array
           items: { $ref: "#/components/schemas/ContrastFinding" }

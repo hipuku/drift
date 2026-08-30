@@ -91,10 +91,34 @@ export interface UnitTally {
   count: number;
 }
 
+export interface ValueTally {
+  /** The authored value string, exactly as it was written in the stylesheet. */
+  value: string;
+  count: number;
+}
+
+/**
+ * How many distinct authored values are kept per category. picocss.com writes
+ * 183 distinct border values, almost all of them one-offs, and the whole list
+ * would be most of the audit payload for no reading. `valuesDistinct` carries
+ * the uncapped count so a consumer can say how much of the set it is showing.
+ */
+export const AUTHORED_VALUES_KEPT = 16;
+
 export interface AuthoredCategory {
   category: AuthoredCategoryName;
   /** Units used to author this category, most-used first. `zero` excluded. */
   units: UnitTally[];
+  /**
+   * The authored value strings themselves, most-used first, truncated to
+   * `AUTHORED_VALUES_KEPT`. The unit tally answers what the site authors in;
+   * this answers what it authors. `--space-4 * 2` and `2rem` resolve to the
+   * same pixel number and are different authored values.
+   */
+  values: ValueTally[];
+  /** Distinct authored values before truncation. `total` already counts the
+   * declarations; this counts how many different strings they used. */
+  valuesDistinct: number;
   /** The most-used non-trivial unit, or null when nothing meaningful was found. */
   dominant: CssUnit | null;
   total: number;
@@ -118,17 +142,37 @@ export interface AuthoredSummary {
 /** Tally the units across a set of authored value strings for one category. */
 function categoryFrom(category: AuthoredCategoryName, values: string[]): AuthoredCategory {
   const counts = new Map<CssUnit, number>();
+  const byValue = new Map<string, number>();
   for (const value of values) {
-    for (const u of extractUnits(value)) {
+    const units = extractUnits(value);
+    for (const u of units) {
       if (u === "zero") continue;
       counts.set(u, (counts.get(u) ?? 0) + 1);
+    }
+    // Count the value only when it carries a unit the tally kept, so the two
+    // sides of the category describe the same set of declarations.
+    if (units.some((u) => u !== "zero")) {
+      const key = value.trim();
+      byValue.set(key, (byValue.get(key) ?? 0) + 1);
     }
   }
   const units = [...counts.entries()]
     .map(([unit, count]) => ({ unit, count }))
     .sort((a, b) => b.count - a.count);
+  // Ties break on the value string so a recapture of the same site produces a
+  // byte-identical artefact; Map order alone would follow first-seen.
+  const ranked = [...byValue.entries()]
+    .map(([value, count]) => ({ value, count }))
+    .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value));
   const total = units.reduce((n, u) => n + u.count, 0);
-  return { category, units, dominant: units[0]?.unit ?? null, total };
+  return {
+    category,
+    units,
+    values: ranked.slice(0, AUTHORED_VALUES_KEPT),
+    valuesDistinct: ranked.length,
+    dominant: units[0]?.unit ?? null,
+    total,
+  };
 }
 
 const CATEGORY_ORDER: AuthoredCategoryName[] = ["spacing", "type", "radius", "border"];

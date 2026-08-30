@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { PageExtraction } from "../crawler/types.js";
-import { classifyUnit, extractUnits, summariseAuthored } from "./authored.js";
+import {
+  AUTHORED_VALUES_KEPT,
+  classifyUnit,
+  extractUnits,
+  summariseAuthored,
+} from "./authored.js";
 
 describe("extractUnits", () => {
   it("reads the unit of a simple value", () => {
@@ -116,6 +121,69 @@ describe("summariseAuthored", () => {
     expect(type.units).toContainEqual({ unit: "px", count: 1 });
     expect(type.units).toContainEqual({ unit: "rem", count: 1 });
     expect(type.units.some((u) => u.unit === "unitless" || u.unit === "other")).toBe(false);
+  });
+
+  it("tallies the authored value strings, most-used first", () => {
+    const summary = summariseAuthored([
+      page({
+        declarations: [
+          { category: "spacing", value: "1rem" },
+          { category: "spacing", value: "1rem" },
+          { category: "spacing", value: "calc(var(--space) * 2)" },
+          { category: "spacing", value: "8px" },
+        ],
+        customProperties: [],
+      }),
+    ]);
+    const spacing = summary.categories.find((c) => c.category === "spacing")!;
+    expect(spacing.values).toEqual([
+      { value: "1rem", count: 2 },
+      { value: "8px", count: 1 },
+      { value: "calc(var(--space) * 2)", count: 1 },
+    ]);
+    expect(spacing.valuesDistinct).toBe(3);
+  });
+
+  it("keeps arithmetic over a token distinct from the length it resolves to", () => {
+    const summary = summariseAuthored([
+      page({
+        declarations: [
+          { category: "spacing", value: "calc(var(--space) * 2)" },
+          { category: "spacing", value: "2rem" },
+        ],
+        customProperties: [],
+      }),
+    ]);
+    const spacing = summary.categories.find((c) => c.category === "spacing")!;
+    expect(spacing.values.map((v) => v.value)).toEqual(["2rem", "calc(var(--space) * 2)"]);
+  });
+
+  it("truncates the value list but reports the full count", () => {
+    const declarations = Array.from({ length: AUTHORED_VALUES_KEPT + 5 }, (_, i) => ({
+      category: "spacing" as const,
+      value: `${i + 1}px`,
+    }));
+    const summary = summariseAuthored([page({ declarations, customProperties: [] })]);
+    const spacing = summary.categories.find((c) => c.category === "spacing")!;
+    expect(spacing.values).toHaveLength(AUTHORED_VALUES_KEPT);
+    expect(spacing.valuesDistinct).toBe(AUTHORED_VALUES_KEPT + 5);
+  });
+
+  it("counts distinct strings, where the unit tally counts declarations", () => {
+    const summary = summariseAuthored([
+      page({
+        declarations: [
+          { category: "type", value: "16px" },
+          { category: "type", value: "1.5" }, // line-height: unitless, not zero
+          { category: "type", value: "0" }, // zero carries no unit signal
+        ],
+        customProperties: [],
+      }),
+    ]);
+    const type = summary.categories.find((c) => c.category === "type")!;
+    expect(type.total).toBe(2); // two declarations carried a unit
+    expect(type.valuesDistinct).toBe(2); // in two different strings
+    expect(type.values.map((v) => v.value)).toEqual(["1.5", "16px"]);
   });
 
   it("de-duplicates custom properties across pages by name", () => {

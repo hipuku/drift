@@ -337,6 +337,12 @@ export type CssUnit =
 export interface AuditAuthoredCategory {
   category: "spacing" | "type" | "radius" | "border";
   units: { unit: CssUnit; count: number }[];
+  /**
+   * The authored value strings, most-used first, truncated by the service.
+   * `valuesDistinct` is how many there were before truncation.
+   */
+  values: { value: string; count: number }[];
+  valuesDistinct: number;
   dominant: CssUnit | null;
   total: number;
 }

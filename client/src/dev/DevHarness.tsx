@@ -221,10 +221,10 @@ const MOCK_SITE_AUDIT: SiteAudit = {
   },
   authored: {
     categories: [
-      { category: "spacing", dominant: "rem", total: 42, units: [{ unit: "rem", count: 34 }, { unit: "px", count: 8 }] },
-      { category: "type", dominant: "px", total: 18, units: [{ unit: "px", count: 14 }, { unit: "rem", count: 4 }] },
-      { category: "radius", dominant: "px", total: 9, units: [{ unit: "px", count: 9 }] },
-      { category: "border", dominant: "px", total: 6, units: [{ unit: "px", count: 6 }] },
+      { category: "spacing", dominant: "rem", total: 42, units: [{ unit: "rem", count: 34 }, { unit: "px", count: 8 }], values: [{ value: "1rem", count: 20 }, { value: "0.5rem", count: 14 }, { value: "8px", count: 8 }], valuesDistinct: 3 },
+      { category: "type", dominant: "px", total: 18, units: [{ unit: "px", count: 14 }, { unit: "rem", count: 4 }], values: [{ value: "16px", count: 14 }, { value: "1.25rem", count: 4 }], valuesDistinct: 2 },
+      { category: "radius", dominant: "px", total: 9, units: [{ unit: "px", count: 9 }], values: [{ value: "4px", count: 9 }], valuesDistinct: 1 },
+      { category: "border", dominant: "px", total: 6, units: [{ unit: "px", count: 6 }], values: [{ value: "1px", count: 6 }], valuesDistinct: 1 },
     ],
     customProperties: [
       { name: "--color-primary", value: "#2563eb" },

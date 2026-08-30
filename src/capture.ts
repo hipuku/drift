@@ -64,7 +64,11 @@ async function main() {
   const result = await crawl(url, { maxPages: pages });
   const audit = collectAudit(result);
 
-  await writeFile(out, `${JSON.stringify(audit, null, 2)}\n`, "utf8");
+  // `capturedAt` rides along with the audit so the demo banner and the case
+  // study read the date off the artefact. It is not part of `SiteAudit`; the
+  // API never returns it, and only this fixture carries it.
+  const captured = new Date().toISOString().slice(0, 10);
+  await writeFile(out, `${JSON.stringify({ ...audit, capturedAt: captured }, null, 2)}\n`, "utf8");
 
   // The figures the README and DESIGN.md quote, printed so the docs can be
   // reconciled against this run rather than against memory of the last one.
@@ -72,7 +76,7 @@ async function main() {
   process.stderr.write(
     [
       ``,
-      `Wrote ${out}`,
+      `Wrote ${out}, captured ${captured}`,
       ``,
       `The diagnosis, for the docs:`,
       `  ${s.contrastFailingAA ?? 0} of ${s.contrastPairs ?? 0} text/background pairs fail WCAG AA`,

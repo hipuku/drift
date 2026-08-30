@@ -24,8 +24,14 @@ export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
 /** The site the bundled audit was captured from. */
 export const DEMO_SITE = discoveryFixture.host;
 
-/** When the capture was taken, for the banner. */
-export const DEMO_CAPTURED = "August 2026";
+/**
+ * When the capture was taken, read off the artefact `npm run capture` wrote.
+ * A hand-written date here would go stale silently on the next recapture.
+ */
+export const DEMO_CAPTURED = new Date(`${auditFixture.capturedAt}T00:00:00Z`).toLocaleDateString(
+  "en-GB",
+  { month: "long", year: "numeric", timeZone: "UTC" },
+);
 
 export interface DiscoveryResponse {
   rootUrl: string;
