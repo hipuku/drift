@@ -25,6 +25,11 @@ export type ColourRole = "text" | "background" | "border";
  * typically ΔE 8+) is never counted as duplication. Distinct from the looser
  * threshold used to *suggest consolidation* (Proposals), which may group
  * perceptibly-different shades on purpose.
+ *
+ * The client mirrors this value in `client/src/screens/Audit/auditModel.ts`,
+ * because it is a separate package that does not import from here. The two are
+ * held in step by the client's `lib/contract.test.ts`, which reads this
+ * declaration — so a rename or a change of form there needs updating too.
  */
 export const INDISTINGUISHABLE_DELTA_E = 2;
 

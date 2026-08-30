@@ -11,7 +11,13 @@ import type { AuditAuthored, CssUnit, SiteAudit } from "../../lib/api.js";
 
 // ── Thresholds ──────────────────────────────────────────────────────────────
 
-/** ΔE below which two colours are effectively identical (mirrors the analysis). */
+/**
+ * ΔE below which two colours are effectively identical.
+ *
+ * Mirrors `INDISTINGUISHABLE_DELTA_E` in the service's `analysis/colours.ts`.
+ * The two are held in step by `lib/contract.test.ts` — move one and that test
+ * fails. Do not change this without changing the service.
+ */
 export const INDISTINGUISHABLE_DELTA_E = 2;
 
 /** ΔE above which the nearest colour is too far apart to be worth surfacing. */
