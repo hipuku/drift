@@ -7,7 +7,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 /**
  * drift is two programs in one repo: a Node service under `src/` and a browser
  * client under `client/src/`. They need different globals, and the crawler needs
- * both — its extraction functions are authored against the DOM but shipped to
+ * both. Its extraction functions are authored against the DOM but shipped to
  * the page by Playwright from Node.
  */
 export default defineConfig([
@@ -49,7 +49,7 @@ export default defineConfig([
     languageOptions: { globals: globals.browser },
     rules: {
       // Errors, not warnings. A warning does not fail CI, so a count of them
-      // only ever grows — and both of the two this repo carried turned out to
+      // only ever grows, and both of the two this repo carried turned out to
       // be real: each was a type declaring a field optional that is always
       // present, so `?? []` built a new array every render and defeated the
       // memo below it. A dependency warning is worth reading, which means it is
