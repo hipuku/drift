@@ -248,7 +248,7 @@ components:
         via:
           type: string
           enum: [sitemap, links]
-          description: How pages were found: a sitemap, or homepage anchors (fallback).
+          description: How pages were found, from a sitemap or homepage anchors (fallback).
         pages:
           type: array
           items: { $ref: "#/components/schemas/DiscoveredPage" }
