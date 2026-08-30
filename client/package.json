@@ -17,6 +17,7 @@
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.3.1",
+    "haus-components": "^0.3.0",
     "haus-tokens": "^0.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

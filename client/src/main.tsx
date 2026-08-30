@@ -11,13 +11,18 @@ import "@fontsource/fira-code/500.css";
 // Cascade layer order, declared before anything opens a layer.
 import "./tokens/layers.css";
 
-// The primitive and motion layers are haus-tokens'. The semantic layer above
-// them is Drift's own theme, and primitives.css is only what Drift overrides
-// (see tokens/README.md).
+// The primitive, motion and semantic layers are haus-tokens'. Drift's semantic
+// layer sits above haus's and wins where the two resolve a role differently,
+// and primitives.css is only what Drift overrides (see tokens/README.md).
 import "haus-tokens/primitives.css";
 import "haus-tokens/motion.css";
+import "haus-tokens/semantics.css";
 import "./tokens/primitives.css";
 import "./tokens/semantics.css";
+
+// haus-components' styles, which read the roles above. Unlayered, as the
+// package ships them, so they sit with Drift's own module CSS.
+import "haus-components/styles.css";
 
 // Drift's thin layer on top: accent, fonts, tool tokens.
 import "./styles/drift.css";

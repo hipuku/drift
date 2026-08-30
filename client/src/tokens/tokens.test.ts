@@ -20,13 +20,27 @@ import { describe, expect, it } from "vitest";
 const SRC = resolve(process.cwd(), "src");
 
 /**
- * The primitive and motion layers ship in haus-tokens, so both assertions below
- * have to read the package as well as the source tree. Reading the installed
- * copy rather than a vendored one is the point: if the package moves a value,
- * this sees the value that will actually load.
+ * The primitive, motion and semantic layers ship in haus-tokens, so the
+ * assertions below have to read the package as well as the source tree. Reading
+ * the installed copy rather than a vendored one is the point: if the package
+ * moves a value, this sees the value that will actually load.
+ *
+ * The two are kept apart because the tier rule further down needs to know which
+ * of the package's names are primitives and which are roles.
  */
 const HAUS_TOKENS = resolve(process.cwd(), "node_modules/haus-tokens/dist");
-const HAUS_CSS = ["primitives.css", "motion.css"].map((f) => join(HAUS_TOKENS, f));
+const HAUS_PRIMITIVES = ["primitives.css", "motion.css"].map((f) => join(HAUS_TOKENS, f));
+const HAUS_SEMANTICS = join(HAUS_TOKENS, "semantics.css");
+const HAUS_CSS = [...HAUS_PRIMITIVES, HAUS_SEMANTICS];
+
+/**
+ * haus-components ships its stylesheet as a file rather than injecting it, so
+ * the roles it reads can be checked the same way the source tree's are.
+ */
+const HAUS_COMPONENTS_CSS = resolve(
+  process.cwd(),
+  "node_modules/haus-components/dist/styles.css",
+);
 
 function filesUnder(dir: string, extensions: string[]): string[] {
   return readdirSync(dir, { recursive: true, withFileTypes: true })
@@ -47,7 +61,7 @@ describe("custom properties", () => {
     // A wrong path here would make both assertions below pass by finding
     // nothing: every primitive would look undefined, and no component would
     // look like it was reaching for one.
-    const defined = matches(HAUS_CSS, /^\s*(--[a-z0-9-]+)\s*:/gm);
+    const defined = matches(HAUS_PRIMITIVES, /^\s*(--[a-z0-9-]+)\s*:/gm);
     expect(defined.size, `no custom properties found under ${HAUS_TOKENS}`).toBeGreaterThan(100);
   });
 
@@ -116,8 +130,14 @@ const TYPE_TIER_DEBT = new Set([
  * package would make six roles Drift has always had look like reaches.
  */
 function primitiveNames(): Set<string> {
-  const all = matches([resolve(SRC, "tokens/primitives.css"), ...HAUS_CSS], /^\s*(--[a-z0-9-]+)\s*:/gm);
-  const roles = matches([resolve(SRC, "tokens/semantics.css")], /^\s*(--[a-z0-9-]+)\s*:/gm);
+  const all = matches(
+    [resolve(SRC, "tokens/primitives.css"), ...HAUS_PRIMITIVES],
+    /^\s*(--[a-z0-9-]+)\s*:/gm,
+  );
+  const roles = matches(
+    [resolve(SRC, "tokens/semantics.css"), HAUS_SEMANTICS],
+    /^\s*(--[a-z0-9-]+)\s*:/gm,
+  );
   return new Set([...all].filter((name) => !roles.has(name)));
 }
 
@@ -140,5 +160,46 @@ describe("the two-tier rule", () => {
     const stale = [...TYPE_TIER_DEBT].filter((n) => !read.has(n) || !primitives.has(n)).sort();
 
     expect(stale).toEqual([]);
+  });
+});
+
+/**
+ * haus-components reads roles from haus-tokens' semantic layer, and Drift loads
+ * that layer for it. This holds the two together.
+ *
+ * Without it the failure is silent and arrives later: a release of the package
+ * reads a role Drift has never loaded, the declaration is dropped at computed
+ * value time, and a focus ring or a shadow is simply absent. The version that
+ * introduced it would pass every check Drift has.
+ *
+ * Five roles were undefined here before the semantic layer was imported:
+ * --color-ink-on-aronia, --elevation-floating, --motion-duration-emphasis,
+ * --radius-marker and --shadow-focus-error. Declaring five lines locally was
+ * the alternative, and it is the same hand-copy this file already exists to
+ * prevent.
+ *
+ * A reference with a fallback is excluded, as above. Avatar sets --avatar-bg
+ * and --avatar-fg inline and reads them as `var(--avatar-bg, ...)`, which is a
+ * real value whether or not the property is set.
+ */
+describe("haus-components", () => {
+  it("finds the stylesheet it is meant to read", () => {
+    const source = readFileSync(HAUS_COMPONENTS_CSS, "utf8");
+    expect(source.length, `empty stylesheet at ${HAUS_COMPONENTS_CSS}`).toBeGreaterThan(1000);
+  });
+
+  it("reads no role Drift does not load", () => {
+    const loaded = [
+      ...HAUS_CSS,
+      resolve(SRC, "tokens/primitives.css"),
+      resolve(SRC, "tokens/semantics.css"),
+      ...filesUnder(resolve(SRC, "styles"), [".css"]),
+    ];
+    const defined = matches(loaded, /^\s*(--[a-z0-9-]+)\s*:/gm);
+    const read = matches([HAUS_COMPONENTS_CSS], /var\((--[a-z0-9-]+)\)/g);
+
+    const undefined_ = [...read].filter((name) => !defined.has(name)).sort();
+
+    expect(undefined_).toEqual([]);
   });
 });

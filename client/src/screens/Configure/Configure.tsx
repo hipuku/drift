@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { Input } from "haus-components";
 import { Button } from "../../components/Button/Button.js";
 import { Callout } from "../../components/Callout/Callout.js";
 import { Text } from "../../components/Text/Text.js";
-import { TextField } from "../../components/TextField/TextField.js";
 import { useDiscovery } from "../../hooks/useDiscovery.js";
 import { DEMO_CAPTURED, DEMO_MODE, DEMO_SITE } from "../../demo/index.js";
 import styles from "./Configure.module.css";
@@ -166,7 +166,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
                 if (url.trim() !== "") discover();
               }}
             >
-              <TextField
+              <Input
                 id="url"
                 label="URL"
                 type="text"

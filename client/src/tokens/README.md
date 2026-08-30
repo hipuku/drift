@@ -1,7 +1,8 @@
 # drift design tokens
 
-The primitive and motion layers are [`haus-tokens`](https://www.npmjs.com/package/haus-tokens),
-imported in `main.tsx`. What remains here is Drift's:
+The primitive, motion and semantic layers are
+[`haus-tokens`](https://www.npmjs.com/package/haus-tokens), imported in `main.tsx`.
+What remains here is Drift's:
 
 - `layers.css`: the cascade layer order, declared once before anything opens a layer
 - `primitives.css`: the five primitives Drift overrides (`base.primitives` layer)
@@ -20,9 +21,22 @@ was a copy and it is gone.
 `semantics.css` is not a copy. It shares 118 role names with `haus-tokens`'
 semantic layer, which is what a role name is for, and resolves five of them
 differently on purpose: Drift's controls are one radius step tighter and its
-overlay sits one shadow step lower. Twenty more roles are Drift's alone. A theme
+overlay sits one shadow step lower. Thirty-nine more roles are Drift's alone. A theme
 over shared primitives is the shape the architecture is for.
 
-`tokens.test.ts` reads the installed package as well as this directory, so both
-guards still see every primitive: the one asserting nothing reads an undefined
-property, and the one asserting no component reaches past the semantic layer.
+## Why haus's semantic layer is loaded as well
+
+[`haus-components`](https://www.npmjs.com/package/haus-components) supplies Badge
+and Input, and its stylesheet reads 113 roles with no fallback. Five were
+undefined here, and they are exactly the five haus declares that Drift does not:
+`--color-ink-on-aronia`, `--elevation-floating`, `--motion-duration-emphasis`,
+`--radius-marker` and `--shadow-focus-error`. Declaring those five locally would
+be the copy this directory just stopped keeping.
+
+haus's layer sits below Drift's in the order declared by `layers.css`, so the
+118 role names the two share resolve to Drift's values.
+
+`tokens.test.ts` reads the two installed packages as well as this directory, so
+its three guards see what will actually load: nothing reads an undefined
+property, no component reaches past the semantic layer, and `haus-components`
+reads no role Drift does not load.

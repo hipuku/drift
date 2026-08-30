@@ -6,7 +6,11 @@
    haus-tokens ships its own layer names, and they have to sit below Drift's.
    The package is the foundation; the layers above it are the theme, and a
    theme that loses to the thing it themes is not a theme.
+
+   haus.semantics is here because haus-components reads roles from it. Drift
+   shares 118 of those role names and resolves five differently, so base.semantics
+   sits above it and Drift's resolution is the one that applies.
    ─────────────────────────────────────────────────────────────────────────── */
 
-@layer haus.primitives, haus.motion, base.primitives, base.semantics, drift.primitives,
-  drift.semantics;
+@layer haus.primitives, haus.motion, haus.semantics, base.primitives, base.semantics,
+  drift.primitives, drift.semantics;
