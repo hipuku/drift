@@ -227,3 +227,75 @@ export function deviceClass(px: number): string {
   if (px < 1024) return "tablet";
   return "desktop";
 }
+
+
+// ── Derived sets ────────────────────────────────────────────────────────────
+// Pure derivations over an audit. These lived inside the Audit component as
+// useMemo bodies, where they could not be tested without rendering a screen —
+// and where each one's threshold was a bare number in the middle of JSX.
+
+/**
+ * Values within `tolerance` of a smaller value in the same set: the redundancy
+ * the audit counts. Only the larger of a pair is returned, because the smaller
+ * one is the value the system already had — the later one is the duplicate.
+ *
+ * Chained near-duplicates are each measured against their immediate
+ * predecessor, not against the first of the run: 4 / 4.9 / 5.8 at 1px tolerance
+ * is three values that each nearly repeat the one below, and reporting only the
+ * middle one would understate it.
+ */
+export function nearDuplicates(values: number[], tolerance: number): Set<number> {
+  const sorted = [...values].sort((a, b) => a - b);
+  const set = new Set<number>();
+  let prev = Number.NEGATIVE_INFINITY;
+  for (const v of sorted) {
+    if (v - prev <= tolerance) set.add(v);
+    prev = v;
+  }
+  return set;
+}
+
+/** Radii count as redundant within 1px — the audit's own threshold. */
+export const RADIUS_NEAR_DUPLICATE_PX = 1;
+/** Border widths are finer-grained: 1px vs 1.5px is a real duplicate. */
+export const BORDER_NEAR_DUPLICATE_PX = 0.5;
+
+/** Spacing values that miss a grid of `base`, at the audit's 0.5px tolerance. */
+export function offGrid(values: number[], base: number): Set<number> {
+  const onGrid = (v: number) => Math.abs(v - Math.round(v / base) * base) <= 0.5;
+  return new Set(values.filter((v) => !onGrid(v)));
+}
+
+/**
+ * The grid to measure against when the reader has not chosen one. An 8px grid
+ * is a subset of a 4px one, so "nothing misses 8" is the stronger statement and
+ * the honest default when it holds. An empty set proves nothing, so it falls to 4.
+ */
+export function detectGridBase(values: number[]): 4 | 8 {
+  return values.length > 0 && offGrid(values, 8).size === 0 ? 8 : 4;
+}
+
+/** Position of each z-index in the stacking order — drives the ladder preview. */
+export function zIndexRanks(values: number[]): { map: Map<number, number>; total: number } {
+  const sorted = [...values].sort((a, b) => a - b);
+  const map = new Map<number, number>();
+  sorted.forEach((v, i) => map.set(v, i));
+  return { map, total: sorted.length };
+}
+
+/**
+ * The extended tokens with a real drift signal, for the health line: redundant
+ * border widths, and a z-index set too large or too ad-hoc to be a scale.
+ * A 9999 is the tell for a value picked to win rather than to sit in a scale.
+ */
+export function extendedDriftAreas(
+  borders: { value: number }[] | undefined,
+  zIndex: { value: number }[] | undefined,
+): string[] {
+  const out: string[] = [];
+  const widths = (borders ?? []).map((b) => b.value);
+  if (nearDuplicates(widths, BORDER_NEAR_DUPLICATE_PX).size > 0) out.push("border widths");
+  const zi = zIndex ?? [];
+  if (zi.length > 8 || zi.some((z) => Math.abs(z.value) >= 9999)) out.push("z-index");
+  return out;
+}

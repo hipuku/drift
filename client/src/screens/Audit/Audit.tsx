@@ -38,25 +38,32 @@ import { Text } from "../../components/Text/Text.js";
 import type { AuditAuthored, AuditColourSwatch, SiteAudit } from "../../lib/api.js";
 import { RATIOS, buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
 import {
+  BORDER_NEAR_DUPLICATE_PX,
   CATEGORY_LABEL,
   INDISTINGUISHABLE_DELTA_E,
   MAX_TAG_CHIPS,
   NEAREST_DELTA_E,
+  RADIUS_NEAR_DUPLICATE_PX,
   VERDICT_TAB,
   alphaOf,
   cardId,
   colourish,
+  detectGridBase,
   deviceClass,
+  extendedDriftAreas,
   healthLine,
   hostOf,
+  nearDuplicates,
   nearKind,
   niceStep,
+  offGrid,
   pathOf,
   plural,
   redundancyVerdict,
   toRem,
   unitLabel,
   usageText,
+  zIndexRanks,
   type DisplayUnit,
   type NearKind,
   type Verdict,
@@ -295,63 +302,30 @@ export function Audit({ audit, onBack }: Props) {
     [activeRatio, offScaleFor],
   );
 
-  const offGridFor = useCallback(
-    (base: number): Set<number> => {
-      const onGrid = (v: number) => Math.abs(v - Math.round(v / base) * base) <= 0.5;
-      return new Set(audit.spacing.filter((sp) => !onGrid(sp.value)).map((sp) => sp.value));
-    },
-    [audit.spacing],
-  );
-  // An 8px grid is a subset of a 4px one, so "nothing misses 8" is the stronger
-  // statement and the honest default when it holds.
-  const detectedBase = offGridFor(8).size === 0 && audit.spacing.length > 0 ? 8 : 4;
+  const spacingValues = useMemo(() => audit.spacing.map((sp) => sp.value), [audit.spacing]);
+  const detectedBase = useMemo(() => detectGridBase(spacingValues), [spacingValues]);
   const [spacingBase, setSpacingBase] = useState<number | null>(null);
   const activeBase = spacingBase ?? detectedBase;
-  const offGridSet = useMemo(() => offGridFor(activeBase), [offGridFor, activeBase]);
-  // Radii within ~1px of a smaller one — the redundancy the audit counts.
-  const radiusNearDupSet = useMemo(() => {
-    const sorted = audit.radius.map((r) => r.value).sort((a, b) => a - b);
-    const set = new Set<number>();
-    let prev = Number.NEGATIVE_INFINITY;
-    for (const v of sorted) {
-      if (v - prev <= 1) set.add(v);
-      prev = v;
-    }
-    return set;
-  }, [audit.radius]);
-  // Border widths within ~0.5px of a smaller one (e.g. 1px vs 1.5px).
-  const borderNearDupSet = useMemo(() => {
-    const sorted = (audit.borders ?? []).map((b) => b.value).sort((a, b) => a - b);
-    const set = new Set<number>();
-    let prev = Number.NEGATIVE_INFINITY;
-    for (const v of sorted) {
-      if (v - prev <= 0.5) set.add(v);
-      prev = v;
-    }
-    return set;
-  }, [audit.borders]);
-  // Rank of each z-index in the stacking order — drives the ladder preview.
-  const zIndexRank = useMemo(() => {
-    const sorted = (audit.zIndex ?? []).map((z) => z.value).sort((a, b) => a - b);
-    const map = new Map<number, number>();
-    sorted.forEach((v, i) => map.set(v, i));
-    return { map, total: sorted.length };
-  }, [audit.zIndex]);
-  // The only extended tokens with a real drift signal, for the health line:
-  // redundant border widths, and a z-index set too large/ad-hoc to be a scale.
-  const extendedDrift = useMemo(() => {
-    const out: string[] = [];
-    if (borderNearDupSet.size > 0) out.push("border widths");
-    const zi = audit.zIndex ?? [];
-    if (zi.length > 8 || zi.some((z) => Math.abs(z.value) >= 9999)) out.push("z-index");
-    return out;
-  }, [borderNearDupSet, audit.zIndex]);
+  const offGridSet = useMemo(() => offGrid(spacingValues, activeBase), [spacingValues, activeBase]);
+  const radiusNearDupSet = useMemo(
+    () => nearDuplicates(audit.radius.map((r) => r.value), RADIUS_NEAR_DUPLICATE_PX),
+    [audit.radius],
+  );
+  const borderNearDupSet = useMemo(
+    () => nearDuplicates((audit.borders ?? []).map((b) => b.value), BORDER_NEAR_DUPLICATE_PX),
+    [audit.borders],
+  );
+  const zIndexRank = useMemo(() => zIndexRanks((audit.zIndex ?? []).map((z) => z.value)), [audit.zIndex]);
+  const extendedDrift = useMemo(
+    () => extendedDriftAreas(audit.borders, audit.zIndex),
+    [audit.borders, audit.zIndex],
+  );
   const selectedSwatch = selectedHex
     ? (audit.colourFamilies.flatMap((f) => f.swatches).find((sw) => sw.hex === selectedHex) ?? null)
     : null;
 
   const offScale = s.typeOffScale ?? 0;
-  const offGrid = s.spacingOffGrid ?? 0;
+  const offGridTotal = s.spacingOffGrid ?? 0;
   const radiusDup = s.radiusNearDuplicates ?? 0;
 
   const verdicts: { label: string; n: number; chips: string[]; verdict: Verdict }[] = [
@@ -395,8 +369,8 @@ export function Audit({ audit, onBack }: Props) {
     {
       label: "Spacing",
       n: s.spacings,
-      verdict: redundancyVerdict(offGrid),
-      chips: [offGrid > 0 ? `${offGrid} off a 4px grid` : "on a 4px grid"],
+      verdict: redundancyVerdict(offGridTotal),
+      chips: [offGridTotal > 0 ? `${offGridTotal} off a 4px grid` : "on a 4px grid"],
     },
     {
       label: "Radius",
@@ -814,7 +788,7 @@ export function Audit({ audit, onBack }: Props) {
               values={audit.spacing.map((v) => v.value)}
               base={activeBase}
               detectedBase={detectedBase}
-              offCountFor={(b) => offGridFor(b).size}
+              offCountFor={(b) => offGrid(spacingValues, b).size}
               onSelect={setSpacingBase}
             />
             <Table

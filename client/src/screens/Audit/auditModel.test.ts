@@ -1,9 +1,16 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  BORDER_NEAR_DUPLICATE_PX,
   INDISTINGUISHABLE_DELTA_E,
+  RADIUS_NEAR_DUPLICATE_PX,
   VERDICT_TAB,
   alphaOf,
+  detectGridBase,
+  extendedDriftAreas,
+  nearDuplicates,
+  offGrid,
+  zIndexRanks,
   capFirst,
   cardId,
   colourish,
@@ -345,5 +352,83 @@ describe("VERDICT_TAB", () => {
       "Motion",
     ]);
     expect(new Set(Object.values(VERDICT_TAB)).size).toBe(Object.keys(VERDICT_TAB).length);
+  });
+});
+
+describe("nearDuplicates", () => {
+  it("reports the later of a pair, not the value the system already had", () => {
+    expect([...nearDuplicates([4, 4.9], 1)]).toEqual([4.9]);
+  });
+
+  it("measures each value against its predecessor, so a chain is fully reported", () => {
+    // 4 / 4.9 / 5.8 each nearly repeat the one below. Measuring every value
+    // against the first of the run would report only 4.9 and understate it.
+    expect([...nearDuplicates([4, 4.9, 5.8], 1)].sort((a, b) => a - b)).toEqual([4.9, 5.8]);
+  });
+
+  it("puts the threshold either side", () => {
+    expect(nearDuplicates([4, 5], 1).has(5)).toBe(true);
+    expect(nearDuplicates([4, 5.01], 1).has(5.01)).toBe(false);
+  });
+
+  it("does not depend on input order", () => {
+    expect([...nearDuplicates([5.8, 4, 4.9], 1)].sort((a, b) => a - b)).toEqual([4.9, 5.8]);
+  });
+
+  it("is empty for a set with nothing near", () => {
+    expect(nearDuplicates([4, 8, 16], 1).size).toBe(0);
+  });
+
+  it("uses the finer threshold borders are held to", () => {
+    // 1 vs 1.5 is a real duplicate at the border threshold and not at the radius one.
+    expect(nearDuplicates([1, 1.5], BORDER_NEAR_DUPLICATE_PX).has(1.5)).toBe(true);
+    expect(nearDuplicates([1, 1.6], BORDER_NEAR_DUPLICATE_PX).has(1.6)).toBe(false);
+    expect(nearDuplicates([1, 1.5], RADIUS_NEAR_DUPLICATE_PX).has(1.5)).toBe(true);
+  });
+});
+
+describe("offGrid and detectGridBase", () => {
+  it("keeps values on the grid within half a pixel, and drops the rest", () => {
+    expect([...offGrid([4, 8, 4.5, 4.51, 6], 4)].sort((a, b) => a - b)).toEqual([4.51, 6]);
+  });
+
+  it("prefers 8 only when nothing misses it", () => {
+    expect(detectGridBase([8, 16, 24])).toBe(8);
+    expect(detectGridBase([8, 16, 20])).toBe(4);
+  });
+
+  it("falls back to 4 for an empty set, which proves nothing", () => {
+    expect(detectGridBase([])).toBe(4);
+  });
+});
+
+describe("zIndexRanks", () => {
+  it("ranks by stacking order regardless of input order", () => {
+    const { map, total } = zIndexRanks([100, 1, 50]);
+    expect(total).toBe(3);
+    expect([map.get(1), map.get(50), map.get(100)]).toEqual([0, 1, 2]);
+  });
+});
+
+describe("extendedDriftAreas", () => {
+  it("names redundant border widths", () => {
+    expect(extendedDriftAreas([{ value: 1 }, { value: 1.5 }], [])).toEqual(["border widths"]);
+  });
+
+  it("calls out a z-index set too large to be a scale", () => {
+    const many = Array.from({ length: 9 }, (_, i) => ({ value: i }));
+    expect(extendedDriftAreas([], many)).toEqual(["z-index"]);
+  });
+
+  it("calls out a value picked to win rather than to sit in a scale", () => {
+    expect(extendedDriftAreas([], [{ value: 1 }, { value: 9999 }])).toEqual(["z-index"]);
+  });
+
+  it("says nothing when neither signal is present", () => {
+    expect(extendedDriftAreas([{ value: 1 }, { value: 4 }], [{ value: 1 }, { value: 10 }])).toEqual([]);
+  });
+
+  it("treats a missing category as no signal, not as a problem", () => {
+    expect(extendedDriftAreas(undefined, undefined)).toEqual([]);
   });
 });
