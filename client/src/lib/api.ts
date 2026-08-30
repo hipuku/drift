@@ -211,21 +211,21 @@ export interface AuditRadiusUsage {
   value: number;
   count: number;
   /** Element tags using this radius, most-used first. */
-  tags?: AuditTagUsage[];
+  tags: AuditTagUsage[];
 }
 
 export interface AuditShadowUsage {
   value: string;
   count: number;
   /** Element tags using this shadow, most-used first. */
-  tags?: AuditTagUsage[];
+  tags: AuditTagUsage[];
 }
 
 export interface AuditBreakpointUsage {
   value: number;
   count: number;
   /** min-width vs max-width split, most-used first. */
-  types?: { type: "min" | "max"; count: number }[];
+  types: { type: "min" | "max"; count: number }[];
 }
 
 export type AuditBorderSide = "top" | "right" | "bottom" | "left";
@@ -234,9 +234,9 @@ export interface AuditBorderUsage {
   value: number;
   count: number;
   /** Which sides carry this width, most-used first. */
-  sides?: { side: AuditBorderSide; count: number }[];
+  sides: { side: AuditBorderSide; count: number }[];
   /** Element tags using this width, most-used first. */
-  tags?: AuditTagUsage[];
+  tags: AuditTagUsage[];
 }
 
 /** Motion tokens — the timing and the curves transitions are built from. */
@@ -244,14 +244,14 @@ export interface AuditNumberTagUsage {
   value: number;
   count: number;
   /** Element tags using this value, most-used first. */
-  tags?: AuditTagUsage[];
+  tags: AuditTagUsage[];
 }
 
 export interface AuditStringTagUsage {
   value: string;
   count: number;
   /** Element tags using this value, most-used first. */
-  tags?: AuditTagUsage[];
+  tags: AuditTagUsage[];
 }
 
 export interface AuditMotion {

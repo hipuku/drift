@@ -32,16 +32,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { Badge } from "../../components/Badge/Badge.js";
 import { Callout } from "../../components/Callout/Callout.js";
 import { Text } from "../../components/Text/Text.js";
 import type { AuditAuthored, AuditColourSwatch, SiteAudit } from "../../lib/api.js";
 import { RATIOS, buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
 import {
-  BORDER_NEAR_DUPLICATE_PX,
   CATEGORY_LABEL,
   INDISTINGUISHABLE_DELTA_E,
-  MAX_TAG_CHIPS,
   NEAREST_DELTA_E,
   RADIUS_NEAR_DUPLICATE_PX,
   VERDICT_TAB,
@@ -49,7 +46,6 @@ import {
   cardId,
   colourish,
   detectGridBase,
-  deviceClass,
   extendedDriftAreas,
   healthLine,
   hostOf,
@@ -60,14 +56,25 @@ import {
   pathOf,
   plural,
   redundancyVerdict,
-  toRem,
   unitLabel,
   usageText,
-  zIndexRanks,
   type DisplayUnit,
   type NearKind,
   type Verdict,
 } from "./auditModel.js";
+import { LengthValue, Table } from "./parts/tables.js";
+import {
+  BlurSection,
+  BorderSection,
+  BreakpointSection,
+  ContrastSection,
+  GradientSection,
+  MotionSection,
+  OpacitySection,
+  RadiusSection,
+  ShadowSection,
+  ZIndexSection,
+} from "./sections/scalarSections.js";
 import styles from "./Audit.module.css";
 
 /** An icon per token tab — gives the strip identity and speeds scanning. */
@@ -163,24 +170,6 @@ function AuthoringSummary({ authored }: { authored: AuditAuthored }) {
   );
 }
 
-/** rem is root-relative; we assume the near-universal 16px root. */
-/**
- * A length value in the selected unit, with the other unit as a muted note (C2).
- * Both are always shown — px is what shipped, rem is the accessibility-relevant
- * form. `children` is the off-scale/off-grid dot, kept inside the primary span so
- * its positioning is unchanged.
- */
-function LengthValue({ px, unit, children }: { px: number; unit: DisplayUnit; children?: ReactNode }) {
-  const primary = unit === "px" ? `${px}px` : toRem(px);
-  const alt = unit === "px" ? toRem(px) : `${px}px`;
-  return (
-    <span className={styles.sizeValue}>
-      {primary}
-      {children}
-      <span className={styles.valueAlt}>{alt}</span>
-    </span>
-  );
-}
 
 export function Audit({ audit, onBack }: Props) {
   const s = audit.summary;
@@ -238,7 +227,6 @@ export function Audit({ audit, onBack }: Props) {
   const selectedHex = tab === "colour" ? pickedHex : null;
 
   const maxSpace = audit.spacing.reduce((m, v) => Math.max(m, v.value), 1);
-  const maxBp = audit.breakpoints?.reduce((m, v) => Math.max(m, v.value), 1) ?? 1;
   // ── Reference scales ────────────────────────────────────────────────────────
   // "Off-scale" is a measurement against a reference, so the reference is
   // selectable: compare the system against any named ratio, or against a 4px or
@@ -311,11 +299,6 @@ export function Audit({ audit, onBack }: Props) {
     () => nearDuplicates(audit.radius.map((r) => r.value), RADIUS_NEAR_DUPLICATE_PX),
     [audit.radius],
   );
-  const borderNearDupSet = useMemo(
-    () => nearDuplicates((audit.borders ?? []).map((b) => b.value), BORDER_NEAR_DUPLICATE_PX),
-    [audit.borders],
-  );
-  const zIndexRank = useMemo(() => zIndexRanks((audit.zIndex ?? []).map((z) => z.value)), [audit.zIndex]);
   const extendedDrift = useMemo(
     () => extendedDriftAreas(audit.borders, audit.zIndex),
     [audit.borders, audit.zIndex],
@@ -829,255 +812,29 @@ export function Audit({ audit, onBack }: Props) {
           </>
         )}
 
-        {tab === "radius" && (
-          <Table head={["Preview", "Value", "Tags", "Uses"]}>
-            {audit.radius.map((v) => (
-              <tr key={v.value}>
-                <td className={styles.chipPreviewCell}>
-                  <span className={styles.radiusChip} style={{ borderRadius: `${v.value}px` }} />
-                </td>
-                <td className={styles.valueCell}>
-                  <LengthValue px={v.value} unit={unitFor("radius")}>
-                    {radiusNearDupSet.has(v.value) && (
-                      <span className={styles.offScaleDot} title="Near-duplicate of another radius" />
-                    )}
-                  </LengthValue>
-                </td>
-                <td className={styles.tagsCell}>
-                  <span className={styles.tagChips}>
-                    {(v.tags ?? []).map((tg) => (
-                      <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
-                        {tg.tag}
-                      </span>
-                    ))}
-                  </span>
-                </td>
-                <td className={styles.usageCell}>{v.count.toLocaleString()}×</td>
-              </tr>
-            ))}
-          </Table>
-        )}
+        {tab === "radius" && <RadiusSection radius={audit.radius} unit={unitFor("radius")} />}
 
-        {tab === "shadow" && (
-          <Table head={["Preview", "Value", "Tags", "Uses"]}>
-            {audit.shadow.map((sh, i) => (
-              <tr key={i}>
-                <td className={styles.chipPreviewCell}>
-                  <span className={styles.shadowChip} style={{ boxShadow: sh.value }} />
-                </td>
-                <td className={`${styles.valueCell} ${styles.valueCellWrap}`} title={sh.value}>
-                  {sh.value}
-                </td>
-                <td className={styles.tagsCell}>
-                  <span className={styles.tagChips}>
-                    {(sh.tags ?? []).map((tg) => (
-                      <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
-                        {tg.tag}
-                      </span>
-                    ))}
-                  </span>
-                </td>
-                <td className={styles.usageCell}>{sh.count.toLocaleString()}×</td>
-              </tr>
-            ))}
-          </Table>
-        )}
+        {tab === "shadow" && <ShadowSection shadow={audit.shadow} />}
 
-        {tab === "gradient" && audit.gradients && (
-          <Table head={["Preview", "Value", "Tags", "Uses"]}>
-            {audit.gradients.map((g, i) => (
-              <tr key={i}>
-                <td className={styles.chipPreviewCell}>
-                  <span className={styles.gradientSwatch} style={{ backgroundImage: g.value }} />
-                </td>
-                <td className={`${styles.valueCell} ${styles.valueCellWrap}`} title={g.value}>
-                  {g.value}
-                </td>
-                <TagsCell tags={g.tags} />
-                <td className={styles.usageCell}>{g.count.toLocaleString()}×</td>
-              </tr>
-            ))}
-          </Table>
-        )}
+        {tab === "gradient" && audit.gradients && <GradientSection gradients={audit.gradients} />}
 
         {tab === "border" && audit.borders && (
-          <Table head={["Preview", "Value", "Sides", "Tags", "Uses"]}>
-            {audit.borders.map((b) => (
-              <tr key={b.value}>
-                <td className={styles.chipPreviewCell}>
-                  <span className={styles.borderChip} style={{ borderWidth: `${b.value}px` }} />
-                </td>
-                <td className={styles.valueCell}>
-                  <LengthValue px={b.value} unit={unitFor("border")}>
-                    {borderNearDupSet.has(b.value) && (
-                      <span className={styles.offScaleDot} title="Near-duplicate of another width" />
-                    )}
-                  </LengthValue>
-                </td>
-                <td className={styles.tagsCell}>
-                  <span className={styles.tagChips}>
-                    {(b.sides ?? []).map((s) => (
-                      <span key={s.side} className={styles.tagChip} title={`${s.count.toLocaleString()}×`}>
-                        {s.side}
-                      </span>
-                    ))}
-                  </span>
-                </td>
-                <td className={styles.tagsCell}>
-                  <span className={styles.tagChips}>
-                    {(b.tags ?? []).map((tg) => (
-                      <span key={tg.tag} className={styles.tagChip} title={`${tg.count.toLocaleString()}×`}>
-                        {tg.tag}
-                      </span>
-                    ))}
-                  </span>
-                </td>
-                <td className={styles.usageCell}>{b.count.toLocaleString()}×</td>
-              </tr>
-            ))}
-          </Table>
+          <BorderSection borders={audit.borders} unit={unitFor("border")} />
         )}
 
-        {tab === "contrast" && audit.contrast && (
-          <Table head={["Sample", "Pair", "Ratio", "WCAG", "Tags", "Uses"]}>
-            {audit.contrast.map((c) => (
-              <tr key={`${c.foreground}|${c.background}`}>
-                <td className={styles.chipPreviewCell}>
-                  <span
-                    className={styles.contrastSample}
-                    style={{ background: c.background, color: c.foreground }}
-                  >
-                    Aa
-                  </span>
-                </td>
-                <td className={styles.valueCell}>
-                  <span className={styles.contrastPair}>
-                    {c.foreground}
-                    <span className={styles.contrastOn}>on</span>
-                    {c.background}
-                  </span>
-                </td>
-                <td className={styles.valueCell}>{c.ratio.toFixed(2)}:1</td>
-                <td>
-                  <Badge variant={c.passAA ? "neutral" : "danger"}>
-                    {c.passAAA ? "AAA" : c.passAA ? "AA" : c.passAALarge ? "AA large only" : "Fails AA"}
-                  </Badge>
-                </td>
-                <TagsCell tags={c.sampleTags} />
-                <td className={styles.usageCell}>{c.count.toLocaleString()}×</td>
-              </tr>
-            ))}
-          </Table>
-        )}
+        {tab === "contrast" && audit.contrast && <ContrastSection contrast={audit.contrast} />}
 
-        {tab === "opacity" && audit.opacity && (
-          <Table head={["Preview", "Value", "Tags", "Uses"]}>
-            {audit.opacity.map((o) => (
-              <tr key={o.value}>
-                <td className={styles.chipPreviewCell}>
-                  <span className={styles.checker}>
-                    <span className={styles.opacityFill} style={{ opacity: o.value }} />
-                  </span>
-                </td>
-                <td className={styles.valueCell}>{o.value.toFixed(2)}</td>
-                <TagsCell tags={o.tags} />
-                <td className={styles.usageCell}>{o.count.toLocaleString()}×</td>
-              </tr>
-            ))}
-          </Table>
-        )}
+        {tab === "opacity" && audit.opacity && <OpacitySection opacity={audit.opacity} />}
 
-        {tab === "zindex" && audit.zIndex && (
-          <Table head={["Layer", "Value", "Tags", "Uses"]}>
-            {audit.zIndex.map((z) => (
-              <tr key={z.value}>
-                <td className={styles.chipPreviewCell}>
-                  <ZIndexLadder rank={zIndexRank.map.get(z.value) ?? 0} total={zIndexRank.total} />
-                </td>
-                <td className={styles.valueCell}>{z.value}</td>
-                <TagsCell tags={z.tags} />
-                <td className={styles.usageCell}>{z.count.toLocaleString()}×</td>
-              </tr>
-            ))}
-          </Table>
-        )}
+        {tab === "zindex" && audit.zIndex && <ZIndexSection zIndex={audit.zIndex} />}
 
-        {tab === "blur" && audit.blur && (
-          <Table head={["Preview", "Value", "Tags", "Uses"]}>
-            {audit.blur.map((b) => (
-              <tr key={b.value}>
-                <td className={styles.chipPreviewCell}>
-                  <span className={styles.blurStage}>
-                    <span className={styles.blurGlass} style={{ backdropFilter: `blur(${b.value}px)`, WebkitBackdropFilter: `blur(${b.value}px)` }} />
-                  </span>
-                </td>
-                <td className={styles.valueCell}>{b.value}px</td>
-                <TagsCell tags={b.tags} />
-                <td className={styles.usageCell}>{b.count.toLocaleString()}×</td>
-              </tr>
-            ))}
-          </Table>
-        )}
+        {tab === "blur" && audit.blur && <BlurSection blur={audit.blur} />}
 
         {tab === "breakpoint" && audit.breakpoints && (
-          <Table head={["Preview", "Value", "Device", "Query", "Uses"]}>
-            {audit.breakpoints.map((bp) => (
-              <tr key={bp.value}>
-                <td className={styles.spacingPreviewCell}>
-                  <span className={styles.bpScreen} style={{ width: `${Math.max((bp.value / maxBp) * 100, 10)}%` }} />
-                </td>
-                <td className={styles.valueCell}>{bp.value}px</td>
-                <td className={styles.valueCell}>
-                  <span className={styles.tagChip}>{deviceClass(bp.value)}</span>
-                </td>
-                <td className={styles.tagsCell}>
-                  <span className={styles.tagChips}>
-                    {(bp.types ?? []).map((t) => (
-                      <span key={t.type} className={styles.tagChip} title={`${t.count.toLocaleString()}×`}>
-                        {t.type}-width
-                      </span>
-                    ))}
-                  </span>
-                </td>
-                <td className={styles.usageCell}>{bp.count.toLocaleString()}×</td>
-              </tr>
-            ))}
-          </Table>
+          <BreakpointSection breakpoints={audit.breakpoints} />
         )}
 
-        {tab === "motion" && audit.motion && (
-          <>
-            <Table head={["Preview", "Duration", "Tags", "Uses"]} className={styles.motionTable}>
-              {audit.motion.durations.map((d) => (
-                <tr key={d.value}>
-                  <td className={styles.specimenCell}>
-                    <span className={styles.motionTrack} style={{ ["--dur" as string]: `${d.value}ms` }}>
-                      <span className={styles.motionDot} />
-                    </span>
-                  </td>
-                  <td className={styles.valueCell}>{d.value}ms</td>
-                  <TagsCell tags={d.tags} />
-                  <td className={styles.usageCell}>{d.count.toLocaleString()}×</td>
-                </tr>
-              ))}
-            </Table>
-
-            <Table head={["Preview", "Easing", "Tags", "Uses"]} className={styles.motionTable}>
-              {audit.motion.easings.map((e) => (
-                <tr key={e.value}>
-                  <td className={styles.specimenCell}>
-                    <span className={styles.motionTrack} style={{ ["--ease" as string]: e.value }}>
-                      <span className={styles.easingDot} />
-                    </span>
-                  </td>
-                  <td className={`${styles.valueCell} ${styles.valueCellWrap}`}>{e.value}</td>
-                  <TagsCell tags={e.tags} />
-                  <td className={styles.usageCell}>{e.count.toLocaleString()}×</td>
-                </tr>
-              ))}
-            </Table>
-          </>
-        )}
+        {tab === "motion" && audit.motion && <MotionSection motion={audit.motion} />}
       </div>
         </div>
 
@@ -1110,81 +867,6 @@ export function Audit({ audit, onBack }: Props) {
   );
 }
 
-/** A table with a header row and divider lines, used by every scalar token tab. */
-/**
- * Every inventory table. Wrapped in an overflow-x container so a wide row —
- * a long shadow string, a site with many element tags — scrolls inside the
- * panel instead of stretching the page.
- */
-function Table({ head, children, className }: { head: ReactNode[]; children: ReactNode; className?: string }) {
-  return (
-    <div className={styles.tableWrap}>
-      <table className={className ? `${styles.table} ${className}` : styles.table}>
-        <thead>
-          <tr>
-            {head.map((h, i) => (
-              <th key={i} className={i === head.length - 1 ? styles.thRight : undefined}>
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>{children}</tbody>
-      </table>
-    </div>
-  );
-}
-
-/** Stacking-order preview for z-index — offset layers, taller = higher in the stack. */
-function ZIndexLadder({ rank, total }: { rank: number; total: number }) {
-  const layers = Math.min(rank + 1, 5);
-  return (
-    <span className={styles.zLadder} title={`Layer ${rank + 1} of ${total}`}>
-      {Array.from({ length: layers }).map((_, i) => (
-        <span
-          key={i}
-          className={i === layers - 1 ? `${styles.zLayer} ${styles.zLayerTop}` : styles.zLayer}
-          style={{ left: `${i * 6}px`, bottom: `${i * 5}px` }}
-        />
-      ))}
-    </span>
-  );
-}
-
-/** Rough device class for a breakpoint width. */
-/** A table cell of element-tag chips — the shared attribution column. */
-
-/**
- * Element tags for a row. Accepts counted tags (most tables) or bare tag names
- * (contrast pairs). Caps the visible chips so a site that uses one value on
- * thirty element types doesn't turn one row into a paragraph — the rest are
- * summarised in a titled "+N" chip.
- */
-function TagsCell({ tags }: { tags?: ({ tag: string; count: number } | string)[] }) {
-  const all = (tags ?? []).map((t) => (typeof t === "string" ? { tag: t, count: null } : t));
-  const shown = all.slice(0, MAX_TAG_CHIPS);
-  const rest = all.slice(MAX_TAG_CHIPS);
-  return (
-    <td className={styles.tagsCell}>
-      <span className={styles.tagChips}>
-        {shown.map((tg) => (
-          <span
-            key={tg.tag}
-            className={styles.tagChip}
-            title={tg.count != null ? `${tg.count.toLocaleString()}×` : undefined}
-          >
-            {tg.tag}
-          </span>
-        ))}
-        {rest.length > 0 && (
-          <span className={styles.tagChip} title={rest.map((t) => t.tag).join(", ")}>
-            +{rest.length}
-          </span>
-        )}
-      </span>
-    </td>
-  );
-}
 
 /**
  * Type scale ruler — the visual evidence for the "off-scale" verdict. Sizes are
