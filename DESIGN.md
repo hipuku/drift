@@ -577,6 +577,3 @@ real audit, so the capture is the product's own output. It is not a fixture stan
 the README quotes its figures. `npm run capture` makes recapturing one command and
 prints the figures the docs need, but nothing yet fails when the capture predates
 a change to the analysis that produced it.
-
-**`ioredis` is declared and never imported.** BullMQ carries its own and is the
-only thing that talks to Redis.

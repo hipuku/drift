@@ -18,12 +18,21 @@ updates:
         patterns: ['bullmq', 'playwright', '@playwright/*', 'express', 'ws']
       haus:
         patterns: ['haus-*']
+      # The test runner is its own group. Grouped with the linters, one vitest
+      # major holds five eslint patches behind it.
+      test:
+        patterns: ['vitest', '@vitest/*']
       tooling:
-        patterns: ['eslint*', '@eslint/*', 'typescript-eslint', 'vitest', 'prettier*', 'tsx']
+        patterns: ['eslint*', '@eslint/*', 'typescript-eslint', 'prettier*', 'tsx']
     commit-message:
       prefix: 'deps'
     ignore:
       - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      # TypeScript 7 is the native rewrite, deferred across every repo here so
+      # they move together. Recorded rather than closed: a closed pull request
+      # comes back on the next run and says nothing about why it was refused.
+      - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
 
   - package-ecosystem: npm
@@ -37,10 +46,15 @@ updates:
         patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
       haus:
         patterns: ['haus-*']
+      test:
+        patterns: ['vitest', '@vitest/*', 'jsdom', '@testing-library/*']
       tooling:
-        patterns: ['vite', '@vitejs/*', 'vitest', 'eslint*', '@eslint/*', 'typescript-eslint', 'jsdom', '@testing-library/*']
+        patterns: ['vite', '@vitejs/*', 'eslint*', '@eslint/*', 'typescript-eslint']
     commit-message:
       prefix: 'deps'
+    ignore:
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions
     directory: /
