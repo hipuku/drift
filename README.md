@@ -1,220 +1,101 @@
 # drift
 
-A design-system auditor for live websites. Point it at a URL you don't control,
-and Drift crawls the site and reports the design system that was *actually
-shipped* — every colour, typeface, size, radius, shadow, border, and spacing
-value in use, deduplicated, perceptually grouped, and mapped to the pages where
-it appears.
+A design-system auditor for live websites. Point it at a URL you don't control, and Drift
+crawls the site and reports the design system that was *actually shipped* — every colour,
+typeface, size, radius, shadow, border and spacing value in use, deduplicated, perceptually
+grouped, and mapped to the pages where it appears. Built with Node, Playwright and React.
 
 Live at [drift.hipuku.dev](https://drift.hipuku.dev).
 
-Nothing is invented and nothing is inferred by a model: the crawl, the
-aggregation, and the verdicts are all computed. No API key, no per-run cost, and
-no model in the loop.
+![Drift](screenshots/overview.png)
 
-## What it reports
+## Features
 
-**The inventory** — the real token set, ranked by usage, deduplicated
-perceptually (CIEDE2000), and attributed to the pages it appears on. Colour,
-type, spacing, radius, shadow, border, z-index, opacity, blur, gradients,
-motion, and breakpoints, plus the *authored* units read from the stylesheets
-(which `getComputedStyle` throws away).
+- **The inventory.** The real token set, ranked by usage, deduplicated perceptually
+  (CIEDE2000) and attributed to the pages it appears on. Colour, type, spacing, radius,
+  shadow, border, z-index, opacity, blur, gradients, motion and breakpoints — plus the
+  *authored* units read from the stylesheets, which `getComputedStyle` throws away.
+- **The diagnosis.** Where the system has drifted, in one sentence: *7 of 29 colours are
+  near-duplicates, 6 of 9 type sizes fall off the scale, and 14 of 21 spacing values miss the
+  4px grid. Radius, shadows and contrast hold steady.*
+- **A stated reference for every claim.** A named modular ratio for type, a 4px or 8px grid
+  for spacing, CIEDE2000 for colour, WCAG 2.1 for contrast — and the reference is selectable,
+  so you can ask "how far are we from a major third?" rather than only being told which scale
+  you happen to sit on.
+- **Contrast as measured, not as authored.** Every text/background pair is evaluated against
+  the colour a reader actually sees — the resolved ancestor background, with alpha composited
+  — so translucent text on a tinted panel is judged as it renders.
+- **The export.** The whole audit as JSON, leading with the diagnosis (`health`, `findings[]`
+  with severity and evidence, `verdicts`, `rules`) and carrying the full inventory underneath.
+  Built for machines: assert on it in CI, diff two runs, or hand it to a model.
+- **An API, not a UI helper.** Every screen is built on the same endpoints a CI job would use.
 
-**The diagnosis** — where the system has drifted, in plain terms:
+Nothing is invented and nothing is inferred by a model: the crawl, the aggregation and the
+verdicts are all computed. No API key, no per-run cost, and no model in the loop.
 
-> 1 of 28 text/background pairs fail WCAG AA, 4 of 31 colours are
-> near-duplicates, 6 of 11 type sizes fall off the scale, and 12 of 20 spacing
-> values miss the 4px grid. Radius and shadows hold steady.
+## Install
 
-Every claim is measured against a stated reference — a named modular ratio for
-type, a 4px or 8px grid for spacing, CIEDE2000 for colour, WCAG 2.1 for
-contrast — and the reference is selectable, so you can ask "how far are we from
-a major third?" rather than only being told which scale you happen to sit on.
-
-**The export** — the whole audit as JSON, leading with the diagnosis
-(`health`, `findings[]` with severity and evidence, `verdicts`, `rules`) and
-carrying the full inventory underneath. Built for machines: assert on it in CI,
-diff two runs, or hand it to a model and ask what to fix first.
-
-## How it works
-
-```
-discover (sitemap / links)    resolve the host, list candidate pages
-  → crawl (Playwright)        same-origin, picked pages or capped BFS
-  → extract                   computed styles per element, in-page
-  → normalise                 raw CSS strings → typed values, Node-side, pure
-  → aggregate                 fold pages into token tallies (counts, roles, pages)
-  → audit                     inventory + contrast + authored units + verdicts
-```
-
-Crawls run as **BullMQ jobs on Redis** with **WebSocket** progress, because a
-multi-page Playwright crawl is far too long for a request/response cycle.
-
-## API
-
-The backend is a standalone service. Every screen in the client is built on
-these endpoints, and they are equally usable from CI or a script. The full
-contract, including the webhook callbacks, is in [`openapi.yaml`](openapi.yaml)
-(OpenAPI 3.1) — open it in any OpenAPI viewer.
-
-| Method | Path | Purpose |
-|---|---|---|
-| `POST` | `/discover` | Resolve a URL and list candidate pages (sitemap, else links). |
-| `POST` | `/crawl` | Enqueue a crawl. Returns `202 { jobId }`. |
-| `GET` | `/crawl/:jobId/result` | Job status and the raw crawl result. |
-| `GET` | `/crawl/:jobId/audit` | The audit for a completed crawl. |
-| `GET` | `/crawl/:jobId/typography` | Typography inventory only. |
-| `GET` | `/crawl/:jobId/colours` | Colour clusters only. |
-| `WS` | `/` | Live crawl progress for a job. |
-
-A crawl runs for minutes, so a caller that isn't a browser has two options: poll
-`/crawl/:jobId/result`, or pass a `callbackUrl` and be told when it's done.
-
-### Discover
-
-```http
-POST /discover
-{ "url": "picocss.com" }
-```
-
-```json
-{
-  "rootUrl": "https://picocss.com/",
-  "host": "picocss.com",
-  "via": "links",
-  "pages": [{ "path": "/", "url": "https://picocss.com/" }]
-}
-```
-
-`rootUrl` is the *resolved* origin — follow it rather than the string you sent,
-since a host may only serve `www`. Invalid or unreachable URLs return `422` with
-a human-readable `error`.
-
-### Crawl
-
-```http
-POST /crawl
-{
-  "url": "https://picocss.com/",
-  "pages": ["https://picocss.com/", "https://picocss.com/docs"],
-  "maxPages": 2
-}
-```
-
-Page URLs must be **absolute and same-origin**; relative paths are ignored and
-the crawler falls back to a breadth-first walk from the root. Omit `pages`
-entirely for that BFS. The page ceiling is enforced server-side.
-
-Returns `202 { "jobId": "24" }`. An unusable URL is rejected at the edge with
-`422` rather than queueing a job that can only fail.
-
-### Polling a job
-
-```http
-GET /crawl/:jobId/result
-→ { "status": "completed", "result": { "rootUrl": "…", "pages": [ … ] } }
-```
-
-`status` is BullMQ's: `queued` · `active` · `completed` · `failed`. A crawl that
-reached **zero** pages is a **failure**, not an empty success, and carries the
-reason:
-
-```json
-{ "status": "failed", "error": "Couldn't read any pages — the site may be slow to load, blocking automated visits, or the selected pages may no longer exist." }
-```
-
-`GET /crawl/:jobId/audit` returns `409` until the crawl has finished.
-
-### Webhooks
-
-Pass a `callbackUrl` and Drift POSTs the finished audit to it — no polling.
-
-```http
-POST /crawl
-{ "url": "https://picocss.com/", "callbackUrl": "https://ci.example.com/drift" }
-```
-
-```json
-{
-  "event": "crawl.completed",
-  "jobId": "24",
-  "site": "https://picocss.com/",
-  "audit": { "summary": { "pages": 2, "contrastFailingAA": 1, "…": "…" }, "colourFamilies": [ … ], "contrast": [ … ] }
-}
-```
-
-A crawl that fails delivers `crawl.failed` with an `error` instead, so the
-receiver always hears back either way. Headers carry `x-drift-event`, and
-`x-drift-signature` (`sha256=…`, HMAC of the raw body) when
-`DRIFT_WEBHOOK_SECRET` is set — verify it before trusting the payload.
-
-The URL is validated when you enqueue the crawl, not at delivery time, so a
-mistake is a `422` while you're still on the line. It must be public http(s):
-loopback, private ranges, and link-local addresses are refused, and the host is
-resolved before the check, since a public name can still point somewhere
-private. A trusted internal host can be allowlisted with the
-`DRIFT_WEBHOOK_ALLOWED_HOSTS` env var (comma-separated), which exempts it from
-that refusal — off by default, and how a loopback receiver is permitted in a
-test run. Delivery is retried on a network error or a `5xx` and given up on
-after a `4xx`; it is best-effort, and never fails a crawl that succeeded — the
-audit is on the API regardless.
-
-The audit's `summary` counts (e.g. `contrastFailingAA`) and per-pair `contrast`
-verdicts close the CI loop: crawl on deploy, receive the audit, and fail the
-build when a threshold is crossed. (The plain-language `health` / `findings`
-diagnosis is assembled in the app when you open or export a run, not in this
-payload.)
-
-### Live progress
-
-Connect a WebSocket to the backend and you receive progress frames as pages land
-— `pagesCrawled`, `maxPages`, `lastUrl`, `lastTitle`, `elementsTotal`. The
-client uses the socket for liveness and the `result` endpoint as the
-authoritative source of completion, so a dropped socket degrades to polling
-rather than hanging.
-
-## Running it
-
-Redis must be reachable (defaults to `redis://127.0.0.1:6379`; override with
-`REDIS_URL`). Chromium is installed via Playwright.
+Drift runs locally against any site. Redis must be reachable (defaults to
+`redis://127.0.0.1:6379`; override with `REDIS_URL`), and Chromium comes from Playwright.
 
 ```bash
 npm install
 npx playwright install chromium
-npm run dev:server          # backend on :3001
-npm --prefix client run dev # client on :5173, proxies /api and /ws
 ```
 
+## Develop
+
+Node 20.19+ or 22.12+, as the `engines` field says; `.nvmrc` pins 22. Two processes: the
+backend owns the API, the WebSocket server and the crawl worker; the client proxies `/api`
+and `/ws` to it.
+
 ```bash
-npm test          # unit tests
-npm run typecheck # tsc, no emit
+npm run dev:server            # backend on :3001
+npm --prefix client run dev   # client on :5173
 ```
+
+## Scripts
+
+| Command | Does |
+| --- | --- |
+| `npm run dev:server` | Backend: API, WebSocket progress, crawl worker |
+| `npm run crawl` | Crawl a URL to JSON, no queue and no server |
+| `npm run capture` | Recapture the bundled demo audit, and print the figures the docs quote |
+| `npm run discover` | Resolve a URL and list its candidate pages |
+| `npm test` | Vitest over the service |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run lint` | ESLint (typescript-eslint + react-hooks) |
+| `npm run build` | `tsc` to `dist/` |
+
+The client carries its own `dev`, `build`, `preview`, `test`, `test:watch` and
+`typecheck` under `client/`. Linting runs once from the root across both halves.
 
 ## The deployed demo
 
-Drift's engine is a Playwright crawler behind a Redis-backed queue — not
-something to leave running on a public URL, and not free to host. So the
-deployed build ships a **real audit captured from a real crawl** and replays it.
+Drift's engine is a Playwright crawler behind a Redis-backed queue — not something to leave
+running on a public URL, and not free to host. So the deployed build ships a **real audit
+captured from a real crawl** and replays it.
 
-Everything downstream of the crawl is the genuine output, because it *is* the
-genuine output: the inventory, the verdicts and the export all come from that
-capture. Only the network round-trip is stubbed, and the UI says so rather than
-pretending to crawl on demand. Run it locally to audit any site.
+Everything downstream of the crawl is the genuine output, because it *is* the genuine output:
+the inventory, the verdicts and the export all come from that capture. Only the network
+round-trip is stubbed, and the UI says so rather than pretending to crawl on demand. Run it
+locally to audit any site.
 
 ```bash
-VITE_DEMO_MODE=true npm --prefix client run build
+npm run capture                                    # recapture from picocss.com
+VITE_DEMO_MODE=true npm --prefix client run build  # build the replaying bundle
 ```
+
+## More
+
+- [`DESIGN.md`](./DESIGN.md) covers the architecture, the service contract and its endpoints,
+  the design system, and the decisions behind the build.
+- [`openapi.yaml`](./openapi.yaml) is the full API contract, including the webhook callbacks
+  (OpenAPI 3.1). Open it in any OpenAPI viewer.
+- [drift-tests](https://github.com/hipuku/drift-tests) is the black-box acceptance suite that
+  drives these endpoints over HTTP.
 
 ## Stack
 
-| Layer | Choice |
-|---|---|
-| Frontend | React + TypeScript + Vite |
-| Backend | Node + Express (standalone, long-lived process) |
-| Crawler | Playwright (headless Chromium) |
-| Job queue | BullMQ on Redis |
-| Real-time | WebSockets (live crawl progress) |
-| Colour maths | `haus-colour-utils` |
-
-See [DESIGN.md](DESIGN.md) for the architecture, the audit model, and the
-reasoning behind each engineering choice.
+Node · Express · Playwright · BullMQ on Redis · WebSockets · React · TypeScript · Vite ·
+CSS Modules · `haus-colour-utils`

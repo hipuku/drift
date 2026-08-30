@@ -176,6 +176,130 @@ Endpoints are documented in [README.md](README.md).
 
 ---
 
+### The endpoints
+
+The backend is a standalone service. Every screen in the client is built on
+these endpoints, and they are equally usable from CI or a script. The full
+contract, including the webhook callbacks, is in [`openapi.yaml`](openapi.yaml)
+(OpenAPI 3.1) — open it in any OpenAPI viewer.
+
+| Method | Path | Purpose |
+|---|---|---|
+| `POST` | `/discover` | Resolve a URL and list candidate pages (sitemap, else links). |
+| `POST` | `/crawl` | Enqueue a crawl. Returns `202 { jobId }`. |
+| `GET` | `/crawl/:jobId/result` | Job status and the raw crawl result. |
+| `GET` | `/crawl/:jobId/audit` | The audit for a completed crawl. |
+| `GET` | `/crawl/:jobId/typography` | Typography inventory only. |
+| `GET` | `/crawl/:jobId/colours` | Colour clusters only. |
+| `WS` | `/` | Live crawl progress for a job. |
+
+A crawl runs for minutes, so a caller that isn't a browser has two options: poll
+`/crawl/:jobId/result`, or pass a `callbackUrl` and be told when it's done.
+
+#### Discover
+
+```http
+POST /discover
+{ "url": "picocss.com" }
+```
+
+```json
+{
+  "rootUrl": "https://picocss.com/",
+  "host": "picocss.com",
+  "via": "links",
+  "pages": [{ "path": "/", "url": "https://picocss.com/" }]
+}
+```
+
+`rootUrl` is the *resolved* origin — follow it rather than the string you sent,
+since a host may only serve `www`. Invalid or unreachable URLs return `422` with
+a human-readable `error`.
+
+#### Crawl
+
+```http
+POST /crawl
+{
+  "url": "https://picocss.com/",
+  "pages": ["https://picocss.com/", "https://picocss.com/docs"],
+  "maxPages": 2
+}
+```
+
+Page URLs must be **absolute and same-origin**; relative paths are ignored and
+the crawler falls back to a breadth-first walk from the root. Omit `pages`
+entirely for that BFS. The page ceiling is enforced server-side.
+
+Returns `202 { "jobId": "24" }`. An unusable URL is rejected at the edge with
+`422` rather than queueing a job that can only fail.
+
+#### Polling a job
+
+```http
+GET /crawl/:jobId/result
+→ { "status": "completed", "result": { "rootUrl": "…", "pages": [ … ] } }
+```
+
+`status` is BullMQ's: `queued` · `active` · `completed` · `failed`. A crawl that
+reached **zero** pages is a **failure**, not an empty success, and carries the
+reason:
+
+```json
+{ "status": "failed", "error": "Couldn't read any pages — the site may be slow to load, blocking automated visits, or the selected pages may no longer exist." }
+```
+
+`GET /crawl/:jobId/audit` returns `409` until the crawl has finished.
+
+#### Webhooks
+
+Pass a `callbackUrl` and Drift POSTs the finished audit to it — no polling.
+
+```http
+POST /crawl
+{ "url": "https://picocss.com/", "callbackUrl": "https://ci.example.com/drift" }
+```
+
+```json
+{
+  "event": "crawl.completed",
+  "jobId": "24",
+  "site": "https://picocss.com/",
+  "audit": { "summary": { "pages": 2, "contrastFailingAA": 1, "…": "…" }, "colourFamilies": [ … ], "contrast": [ … ] }
+}
+```
+
+A crawl that fails delivers `crawl.failed` with an `error` instead, so the
+receiver always hears back either way. Headers carry `x-drift-event`, and
+`x-drift-signature` (`sha256=…`, HMAC of the raw body) when
+`DRIFT_WEBHOOK_SECRET` is set — verify it before trusting the payload.
+
+The URL is validated when you enqueue the crawl, not at delivery time, so a
+mistake is a `422` while you're still on the line. It must be public http(s):
+loopback, private ranges, and link-local addresses are refused, and the host is
+resolved before the check, since a public name can still point somewhere
+private. A trusted internal host can be allowlisted with the
+`DRIFT_WEBHOOK_ALLOWED_HOSTS` env var (comma-separated), which exempts it from
+that refusal — off by default, and how a loopback receiver is permitted in a
+test run. Delivery is retried on a network error or a `5xx` and given up on
+after a `4xx`; it is best-effort, and never fails a crawl that succeeded — the
+audit is on the API regardless.
+
+The audit's `summary` counts (e.g. `contrastFailingAA`) and per-pair `contrast`
+verdicts close the CI loop: crawl on deploy, receive the audit, and fail the
+build when a threshold is crossed. (The plain-language `health` / `findings`
+diagnosis is assembled in the app when you open or export a run, not in this
+payload.)
+
+#### Live progress
+
+Connect a WebSocket to the backend and you receive progress frames as pages land
+— `pagesCrawled`, `maxPages`, `lastUrl`, `lastTitle`, `elementsTotal`. The
+client uses the socket for liveness and the `result` endpoint as the
+authoritative source of completion, so a dropped socket degrades to polling
+rather than hanging.
+
+
 ## Design system
 
 Two token tiers, in cascade layers. `tokens/primitives.css` holds raw values and

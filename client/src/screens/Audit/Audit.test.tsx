@@ -118,11 +118,21 @@ describe("tabs", () => {
 describe("the overview diagnosis", () => {
   it("states the drift in prose, with real counts", () => {
     render(<Audit audit={audit} />);
-    // The fixture has 1 of 28 failing pairs and 4 of 31 near-duplicate colours.
+    // Read off the fixture rather than written in. The fixture is a real
+    // capture and is recaptured when the analysis changes (`npm run capture`),
+    // so a literal here is a second copy of a number that moves — which is how
+    // the previous pair of literals came to describe a capture two fixes old.
+    const s = audit.summary;
     expect(
-      screen.getByText(/1 of 28 text\/background pairs fail WCAG AA/),
+      screen.getByText(
+        new RegExp(`${s.colourNearDuplicates} of ${s.distinctColours} colours are near-duplicates`),
+      ),
     ).toBeInTheDocument();
-    expect(screen.getByText(/4 of 31 colours are near-duplicates/)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        new RegExp(`${s.spacingOffGrid} of ${s.spacings} spacing values miss the 4px grid`),
+      ),
+    ).toBeInTheDocument();
   });
 
   it("sends a verdict card to its own tab", async () => {
@@ -234,7 +244,56 @@ describe("export", () => {
     expect(finding.evidence.map((e) => e.px)).not.toContain(20);
   });
 
+  /**
+   * On a fixture with a failing pair, not on the bundled one.
+   *
+   * The bundled capture currently has none — picocss.com passes AA on every
+   * pair once contrast is measured against the background a reader actually
+   * sees. That is a fact about the site on the day it was crawled, and pinning
+   * the most important finding in the export to it would mean the failing path
+   * silently stops being tested the next time the site changes.
+   */
   it("records a failing-contrast finding when there is one", async () => {
+    captureDownload();
+    let captured: unknown;
+    vi.mocked(URL.createObjectURL).mockImplementation((blob: Blob | MediaSource) => {
+      captured = blob;
+      return "blob:stub";
+    });
+
+    const failing: SiteAudit = {
+      ...audit,
+      summary: { ...audit.summary, contrastPairs: 1, contrastFailingAA: 1 },
+      contrast: [
+        {
+          foreground: "#777777",
+          background: "#ffffff",
+          ratio: 4.48,
+          passAA: false,
+          passAAA: false,
+          passAALarge: true,
+          count: 3,
+          sampleTags: ["p"],
+          pages: ["/"],
+        },
+      ],
+    };
+
+    render(<Audit audit={failing} />);
+    await userEvent.click(screen.getByRole("button", { name: "Export" }));
+
+    const payload = JSON.parse(await (captured as Blob).text()) as {
+      findings: { id: string; severity: string; count: number }[];
+    };
+    const contrast = payload.findings.find((f) => f.id === "contrast-fails-aa");
+    expect(contrast).toBeDefined();
+    expect(contrast!.severity).toBe("review");
+    expect(contrast!.count).toBe(1);
+  });
+
+  it("records no contrast finding when every pair passes", async () => {
+    // The bundled capture's current state, asserted so the absence is a
+    // checked fact rather than a gap in the suite.
     captureDownload();
     let captured: unknown;
     vi.mocked(URL.createObjectURL).mockImplementation((blob: Blob | MediaSource) => {
@@ -246,11 +305,11 @@ describe("export", () => {
     await userEvent.click(screen.getByRole("button", { name: "Export" }));
 
     const payload = JSON.parse(await (captured as Blob).text()) as {
-      findings: { id: string; severity: string }[];
+      findings: { id: string }[];
+      health: string;
     };
-    const contrast = payload.findings.find((f) => f.id === "contrast-fails-aa");
-    expect(contrast).toBeDefined();
-    expect(contrast!.severity).toBe("review");
+    expect(payload.findings.find((f) => f.id === "contrast-fails-aa")).toBeUndefined();
+    expect(payload.health).toMatch(/contrast/);
   });
 });
 

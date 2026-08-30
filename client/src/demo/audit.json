@@ -2,20 +2,20 @@
   "rootUrl": "https://picocss.com/",
   "summary": {
     "pages": 2,
-    "distinctColours": 31,
+    "distinctColours": 29,
     "colourFamilies": 6,
-    "colourNearDuplicates": 4,
+    "colourNearDuplicates": 7,
     "fontFamilies": 3,
-    "typeSizes": 11,
+    "typeSizes": 9,
     "fontWeights": 3,
     "typeOffScale": 6,
-    "spacings": 20,
-    "spacingOffGrid": 12,
+    "spacings": 21,
+    "spacingOffGrid": 14,
     "radii": 2,
     "radiusNearDuplicates": 0,
-    "shadows": 3,
-    "contrastPairs": 28,
-    "contrastFailingAA": 1
+    "shadows": 2,
+    "contrastPairs": 21,
+    "contrastFailingAA": 0
   },
   "colourFamilies": [
     {
@@ -23,17 +23,17 @@
       "swatches": [
         {
           "hex": "#ffffff",
-          "count": 26,
+          "count": 31,
           "roles": {
             "text": 14,
-            "background": 12,
+            "background": 17,
             "border": 0
           },
           "elements": [
             {
               "tag": "article",
               "role": "background",
-              "count": 7
+              "count": 13
             },
             {
               "tag": "path",
@@ -46,6 +46,16 @@
               "count": 4
             },
             {
+              "tag": "div",
+              "role": "background",
+              "count": 2
+            },
+            {
+              "tag": "g",
+              "role": "text",
+              "count": 2
+            },
+            {
               "tag": "html",
               "role": "background",
               "count": 2
@@ -54,38 +64,18 @@
               "tag": "svg",
               "role": "text",
               "count": 2
-            },
-            {
-              "tag": "g",
-              "role": "text",
-              "count": 2
-            },
-            {
-              "tag": "div",
-              "role": "background",
-              "count": 2
-            },
-            {
-              "tag": "ul",
-              "role": "background",
-              "count": 1
             }
           ],
           "pages": [
             "https://picocss.com/",
-            "https://picocss.com/docs"
+            "https://picocss.com/examples"
           ],
           "lightness": 100,
           "nearest": {
-            "hex": "#ffffffcc",
-            "deltaE": 0
+            "hex": "#fbfcfc",
+            "deltaE": 0.8
           },
           "related": [
-            {
-              "hex": "#ffffffcc",
-              "deltaE": 0,
-              "opacityVariant": true
-            },
             {
               "hex": "#fbfcfc",
               "deltaE": 0.8,
@@ -93,835 +83,6 @@
             }
           ]
         },
-        {
-          "hex": "#ffffffcc",
-          "count": 1,
-          "roles": {
-            "text": 0,
-            "background": 1,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "header",
-              "role": "background",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/docs"
-          ],
-          "lightness": 100,
-          "nearest": {
-            "hex": "#ffffff",
-            "deltaE": 0
-          },
-          "related": [
-            {
-              "hex": "#ffffff",
-              "deltaE": 0,
-              "opacityVariant": true
-            },
-            {
-              "hex": "#fbfcfc",
-              "deltaE": 0.8,
-              "opacityVariant": false
-            }
-          ]
-        },
-        {
-          "hex": "#6f7887",
-          "count": 33,
-          "roles": {
-            "text": 33,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "path",
-              "role": "text",
-              "count": 14
-            },
-            {
-              "tag": "a",
-              "role": "text",
-              "count": 7
-            },
-            {
-              "tag": "svg",
-              "role": "text",
-              "count": 7
-            },
-            {
-              "tag": "span",
-              "role": "text",
-              "count": 5
-            }
-          ],
-          "pages": [
-            "https://picocss.com/docs"
-          ],
-          "lightness": 48,
-          "nearest": {
-            "hex": "#646b79",
-            "deltaE": 5.1
-          },
-          "related": []
-        },
-        {
-          "hex": "#646b79",
-          "count": 20,
-          "roles": {
-            "text": 20,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "p",
-              "role": "text",
-              "count": 19
-            },
-            {
-              "tag": "summary",
-              "role": "text",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/",
-            "https://picocss.com/docs"
-          ],
-          "lightness": 43,
-          "nearest": {
-            "hex": "#5c6370",
-            "deltaE": 3.1
-          },
-          "related": []
-        },
-        {
-          "hex": "#5c6370",
-          "count": 86,
-          "roles": {
-            "text": 86,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "span",
-              "role": "text",
-              "count": 72
-            },
-            {
-              "tag": "code",
-              "role": "text",
-              "count": 11
-            },
-            {
-              "tag": "pre",
-              "role": "text",
-              "count": 3
-            }
-          ],
-          "pages": [
-            "https://picocss.com/",
-            "https://picocss.com/docs"
-          ],
-          "lightness": 40,
-          "nearest": {
-            "hex": "#646b79",
-            "deltaE": 3.1
-          },
-          "related": []
-        },
-        {
-          "hex": "#424751",
-          "count": 6,
-          "roles": {
-            "text": 6,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "h3",
-              "role": "text",
-              "count": 6
-            }
-          ],
-          "pages": [
-            "https://picocss.com/"
-          ],
-          "lightness": 29,
-          "nearest": {
-            "hex": "#373c44",
-            "deltaE": 3.8
-          },
-          "related": []
-        },
-        {
-          "hex": "#373c44",
-          "count": 262,
-          "roles": {
-            "text": 262,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "li",
-              "role": "text",
-              "count": 108
-            },
-            {
-              "tag": "ul",
-              "role": "text",
-              "count": 25
-            },
-            {
-              "tag": "div",
-              "role": "text",
-              "count": 21
-            },
-            {
-              "tag": "p",
-              "role": "text",
-              "count": 16
-            },
-            {
-              "tag": "section",
-              "role": "text",
-              "count": 14
-            },
-            {
-              "tag": "details",
-              "role": "text",
-              "count": 9
-            },
-            {
-              "tag": "h2",
-              "role": "text",
-              "count": 8
-            },
-            {
-              "tag": "strong",
-              "role": "text",
-              "count": 8
-            },
-            {
-              "tag": "summary",
-              "role": "text",
-              "count": 8
-            },
-            {
-              "tag": "article",
-              "role": "text",
-              "count": 7
-            },
-            {
-              "tag": "path",
-              "role": "text",
-              "count": 7
-            },
-            {
-              "tag": "nav",
-              "role": "text",
-              "count": 6
-            },
-            {
-              "tag": "footer",
-              "role": "text",
-              "count": 3
-            },
-            {
-              "tag": "hgroup",
-              "role": "text",
-              "count": 3
-            },
-            {
-              "tag": "span",
-              "role": "text",
-              "count": 3
-            },
-            {
-              "tag": "svg",
-              "role": "text",
-              "count": 3
-            },
-            {
-              "tag": "html",
-              "role": "text",
-              "count": 2
-            },
-            {
-              "tag": "body",
-              "role": "text",
-              "count": 2
-            },
-            {
-              "tag": "header",
-              "role": "text",
-              "count": 2
-            },
-            {
-              "tag": "main",
-              "role": "text",
-              "count": 2
-            },
-            {
-              "tag": "a",
-              "role": "text",
-              "count": 2
-            },
-            {
-              "tag": "aside",
-              "role": "text",
-              "count": 2
-            },
-            {
-              "tag": "form",
-              "role": "text",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/",
-            "https://picocss.com/docs"
-          ],
-          "lightness": 24,
-          "nearest": {
-            "hex": "#2d3138",
-            "deltaE": 3.6
-          },
-          "related": []
-        },
-        {
-          "hex": "#2d3138",
-          "count": 2,
-          "roles": {
-            "text": 2,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "h1",
-              "role": "text",
-              "count": 2
-            }
-          ],
-          "pages": [
-            "https://picocss.com/",
-            "https://picocss.com/docs"
-          ],
-          "lightness": 20,
-          "nearest": {
-            "hex": "#23262c",
-            "deltaE": 3.5
-          },
-          "related": []
-        },
-        {
-          "hex": "#23262c",
-          "count": 1,
-          "roles": {
-            "text": 1,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "input",
-              "role": "text",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/"
-          ],
-          "lightness": 15,
-          "nearest": {
-            "hex": "#2d3138",
-            "deltaE": 3.5
-          },
-          "related": []
-        },
-        {
-          "hex": "#000000",
-          "count": 1,
-          "roles": {
-            "text": 1,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "a",
-              "role": "text",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/docs"
-          ],
-          "lightness": 0,
-          "nearest": {
-            "hex": "#0f1114",
-            "deltaE": 3.5
-          },
-          "related": []
-        }
-      ],
-      "count": 438
-    },
-    {
-      "name": "Blue",
-      "swatches": [
-        {
-          "hex": "#f3f5f7",
-          "count": 6,
-          "roles": {
-            "text": 0,
-            "background": 6,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "code",
-              "role": "background",
-              "count": 6
-            }
-          ],
-          "pages": [
-            "https://picocss.com/",
-            "https://picocss.com/docs"
-          ],
-          "lightness": 96,
-          "nearest": {
-            "hex": "#eff1f4",
-            "deltaE": 1
-          },
-          "related": [
-            {
-              "hex": "#eff1f4",
-              "deltaE": 1,
-              "opacityVariant": false
-            },
-            {
-              "hex": "#fbfcfc",
-              "deltaE": 1.8,
-              "opacityVariant": false
-            }
-          ]
-        },
-        {
-          "hex": "#eff1f4",
-          "count": 2,
-          "roles": {
-            "text": 0,
-            "background": 1,
-            "border": 1
-          },
-          "elements": [
-            {
-              "tag": "ul",
-              "role": "border",
-              "count": 1
-            },
-            {
-              "tag": "a",
-              "role": "background",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/docs"
-          ],
-          "lightness": 95,
-          "nearest": {
-            "hex": "#f3f5f7",
-            "deltaE": 1
-          },
-          "related": [
-            {
-              "hex": "#f3f5f7",
-              "deltaE": 1,
-              "opacityVariant": false
-            }
-          ]
-        },
-        {
-          "hex": "#e7eaf0",
-          "count": 11,
-          "roles": {
-            "text": 0,
-            "background": 0,
-            "border": 11
-          },
-          "elements": [
-            {
-              "tag": "ul",
-              "role": "border",
-              "count": 8
-            },
-            {
-              "tag": "section",
-              "role": "border",
-              "count": 2
-            },
-            {
-              "tag": "footer",
-              "role": "border",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/",
-            "https://picocss.com/docs"
-          ],
-          "lightness": 92,
-          "nearest": {
-            "hex": "#eff1f4",
-            "deltaE": 2.1
-          },
-          "related": []
-        },
-        {
-          "hex": "#cfd5e2",
-          "count": 1,
-          "roles": {
-            "text": 0,
-            "background": 0,
-            "border": 1
-          },
-          "elements": [
-            {
-              "tag": "input",
-              "role": "border",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/"
-          ],
-          "lightness": 85,
-          "nearest": {
-            "hex": "#e7eaf0",
-            "deltaE": 5.7
-          },
-          "related": []
-        },
-        {
-          "hex": "#969eaf",
-          "count": 100,
-          "roles": {
-            "text": 100,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "span",
-              "role": "text",
-              "count": 86
-            },
-            {
-              "tag": "pre",
-              "role": "text",
-              "count": 7
-            },
-            {
-              "tag": "code",
-              "role": "text",
-              "count": 7
-            }
-          ],
-          "pages": [
-            "https://picocss.com/docs"
-          ],
-          "lightness": 64,
-          "nearest": {
-            "hex": "#6f7887",
-            "deltaE": 13.5
-          },
-          "related": []
-        },
-        {
-          "hex": "#5d6b89",
-          "count": 115,
-          "roles": {
-            "text": 115,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "a",
-              "role": "text",
-              "count": 91
-            },
-            {
-              "tag": "path",
-              "role": "text",
-              "count": 15
-            },
-            {
-              "tag": "svg",
-              "role": "text",
-              "count": 6
-            },
-            {
-              "tag": "p",
-              "role": "text",
-              "count": 2
-            },
-            {
-              "tag": "small",
-              "role": "text",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/",
-            "https://picocss.com/docs"
-          ],
-          "lightness": 45,
-          "nearest": {
-            "hex": "#646b79",
-            "deltaE": 6.1
-          },
-          "related": []
-        },
-        {
-          "hex": "#2a628a",
-          "count": 6,
-          "roles": {
-            "text": 6,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "p",
-              "role": "text",
-              "count": 3
-            },
-            {
-              "tag": "strong",
-              "role": "text",
-              "count": 3
-            }
-          ],
-          "pages": [
-            "https://picocss.com/"
-          ],
-          "lightness": 35,
-          "nearest": {
-            "hex": "#015887",
-            "deltaE": 3.9
-          },
-          "related": []
-        },
-        {
-          "hex": "#48536b",
-          "count": 1,
-          "roles": {
-            "text": 1,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "a",
-              "role": "text",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/docs"
-          ],
-          "lightness": 35,
-          "nearest": {
-            "hex": "#424751",
-            "deltaE": 7.2
-          },
-          "related": []
-        },
-        {
-          "hex": "#0172ad",
-          "count": 55,
-          "roles": {
-            "text": 52,
-            "background": 1,
-            "border": 2
-          },
-          "elements": [
-            {
-              "tag": "path",
-              "role": "text",
-              "count": 26
-            },
-            {
-              "tag": "a",
-              "role": "text",
-              "count": 12
-            },
-            {
-              "tag": "svg",
-              "role": "text",
-              "count": 8
-            },
-            {
-              "tag": "g",
-              "role": "text",
-              "count": 6
-            },
-            {
-              "tag": "a",
-              "role": "border",
-              "count": 2
-            },
-            {
-              "tag": "a",
-              "role": "background",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/",
-            "https://picocss.com/docs"
-          ],
-          "lightness": 34,
-          "nearest": {
-            "hex": "#2a628a",
-            "deltaE": 6.7
-          },
-          "related": []
-        },
-        {
-          "hex": "#015887",
-          "count": 1,
-          "roles": {
-            "text": 1,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "a",
-              "role": "text",
-              "count": 1
-            }
-          ],
-          "pages": [
-            "https://picocss.com/docs"
-          ],
-          "lightness": 27,
-          "nearest": {
-            "hex": "#2a628a",
-            "deltaE": 3.9
-          },
-          "related": []
-        },
-        {
-          "hex": "#181c25",
-          "count": 73,
-          "roles": {
-            "text": 53,
-            "background": 17,
-            "border": 3
-          },
-          "elements": [
-            {
-              "tag": "a",
-              "role": "text",
-              "count": 17
-            },
-            {
-              "tag": "path",
-              "role": "text",
-              "count": 16
-            },
-            {
-              "tag": "svg",
-              "role": "text",
-              "count": 14
-            },
-            {
-              "tag": "a",
-              "role": "background",
-              "count": 10
-            },
-            {
-              "tag": "div",
-              "role": "background",
-              "count": 7
-            },
-            {
-              "tag": "a",
-              "role": "border",
-              "count": 3
-            },
-            {
-              "tag": "clippath",
-              "role": "text",
-              "count": 2
-            },
-            {
-              "tag": "g",
-              "role": "text",
-              "count": 2
-            },
-            {
-              "tag": "circle",
-              "role": "text",
-              "count": 2
-            }
-          ],
-          "pages": [
-            "https://picocss.com/",
-            "https://picocss.com/docs"
-          ],
-          "lightness": 12,
-          "nearest": {
-            "hex": "#23262c",
-            "deltaE": 3.7
-          },
-          "related": []
-        },
-        {
-          "hex": "#0f1114",
-          "count": 5,
-          "roles": {
-            "text": 5,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "mark",
-              "role": "text",
-              "count": 5
-            }
-          ],
-          "pages": [
-            "https://picocss.com/docs"
-          ],
-          "lightness": 7,
-          "nearest": {
-            "hex": "#000000",
-            "deltaE": 3.5
-          },
-          "related": []
-        }
-      ],
-      "count": 376
-    },
-    {
-      "name": "Teal",
-      "swatches": [
         {
           "hex": "#fbfcfc",
           "count": 1,
@@ -952,11 +113,6 @@
               "opacityVariant": false
             },
             {
-              "hex": "#ffffffcc",
-              "deltaE": 0.8,
-              "opacityVariant": false
-            },
-            {
               "hex": "#f3f5f7",
               "deltaE": 1.8,
               "opacityVariant": false
@@ -964,32 +120,94 @@
           ]
         },
         {
-          "hex": "#71a4a1",
-          "count": 40,
+          "hex": "#f3f5f7",
+          "count": 2,
           "roles": {
-            "text": 40,
-            "background": 0,
+            "text": 0,
+            "background": 2,
             "border": 0
           },
           "elements": [
             {
-              "tag": "span",
-              "role": "text",
-              "count": 40
+              "tag": "code",
+              "role": "background",
+              "count": 2
             }
           ],
           "pages": [
-            "https://picocss.com/docs"
+            "https://picocss.com/"
           ],
-          "lightness": 54,
+          "lightness": 97,
           "nearest": {
-            "hex": "#969eaf",
-            "deltaE": 17.9
+            "hex": "#fbfcfc",
+            "deltaE": 1.8
+          },
+          "related": [
+            {
+              "hex": "#fbfcfc",
+              "deltaE": 1.8,
+              "opacityVariant": false
+            }
+          ]
+        },
+        {
+          "hex": "#e7eaf0",
+          "count": 3,
+          "roles": {
+            "text": 0,
+            "background": 0,
+            "border": 3
+          },
+          "elements": [
+            {
+              "tag": "section",
+              "role": "border",
+              "count": 2
+            },
+            {
+              "tag": "footer",
+              "role": "border",
+              "count": 1
+            }
+          ],
+          "pages": [
+            "https://picocss.com/",
+            "https://picocss.com/examples"
+          ],
+          "lightness": 94,
+          "nearest": {
+            "hex": "#f3f5f7",
+            "deltaE": 3
           },
           "related": []
         },
         {
-          "hex": "#2e685b",
+          "hex": "#cfd5e2",
+          "count": 1,
+          "roles": {
+            "text": 0,
+            "background": 0,
+            "border": 1
+          },
+          "elements": [
+            {
+              "tag": "input",
+              "role": "border",
+              "count": 1
+            }
+          ],
+          "pages": [
+            "https://picocss.com/"
+          ],
+          "lightness": 87,
+          "nearest": {
+            "hex": "#e7eaf0",
+            "deltaE": 5.7
+          },
+          "related": []
+        },
+        {
+          "hex": "#646b79",
           "count": 30,
           "roles": {
             "text": 30,
@@ -998,57 +216,27 @@
           },
           "elements": [
             {
-              "tag": "span",
+              "tag": "p",
               "role": "text",
               "count": 30
             }
           ],
           "pages": [
-            "https://picocss.com/"
+            "https://picocss.com/",
+            "https://picocss.com/examples"
           ],
-          "lightness": 29,
+          "lightness": 53,
           "nearest": {
             "hex": "#5c6370",
-            "deltaE": 20.8
-          },
-          "related": []
-        }
-      ],
-      "count": 71
-    },
-    {
-      "name": "Orange",
-      "swatches": [
-        {
-          "hex": "#fde7c0",
-          "count": 5,
-          "roles": {
-            "text": 0,
-            "background": 5,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "mark",
-              "role": "background",
-              "count": 5
-            }
-          ],
-          "pages": [
-            "https://picocss.com/docs"
-          ],
-          "lightness": 87,
-          "nearest": {
-            "hex": "#ffffff",
-            "deltaE": 15.3
+            "deltaE": 3.1
           },
           "related": []
         },
         {
-          "hex": "#bb972c",
-          "count": 35,
+          "hex": "#5c6370",
+          "count": 81,
           "roles": {
-            "text": 35,
+            "text": 81,
             "background": 0,
             "border": 0
           },
@@ -1056,55 +244,466 @@
             {
               "tag": "span",
               "role": "text",
-              "count": 35
+              "count": 71
+            },
+            {
+              "tag": "code",
+              "role": "text",
+              "count": 7
+            },
+            {
+              "tag": "pre",
+              "role": "text",
+              "count": 3
             }
           ],
           "pages": [
-            "https://picocss.com/docs"
+            "https://picocss.com/",
+            "https://picocss.com/examples"
           ],
-          "lightness": 45,
+          "lightness": 50,
           "nearest": {
-            "hex": "#fde7c0",
-            "deltaE": 23.8
+            "hex": "#646b79",
+            "deltaE": 3.1
           },
           "related": []
         },
         {
-          "hex": "#8b4f00",
-          "count": 28,
+          "hex": "#424751",
+          "count": 6,
           "roles": {
-            "text": 28,
+            "text": 6,
             "background": 0,
             "border": 0
           },
           "elements": [
             {
-              "tag": "span",
+              "tag": "h3",
               "role": "text",
-              "count": 27
+              "count": 6
+            }
+          ],
+          "pages": [
+            "https://picocss.com/"
+          ],
+          "lightness": 40,
+          "nearest": {
+            "hex": "#373c44",
+            "deltaE": 3.8
+          },
+          "related": []
+        },
+        {
+          "hex": "#373c44",
+          "count": 170,
+          "roles": {
+            "text": 170,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "li",
+              "role": "text",
+              "count": 59
+            },
+            {
+              "tag": "div",
+              "role": "text",
+              "count": 19
+            },
+            {
+              "tag": "ul",
+              "role": "text",
+              "count": 15
+            },
+            {
+              "tag": "article",
+              "role": "text",
+              "count": 13
             },
             {
               "tag": "p",
+              "role": "text",
+              "count": 10
+            },
+            {
+              "tag": "section",
+              "role": "text",
+              "count": 10
+            },
+            {
+              "tag": "h2",
+              "role": "text",
+              "count": 8
+            },
+            {
+              "tag": "strong",
+              "role": "text",
+              "count": 8
+            },
+            {
+              "tag": "path",
+              "role": "text",
+              "count": 6
+            },
+            {
+              "tag": "nav",
+              "role": "text",
+              "count": 4
+            },
+            {
+              "tag": "footer",
+              "role": "text",
+              "count": 3
+            },
+            {
+              "tag": "body",
+              "role": "text",
+              "count": 2
+            },
+            {
+              "tag": "header",
+              "role": "text",
+              "count": 2
+            },
+            {
+              "tag": "hgroup",
+              "role": "text",
+              "count": 2
+            },
+            {
+              "tag": "html",
+              "role": "text",
+              "count": 2
+            },
+            {
+              "tag": "main",
+              "role": "text",
+              "count": 2
+            },
+            {
+              "tag": "span",
+              "role": "text",
+              "count": 2
+            },
+            {
+              "tag": "svg",
+              "role": "text",
+              "count": 2
+            },
+            {
+              "tag": "form",
               "role": "text",
               "count": 1
             }
           ],
           "pages": [
             "https://picocss.com/",
-            "https://picocss.com/docs"
+            "https://picocss.com/examples"
+          ],
+          "lightness": 35,
+          "nearest": {
+            "hex": "#2d3138",
+            "deltaE": 3.6
+          },
+          "related": []
+        },
+        {
+          "hex": "#2d3138",
+          "count": 2,
+          "roles": {
+            "text": 2,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "h1",
+              "role": "text",
+              "count": 2
+            }
+          ],
+          "pages": [
+            "https://picocss.com/",
+            "https://picocss.com/examples"
+          ],
+          "lightness": 31,
+          "nearest": {
+            "hex": "#23262c",
+            "deltaE": 3.5
+          },
+          "related": []
+        },
+        {
+          "hex": "#23262c",
+          "count": 1,
+          "roles": {
+            "text": 1,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "input",
+              "role": "text",
+              "count": 1
+            }
+          ],
+          "pages": [
+            "https://picocss.com/"
           ],
           "lightness": 27,
           "nearest": {
-            "hex": "#bb972c",
-            "deltaE": 27.3
+            "hex": "#2d3138",
+            "deltaE": 3.5
+          },
+          "related": []
+        },
+        {
+          "hex": "#181c25",
+          "count": 59,
+          "roles": {
+            "text": 53,
+            "background": 3,
+            "border": 3
+          },
+          "elements": [
+            {
+              "tag": "a",
+              "role": "text",
+              "count": 17
+            },
+            {
+              "tag": "path",
+              "role": "text",
+              "count": 16
+            },
+            {
+              "tag": "svg",
+              "role": "text",
+              "count": 14
+            },
+            {
+              "tag": "a",
+              "role": "background",
+              "count": 3
+            },
+            {
+              "tag": "a",
+              "role": "border",
+              "count": 3
+            },
+            {
+              "tag": "circle",
+              "role": "text",
+              "count": 2
+            },
+            {
+              "tag": "clippath",
+              "role": "text",
+              "count": 2
+            },
+            {
+              "tag": "g",
+              "role": "text",
+              "count": 2
+            }
+          ],
+          "pages": [
+            "https://picocss.com/",
+            "https://picocss.com/examples"
+          ],
+          "lightness": 23,
+          "nearest": {
+            "hex": "#23262c",
+            "deltaE": 3.7
+          },
+          "related": []
+        },
+        {
+          "hex": "#000000",
+          "count": 1,
+          "roles": {
+            "text": 1,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "a",
+              "role": "text",
+              "count": 1
+            }
+          ],
+          "pages": [
+            "https://picocss.com/examples"
+          ],
+          "lightness": 0,
+          "nearest": {
+            "hex": "#181c25",
+            "deltaE": 8.5
           },
           "related": []
         }
       ],
-      "count": 68
+      "count": 388
     },
     {
-      "name": "Purple",
+      "name": "Blue",
+      "swatches": [
+        {
+          "hex": "#0172ad",
+          "count": 50,
+          "roles": {
+            "text": 48,
+            "background": 1,
+            "border": 1
+          },
+          "elements": [
+            {
+              "tag": "path",
+              "role": "text",
+              "count": 26
+            },
+            {
+              "tag": "a",
+              "role": "text",
+              "count": 8
+            },
+            {
+              "tag": "svg",
+              "role": "text",
+              "count": 8
+            },
+            {
+              "tag": "g",
+              "role": "text",
+              "count": 6
+            },
+            {
+              "tag": "a",
+              "role": "background",
+              "count": 1
+            },
+            {
+              "tag": "a",
+              "role": "border",
+              "count": 1
+            }
+          ],
+          "pages": [
+            "https://picocss.com/",
+            "https://picocss.com/examples"
+          ],
+          "lightness": 53,
+          "nearest": {
+            "hex": "#2a628a",
+            "deltaE": 6.7
+          },
+          "related": []
+        },
+        {
+          "hex": "#5d6b89",
+          "count": 124,
+          "roles": {
+            "text": 124,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "a",
+              "role": "text",
+              "count": 58
+            },
+            {
+              "tag": "path",
+              "role": "text",
+              "count": 43
+            },
+            {
+              "tag": "svg",
+              "role": "text",
+              "count": 21
+            },
+            {
+              "tag": "p",
+              "role": "text",
+              "count": 2
+            }
+          ],
+          "pages": [
+            "https://picocss.com/",
+            "https://picocss.com/examples"
+          ],
+          "lightness": 53,
+          "nearest": {
+            "hex": "#646b79",
+            "deltaE": 6.1
+          },
+          "related": []
+        },
+        {
+          "hex": "#2a628a",
+          "count": 6,
+          "roles": {
+            "text": 6,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "p",
+              "role": "text",
+              "count": 3
+            },
+            {
+              "tag": "strong",
+              "role": "text",
+              "count": 3
+            }
+          ],
+          "pages": [
+            "https://picocss.com/"
+          ],
+          "lightness": 48,
+          "nearest": {
+            "hex": "#0172ad",
+            "deltaE": 6.7
+          },
+          "related": []
+        },
+        {
+          "hex": "#48536b",
+          "count": 1,
+          "roles": {
+            "text": 1,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "a",
+              "role": "text",
+              "count": 1
+            }
+          ],
+          "pages": [
+            "https://picocss.com/examples"
+          ],
+          "lightness": 44,
+          "nearest": {
+            "hex": "#424751",
+            "deltaE": 7.2
+          },
+          "related": []
+        }
+      ],
+      "count": 181
+    },
+    {
+      "name": "Pink",
       "swatches": [
         {
           "hex": "#934daf",
@@ -1129,49 +728,18 @@
           "pages": [
             "https://picocss.com/"
           ],
-          "lightness": 49,
+          "lightness": 55,
           "nearest": {
-            "hex": "#982e79",
-            "deltaE": 12.3
-          },
-          "related": []
-        }
-      ],
-      "count": 30
-    },
-    {
-      "name": "Pink",
-      "swatches": [
-        {
-          "hex": "#c784b7",
-          "count": 19,
-          "roles": {
-            "text": 19,
-            "background": 0,
-            "border": 0
-          },
-          "elements": [
-            {
-              "tag": "span",
-              "role": "text",
-              "count": 19
-            }
-          ],
-          "pages": [
-            "https://picocss.com/docs"
-          ],
-          "lightness": 65,
-          "nearest": {
-            "hex": "#934daf",
-            "deltaE": 20.3
+            "hex": "#962d7c",
+            "deltaE": 11.6
           },
           "related": []
         },
         {
           "hex": "#982e79",
-          "count": 10,
+          "count": 12,
           "roles": {
-            "text": 10,
+            "text": 12,
             "background": 0,
             "border": 0
           },
@@ -1179,36 +747,373 @@
             {
               "tag": "span",
               "role": "text",
-              "count": 10
+              "count": 12
             }
           ],
           "pages": [
             "https://picocss.com/"
           ],
-          "lightness": 39,
+          "lightness": 49,
           "nearest": {
-            "hex": "#934daf",
-            "deltaE": 12.3
+            "hex": "#962d7c",
+            "deltaE": 1.1
+          },
+          "related": [
+            {
+              "hex": "#962d7c",
+              "deltaE": 1.1,
+              "opacityVariant": false
+            },
+            {
+              "hex": "#962d7c20",
+              "deltaE": 1.1,
+              "opacityVariant": false
+            }
+          ]
+        },
+        {
+          "hex": "#962d7c",
+          "count": 3,
+          "roles": {
+            "text": 3,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "span",
+              "role": "text",
+              "count": 3
+            }
+          ],
+          "pages": [
+            "https://picocss.com/examples"
+          ],
+          "lightness": 48,
+          "nearest": {
+            "hex": "#962d7c20",
+            "deltaE": 0
+          },
+          "related": [
+            {
+              "hex": "#962d7c20",
+              "deltaE": 0,
+              "opacityVariant": true
+            },
+            {
+              "hex": "#982e79",
+              "deltaE": 1.1,
+              "opacityVariant": false
+            }
+          ]
+        },
+        {
+          "hex": "#962d7c20",
+          "count": 3,
+          "roles": {
+            "text": 0,
+            "background": 3,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "span",
+              "role": "background",
+              "count": 3
+            }
+          ],
+          "pages": [
+            "https://picocss.com/examples"
+          ],
+          "lightness": 48,
+          "nearest": {
+            "hex": "#962d7c",
+            "deltaE": 0
+          },
+          "related": [
+            {
+              "hex": "#962d7c",
+              "deltaE": 0,
+              "opacityVariant": true
+            },
+            {
+              "hex": "#982e79",
+              "deltaE": 1.1,
+              "opacityVariant": false
+            }
+          ]
+        }
+      ],
+      "count": 48
+    },
+    {
+      "name": "Cyan",
+      "swatches": [
+        {
+          "hex": "#23728f",
+          "count": 2,
+          "roles": {
+            "text": 2,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "span",
+              "role": "text",
+              "count": 2
+            }
+          ],
+          "pages": [
+            "https://picocss.com/examples"
+          ],
+          "lightness": 52,
+          "nearest": {
+            "hex": "#23728f20",
+            "deltaE": 0
+          },
+          "related": [
+            {
+              "hex": "#23728f20",
+              "deltaE": 0,
+              "opacityVariant": true
+            }
+          ]
+        },
+        {
+          "hex": "#23728f20",
+          "count": 2,
+          "roles": {
+            "text": 0,
+            "background": 2,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "span",
+              "role": "background",
+              "count": 2
+            }
+          ],
+          "pages": [
+            "https://picocss.com/examples"
+          ],
+          "lightness": 52,
+          "nearest": {
+            "hex": "#23728f",
+            "deltaE": 0
+          },
+          "related": [
+            {
+              "hex": "#23728f",
+              "deltaE": 0,
+              "opacityVariant": true
+            }
+          ]
+        },
+        {
+          "hex": "#2e685b",
+          "count": 32,
+          "roles": {
+            "text": 32,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "span",
+              "role": "text",
+              "count": 32
+            }
+          ],
+          "pages": [
+            "https://picocss.com/"
+          ],
+          "lightness": 47,
+          "nearest": {
+            "hex": "#23728f",
+            "deltaE": 18.6
           },
           "related": []
         }
       ],
-      "count": 29
+      "count": 36
+    },
+    {
+      "name": "Orange",
+      "swatches": [
+        {
+          "hex": "#825400",
+          "count": 3,
+          "roles": {
+            "text": 3,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "span",
+              "role": "text",
+              "count": 3
+            }
+          ],
+          "pages": [
+            "https://picocss.com/examples"
+          ],
+          "lightness": 49,
+          "nearest": {
+            "hex": "#82540020",
+            "deltaE": 0
+          },
+          "related": [
+            {
+              "hex": "#82540020",
+              "deltaE": 0,
+              "opacityVariant": true
+            }
+          ]
+        },
+        {
+          "hex": "#82540020",
+          "count": 3,
+          "roles": {
+            "text": 0,
+            "background": 3,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "span",
+              "role": "background",
+              "count": 3
+            }
+          ],
+          "pages": [
+            "https://picocss.com/examples"
+          ],
+          "lightness": 49,
+          "nearest": {
+            "hex": "#825400",
+            "deltaE": 0
+          },
+          "related": [
+            {
+              "hex": "#825400",
+              "deltaE": 0,
+              "opacityVariant": true
+            }
+          ]
+        },
+        {
+          "hex": "#8b4f00",
+          "count": 29,
+          "roles": {
+            "text": 29,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "span",
+              "role": "text",
+              "count": 29
+            }
+          ],
+          "pages": [
+            "https://picocss.com/"
+          ],
+          "lightness": 49,
+          "nearest": {
+            "hex": "#825400",
+            "deltaE": 4.6
+          },
+          "related": []
+        }
+      ],
+      "count": 35
+    },
+    {
+      "name": "Red",
+      "swatches": [
+        {
+          "hex": "#a83410",
+          "count": 4,
+          "roles": {
+            "text": 4,
+            "background": 0,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "span",
+              "role": "text",
+              "count": 4
+            }
+          ],
+          "pages": [
+            "https://picocss.com/examples"
+          ],
+          "lightness": 49,
+          "nearest": {
+            "hex": "#a8341020",
+            "deltaE": 0
+          },
+          "related": [
+            {
+              "hex": "#a8341020",
+              "deltaE": 0,
+              "opacityVariant": true
+            }
+          ]
+        },
+        {
+          "hex": "#a8341020",
+          "count": 4,
+          "roles": {
+            "text": 0,
+            "background": 4,
+            "border": 0
+          },
+          "elements": [
+            {
+              "tag": "span",
+              "role": "background",
+              "count": 4
+            }
+          ],
+          "pages": [
+            "https://picocss.com/examples"
+          ],
+          "lightness": 49,
+          "nearest": {
+            "hex": "#a83410",
+            "deltaE": 0
+          },
+          "related": [
+            {
+              "hex": "#a83410",
+              "deltaE": 0,
+              "opacityVariant": true
+            }
+          ]
+        }
+      ],
+      "count": 8
     }
   ],
   "typography": {
     "families": [
       {
-        "family": "Fira Code",
-        "count": 246
+        "family": "system-ui",
+        "count": 122
       },
       {
-        "family": "system-ui",
-        "count": 171
+        "family": "Fira Code",
+        "count": 113
       },
       {
         "family": "Figtree",
-        "count": 16
+        "count": 22
       }
     ],
     "roles": [
@@ -1216,11 +1121,11 @@
         "tag": "h1",
         "px": 50,
         "weight": 700,
-        "count": 2
+        "count": 1
       },
       {
         "tag": "h2",
-        "px": 35,
+        "px": 25,
         "weight": 700,
         "count": 8
       },
@@ -1231,67 +1136,42 @@
         "count": 6
       },
       {
+        "tag": "a",
+        "px": 20,
+        "weight": 400,
+        "count": 73
+      },
+      {
         "tag": "p",
         "px": 20,
         "weight": 400,
-        "count": 28
-      },
-      {
-        "tag": "li",
-        "px": 20,
-        "weight": 400,
-        "count": 1
-      },
-      {
-        "tag": "small",
-        "px": 16.7,
-        "weight": 400,
-        "count": 1
-      },
-      {
-        "tag": "a",
-        "px": 16,
-        "weight": 400,
-        "count": 110
+        "count": 27
       }
     ],
     "sizes": [
       {
         "px": 12,
-        "count": 15,
+        "count": 22,
         "weights": [
-          400,
-          600
+          600,
+          400
         ],
         "tags": [
           {
-            "tag": "mark",
-            "count": 5
-          },
-          {
-            "tag": "p",
-            "count": 4
+            "tag": "span",
+            "count": 12
           },
           {
             "tag": "a",
             "count": 4
           },
           {
+            "tag": "p",
+            "count": 4
+          },
+          {
             "tag": "code",
             "count": 2
-          }
-        ]
-      },
-      {
-        "px": 13,
-        "count": 1,
-        "weights": [
-          600
-        ],
-        "tags": [
-          {
-            "tag": "p",
-            "count": 1
           }
         ]
       },
@@ -1319,97 +1199,63 @@
       },
       {
         "px": 16,
-        "count": 288,
-        "weights": [
-          400,
-          600
-        ],
-        "tags": [
-          {
-            "tag": "span",
-            "count": 235
-          },
-          {
-            "tag": "a",
-            "count": 44
-          },
-          {
-            "tag": "summary",
-            "count": 8
-          },
-          {
-            "tag": "code",
-            "count": 1
-          }
-        ]
-      },
-      {
-        "px": 16.7,
-        "count": 1,
+        "count": 109,
         "weights": [
           400
         ],
         "tags": [
           {
-            "tag": "small",
+            "tag": "span",
+            "count": 108
+          },
+          {
+            "tag": "code",
             "count": 1
           }
         ]
       },
       {
         "px": 17.5,
-        "count": 8,
+        "count": 2,
         "weights": [
           400
         ],
         "tags": [
           {
             "tag": "code",
-            "count": 5
-          },
-          {
-            "tag": "span",
-            "count": 3
+            "count": 2
           }
         ]
       },
       {
         "px": 20,
-        "count": 45,
+        "count": 54,
         "weights": [
           400
         ],
         "tags": [
           {
             "tag": "a",
-            "count": 23
+            "count": 35
           },
           {
             "tag": "p",
             "count": 19
-          },
-          {
-            "tag": "summary",
-            "count": 1
-          },
-          {
-            "tag": "span",
-            "count": 1
-          },
-          {
-            "tag": "li",
-            "count": 1
           }
         ]
       },
       {
         "px": 25,
-        "count": 9,
+        "count": 14,
         "weights": [
           700,
           400
         ],
         "tags": [
+          {
+            "tag": "h2",
+            "count": 6
+          },
           {
             "tag": "h3",
             "count": 6
@@ -1417,29 +1263,16 @@
           {
             "tag": "span",
             "count": 2
-          },
-          {
-            "tag": "h2",
-            "count": 1
           }
         ]
       },
       {
         "px": 35,
-        "count": 13,
+        "count": 3,
         "weights": [
-          700,
-          400
+          700
         ],
         "tags": [
-          {
-            "tag": "h2",
-            "count": 5
-          },
-          {
-            "tag": "a",
-            "count": 5
-          },
           {
             "tag": "strong",
             "count": 3
@@ -1471,11 +1304,11 @@
         ],
         "tags": [
           {
-            "tag": "h1",
+            "tag": "mark",
             "count": 2
           },
           {
-            "tag": "mark",
+            "tag": "h1",
             "count": 1
           }
         ]
@@ -1493,22 +1326,16 @@
       1.2,
       1.5
     ],
-    "letterSpacings": [
-      0.063
-    ]
+    "letterSpacings": []
   },
   "spacing": [
     {
       "value": 2.5,
-      "count": 151,
+      "count": 164,
       "properties": [
         {
           "property": "padding",
-          "count": 150
-        },
-        {
-          "property": "margin",
-          "count": 1
+          "count": 164
         }
       ],
       "tags": [
@@ -1521,98 +1348,82 @@
           "count": 64
         },
         {
-          "tag": "mark",
-          "count": 10
-        },
-        {
-          "tag": "ul",
-          "count": 1
+          "tag": "span",
+          "count": 24
         }
       ]
     },
     {
       "value": 5,
-      "count": 137,
+      "count": 75,
       "properties": [
         {
-          "property": "padding",
-          "count": 123
+          "property": "margin",
+          "count": 47
         },
         {
-          "property": "margin",
-          "count": 14
+          "property": "padding",
+          "count": 28
         }
       ],
       "tags": [
         {
-          "tag": "li",
-          "count": 88
+          "tag": "svg",
+          "count": 26
+        },
+        {
+          "tag": "span",
+          "count": 24
         },
         {
           "tag": "a",
-          "count": 25
+          "count": 16
         },
         {
-          "tag": "svg",
-          "count": 10
-        },
-        {
-          "tag": "mark",
-          "count": 10
+          "tag": "h2",
+          "count": 6
         },
         {
           "tag": "p",
-          "count": 4
+          "count": 3
         }
       ]
     },
     {
       "value": 7.5,
-      "count": 39,
+      "count": 11,
       "properties": [
         {
           "property": "padding",
-          "count": 34
+          "count": 8
         },
         {
           "property": "margin",
-          "count": 5
+          "count": 3
         }
       ],
       "tags": [
         {
           "tag": "code",
-          "count": 24
-        },
-        {
-          "tag": "li",
-          "count": 6
-        },
-        {
-          "tag": "a",
-          "count": 4
+          "count": 8
         },
         {
           "tag": "svg",
           "count": 3
-        },
-        {
-          "tag": "summary",
-          "count": 2
         }
       ]
     },
     {
       "value": 10,
-      "count": 233,
+      "count": 218,
       "properties": [
         {
           "property": "padding",
-          "count": 222
+          "count": 200
         },
         {
           "property": "margin",
-          "count": 9
+          "count": 16
         },
         {
           "property": "gap",
@@ -1622,53 +1433,45 @@
       "tags": [
         {
           "tag": "a",
-          "count": 114
+          "count": 100
         },
         {
           "tag": "li",
-          "count": 103
+          "count": 96
+        },
+        {
+          "tag": "div",
+          "count": 7
+        },
+        {
+          "tag": "span",
+          "count": 6
         },
         {
           "tag": "header",
           "count": 4
         },
         {
-          "tag": "summary",
-          "count": 4
+          "tag": "p",
+          "count": 2
         },
         {
           "tag": "ul",
           "count": 2
         },
         {
-          "tag": "p",
-          "count": 2
-        },
-        {
-          "tag": "div",
-          "count": 1
-        },
-        {
           "tag": "h2",
-          "count": 1
-        },
-        {
-          "tag": "svg",
-          "count": 1
-        },
-        {
-          "tag": "h1",
           "count": 1
         }
       ]
     },
     {
       "value": 15,
-      "count": 60,
+      "count": 16,
       "properties": [
         {
           "property": "padding",
-          "count": 54
+          "count": 10
         },
         {
           "property": "margin",
@@ -1678,7 +1481,7 @@
       "tags": [
         {
           "tag": "a",
-          "count": 52
+          "count": 8
         },
         {
           "tag": "svg",
@@ -1692,15 +1495,15 @@
     },
     {
       "value": 20,
-      "count": 88,
+      "count": 48,
       "properties": [
         {
           "property": "padding",
-          "count": 47
+          "count": 26
         },
         {
           "property": "margin",
-          "count": 38
+          "count": 19
         },
         {
           "property": "gap",
@@ -1710,27 +1513,19 @@
       "tags": [
         {
           "tag": "li",
-          "count": 30
+          "count": 20
         },
         {
           "tag": "p",
-          "count": 17
-        },
-        {
-          "tag": "a",
-          "count": 15
-        },
-        {
-          "tag": "h2",
-          "count": 6
+          "count": 11
         },
         {
           "tag": "h3",
           "count": 6
         },
         {
-          "tag": "details",
-          "count": 6
+          "tag": "a",
+          "count": 4
         },
         {
           "tag": "input",
@@ -1741,32 +1536,64 @@
           "count": 2
         },
         {
-          "tag": "nav",
-          "count": 2
-        },
-        {
           "tag": "div",
           "count": 1
         },
         {
-          "tag": "hgroup",
+          "tag": "h1",
+          "count": 1
+        },
+        {
+          "tag": "h2",
           "count": 1
         }
       ]
     },
     {
       "value": 26.4,
-      "count": 18,
+      "count": 4,
       "properties": [
         {
           "property": "padding",
-          "count": 18
+          "count": 4
         }
       ],
       "tags": [
         {
           "tag": "pre",
-          "count": 18
+          "count": 4
+        }
+      ]
+    },
+    {
+      "value": 30,
+      "count": 6,
+      "properties": [
+        {
+          "property": "margin",
+          "count": 6
+        }
+      ],
+      "tags": [
+        {
+          "tag": "p",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "value": 35,
+      "count": 24,
+      "properties": [
+        {
+          "property": "padding",
+          "count": 24
+        }
+      ],
+      "tags": [
+        {
+          "tag": "article",
+          "count": 24
         }
       ]
     },
@@ -1788,15 +1615,15 @@
     },
     {
       "value": 40,
-      "count": 85,
+      "count": 56,
       "properties": [
         {
           "property": "padding",
-          "count": 52
+          "count": 38
         },
         {
           "property": "margin",
-          "count": 30
+          "count": 15
         },
         {
           "property": "gap",
@@ -1809,20 +1636,12 @@
           "count": 24
         },
         {
-          "tag": "pre",
-          "count": 18
-        },
-        {
           "tag": "div",
-          "count": 15
-        },
-        {
-          "tag": "code",
-          "count": 9
+          "count": 8
         },
         {
           "tag": "section",
-          "count": 7
+          "count": 6
         },
         {
           "tag": "a",
@@ -1831,6 +1650,14 @@
         {
           "tag": "footer",
           "count": 4
+        },
+        {
+          "tag": "pre",
+          "count": 4
+        },
+        {
+          "tag": "code",
+          "count": 2
         },
         {
           "tag": "nav",
@@ -1863,59 +1690,39 @@
       ]
     },
     {
-      "value": 52.5,
-      "count": 1,
-      "properties": [
-        {
-          "property": "margin",
-          "count": 1
-        }
-      ],
-      "tags": [
-        {
-          "tag": "h2",
-          "count": 1
-        }
-      ]
-    },
-    {
       "value": 55,
-      "count": 2,
+      "count": 3,
       "properties": [
         {
           "property": "gap",
-          "count": 2
+          "count": 3
         }
       ],
       "tags": [
         {
           "tag": "div",
           "count": 2
+        },
+        {
+          "tag": "section",
+          "count": 1
         }
       ]
     },
     {
       "value": 60,
-      "count": 16,
+      "count": 9,
       "properties": [
-        {
-          "property": "margin",
-          "count": 9
-        },
         {
           "property": "padding",
           "count": 6
         },
         {
-          "property": "gap",
-          "count": 1
+          "property": "margin",
+          "count": 3
         }
       ],
       "tags": [
-        {
-          "tag": "section",
-          "count": 6
-        },
         {
           "tag": "article",
           "count": 4
@@ -1925,47 +1732,39 @@
           "count": 2
         },
         {
-          "tag": "footer",
-          "count": 1
-        },
-        {
           "tag": "code",
           "count": 1
         },
         {
-          "tag": "hgroup",
+          "tag": "footer",
           "count": 1
         },
         {
-          "tag": "main",
+          "tag": "hgroup",
           "count": 1
         }
       ]
     },
     {
       "value": 80,
-      "count": 7,
+      "count": 5,
       "properties": [
         {
           "property": "gap",
-          "count": 5
+          "count": 4
         },
         {
           "property": "margin",
-          "count": 2
+          "count": 1
         }
       ],
       "tags": [
-        {
-          "tag": "section",
-          "count": 2
-        },
         {
           "tag": "nav",
           "count": 2
         },
         {
-          "tag": "main",
+          "tag": "section",
           "count": 2
         },
         {
@@ -1976,7 +1775,7 @@
     },
     {
       "value": 90,
-      "count": 4,
+      "count": 6,
       "properties": [
         {
           "property": "gap",
@@ -1984,13 +1783,13 @@
         },
         {
           "property": "margin",
-          "count": 1
+          "count": 3
         }
       ],
       "tags": [
         {
           "tag": "section",
-          "count": 2
+          "count": 4
         },
         {
           "tag": "div",
@@ -2048,17 +1847,17 @@
     },
     {
       "value": 180,
-      "count": 5,
+      "count": 6,
       "properties": [
         {
           "property": "margin",
-          "count": 5
+          "count": 6
         }
       ],
       "tags": [
         {
           "tag": "section",
-          "count": 5
+          "count": 6
         }
       ]
     },
@@ -2073,11 +1872,11 @@
       ],
       "tags": [
         {
-          "tag": "ul",
+          "tag": "hgroup",
           "count": 2
         },
         {
-          "tag": "hgroup",
+          "tag": "ul",
           "count": 2
         }
       ]
@@ -2086,52 +1885,44 @@
   "radius": [
     {
       "value": 2.5,
-      "count": 5,
+      "count": 12,
       "tags": [
         {
-          "tag": "mark",
-          "count": 5
+          "tag": "span",
+          "count": 12
         }
       ]
     },
     {
       "value": 5,
-      "count": 95,
+      "count": 73,
       "tags": [
         {
           "tag": "a",
-          "count": 47
-        },
-        {
-          "tag": "code",
-          "count": 18
-        },
-        {
-          "tag": "pre",
-          "count": 10
-        },
-        {
-          "tag": "div",
-          "count": 9
+          "count": 46
         },
         {
           "tag": "article",
+          "count": 13
+        },
+        {
+          "tag": "code",
           "count": 7
         },
         {
-          "tag": "input",
-          "count": 1
+          "tag": "pre",
+          "count": 3
+        },
+        {
+          "tag": "div",
+          "count": 2
         },
         {
           "tag": "footer",
           "count": 1
         },
         {
-          "tag": "summary",
-          "count": 1
-        },
-        {
-          "tag": "ul",
+          "tag": "input",
           "count": 1
         }
       ]
@@ -2140,11 +1931,11 @@
   "shadow": [
     {
       "value": "rgba(129, 145, 181, 0.016) 0.29px 0.58px 3.48px 0px, rgba(129, 145, 181, 0.024) 0.67px 1.34px 8.04px 0px, rgba(129, 145, 181, 0.03) 1.25px 2.5px 15px 0px, rgba(129, 145, 181, 0.035) 2.25px 4.5px 27px 0px, rgba(129, 145, 181, 0.043) 4.17px 8.34px 50.04px 0px, rgba(129, 145, 181, 0.06) 10px 20px 120px 0px, rgba(129, 145, 181, 0.016) 0px 0px 0px 1.25px",
-      "count": 11,
+      "count": 16,
       "tags": [
         {
           "tag": "article",
-          "count": 6
+          "count": 12
         },
         {
           "tag": "a",
@@ -2153,20 +1944,6 @@
         {
           "tag": "div",
           "count": 2
-        },
-        {
-          "tag": "ul",
-          "count": 1
-        }
-      ]
-    },
-    {
-      "value": "rgba(7, 9, 12, 0.016) 0.29px 0.58px 3.48px 0px, rgba(7, 9, 12, 0.024) 0.67px 1.34px 8.04px 0px, rgba(7, 9, 12, 0.03) 1.25px 2.5px 15px 0px, rgba(7, 9, 12, 0.035) 2.25px 4.5px 27px 0px, rgba(7, 9, 12, 0.043) 4.17px 8.34px 50.04px 0px, rgba(7, 9, 12, 0.06) 10px 20px 120px 0px, rgba(7, 9, 12, 0.016) 0px 0px 0px 1.25px",
-      "count": 7,
-      "tags": [
-        {
-          "tag": "div",
-          "count": 7
         }
       ]
     },
@@ -2184,37 +1961,33 @@
   "borders": [
     {
       "value": 1,
-      "count": 117,
+      "count": 57,
       "sides": [
         {
-          "side": "left",
-          "count": 67
-        },
-        {
           "side": "top",
-          "count": 18
+          "count": 16
         },
         {
           "side": "bottom",
-          "count": 17
+          "count": 15
         },
         {
           "side": "right",
-          "count": 15
+          "count": 13
+        },
+        {
+          "side": "left",
+          "count": 13
         }
       ],
       "tags": [
-        {
-          "tag": "a",
-          "count": 60
-        },
         {
           "tag": "article",
           "count": 24
         },
         {
-          "tag": "ul",
-          "count": 12
+          "tag": "a",
+          "count": 16
         },
         {
           "tag": "div",
@@ -2222,10 +1995,6 @@
         },
         {
           "tag": "input",
-          "count": 4
-        },
-        {
-          "tag": "summary",
           "count": 4
         },
         {
@@ -2245,33 +2014,15 @@
   ],
   "opacity": [
     {
-      "value": 0.5,
-      "count": 8,
-      "tags": [
-        {
-          "tag": "svg",
-          "count": 7
-        },
-        {
-          "tag": "a",
-          "count": 1
-        }
-      ]
-    },
-    {
       "value": 0,
-      "count": 9,
+      "count": 3,
       "tags": [
         {
           "tag": "a",
-          "count": 7
+          "count": 2
         },
         {
           "tag": "span",
-          "count": 1
-        },
-        {
-          "tag": "ul",
           "count": 1
         }
       ]
@@ -2280,12 +2031,8 @@
   "zIndex": [
     {
       "value": 1,
-      "count": 8,
+      "count": 1,
       "tags": [
-        {
-          "tag": "a",
-          "count": 7
-        },
         {
           "tag": "div",
           "count": 1
@@ -2293,32 +2040,12 @@
       ]
     },
     {
-      "value": 2,
-      "count": 1,
-      "tags": [
-        {
-          "tag": "header",
-          "count": 1
-        }
-      ]
-    },
-    {
       "value": 4,
-      "count": 1,
+      "count": 2,
       "tags": [
         {
           "tag": "header",
-          "count": 1
-        }
-      ]
-    },
-    {
-      "value": 99,
-      "count": 1,
-      "tags": [
-        {
-          "tag": "ul",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -2333,26 +2060,15 @@
       ]
     }
   ],
-  "blur": [
-    {
-      "value": 20,
-      "count": 1,
-      "tags": [
-        {
-          "tag": "header",
-          "count": 1
-        }
-      ]
-    }
-  ],
+  "blur": [],
   "gradients": [
     {
       "value": "linear-gradient(to right, rgb(132, 38, 109), rgb(111, 57, 133), rgb(93, 64, 154), rgb(67, 72, 157))",
-      "count": 3,
+      "count": 4,
       "tags": [
         {
           "tag": "mark",
-          "count": 3
+          "count": 4
         }
       ]
     }
@@ -2361,15 +2077,11 @@
     "durations": [
       {
         "value": 200,
-        "count": 167,
+        "count": 106,
         "tags": [
           {
             "tag": "a",
-            "count": 131
-          },
-          {
-            "tag": "summary",
-            "count": 9
+            "count": 89
           },
           {
             "tag": "g",
@@ -2380,19 +2092,7 @@
             "count": 8
           },
           {
-            "tag": "svg",
-            "count": 7
-          },
-          {
-            "tag": "nav",
-            "count": 2
-          },
-          {
             "tag": "input",
-            "count": 1
-          },
-          {
-            "tag": "ul",
             "count": 1
           }
         ]
@@ -2420,30 +2120,16 @@
             "count": 2
           }
         ]
-      },
-      {
-        "value": 400,
-        "count": 1,
-        "tags": [
-          {
-            "tag": "header",
-            "count": 1
-          }
-        ]
       }
     ],
     "easings": [
       {
         "value": "ease-in-out",
-        "count": 168,
+        "count": 106,
         "tags": [
           {
             "tag": "a",
-            "count": 131
-          },
-          {
-            "tag": "summary",
-            "count": 9
+            "count": 89
           },
           {
             "tag": "g",
@@ -2454,23 +2140,7 @@
             "count": 8
           },
           {
-            "tag": "svg",
-            "count": 7
-          },
-          {
-            "tag": "nav",
-            "count": 2
-          },
-          {
             "tag": "input",
-            "count": 1
-          },
-          {
-            "tag": "header",
-            "count": 1
-          },
-          {
-            "tag": "ul",
             "count": 1
           }
         ]
@@ -2514,71 +2184,51 @@
     },
     {
       "value": 576,
-      "count": 40,
+      "count": 46,
       "types": [
         {
           "type": "min",
-          "count": 40
+          "count": 46
         }
       ]
     },
     {
       "value": 768,
-      "count": 31,
+      "count": 34,
       "types": [
         {
           "type": "min",
-          "count": 31
-        }
-      ]
-    },
-    {
-      "value": 1023,
-      "count": 8,
-      "types": [
-        {
-          "type": "max",
-          "count": 8
+          "count": 34
         }
       ]
     },
     {
       "value": 1024,
-      "count": 33,
+      "count": 34,
       "types": [
         {
           "type": "min",
-          "count": 33
-        }
-      ]
-    },
-    {
-      "value": 1279,
-      "count": 1,
-      "types": [
-        {
-          "type": "max",
-          "count": 1
+          "count": 34
         }
       ]
     },
     {
       "value": 1280,
-      "count": 23,
+      "count": 28,
       "types": [
         {
           "type": "min",
-          "count": 23
+          "count": 28
         }
       ]
     },
     {
       "value": 1536,
-      "count": 18,
+      "count": 20,
       "types": [
         {
           "type": "min",
-          "count": 18
+          "count": 20
         }
       ]
     }
@@ -2590,19 +2240,19 @@
         "units": [
           {
             "unit": "calc",
-            "count": 132
+            "count": 144
           },
           {
             "unit": "rem",
-            "count": 68
+            "count": 50
           },
           {
             "unit": "em",
-            "count": 3
+            "count": 2
           }
         ],
         "dominant": "calc",
-        "total": 203
+        "total": 196
       },
       {
         "category": "type",
@@ -2613,7 +2263,7 @@
           },
           {
             "unit": "px",
-            "count": 15
+            "count": 12
           },
           {
             "unit": "em",
@@ -2621,14 +2271,14 @@
           }
         ],
         "dominant": "rem",
-        "total": 39
+        "total": 36
       },
       {
         "category": "radius",
         "units": [
           {
             "unit": "percent",
-            "count": 28
+            "count": 24
           },
           {
             "unit": "rem",
@@ -2640,7 +2290,7 @@
           }
         ],
         "dominant": "percent",
-        "total": 52
+        "total": 48
       },
       {
         "category": "border",
@@ -2678,10 +2328,6 @@
       {
         "name": "--pico-accordion-open-summary-color",
         "value": "var(--pico-muted-color)"
-      },
-      {
-        "name": "--pico-aside-link-current-background-color",
-        "value": "#202632"
       },
       {
         "name": "--pico-background-color",
@@ -2754,10 +2400,6 @@
       {
         "name": "--pico-box-shadow",
         "value": ".0145rem .029rem .174rem rgba(7, 8.5, 12, .01698),.0335rem .067rem .402rem rgba(7, 8.5, 12, .024),.0625rem .125rem .75rem rgba(7, 8.5, 12, .03),.1125rem .225rem 1.35rem rgba(7, 8.5, 12, .036),.2085rem .417rem 2.502rem rgba(7, 8.5, 12, .04302),.5rem 1rem 6rem rgba(7, 8.5, 12, .06),0 0 0 .0625rem rgba(7, 8.5, 12, .015)"
-      },
-      {
-        "name": "--pico-breadcrumb-height",
-        "value": "calc(3.5rem + var(--pico-border-width))"
       },
       {
         "name": "--pico-button-box-shadow",
@@ -3252,26 +2894,6 @@
         "value": "var(--pico-secondary-background)"
       },
       {
-        "name": "--pico-scale-color-1",
-        "value": "rgb(125.5, 220, 187)"
-      },
-      {
-        "name": "--pico-scale-color-2",
-        "value": "#bad675"
-      },
-      {
-        "name": "--pico-scale-color-3",
-        "value": "rgb(213, 186.5, 104.5)"
-      },
-      {
-        "name": "--pico-scale-color-4",
-        "value": "rgb(224.5, 180.5, 133)"
-      },
-      {
-        "name": "--pico-scale-color-5",
-        "value": "rgb(217.5, 160, 152.5)"
-      },
-      {
         "name": "--pico-scrollbar-width",
         "value": "0px"
       },
@@ -3376,18 +2998,35 @@
   },
   "contrast": [
     {
-      "foreground": "#6f7887",
-      "background": "#181c25",
-      "ratio": 3.83,
-      "passAA": false,
+      "foreground": "#23728f",
+      "background": "#23728f20",
+      "resolvedForeground": "#23728f",
+      "resolvedBackground": "#e3edf1",
+      "ratio": 4.55,
+      "passAA": true,
       "passAAA": false,
       "passAALarge": true,
-      "count": 4,
+      "count": 2,
       "sampleTags": [
         "span"
       ],
       "pages": [
-        "https://picocss.com/docs"
+        "https://picocss.com/examples"
+      ]
+    },
+    {
+      "foreground": "#0172ad",
+      "background": "#ffffff",
+      "ratio": 5.23,
+      "passAA": true,
+      "passAAA": false,
+      "passAALarge": true,
+      "count": 6,
+      "sampleTags": [
+        "a"
+      ],
+      "pages": [
+        "https://picocss.com/"
       ]
     },
     {
@@ -3406,37 +3045,20 @@
       ]
     },
     {
-      "foreground": "#0172ad",
-      "background": "#ffffff",
-      "ratio": 5.23,
-      "passAA": true,
-      "passAAA": false,
-      "passAALarge": true,
-      "count": 10,
-      "sampleTags": [
-        "a"
-      ],
-      "pages": [
-        "https://picocss.com/",
-        "https://picocss.com/docs"
-      ]
-    },
-    {
       "foreground": "#5d6b89",
       "background": "#ffffff",
       "ratio": 5.34,
       "passAA": true,
       "passAAA": false,
       "passAALarge": true,
-      "count": 92,
+      "count": 60,
       "sampleTags": [
         "a",
-        "p",
-        "small"
+        "p"
       ],
       "pages": [
         "https://picocss.com/",
-        "https://picocss.com/docs"
+        "https://picocss.com/examples"
       ]
     },
     {
@@ -3446,28 +3068,47 @@
       "passAA": true,
       "passAAA": false,
       "passAALarge": true,
-      "count": 13,
+      "count": 18,
       "sampleTags": [
         "p"
       ],
       "pages": [
         "https://picocss.com/",
-        "https://picocss.com/docs"
+        "https://picocss.com/examples"
       ]
     },
     {
-      "foreground": "#646b79",
-      "background": "#ffffffcc",
-      "ratio": 5.36,
+      "foreground": "#825400",
+      "background": "#82540020",
+      "resolvedForeground": "#825400",
+      "resolvedBackground": "#efeadf",
+      "ratio": 5.44,
       "passAA": true,
       "passAAA": false,
       "passAALarge": true,
-      "count": 1,
+      "count": 3,
       "sampleTags": [
-        "summary"
+        "span"
       ],
       "pages": [
-        "https://picocss.com/docs"
+        "https://picocss.com/examples"
+      ]
+    },
+    {
+      "foreground": "#a83410",
+      "background": "#a8341020",
+      "resolvedForeground": "#a83410",
+      "resolvedBackground": "#f4e6e1",
+      "ratio": 5.45,
+      "passAA": true,
+      "passAAA": false,
+      "passAALarge": true,
+      "count": 4,
+      "sampleTags": [
+        "span"
+      ],
+      "pages": [
+        "https://picocss.com/examples"
       ]
     },
     {
@@ -3477,44 +3118,29 @@
       "passAA": true,
       "passAAA": false,
       "passAALarge": true,
-      "count": 7,
+      "count": 2,
       "sampleTags": [
-        "code",
-        "span"
+        "code"
       ],
       "pages": [
-        "https://picocss.com/",
-        "https://picocss.com/docs"
+        "https://picocss.com/"
       ]
     },
     {
-      "foreground": "#8b4f00",
-      "background": "#f3f5f7",
-      "ratio": 5.97,
+      "foreground": "#962d7c",
+      "background": "#962d7c20",
+      "resolvedForeground": "#962d7c",
+      "resolvedBackground": "#f2e5ef",
+      "ratio": 5.81,
       "passAA": true,
       "passAAA": false,
       "passAALarge": true,
-      "count": 1,
+      "count": 3,
       "sampleTags": [
         "span"
       ],
       "pages": [
-        "https://picocss.com/docs"
-      ]
-    },
-    {
-      "foreground": "#c784b7",
-      "background": "#181c25",
-      "ratio": 6.02,
-      "passAA": true,
-      "passAAA": false,
-      "passAALarge": true,
-      "count": 19,
-      "sampleTags": [
-        "span"
-      ],
-      "pages": [
-        "https://picocss.com/docs"
+        "https://picocss.com/examples"
       ]
     },
     {
@@ -3524,59 +3150,14 @@
       "passAA": true,
       "passAAA": false,
       "passAALarge": true,
-      "count": 46,
+      "count": 48,
       "sampleTags": [
-        "span",
-        "code"
+        "code",
+        "span"
       ],
       "pages": [
         "https://picocss.com/",
-        "https://picocss.com/docs"
-      ]
-    },
-    {
-      "foreground": "#71a4a1",
-      "background": "#181c25",
-      "ratio": 6.11,
-      "passAA": true,
-      "passAAA": false,
-      "passAALarge": true,
-      "count": 40,
-      "sampleTags": [
-        "span"
-      ],
-      "pages": [
-        "https://picocss.com/docs"
-      ]
-    },
-    {
-      "foreground": "#bb972c",
-      "background": "#181c25",
-      "ratio": 6.15,
-      "passAA": true,
-      "passAAA": false,
-      "passAALarge": true,
-      "count": 18,
-      "sampleTags": [
-        "span"
-      ],
-      "pages": [
-        "https://picocss.com/docs"
-      ]
-    },
-    {
-      "foreground": "#969eaf",
-      "background": "#181c25",
-      "ratio": 6.34,
-      "passAA": true,
-      "passAAA": false,
-      "passAALarge": true,
-      "count": 55,
-      "sampleTags": [
-        "span"
-      ],
-      "pages": [
-        "https://picocss.com/docs"
+        "https://picocss.com/examples"
       ]
     },
     {
@@ -3586,7 +3167,7 @@
       "passAA": true,
       "passAAA": false,
       "passAALarge": true,
-      "count": 30,
+      "count": 32,
       "sampleTags": [
         "span"
       ],
@@ -3601,14 +3182,12 @@
       "passAA": true,
       "passAAA": false,
       "passAALarge": true,
-      "count": 17,
+      "count": 19,
       "sampleTags": [
-        "span",
-        "p"
+        "span"
       ],
       "pages": [
-        "https://picocss.com/",
-        "https://picocss.com/docs"
+        "https://picocss.com/"
       ]
     },
     {
@@ -3633,27 +3212,12 @@
       "passAA": true,
       "passAAA": true,
       "passAALarge": true,
-      "count": 10,
+      "count": 12,
       "sampleTags": [
         "span"
       ],
       "pages": [
         "https://picocss.com/"
-      ]
-    },
-    {
-      "foreground": "#015887",
-      "background": "#ffffff",
-      "ratio": 7.64,
-      "passAA": true,
-      "passAAA": true,
-      "passAALarge": true,
-      "count": 1,
-      "sampleTags": [
-        "a"
-      ],
-      "pages": [
-        "https://picocss.com/docs"
       ]
     },
     {
@@ -3668,7 +3232,7 @@
         "a"
       ],
       "pages": [
-        "https://picocss.com/docs"
+        "https://picocss.com/examples"
       ]
     },
     {
@@ -3688,39 +3252,21 @@
     },
     {
       "foreground": "#373c44",
-      "background": "#eff1f4",
-      "ratio": 9.81,
-      "passAA": true,
-      "passAAA": true,
-      "passAALarge": true,
-      "count": 1,
-      "sampleTags": [
-        "span"
-      ],
-      "pages": [
-        "https://picocss.com/docs"
-      ]
-    },
-    {
-      "foreground": "#373c44",
       "background": "#ffffff",
       "ratio": 11.1,
       "passAA": true,
       "passAAA": true,
       "passAALarge": true,
-      "count": 40,
+      "count": 25,
       "sampleTags": [
-        "p",
         "h2",
+        "p",
         "span",
-        "strong",
-        "a",
-        "li",
-        "summary"
+        "strong"
       ],
       "pages": [
         "https://picocss.com/",
-        "https://picocss.com/docs"
+        "https://picocss.com/examples"
       ]
     },
     {
@@ -3730,28 +3276,28 @@
       "passAA": true,
       "passAAA": true,
       "passAALarge": true,
-      "count": 2,
+      "count": 1,
       "sampleTags": [
         "h1"
       ],
       "pages": [
-        "https://picocss.com/",
-        "https://picocss.com/docs"
+        "https://picocss.com/"
       ]
     },
     {
-      "foreground": "#0f1114",
-      "background": "#fde7c0",
-      "ratio": 15.64,
+      "foreground": "#181c25",
+      "background": "#ffffff",
+      "ratio": 17.05,
       "passAA": true,
       "passAAA": true,
       "passAALarge": true,
-      "count": 5,
+      "count": 3,
       "sampleTags": [
-        "mark"
+        "a"
       ],
       "pages": [
-        "https://picocss.com/docs"
+        "https://picocss.com/",
+        "https://picocss.com/examples"
       ]
     },
     {
@@ -3767,42 +3313,12 @@
       ],
       "pages": [
         "https://picocss.com/",
-        "https://picocss.com/docs"
-      ]
-    },
-    {
-      "foreground": "#181c25",
-      "background": "#ffffff",
-      "ratio": 17.05,
-      "passAA": true,
-      "passAAA": true,
-      "passAALarge": true,
-      "count": 2,
-      "sampleTags": [
-        "a"
-      ],
-      "pages": [
-        "https://picocss.com/"
-      ]
-    },
-    {
-      "foreground": "#181c25",
-      "background": "#ffffffcc",
-      "ratio": 17.05,
-      "passAA": true,
-      "passAAA": true,
-      "passAALarge": true,
-      "count": 1,
-      "sampleTags": [
-        "a"
-      ],
-      "pages": [
-        "https://picocss.com/docs"
+        "https://picocss.com/examples"
       ]
     },
     {
       "foreground": "#000000",
-      "background": "#ffffffcc",
+      "background": "#ffffff",
       "ratio": 21,
       "passAA": true,
       "passAAA": true,
@@ -3812,7 +3328,7 @@
         "a"
       ],
       "pages": [
-        "https://picocss.com/docs"
+        "https://picocss.com/examples"
       ]
     }
   ]
