@@ -1,0 +1,12 @@
+/* ─── Cascade layer order ─────────────────────────────────────────────────────
+   Declared once, before any file opens a layer, so the order is a statement
+   here rather than a consequence of the order things happen to be imported in
+   main.tsx.
+
+   haus-tokens ships its own layer names, and they have to sit below Drift's.
+   The package is the foundation; the layers above it are the theme, and a
+   theme that loses to the thing it themes is not a theme.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@layer haus.primitives, haus.motion, base.primitives, base.semantics, drift.primitives,
+  drift.semantics;

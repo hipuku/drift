@@ -1290,7 +1290,7 @@
   transform: translateY(-50%);
 }
 
-.motionDot { animation: slideTrack var(--dur, 200ms) var(--ease-move, ease) infinite alternate; }
+.motionDot { animation: slideTrack var(--dur, 200ms) var(--motion-ease-standard) infinite alternate; }
 .easingDot { animation: slideTrack 1.4s var(--ease, ease) infinite alternate; }
 
 @keyframes slideTrack {

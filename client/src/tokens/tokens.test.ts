@@ -19,6 +19,15 @@ import { describe, expect, it } from "vitest";
 
 const SRC = resolve(process.cwd(), "src");
 
+/**
+ * The primitive and motion layers ship in haus-tokens, so both assertions below
+ * have to read the package as well as the source tree. Reading the installed
+ * copy rather than a vendored one is the point: if the package moves a value,
+ * this sees the value that will actually load.
+ */
+const HAUS_TOKENS = resolve(process.cwd(), "node_modules/haus-tokens/dist");
+const HAUS_CSS = ["primitives.css", "motion.css"].map((f) => join(HAUS_TOKENS, f));
+
 function filesUnder(dir: string, extensions: string[]): string[] {
   return readdirSync(dir, { recursive: true, withFileTypes: true })
     .filter((e) => e.isFile() && extensions.some((x) => e.name.endsWith(x)))
@@ -34,8 +43,16 @@ function matches(files: string[], pattern: RegExp): Set<string> {
 }
 
 describe("custom properties", () => {
+  it("finds the package it is meant to read", () => {
+    // A wrong path here would make both assertions below pass by finding
+    // nothing: every primitive would look undefined, and no component would
+    // look like it was reaching for one.
+    const defined = matches(HAUS_CSS, /^\s*(--[a-z0-9-]+)\s*:/gm);
+    expect(defined.size, `no custom properties found under ${HAUS_TOKENS}`).toBeGreaterThan(100);
+  });
+
   it("are all defined before they are read", () => {
-    const css = filesUnder(SRC, [".css"]);
+    const css = [...filesUnder(SRC, [".css"]), ...HAUS_CSS];
 
     // `var(--x)` only. `var(--x, fallback)` is excluded by the closing paren.
     const read = matches(css, /var\((--[a-z0-9-]+)\)/g);
@@ -53,8 +70,9 @@ describe("custom properties", () => {
   it("catches a property that is read but never defined", () => {
     // Proves the assertion above can fail, a guard whose matcher silently
     // stops matching passes forever and protects nothing.
-    const read = new Set([...matches(filesUnder(SRC, [".css"]), /var\((--[a-z0-9-]+)\)/g), "--not-a-token"]);
-    const defined = matches(filesUnder(SRC, [".css"]), /^\s*(--[a-z0-9-]+)\s*:/gm);
+    const css = [...filesUnder(SRC, [".css"]), ...HAUS_CSS];
+    const read = new Set([...matches(css, /var\((--[a-z0-9-]+)\)/g), "--not-a-token"]);
+    const defined = matches(css, /^\s*(--[a-z0-9-]+)\s*:/gm);
 
     expect([...read].filter((n) => !defined.has(n))).toContain("--not-a-token");
   });
@@ -87,12 +105,25 @@ const TYPE_TIER_DEBT = new Set([
   "--weight-semibold",
 ]);
 
+/**
+ * What counts as a primitive here: haus-tokens' two layers plus Drift's
+ * overrides, less anything Drift's own semantic layer declares.
+ *
+ * That subtraction is the interesting part. haus classes border width, opacity
+ * and z-index as primitives; Drift declares them as roles in semantics.css.
+ * Both are defensible, and the file that declares a name in this tree is the
+ * one that decides what tier it is in. Without the subtraction, adopting the
+ * package would make six roles Drift has always had look like reaches.
+ */
+function primitiveNames(): Set<string> {
+  const all = matches([resolve(SRC, "tokens/primitives.css"), ...HAUS_CSS], /^\s*(--[a-z0-9-]+)\s*:/gm);
+  const roles = matches([resolve(SRC, "tokens/semantics.css")], /^\s*(--[a-z0-9-]+)\s*:/gm);
+  return new Set([...all].filter((name) => !roles.has(name)));
+}
+
 describe("the two-tier rule", () => {
   it("keeps components off the primitives", () => {
-    const primitives = matches(
-      [resolve(SRC, "tokens/primitives.css")],
-      /^\s*(--[a-z0-9-]+)\s*:/gm,
-    );
+    const primitives = primitiveNames();
     const read = matches(filesUnder(SRC, [".module.css"]), /var\((--[a-z0-9-]+)/g);
 
     const reaching = [...read].filter((n) => primitives.has(n) && !TYPE_TIER_DEBT.has(n)).sort();
@@ -103,10 +134,7 @@ describe("the two-tier rule", () => {
   it("keeps the recorded exceptions honest", () => {
     // A name that is no longer read, or no longer a primitive, should leave the
     // list, otherwise the debt looks larger than it is and stops being read.
-    const primitives = matches(
-      [resolve(SRC, "tokens/primitives.css")],
-      /^\s*(--[a-z0-9-]+)\s*:/gm,
-    );
+    const primitives = primitiveNames();
     const read = matches(filesUnder(SRC, [".module.css"]), /var\((--[a-z0-9-]+)/g);
 
     const stale = [...TYPE_TIER_DEBT].filter((n) => !read.has(n) || !primitives.has(n)).sort();
