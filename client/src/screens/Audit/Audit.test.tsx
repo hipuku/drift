@@ -201,6 +201,39 @@ describe("export", () => {
     });
   });
 
+  /**
+   * Both the type scale and the spacing grid are selectable so a reader can test
+   * a hypothesis, and the diagnosis is pinned to the automatic fit so exploring
+   * one never rewrites it. The export has to hold the same line: its counts come
+   * from the server's summary, so evidence taken from the live selection ships a
+   * finding that contradicts its own count.
+   */
+  it("exports the evidence the diagnosis was made from, not the reader's hypothesis", async () => {
+    captureDownload();
+    let captured: unknown;
+    vi.mocked(URL.createObjectURL).mockImplementation((blob: Blob | MediaSource) => {
+      captured = blob;
+      return "blob:stub";
+    });
+
+    render(<Audit audit={audit} />);
+    await userEvent.click(tabNamed(/Spacing/));
+    // The fixture detects a 4px grid. Ask for 8px — a strictly harsher reference
+    // that more values miss — then export.
+    await userEvent.click(screen.getByRole("tab", { name: /8px grid/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Export" }));
+
+    const payload = JSON.parse(await (captured as Blob).text()) as {
+      findings: { id: string; count: number; evidence: { px: number }[] }[];
+    };
+    const finding = payload.findings.find((f) => f.id === "spacing-off-grid")!;
+
+    // The count comes from the summary and is measured against 4px. Evidence
+    // measured against 8px would list more values than the count claims.
+    expect(finding.evidence).toHaveLength(finding.count);
+    expect(finding.evidence.map((e) => e.px)).not.toContain(20);
+  });
+
   it("records a failing-contrast finding when there is one", async () => {
     captureDownload();
     let captured: unknown;

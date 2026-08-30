@@ -286,11 +286,32 @@ export function Audit({ audit, onBack }: Props) {
     [activeRatio, offScaleFor],
   );
 
+  /**
+   * The same two sets measured against the *automatic* reference rather than
+   * the reader's, for the export.
+   *
+   * Both scale and grid are selectable so a reader can test a hypothesis, and
+   * the diagnosis is deliberately pinned to the automatic fit so that exploring
+   * one never rewrites it. The export has to honour the same rule: its counts
+   * come from the server's summary, so evidence drawn from the live selection
+   * would ship a finding whose count says "miss the 4px grid" beside a list of
+   * values that miss an 8px one. Same numbers, different question.
+   */
+  const diagnosisOffScalePx = useMemo(
+    () => (bestRatio ? offScaleFor(bestRatio.ratio) : new Set<number>()),
+    [bestRatio, offScaleFor],
+  );
+
   const spacingValues = useMemo(() => audit.spacing.map((sp) => sp.value), [audit.spacing]);
   const detectedBase = useMemo(() => detectGridBase(spacingValues), [spacingValues]);
   const [spacingBase, setSpacingBase] = useState<number | null>(null);
   const activeBase = spacingBase ?? detectedBase;
   const offGridSet = useMemo(() => offGrid(spacingValues, activeBase), [spacingValues, activeBase]);
+  /** The grid the diagnosis was made against — see diagnosisOffScalePx above. */
+  const diagnosisOffGridSet = useMemo(
+    () => offGrid(spacingValues, detectedBase),
+    [spacingValues, detectedBase],
+  );
   const radiusNearDupSet = useMemo(
     () => nearDuplicates(audit.radius.map((r) => r.value), RADIUS_NEAR_DUPLICATE_PX),
     [audit.radius],
@@ -462,7 +483,7 @@ export function Audit({ audit, onBack }: Props) {
         title: `${offScaleCount} of ${s.typeSizes} type sizes fall off the closest modular scale`,
         count: offScaleCount,
         of: s.typeSizes,
-        evidence: [...offScalePx].map((px) => ({ px })),
+        evidence: [...diagnosisOffScalePx].map((px) => ({ px })),
       });
     }
     const offGridCount = s.spacingOffGrid ?? 0;
@@ -474,7 +495,7 @@ export function Audit({ audit, onBack }: Props) {
         title: `${offGridCount} of ${s.spacings} spacing values miss the 4px grid`,
         count: offGridCount,
         of: s.spacings,
-        evidence: [...offGridSet].map((px) => ({ px })),
+        evidence: [...diagnosisOffGridSet].map((px) => ({ px })),
       });
     }
     const radiusDupCount = s.radiusNearDuplicates ?? 0;
