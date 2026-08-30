@@ -15,8 +15,7 @@ import {
   type ColourElementUsage,
   type ColourRole,
 } from "./colours.js";
-import chroma from "chroma-js";
-import { deltaE } from "haus-colour-utils";
+import { deltaE, hueFamily, oklch } from "haus-colour-utils";
 import { summariseAuthored, type AuthoredSummary } from "./authored.js";
 import { collectContrastFindings, type ContrastFinding } from "./contrast.js";
 import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "./typeScale.js";
@@ -235,46 +234,6 @@ export interface SiteAudit {
 
 // ── Colour family classification ─────────────────────────────────────────────
 
-/**
- * OKLCH chroma below which a colour is a neutral rather than a tinted hue.
- * Matches vault's threshold so a hex gets the same family name in both apps.
- *
- * This was HSL saturation until 2026-08-29. HSL saturation is not a measure of
- * chroma and inflates at the extremes of lightness, so the tinted greys every
- * design system ships were classified as hues: #101820 and #f7f7fa both came
- * out as Blue, #12100e as Orange, splitting a site's neutral ramp across four
- * families. In OKLCH those sit at chroma 0.020, 0.004 and 0.005, while the
- * least saturated real hue in the same sample is 0.170.
- */
-const NEUTRAL_CHROMA = 0.03;
-
-/**
- * Named OKLCH hue families, ordered round the wheel from red. Red wraps 360.
- *
- * The boundaries are the midpoints between the measured OKLCH hues of the
- * colours each family is named after: red 29, orange 71, yellow 110, green 142,
- * cyan 195, blue 264, violet 293, magenta 328, pink 354.
- *
- * They are deliberately not the HSL numbers. OKLCH hue is a different wheel,
- * and reusing HSL's boundaries (red 0, yellow 60, green 120, blue 240) offsets
- * every family by roughly one place: #ff0000 lands in Orange, #ffff00 in Green
- * and #0000ff in Purple. Checked against 27 canonical colours, tailwind's ramps
- * included.
- *
- * This duplicates `hueFamily` in haus-colour-utils and should be deleted once
- * that release is published and drift depends on it.
- */
-const HUE_FAMILIES: { name: string; min: number; max: number }[] = [
-  { name: "Red", min: 11, max: 50 },
-  { name: "Orange", min: 50, max: 90 },
-  { name: "Yellow", min: 90, max: 126 },
-  { name: "Green", min: 126, max: 168 },
-  { name: "Cyan", min: 168, max: 230 },
-  { name: "Blue", min: 230, max: 278 },
-  { name: "Purple", min: 278, max: 310 },
-  { name: "Pink", min: 310, max: 11 },
-];
-
 interface SwatchGeometry {
   family: string;
   /** OKLCH lightness as 0-100. */
@@ -284,28 +243,25 @@ interface SwatchGeometry {
 /**
  * Family and lightness for a hex, or null if it will not parse. Alpha is
  * dropped: an opacity variant belongs in the same family as its base colour.
+ *
+ * The hue bins, the neutral chroma cut and the OKLCH conversion were all
+ * declared here and are now haus-colour-utils'. They were written here first,
+ * and the boundaries are the ones this file worked out: the midpoints between
+ * the measured OKLCH hues of the colours each family is named after, rather
+ * than HSL's, which offset every family by roughly one place. vault shipped
+ * the HSL numbers against OKLCH hues and misnamed 16 of 27 canonical colours,
+ * which is what a second copy of this decision costs.
+ *
+ * Two parses per swatch rather than one, since hueFamily takes a hex. The
+ * colours reaching here are already de-duplicated by usage, so it is a few
+ * hundred per audit.
  */
 function swatchGeometry(hex: string): SwatchGeometry | null {
-  let l: number;
-  let c: number;
-  let h: number;
-  try {
-    [l, c, h] = chroma(hex.slice(0, 7)).oklch();
-  } catch {
-    return null;
-  }
-  if (!Number.isFinite(l) || !Number.isFinite(c)) return null;
-  return { family: familyName(c, h), lightness: Math.round(l * 100) };
-}
-
-function familyName(c: number, h: number): string {
-  if (c < NEUTRAL_CHROMA || !Number.isFinite(h)) return "Neutral";
-  const hue = ((h % 360) + 360) % 360;
-  for (const f of HUE_FAMILIES) {
-    const inBin = f.min > f.max ? hue >= f.min || hue < f.max : hue >= f.min && hue < f.max;
-    if (inBin) return f.name;
-  }
-  return "Red";
+  const base = hex.slice(0, 7);
+  const colour = oklch(base);
+  const family = hueFamily(base);
+  if (!colour || !family) return null;
+  return { family, lightness: Math.round(colour.l * 100) };
 }
 
 function groupColoursByFamily(result: CrawlResult): ColourFamily[] {

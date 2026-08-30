@@ -389,6 +389,12 @@ Confidence: High on the shape; unbuilt, so unproven.
 
 The audit's perceptual work, CIEDE2000 near-duplicate clustering and WCAG contrast, is real colour science that would be error-prone to reimplement, so it lives in one dependency the backend consumes: the published `haus-colour-utils`. It is pure ESM with one browser-safe dependency and no Node builtins, and ships its own types.
 
+Since 0.2.1 the package also carries the OKLCH conversion and the hue-family bins
+that this file's audit used to declare itself. The bins were worked out here, from
+the measured OKLCH hues of the colours each family is named after, and they are the
+version that shipped: vault had reached for HSL's boundaries and misnamed 16 of 27
+canonical colours before it took these.
+
 *(Earlier this ran in the browser too: the cut colour proposal re-clustered live as the user moved a size slider, so the package was linked into the client the same way as the server, via a hand-written declaration shim, because it then shipped TypeScript source the client's stricter compiler rejected. With the proposal cut and the package now publishing built types, both the client link and the shim are gone; colour-utils is backend-only.)*
 
 ---
@@ -532,15 +538,29 @@ attempt: static analysis of CSS Modules was not sufficient evidence, twice. If i
 is retried, ownership must be assigned per class by where its declarations are,
 and verified by comparing computed styles. Reading the source is what failed.
 
-**The client hand-copies `haus-tokens`.** All 112 primitive names in
-`tokens/primitives.css` also exist in `haus-tokens`, with identical values, and
-nothing keeps them in step. They agree today by luck. This is the same class of
-problem Drift was built to detect, in Drift. The fix is to depend on the package,
-but it interacts with the semantic tier above: that tier does not exist in
-`haus-tokens` either, so adopting the package means either moving the tier into
-haus, where vault and loom would also get it, or keeping a local semantic layer
-over remote primitives, which is the same split ownership in a different place.
-Worth settling before the Figma library work mirrors either shape.
+**The client hand-copies `haus-tokens`' primitives.** 100 of the 103 custom
+properties in `tokens/primitives.css` also exist in `haus-tokens` with identical
+values, and nothing keeps them in step. They agree today by luck. This is the same
+class of problem Drift was built to detect, in Drift.
+
+Measured rather than assumed, and the measurement narrowed it. Only the primitives
+are a copy. The three that differ are Drift's: `--font-display`, `--space-hairline`
+and `--space-tight`, plus its own `--font-sans` and `--font-mono`. `motion.css` is
+identical, all 17 tokens.
+
+`semantics.css` is **not** a copy, and calling it one was the mistake in the
+original finding. 118 of its 157 roles share a name with haus's, which is the
+point of a role, and five resolve differently on purpose: Drift's controls are one
+radius step tighter and its overlay sits one shadow step lower. Twenty more are
+Drift's alone. That file is a theme over the primitives, which is what the
+architecture is for, and it stays.
+
+So the fix is narrower than it looked: consume `haus-tokens/primitives.css`, keep
+a short file for the five values Drift overrides, and leave the semantic layer
+where it is. The tier question that made this a decision is settled, because
+`haus-tokens` 0.2.0 has the tier now, and the shape it took is Drift's own: three
+spacing roles over one ladder, radius named for what is rounded, elevation for how
+high a thing sits.
 
 **The bundled demo capture can go stale silently.** The deployed build replays a
 real audit, so the capture is the product's own output. It is not a fixture standing in for one. A fix to the analysis therefore makes the shipped demo wrong, and

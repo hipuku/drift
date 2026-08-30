@@ -23,16 +23,14 @@
   },
   "dependencies": {
     "bullmq": "^5.78.1",
-    "chroma-js": "^3.2.0",
     "express": "^5.2.1",
-    "haus-colour-utils": "^0.1.2",
+    "haus-colour-utils": "^0.2.1",
     "haus-style-probe": "^0.2.1",
     "playwright": "^1.48.0",
     "ws": "^8.21.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/chroma-js": "^3.1.1",
     "@types/express": "^5.0.6",
     "@types/node": "^20.16.0",
     "@types/ws": "^8.18.1",
