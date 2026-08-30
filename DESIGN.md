@@ -216,6 +216,14 @@ POST /discover
 since a host may only serve `www`. Invalid or unreachable URLs return `422` with
 a human-readable `error`.
 
+A **missing or empty `url` returns `400`**, distinct from the `422` an unusable
+one gets: the first is a malformed request, the second a request that was
+understood and refused. Both are part of the contract rather than incidental.
+drift-tests uses the `400` as its readiness probe — it is the cheapest call that
+proves the service is up without starting a crawl — so changing that status
+breaks a consumer, and is a breaking change even though no successful response
+changes shape.
+
 #### Crawl
 
 ```http
@@ -387,6 +395,38 @@ The audit's perceptual work — CIEDE2000 near-duplicate clustering and WCAG con
 ---
 
 ## Extraction and the audit
+
+### Contrast is measured on the composited colour, not the authored one
+
+An element's own `background-color` is frequently `transparent`, and its `color`
+frequently carries alpha. Evaluating the pair as authored — treating both as
+opaque and comparing the two declared values — is the obvious implementation and
+it is wrong in the direction that matters: it reports passes that a reader cannot
+read.
+
+50% black text on white is the ordinary case. As authored it measures 18.88 and
+passes AAA. Composited over the background it actually sits on, it renders as
+`#888888` and measures 3.54, which fails AA. Muted secondary text is written this
+way constantly, so the naive implementation is not wrong at the margins; it is
+wrong about the most common styling idiom on the web.
+
+So extraction resolves an `effectiveBackgroundColor` per element — the nearest
+ancestor background with any alpha at all, uncomposited — and the analysis
+composites the pair before measuring. The findings carry both: `foreground` and
+`background` as authored, and `resolvedForeground` / `resolvedBackground` only
+when compositing changed something, because a reader looking at a failing pair
+needs to see the colour that reached the screen and the one that was written.
+
+**The rejected alternative** was to composite during extraction and store only the
+resolved colours. It is simpler and it loses the authored values, which are what
+someone fixing the problem edits. A finding that says "#888888 fails" is not
+actionable when the stylesheet says `rgba(17,17,17,0.5)`.
+
+This is also why `colours.ts` records the *authored* background while
+`contrast.ts` prefers the effective one. The two are asking different questions —
+what did this site choose, versus what does a reader perceive — and inheritance
+is noise to the first and the substance of the second. Both rules are asserted in
+tests so neither drifts into the other.
 
 ### Audit reads authored CSS, not only computed styles
 
