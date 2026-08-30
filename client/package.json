@@ -15,7 +15,6 @@
     "@fontsource-variable/stack-sans-text": "^5.2.1",
     "@fontsource/fira-code": "^5.1.1",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
-    "@fortawesome/free-brands-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.3.1",
     "react": "^19.0.0",
