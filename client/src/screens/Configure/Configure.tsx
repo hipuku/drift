@@ -3,21 +3,13 @@ import { Button } from "../../components/Button/Button.js";
 import { Callout } from "../../components/Callout/Callout.js";
 import { Text } from "../../components/Text/Text.js";
 import { TextField } from "../../components/TextField/TextField.js";
-import { discoverPages } from "../../lib/api.js";
+import { useDiscovery } from "../../hooks/useDiscovery.js";
 import { DEMO_CAPTURED, DEMO_MODE, DEMO_SITE } from "../../demo/index.js";
 import styles from "./Configure.module.css";
 
 const VISIBLE = 10;
 /** Mirrors the backend's MAX_CRAWL_PAGES ceiling (how many pages one audit visits). */
 const CRAWL_CEILING = 10;
-
-interface DiscoveredPage {
-  url: string;
-  path: string;
-  title: string;
-}
-
-type Step = "url" | "discovering" | "select";
 
 function hostOf(raw: string): string {
   for (const candidate of [raw, `https://${raw}`]) {
@@ -50,15 +42,12 @@ function Check() {
 }
 
 export function Configure({ onSubmit }: ConfigureProps = {}) {
-  const [step, setStep] = useState<Step>("url");
+  const { status, error, pages, rootUrl: resolvedUrl, host: resolvedHost, discover: runDiscovery, addPage: addDiscoveredPage, reset } =
+    useDiscovery();
   const [url, setUrl] = useState("");
-  const [resolvedUrl, setResolvedUrl] = useState("");
-  const [resolvedHost, setResolvedHost] = useState("");
-  const [pages, setPages] = useState<DiscoveredPage[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showAll, setShowAll] = useState(false);
   const [query, setQuery] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [addUrl, setAddUrl] = useState("");
   const [addError, setAddError] = useState<string | null>(null);
 
@@ -67,22 +56,13 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
   const host = resolvedHost || hostOf(url);
 
   const discover = async () => {
-    setStep("discovering");
-    setError(null);
-    try {
-      const data = await discoverPages(url);
-      setPages(data.pages);
-      setResolvedUrl(data.rootUrl ?? url.trim());
-      setResolvedHost(data.host ?? "");
-      // Default to the homepage — the single most representative page.
-      setSelected(new Set(data.pages[0] ? [data.pages[0].path] : []));
-      setShowAll(false);
-      setQuery("");
-      setStep("select");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not reach the site.");
-      setStep("url");
-    }
+    const found = await runDiscovery(url);
+    if (!found) return;
+    // The selection is this screen's concern, not the hook's. Default to the
+    // homepage — the single most representative page.
+    setSelected(new Set(found[0] ? [found[0].path] : []));
+    setShowAll(false);
+    setQuery("");
   };
 
   const toggle = (path: string) => {
@@ -132,7 +112,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
     setQuery("");
     setShowAll(true);
     if (!pages.some((p) => p.path === path)) {
-      setPages((prev) => [...prev, { url: full.href, path, title: path }]);
+      addDiscoveredPage({ url: full.href, path, title: path });
     }
     setSelected((prev) => {
       if (prev.has(path) || prev.size >= CRAWL_CEILING) return prev;
@@ -161,7 +141,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
   return (
     <div className={styles.screen}>
       <div className={styles.card}>
-        {step === "url" && (
+        {status === "idle" && (
           <>
             <Text role="heading-lg" as="h1">
               Diagnose a site
@@ -206,7 +186,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
           </>
         )}
 
-        {step === "discovering" && (
+        {status === "discovering" && (
           <>
             <Text role="heading-lg" as="h1">
               Finding pages
@@ -218,9 +198,9 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
           </>
         )}
 
-        {step === "select" && (
+        {status === "ready" && (
           <>
-            <button type="button" className={styles.back} onClick={() => setStep("url")}>
+            <button type="button" className={styles.back} onClick={reset}>
               <span aria-hidden="true">←</span> {host}
             </button>
             <Text role="heading-lg" as="h1">
