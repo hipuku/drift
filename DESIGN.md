@@ -463,6 +463,16 @@ A crawl visiting zero pages once reported `completed` and served an all-zeros au
 
 Confidence: High. An API that reports success for an empty result cannot be built on.
 
+### Releases are tagged, and the contract is pinned to the tag
+
+The manifest, the tag and `openapi.yaml` all carry the same number. Drift ran on
+`0.0.0` with no tags until v0.1.0, which meant a green acceptance run in
+drift-tests proved the contract held against some build without recording which
+one, and a breaking change there would have read as a broken test rather than a
+deliberate change. drift-tests now checks out a tag and prints it in its report.
+
+Confidence: High. kern already works this way and its three consumers pin the tag.
+
 ---
 
 # Cut: the proposals layer
