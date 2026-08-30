@@ -25,7 +25,7 @@ export function createCrawlWorker(
       const { url, maxPages, pages, callbackUrl } = job.data;
 
       let elementsTotal = 0;
-      // Delivery is best-effort and must never fail a crawl that succeeded — but
+      // Delivery is best-effort and must never fail a crawl that succeeded. But
       // best-effort is not the same as unobserved. `deliver` returns whether the
       // receiver took it, and discarding that made a dropped callback invisible:
       // the caller waits for a notification that will never come, and nothing on
@@ -60,12 +60,12 @@ export function createCrawlWorker(
           },
         });
 
-        // Reaching no pages is a failed crawl, not an empty one — the site was
+        // Reaching no pages is a failed crawl, not an empty one. The site was
         // unreachable, blocked us, or every selected page 404'd. Failing here
         // keeps the job status honest for anything reading the API directly.
         if (result.pages.length === 0) {
           throw new Error(
-            "Couldn't read any pages — the site may be slow to load, blocking automated visits, or the selected pages may no longer exist.",
+            "Couldn't read any pages. The site may be slow to load, blocking automated visits, or the selected pages may no longer exist.",
           );
         }
       } catch (err) {

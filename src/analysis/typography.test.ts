@@ -54,7 +54,7 @@ describe("collectTypography", () => {
         el({ fontFamily: "Inter", fontSize: 16, fontWeight: 400 }),
         el({ fontFamily: "Inter", fontSize: 24, fontWeight: 700 }),
         el({ fontFamily: "Georgia", fontSize: 16 }),
-        // text-less wrapper — must not count
+        // text-less wrapper, must not count
         el({ fontFamily: "Inter", fontSize: 99 }, false, "div"),
       ]),
     );
@@ -194,7 +194,7 @@ describe("collectTypography · the base size", () => {
 
   it("breaks a tie towards the smaller size", () => {
     // Body text outnumbers headings in real pages, so on a tie the smaller size
-    // is the better guess at body — and it is deterministic either way, which
+    // is the better guess at body, and it is deterministic either way, which
     // matters more than which one wins.
     expect(collectTypography(crawl([el({ fontSize: 16 }), el({ fontSize: 32 })])).baseSizePx).toBe(16);
     expect(collectTypography(crawl([el({ fontSize: 32 }), el({ fontSize: 16 })])).baseSizePx).toBe(16);

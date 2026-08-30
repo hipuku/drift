@@ -15,7 +15,7 @@ import type { AuditAuthored, CssUnit, SiteAudit } from "../../lib/api.js";
  * ΔE below which two colours are effectively identical.
  *
  * Mirrors `INDISTINGUISHABLE_DELTA_E` in the service's `analysis/colours.ts`.
- * The two are held in step by `lib/contract.test.ts` — move one and that test
+ * The two are held in step by `lib/contract.test.ts`, move one and that test
  * fails. Do not change this without changing the service.
  */
 export const INDISTINGUISHABLE_DELTA_E = 2;
@@ -85,7 +85,7 @@ export function capFirst(s: string): string {
 }
 
 /**
- * The diagnosis line — where the system is drifting, in plain terms. Names every
+ * The diagnosis line, where the system is drifting, in plain terms. Names every
  * token category present: those with redundancy get a "N of M …" problem clause,
  * the rest are gathered as holding steady. Reads as prose, not a census.
  */
@@ -111,7 +111,7 @@ export function healthLine(s: SiteAudit["summary"], extendedDrift: string[] = []
     if (radiusDup > 0) problems.push(`${radiusDup} of ${s.radii} radii nearly repeat`);
     else clean.push("radius");
   }
-  if (s.shadows > 0) clean.push("shadows"); // no redundancy signal — treated as holding
+  if (s.shadows > 0) clean.push("shadows"); // no redundancy signal, treated as holding
 
   // Contrast is the one finding with a user-facing consequence, so it leads the
   // problem list rather than joining the sprawl counts.
@@ -125,7 +125,7 @@ export function healthLine(s: SiteAudit["summary"], extendedDrift: string[] = []
   const tail = extendedDrift.length ? ` Also drifting: ${joinList(extendedDrift)}.` : "";
 
   if (problems.length === 0) {
-    return `Nothing's drifting — ${joinList(clean)} all hold to a system.${tail}`;
+    return `Nothing's drifting, ${joinList(clean)} all hold to a system.${tail}`;
   }
   const problemText = `${capFirst(joinList(problems))}.`;
   if (clean.length === 0) return `${problemText}${tail}`;
@@ -144,14 +144,14 @@ export function alphaOf(hex: string): number {
   return hex.length >= 9 ? parseInt(hex.slice(7, 9), 16) / 255 : 1;
 }
 
-/** Two colours share an RGB base — they differ, if at all, only in alpha. */
+/** Two colours share an RGB base, they differ, if at all, only in alpha. */
 export function sameBaseColour(a: string, b: string): boolean {
   return a.slice(0, 7).toLowerCase() === b.slice(0, 7).toLowerCase();
 }
 
 /**
  * How a colour relates to its nearest neighbour. ΔE ignores alpha, so a colour
- * and its translucent self read as ΔE 0 — that's an *opacity* variant, not a
+ * and its translucent self read as ΔE 0, that's an *opacity* variant, not a
  * perceptual duplicate. Only genuinely different hues under the threshold are
  * "duplicate"; everything else is just the nearest.
  */
@@ -162,7 +162,7 @@ export function nearKind(hex: string, near: { hex: string; deltaE: number }): Ne
 
 /**
  * Whether a custom-property value is a concrete colour we can render as a swatch.
- * Skips var()/calc() forms — they can't resolve in this document, so they'd paint
+ * Skips var()/calc() forms. They can't resolve in this document, so they'd paint
  * an empty box.
  */
 export function colourish(value: string): boolean {
@@ -231,13 +231,13 @@ export function deviceClass(px: number): string {
 
 // ── Derived sets ────────────────────────────────────────────────────────────
 // Pure derivations over an audit. These lived inside the Audit component as
-// useMemo bodies, where they could not be tested without rendering a screen —
+// useMemo bodies, where they could not be tested without rendering a screen,
 // and where each one's threshold was a bare number in the middle of JSX.
 
 /**
  * Values within `tolerance` of a smaller value in the same set: the redundancy
  * the audit counts. Only the larger of a pair is returned, because the smaller
- * one is the value the system already had — the later one is the duplicate.
+ * one is the value the system already had, the later one is the duplicate.
  *
  * Chained near-duplicates are each measured against their immediate
  * predecessor, not against the first of the run: 4 / 4.9 / 5.8 at 1px tolerance
@@ -255,7 +255,7 @@ export function nearDuplicates(values: number[], tolerance: number): Set<number>
   return set;
 }
 
-/** Radii count as redundant within 1px — the audit's own threshold. */
+/** Radii count as redundant within 1px, the audit's own threshold. */
 export const RADIUS_NEAR_DUPLICATE_PX = 1;
 /** Border widths are finer-grained: 1px vs 1.5px is a real duplicate. */
 export const BORDER_NEAR_DUPLICATE_PX = 0.5;
@@ -275,7 +275,7 @@ export function detectGridBase(values: number[]): 4 | 8 {
   return values.length > 0 && offGrid(values, 8).size === 0 ? 8 : 4;
 }
 
-/** Position of each z-index in the stacking order — drives the ladder preview. */
+/** Position of each z-index in the stacking order, drives the ladder preview. */
 export function zIndexRanks(values: number[]): { map: Map<number, number>; total: number } {
   const sorted = [...values].sort((a, b) => a - b);
   const map = new Map<number, number>();

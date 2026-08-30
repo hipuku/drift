@@ -8,7 +8,7 @@
  *
  * Both references are selectable, because "off-scale" is only meaningful
  * relative to something and a reader should be able to test another candidate.
- * The selection drives the ruler and its table together and nothing else — the
+ * The selection drives the ruler and its table together and nothing else, the
  * verdict and the export stay pinned to the automatic fit, so exploring a
  * hypothesis never rewrites the diagnosis.
  */
@@ -19,7 +19,7 @@ import { niceStep } from "../auditModel.js";
 import styles from "../Audit.module.css";
 
 /**
- * Type scale ruler — the visual evidence for the "off-scale" verdict. Sizes are
+ * Type scale ruler, the visual evidence for the "off-scale" verdict. Sizes are
  * plotted on a log axis against the closest modular scale's steps; sizes that
  * miss a step sit between ticks in red.
  */
@@ -69,7 +69,7 @@ export function TypeRuler({
 
 /**
  * The reference-scale picker. Each option carries how many values miss it, so
- * the row itself answers "which scale is this system actually on?" — picking is
+ * the row itself answers "which scale is this system actually on?", picking is
  * secondary to comparing.
  */
 export function ScaleOptions({
@@ -80,7 +80,7 @@ export function ScaleOptions({
 }: {
   options: { id: string; label: string; off: number; best?: boolean }[];
   activeId: string;
-  /** What to call the automatic pick — "closest" for a ratio, "detected" for a grid. */
+  /** What to call the automatic pick, "closest" for a ratio, "detected" for a grid. */
   bestLabel: string;
   onSelect: (id: string) => void;
 }) {
@@ -105,7 +105,7 @@ export function ScaleOptions({
 }
 
 /** A "nice" round step (1/2/5 × 10ⁿ) near the target, for readable axis labels. */
-/** Spacing grid ruler — values on a linear axis against the 4px grid. */
+/** Spacing grid ruler, values on a linear axis against the 4px grid. */
 export function SpacingRuler({
   values,
   base,

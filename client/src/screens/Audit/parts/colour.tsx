@@ -4,7 +4,7 @@
  * A colour is the one token you judge by looking rather than by reading, so
  * these carry more than a value and a count: the swatch itself, what the colour
  * is near, and where it is used. `ColourDetail` and `ColourCard` are two views
- * of one swatch — the card is the grid, the detail is the rail beside it — which
+ * of one swatch. The card is the grid, the detail is the rail beside it, which
  * is why they live together rather than one per file.
  */
 
@@ -154,7 +154,7 @@ export function ColourDetail({
     return [...map.values()].sort((a, b) => a.tag.localeCompare(b.tag));
   }, [elements]);
 
-  // Show every relationship — all opacity variants and near-duplicates — not just
+  // Show every relationship, all opacity variants and near-duplicates, not just
   // the single closest. Fall back to the one nearest colour only when it's close
   // enough to matter; a colour whose nearest is far (white ↔ black, ΔE 100) stands
   // alone and gets no call-out.

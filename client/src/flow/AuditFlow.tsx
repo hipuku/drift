@@ -92,7 +92,7 @@ export function AuditFlow() {
     if (crawl.phase === "completed" && !loadedRef.current) {
       loadedRef.current = true;
       if (crawl.result && crawl.result.pages.length === 0) {
-        fail("Couldn't read any pages — the site may be slow to load or blocking automated visits. Try again, or pick fewer pages.");
+        fail("Couldn't read any pages. The site may be slow to load, or blocking automated visits. Try again, or pick fewer pages.");
       } else {
         void loadAudit(jobId);
       }

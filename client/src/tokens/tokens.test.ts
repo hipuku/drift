@@ -9,10 +9,10 @@ import { describe, expect, it } from "vitest";
  * for an undefined `--x` is invalid at computed-value time: the declaration is
  * dropped and the property inherits. No console warning, no build error,
  * nothing in review. A misspelled colour looks like a theming decision and a
- * missing duration looks like a design choice — `--duration-default` (the scale
+ * missing duration looks like a design choice, `--duration-default` (the scale
  * is fast / normal / moderate) sat in five animations making them instant.
  *
- * A fallback — `var(--x, 0.2s)` — is a real value, so it is not a failure. It
+ * A fallback, `var(--x, 0.2s)`, is a real value, so it is not a failure. It
  * is still usually a sign the token name is wrong, since a fallback that never
  * loses is just a hardcoded value wearing a token's clothes.
  */
@@ -51,7 +51,7 @@ describe("custom properties", () => {
   });
 
   it("catches a property that is read but never defined", () => {
-    // Proves the assertion above can fail — a guard whose matcher silently
+    // Proves the assertion above can fail, a guard whose matcher silently
     // stops matching passes forever and protects nothing.
     const read = new Set([...matches(filesUnder(SRC, [".css"]), /var\((--[a-z0-9-]+)\)/g), "--not-a-token"]);
     const defined = matches(filesUnder(SRC, [".css"]), /^\s*(--[a-z0-9-]+)\s*:/gm);
@@ -69,7 +69,7 @@ describe("custom properties", () => {
  * 70 motion were migrated, and a new one should not appear without a decision.
  *
  * The exceptions are the type tier, which exists but is bypassed by bare
- * `font-size` and `font-family` declarations. Those are not a mechanical swap —
+ * `font-size` and `font-family` declarations. Those are not a mechanical swap,
  * a type role carries size, weight, leading and tracking together, so adopting
  * one changes how the text sits, site by site. They are listed rather than
  * ignored: the list should only ever get shorter.
@@ -102,7 +102,7 @@ describe("the two-tier rule", () => {
 
   it("keeps the recorded exceptions honest", () => {
     // A name that is no longer read, or no longer a primitive, should leave the
-    // list — otherwise the debt looks larger than it is and stops being read.
+    // list, otherwise the debt looks larger than it is and stops being read.
     const primitives = matches(
       [resolve(SRC, "tokens/primitives.css")],
       /^\s*(--[a-z0-9-]+)\s*:/gm,

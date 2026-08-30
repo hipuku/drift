@@ -1,9 +1,9 @@
-# Drift — design
+# Drift: design notes
 
 How Drift is put together and why: the architecture, then the decisions behind
 it, then the one layer that was built and deliberately removed.
 
-One constraint runs through all of it — Drift is a **deterministic pipeline over
+One constraint runs through all of it. Drift is a **deterministic pipeline over
 a slow, failure-prone crawl of a site you don't control**. Any choice that keeps
 that path computed, memory-bounded, and legible beats a heavier one that adds
 capability.
@@ -13,7 +13,7 @@ capability.
 ## What Drift is
 
 Point Drift at a live URL you don't control. It crawls the site and audits the
-design system that was *actually shipped* — every colour, typeface, size, radius,
+design system that was *actually shipped*: every colour, typeface, size, radius,
 shadow, border and spacing value in use, deduplicated, perceptually grouped, and
 attributed to the pages it appears on.
 
@@ -22,12 +22,12 @@ inventory is the evidence, the verdicts are the diagnosis, and the JSON export i
 the takeaway.
 
 Everything runs **without an API key**. The crawl, the aggregation, the verdicts
-and the export are all computed — no model in the loop, no per-run cost, and the
+and the export are all computed. No model in the loop, no per-run cost, and the
 same site audited twice gives the same answer. Measuring a system against a
 stated reference is arithmetic.
 
 Judging whether a *change* between two versions is intentional or accidental is a
-different problem — it needs two sides to compare and is genuinely judgemental.
+different problem. It needs two sides to compare and is genuinely judgemental.
 That work lives in `loom`, not here.
 
 ---
@@ -47,12 +47,12 @@ flowchart TD
     H --> E
 ```
 
-One thing worth noting in that chain: **extraction reads twice** —
+In that chain, **extraction reads twice**:
 `getComputedStyle` for what the browser resolved, and the CSSOM for what the
 author actually wrote. The second read is what makes authored units recoverable.
 
 Aggregation currently happens *after* the crawl, over the retained extractions.
-Memory is therefore bounded by the page cap rather than by the work itself —
+Memory is therefore bounded by the page cap, not by the work itself:
 see the crawl-reliability decision below for why that is a known limit and what
 replaces it.
 
@@ -70,8 +70,8 @@ Crawling costs three things, so "crawl everything" is never offered unbounded:
 
 There are also **diminishing returns**. The design language lives in the shared
 stylesheet, so a handful of pages captures the system; pages 6→N mostly repeat
-tokens already seen. What extra pages buy is *attribution* — "this off-brand red
-only appears on `/careers`" — not new tokens.
+tokens already seen. What extra pages buy is *attribution*: "this off-brand red
+only appears on `/careers`". They do not buy new tokens.
 
 **The cap is `MAX_CRAWL_PAGES = 10`**, enforced server-side and mirrored in the
 picker. Callers either name the pages to visit (the discovery picker) or omit
@@ -94,7 +94,7 @@ is a token. Everything is ranked by usage, deduplicated, and attributed to pages
 | Radius · Shadow · Border | Distinct values with usage and element attribution |
 | Z-index · Opacity · Blur · Gradients · Motion · Breakpoints | Collected where present; absent categories simply do not appear |
 
-On top of the inventory sits the **diagnosis** — a plain-language health line and
+On top of the inventory sits the **diagnosis**: a plain-language health line and
 a verdict per category (good / watch / review). Every claim is measured against a
 stated reference: a named modular ratio for type, a 4px or 8px grid for spacing,
 CIEDE2000 for colour, WCAG 2.1 for contrast. The reference is **selectable**, so
@@ -103,12 +103,12 @@ told which scale they happen to sit on.
 
 ### Authored units
 
-`getComputedStyle` returns **resolved px** — the browser has already collapsed
+`getComputedStyle` returns **resolved px**. The browser has already collapsed
 whatever was authored (`rem`, `em`, `%`, `clamp()`) into one number. That loses
 two things worth having. A rem-authored site reads as a pile of px, and sub-pixel
-artefacts (`1.96195px` vs `1.96209px` — one `0.125rem` resolved in two contexts)
+artefacts (`1.96195px` vs `1.96209px`, one `0.125rem` resolved in two contexts)
 get promoted to distinct "tokens". And sites increasingly ship
-`:root { --color-primary }` themselves — the site's *real* token names, sitting
+`:root { --color-primary }` themselves: the site's *real* token names, sitting
 in the stylesheet, ignored.
 
 So the extractor also walks the CSSOM. The audit reports the dominant unit per
@@ -125,8 +125,8 @@ state, and captures whatever JS has set inline at crawl time).
 
 ## Service contract
 
-The backend is a standalone service, not a UI helper — the client is one consumer
-of the same API a CI job would use.
+The backend is a standalone service. The client is one consumer of the same API a
+CI job would use.
 
 ```mermaid
 sequenceDiagram
@@ -181,7 +181,7 @@ Endpoints are documented in [README.md](README.md).
 The backend is a standalone service. Every screen in the client is built on
 these endpoints, and they are equally usable from CI or a script. The full
 contract, including the webhook callbacks, is in [`openapi.yaml`](openapi.yaml)
-(OpenAPI 3.1) — open it in any OpenAPI viewer.
+(OpenAPI 3.1). Open it in any OpenAPI viewer.
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -212,15 +212,15 @@ POST /discover
 }
 ```
 
-`rootUrl` is the *resolved* origin — follow it rather than the string you sent,
-since a host may only serve `www`. Invalid or unreachable URLs return `422` with
+`rootUrl` is the *resolved* origin. Follow it, not the string you sent, since a
+host may only serve `www`. Invalid or unreachable URLs return `422` with
 a human-readable `error`.
 
 A **missing or empty `url` returns `400`**, distinct from the `422` an unusable
 one gets: the first is a malformed request, the second a request that was
 understood and refused. Both are part of the contract rather than incidental.
-drift-tests uses the `400` as its readiness probe — it is the cheapest call that
-proves the service is up without starting a crawl — so changing that status
+drift-tests uses the `400` as its readiness probe, the cheapest call that proves
+the service is up without starting a crawl, so changing that status
 breaks a consumer, and is a breaking change even though no successful response
 changes shape.
 
@@ -254,14 +254,14 @@ reached **zero** pages is a **failure**, not an empty success, and carries the
 reason:
 
 ```json
-{ "status": "failed", "error": "Couldn't read any pages — the site may be slow to load, blocking automated visits, or the selected pages may no longer exist." }
+{ "status": "failed", "error": "Couldn't read any pages. The site may be slow to load, blocking automated visits, or the selected pages may no longer exist." }
 ```
 
 `GET /crawl/:jobId/audit` returns `409` until the crawl has finished.
 
 #### Webhooks
 
-Pass a `callbackUrl` and Drift POSTs the finished audit to it — no polling.
+Pass a `callbackUrl` and Drift POSTs the finished audit to it. No polling.
 
 ```http
 POST /crawl
@@ -280,7 +280,7 @@ POST /crawl
 A crawl that fails delivers `crawl.failed` with an `error` instead, so the
 receiver always hears back either way. Headers carry `x-drift-event`, and
 `x-drift-signature` (`sha256=…`, HMAC of the raw body) when
-`DRIFT_WEBHOOK_SECRET` is set — verify it before trusting the payload.
+`DRIFT_WEBHOOK_SECRET` is set. Verify it before trusting the payload.
 
 The URL is validated when you enqueue the crawl, not at delivery time, so a
 mistake is a `422` while you're still on the line. It must be public http(s):
@@ -288,9 +288,9 @@ loopback, private ranges, and link-local addresses are refused, and the host is
 resolved before the check, since a public name can still point somewhere
 private. A trusted internal host can be allowlisted with the
 `DRIFT_WEBHOOK_ALLOWED_HOSTS` env var (comma-separated), which exempts it from
-that refusal — off by default, and how a loopback receiver is permitted in a
+that refusal, off by default, and how a loopback receiver is permitted in a
 test run. Delivery is retried on a network error or a `5xx` and given up on
-after a `4xx`; it is best-effort, and never fails a crawl that succeeded — the
+after a `4xx`; it is best-effort, and never fails a crawl that succeeded. The
 audit is on the API regardless.
 
 The audit's `summary` counts (e.g. `contrastFailingAA`) and per-pair `contrast`
@@ -302,7 +302,7 @@ payload.)
 #### Live progress
 
 Connect a WebSocket to the backend and you receive progress frames as pages land
-— `pagesCrawled`, `maxPages`, `lastUrl`, `lastTitle`, `elementsTotal`. The
+(`pagesCrawled`, `maxPages`, `lastUrl`, `lastTitle`, `elementsTotal`). The
 client uses the socket for liveness and the `result` endpoint as the
 authoritative source of completion, so a dropped socket degrades to polling
 rather than hanging.
@@ -313,7 +313,7 @@ rather than hanging.
 Two token tiers, in cascade layers. `tokens/primitives.css` holds raw values and
 `tokens/semantics.css` holds intent aliases over them; a component reads the
 semantic layer and never a primitive. `styles/drift.css` declares a third and
-fourth layer, `drift.primitives` and `drift.semantics`, after both — it re-skins
+fourth layer, `drift.primitives` and `drift.semantics`, after both. It re-skins
 the neutral and primary ramps, the three font families and the four shadows for
 a cool editorial identity, and wins where it overlaps. Twenty-nine tokens are
 defined in both places on purpose. The base layer is the standalone foundation;
@@ -321,18 +321,17 @@ the brand layer is what ships.
 
 The semantic tier covers colour, type, spacing, radius, elevation and motion.
 
-Spacing is the part worth explaining. It is aliased three ways — `inset`
-(padding), `gap` (between siblings), `stack` (margin) — over one ladder, so a
+Spacing is aliased three ways, `inset` (padding), `gap` (between siblings) and
+`stack` (margin), over one ladder, so a
 step means the same size whichever role reads it. The split is not decoration:
 it is what lets inset, gap and stack be retuned independently later without
 opening every module to work out which `--space-3` meant which. Every spacing
 reference in the client was on one of those three properties when the tier was
-built, so the role is read off the CSS property rather than judged per site.
+built, so the role is read off the CSS property and never judged per site.
 
 Two spacing steps sit deliberately below the 4px grid, `--space-hairline` (1px)
 and `--space-tight` (2px). They are optical corrections inside small controls,
-where a 4px step is visibly too much and the value is doing the work of a border
-rather than of space. Named so they cannot be mistaken for the bottom of the
+where a 4px step is visibly too much and the value is doing the work of a border. Named so they cannot be mistaken for the bottom of the
 scale.
 
 `--z-*`, `--border-width-*` and `--opacity-*` live in the semantic layer rather
@@ -343,7 +342,7 @@ with nothing on the other end.
 
 Two guards hold the layer, because CSS fails silently at both edges. An undefined
 `var()` is dropped and the property inherits, with no warning at build or in
-review — that is how `--duration-default`, which never existed, left five
+review. That is how `--duration-default`, which never existed, left five
 animations running instantly. And a CSS-module class that does not exist is a
 clean typecheck and an `undefined` at runtime. `client/src/tokens/tokens.test.ts`
 asserts that every custom property read is defined, and that no component reads a
@@ -351,36 +350,36 @@ primitive outside a named exception list that can only shrink.
 
 # Decisions
 
-Recorded to explain the *why* — not as immutable rules, but so future changes are
+Recorded to explain the *why*. They are not immutable rules; they are here so future changes are
 made with full awareness of what they replace.
 
 ## Architecture
 
 ### Backend framework: standalone Node + Express over Next.js API routes
 
-Core and hipuku.dev are Next.js apps, so Next was the default to beat. It loses here for a structural reason, not a preference one. Drift needs three things that want a single long-lived process: a persistent WebSocket connection feeding live crawl progress, Playwright workers driving headless Chromium, and BullMQ workers pulling jobs off a queue. Next.js API routes are request-scoped and, in their natural deployment target, serverless — there is no durable process to own a WebSocket server or a worker pool, and cold starts actively fight against both. Running Next purely as a custom server to host all this would be using the framework for none of the things it is good at while inheriting its constraints. Express is a thin, well-understood process that does exactly one job: stay alive and own the sockets and the queue workers. The frontend is a separate Vite SPA (see below), so there is no SSR requirement pulling back toward Next.
+Core and hipuku.dev are Next.js apps, so Next was the default to beat. It loses here for a structural reason, not a preference one. Drift needs three things that want a single long-lived process: a persistent WebSocket connection feeding live crawl progress, Playwright workers driving headless Chromium, and BullMQ workers pulling jobs off a queue. Next.js API routes are request-scoped and, in their natural deployment target, serverless. There is no durable process to own a WebSocket server or a worker pool, and cold starts actively fight against both. Running Next purely as a custom server to host all this would be using the framework for none of the things it is good at while inheriting its constraints. Express is a thin, well-understood process that does exactly one job: stay alive and own the sockets and the queue workers. The frontend is a separate Vite SPA (see below), so there is no SSR requirement pulling back toward Next.
 
 ### Frontend: Vite SPA over Next.js
 
-Drift's frontend is a single surface — crawl configuration, a live progress view, and the audit (originally with a proposals layer, since cut — see below). There are no public, SEO-relevant, server-rendered pages; the valuable output is generated per-run and streamed, not statically rendered. That removes the main reasons to reach for Next. A Vite + React SPA talking to the Express API over HTTP and WebSocket keeps the two halves cleanly separated and the build fast. It also makes the architecture legible at a glance: a server process and a client process, no blurred middle.
+Drift's frontend is a single surface: crawl configuration, a live progress view, and the audit (originally with a proposals layer, since cut; see below). There are no public, SEO-relevant, server-rendered pages; the valuable output is generated per-run and streamed, not statically rendered. That removes the main reasons to reach for Next. A Vite + React SPA talking to the Express API over HTTP and WebSocket keeps the two halves cleanly separated and the build fast. It also makes the architecture legible at a glance: a server process and a client process, no blurred middle.
 
 ### Job queue: BullMQ over pg-boss and in-memory
 
-A crawl is slow, failure-prone, and must not run on the request thread — it needs a real queue with retries, concurrency limits, and progress reporting. Three options were weighed. An **in-memory queue** was rejected immediately: it cannot survive a restart, and a queued crawl should outlive one. **pg-boss** (Postgres-backed) is appealing for keeping the dependency count down, but it would add a second stateful store, and **BullMQ** — the mature Redis-backed queue — brings first-class concurrency control, retry/backoff, and an events stream that maps naturally onto the per-page WebSocket progress updates. One Redis, one queue, no extra database.
+A crawl is slow, failure-prone, and must not run on the request thread. It needs a real queue with retries, concurrency limits, and progress reporting. Three options were weighed. An **in-memory queue** was rejected immediately: it cannot survive a restart, and a queued crawl should outlive one. **pg-boss** (Postgres-backed) is appealing for keeping the dependency count down, but it would add a second stateful store, and **BullMQ**, the mature Redis-backed queue, brings first-class concurrency control, retry/backoff, and an events stream that maps naturally onto the per-page WebSocket progress updates. One Redis, one queue, no extra database.
 
 ### Real-time transport: WebSockets over SSE
 
-A crawl emits progress continuously — pages visited, elements seen, token tallies growing — and the UI shows it live. Both Server-Sent Events and WebSockets serve one-directional progress streaming well, so the original tie-breaker (the bidirectional agent checkpoint) is gone with that layer. WebSockets remain the deliberate choice for two standing reasons: the duplex channel leaves room for the interactive crawl controls the product moves toward (pause, cancel, adjust scope mid-run) over one connection rather than a second POST channel bolted on later, and the long-lived server that terminates the socket is already required by the Express decision above, so WS adds no new infrastructure.
+A crawl emits progress continuously (pages visited, elements seen, token tallies growing) and the UI shows it live. Both Server-Sent Events and WebSockets serve one-directional progress streaming well, so the original tie-breaker (the bidirectional agent checkpoint) is gone with that layer. WebSockets remain the deliberate choice for two standing reasons: the duplex channel leaves room for the interactive crawl controls the product moves toward (pause, cancel, adjust scope mid-run) over one connection rather than a second POST channel bolted on later, and the long-lived server that terminates the socket is already required by the Express decision above, so WS adds no new infrastructure.
 
-Confidence: High on keeping WebSockets. The honest caveat: if Drift were frozen as pure fire-and-forget progress with no client→server interaction, SSE would be marginally simpler — but that is not the direction, and the transport is not worth re-plumbing to save little.
+Confidence: High on keeping WebSockets. The caveat: if Drift were frozen as pure fire-and-forget progress with no client→server interaction, SSE would be marginally simpler, but that is not the direction, and the transport is not worth re-plumbing to save little.
 
 ### Infrastructure built in isolation, one new piece at a time
 
-Drift combines BullMQ, WebSockets, Playwright, and Redis. The failure mode is integrating them together and being unable to tell which layer broke. The rule: build each piece standalone and add at most one new infrastructure dependency per step. Order — Playwright crawler + CSS extraction with no queue and no UI; then `colour-utils` clustering as a pure function; then BullMQ + Redis around the crawler; then the WebSocket layer; then Docker. Each step is independently testable, and a regression points at exactly one newly added piece.
+Drift combines BullMQ, WebSockets, Playwright, and Redis. The failure mode is integrating them together and being unable to tell which layer broke. The rule: build each piece standalone and add at most one new infrastructure dependency per step. The order: Playwright crawler + CSS extraction with no queue and no UI; then `colour-utils` clustering as a pure function; then BullMQ + Redis around the crawler; then the WebSocket layer; then Docker. Each step is independently testable, and a regression points at exactly one newly added piece.
 
 ### Docker multi-stage build to contain the Chromium binary
 
-**Status: planned, not built** — there is no Dockerfile in the repo yet. Recorded because it is the intended shape and it gates the CI story.
+**Status: planned, not built.** There is no Dockerfile in the repo yet. Recorded because it is the intended shape and it gates the CI story.
 
 Playwright's Chromium adds roughly 300MB to an image if installed naively. The Dockerfile is multi-stage and installs only the Chromium browser (`playwright install chromium`, not the full browser set), keeping the runtime image as lean as a Chromium-bearing image can be. A `docker-compose.yml` would bring up the backend plus Redis for local development so the full stateful stack runs with one command. This also sets up the CI story: the same Redis runs as a service container in GitHub Actions, the test suite exercises real Redis and real BullMQ, and the Docker build/push runs only after tests pass.
 
@@ -388,9 +387,9 @@ Confidence: High on the shape; unbuilt, so unproven.
 
 ### haus-colour-utils: the audit's colour science, one published package
 
-The audit's perceptual work — CIEDE2000 near-duplicate clustering and WCAG contrast — is real colour science that would be error-prone to reimplement, so it lives in one dependency the backend consumes: the published `haus-colour-utils`. It is pure ESM with one browser-safe dependency and no Node builtins, and ships its own types.
+The audit's perceptual work, CIEDE2000 near-duplicate clustering and WCAG contrast, is real colour science that would be error-prone to reimplement, so it lives in one dependency the backend consumes: the published `haus-colour-utils`. It is pure ESM with one browser-safe dependency and no Node builtins, and ships its own types.
 
-*(Earlier this ran in the browser too: the cut colour proposal re-clustered live as the user moved a size slider, so the package was linked into the client the same way as the server — via a hand-written declaration shim, because it then shipped TypeScript source the client's stricter compiler rejected. With the proposal cut and the package now publishing built types, both the client link and the shim are gone; colour-utils is backend-only.)*
+*(Earlier this ran in the browser too: the cut colour proposal re-clustered live as the user moved a size slider, so the package was linked into the client the same way as the server, via a hand-written declaration shim, because it then shipped TypeScript source the client's stricter compiler rejected. With the proposal cut and the package now publishing built types, both the client link and the shim are gone; colour-utils is backend-only.)*
 
 ---
 
@@ -399,8 +398,8 @@ The audit's perceptual work — CIEDE2000 near-duplicate clustering and WCAG con
 ### Contrast is measured on the composited colour, not the authored one
 
 An element's own `background-color` is frequently `transparent`, and its `color`
-frequently carries alpha. Evaluating the pair as authored — treating both as
-opaque and comparing the two declared values — is the obvious implementation and
+frequently carries alpha. Evaluating the pair as authored, treating both as
+opaque and comparing the two declared values, is the obvious implementation and
 it is wrong in the direction that matters: it reports passes that a reader cannot
 read.
 
@@ -410,8 +409,8 @@ passes AAA. Composited over the background it actually sits on, it renders as
 way constantly, so the naive implementation is not wrong at the margins; it is
 wrong about the most common styling idiom on the web.
 
-So extraction resolves an `effectiveBackgroundColor` per element — the nearest
-ancestor background with any alpha at all, uncomposited — and the analysis
+So extraction resolves an `effectiveBackgroundColor` per element, the nearest
+ancestor background with any alpha at all, uncomposited, and the analysis
 composites the pair before measuring. The findings carry both: `foreground` and
 `background` as authored, and `resolvedForeground` / `resolvedBackground` only
 when compositing changed something, because a reader looking at a failing pair
@@ -423,28 +422,28 @@ someone fixing the problem edits. A finding that says "#888888 fails" is not
 actionable when the stylesheet says `rgba(17,17,17,0.5)`.
 
 This is also why `colours.ts` records the *authored* background while
-`contrast.ts` prefers the effective one. The two are asking different questions —
-what did this site choose, versus what does a reader perceive — and inheritance
+`contrast.ts` prefers the effective one. The two are asking different questions:
+what did this site choose, versus what does a reader perceive. Inheritance
 is noise to the first and the substance of the second. Both rules are asserted in
 tests so neither drifts into the other.
 
 ### Audit reads authored CSS, not only computed styles
 
-The first audit read every value from `getComputedStyle`, which returns resolved px. It was fast and truly "as rendered", but lossy in four ways at once: it discards the authored unit (a `rem`-based system reads as a pile of px, and one authored value resolves to several sub-pixel-different "tokens" like `1.96195px` vs `1.96209px`), it ignores the site's own declared `--*` custom properties, it sees only one viewport and only the resting state, and it captures JS-set inline noise (e.g. a GSAP frame). You cannot recover `em`/`%`/`vw`/`clamp()` from a px number — only `rem` is derivable (`px ÷ root font-size`) — so the fix is to read the CSS source (CSSOM) alongside the computed pass, which `extractBreakpoints` already proves is feasible. Computed styles stay the truth of *what rendered*; authored CSS supplies *what was written*, the real token names, and the interactive states. The audit's verdicts depend on this: off-scale / off-grid judgments are invalid on the wrong unit, so the authored units land in the audit itself. (The cut proposal layer went further, recommending a unit per category — type in `rem` for zoom accessibility.)
+The first audit read every value from `getComputedStyle`, which returns resolved px. It was fast and truly "as rendered", but lossy in four ways at once: it discards the authored unit (a `rem`-based system reads as a pile of px, and one authored value resolves to several sub-pixel-different "tokens" like `1.96195px` vs `1.96209px`), it ignores the site's own declared `--*` custom properties, it sees only one viewport and only the resting state, and it captures JS-set inline noise (e.g. a GSAP frame). You cannot recover `em`/`%`/`vw`/`clamp()` from a px number. Only `rem` is derivable (`px ÷ root font-size`), so the fix is to read the CSS source (CSSOM) alongside the computed pass, which `extractBreakpoints` already proves is feasible. Computed styles stay the truth of *what rendered*; authored CSS supplies *what was written*, the real token names, and the interactive states. The audit's verdicts depend on this: off-scale / off-grid judgments are invalid on the wrong unit, so the authored units land in the audit itself. (The cut proposal layer went further, recommending a unit per category: type in `rem` for zoom accessibility.)
 
-Confidence: High on the direction. Medium on per-element rule matching — the pragmatic route collects declared token sets per property rather than resolving the full cascade per element.
+Confidence: High on the direction. Medium on per-element rule matching. The pragmatic route collects declared token sets per property rather than resolving the full cascade per element.
 
 ### Crawl reliability: incremental aggregation over a raised page cap
 
-A crawl OOM'd the backend on a real content site, then crash-looped as BullMQ retried the poison job off Redis. The cause is not the page count — the pipeline retains every element of every page, so one animation-heavy page (tens of thousands of nodes) can exhaust the heap on its own. The fix is incremental aggregation (fold each page into token tallies, discard its raw elements) so memory scales with the number of *distinct tokens*, not elements × pages; plus a per-page element ceiling to cap a single monster page and a modest hard page cap.
+A crawl OOM'd the backend on a real content site, then crash-looped as BullMQ retried the poison job off Redis. The cause is not the page count. The pipeline retains every element of every page, so one animation-heavy page (tens of thousands of nodes) can exhaust the heap on its own. The fix is incremental aggregation (fold each page into token tallies, discard its raw elements) so memory scales with the number of *distinct tokens*, not elements × pages; plus a per-page element ceiling to cap a single monster page and a modest hard page cap.
 
-**What shipped:** the per-page element ceiling (`MAX_ELEMENTS = 12,000`) and the page cap, now `MAX_CRAWL_PAGES = 10`, down from 40. **Incremental aggregation is not built** — the pipeline still retains every extraction and audits at the end, so the page cap is doing the memory work. Raising the cap meaningfully requires the refactor first. "Crawl all pages" is not the goal: the design language lives in the shared stylesheet, so a handful of pages captures the system and more pages only add per-page attribution — the scope picker should say so.
+**What shipped:** the per-page element ceiling (`MAX_ELEMENTS = 12,000`) and the page cap, now `MAX_CRAWL_PAGES = 10`, down from 40. **Incremental aggregation is not built.** The pipeline still retains every extraction and audits at the end, so the page cap is doing the memory work. Raising the cap meaningfully requires the refactor first. "Crawl all pages" is not the goal: the design language lives in the shared stylesheet, so a handful of pages captures the system and more pages only add per-page attribution, so the scope picker should say so.
 
 Confidence: High on the diagnosis. The cheap half shipped; the refactor is the outstanding half.
 
 ### The reference a value is measured against is selectable
 
-"Off-scale" is meaningless without saying *off what*. The type ruler compares the site's sizes against any named modular ratio and the spacing ruler against a 4px or 8px grid, with each option carrying its own off-count so the strip answers "which scale is this system actually on?" before anything is picked. The automatic pick is ranked by *fewest values off*, tie-broken by mean relative error — ranking by error alone could crown a ratio that fits most sizes tightly but tips two over tolerance, leaving the option labelled "closest" showing a higher count than its neighbours.
+"Off-scale" is meaningless without saying *off what*. The type ruler compares the site's sizes against any named modular ratio and the spacing ruler against a 4px or 8px grid, with each option carrying its own off-count so the strip answers "which scale is this system actually on?" before anything is picked. The automatic pick is ranked by *fewest values off*, tie-broken by mean relative error. Ranking by error alone could crown a ratio that fits most sizes tightly but tips two over tolerance, leaving the option labelled "closest" showing a higher count than its neighbours.
 
 The selection drives that section's ruler and table together, but never the Overview verdict, which stays pinned to the automatic best fit. Otherwise exploring a hypothesis would rewrite the diagnosis, and a reader who tried Golden Ratio out of curiosity would be told their type system is failing.
 
@@ -454,7 +453,7 @@ Confidence: High. It turns a fixed assertion into a measurement with a stated re
 
 ### The export leads with the diagnosis, not the inventory
 
-The export has one real audience — machines: a CI check to assert on, two runs to diff, a model to reason over. Shipping raw counts made the consumer re-derive the judgement Drift had already made. It now leads with `health` (the same sentence the report shows), `findings[]` (typed, with severity and the evidence behind each), `verdicts`, and a `rules` block stating the ΔE threshold, grid base, detected ratio, and WCAG standard, so the numbers are anchored to what they were measured against. The full inventory sits underneath as evidence.
+The export has one real audience, machines: a CI check to assert on, two runs to diff, a model to reason over. Shipping raw counts made the consumer re-derive the judgement Drift had already made. It now leads with `health` (the same sentence the report shows), `findings[]` (typed, with severity and the evidence behind each), `verdicts`, and a `rules` block stating the ΔE threshold, grid base, detected ratio, and WCAG standard, so the numbers are anchored to what they were measured against. The full inventory sits underneath as evidence.
 
 Confidence: High. The diagnosis is the product; the inventory is its working.
 
@@ -468,10 +467,10 @@ Confidence: High. An API that reports success for an empty result cannot be buil
 
 # Cut: the proposals layer
 
-A second layer projected the audited tokens onto known-good structures — a
+A second layer projected the audited tokens onto known-good structures: a
 consolidated palette merged by ΔE, a role-first modular type scale, a detected
 4/8px spacing grid, a named radius ramp, an elevation ladder for shadows, and a
-canonical z-index ladder — each with a Current↔Proposed preview and its own
+canonical z-index ladder, each with a Current↔Proposed preview and its own
 export. It was deterministic throughout: every token it emitted was a value the
 site already shipped.
 
@@ -494,13 +493,13 @@ recommendation:
 
 The decisions that governed it, kept because the reasoning still holds:
 
-- **Proposals are reductive, never generative** — Every token a proposal emits is a value the site already ships.
-- **Colour merging is evidence-gated, not threshold-only** — The first implementation clustered at CIEDE2000 ΔE 8 and named the result `color-1..N`.
-- **Contrast reports what passes, not what fails** — The obvious design — list the pairs that fail AA — was actively harmful.
-- **Semantic naming: usage leads, contrast breaks ties** — Names are inferred from what a colour is observed doing — its dominant role (text / background / border), how much of the site it carries, and whether it reads as a neutral or a hue.
-- **Type proposals are role-first; the modular ratio is optional** — Drift crawls websites, and a website's type system is a semantic hierarchy — h1–h6, body, small, button — not an abstract modular ladder.
-- **Controls are expressed as outcomes, not mechanisms** — An early colour proposal exposed a ΔE threshold picker, a contrast panel, a migration panel and dense token cards — six concepts deep, all in the tool's vocabulary rather than the user's.
-- **Proposals derive from the audit, not from separate endpoints** — Colour and type proposals originally fetched their own inventories.
+- **Proposals are reductive, never generative**. Every token a proposal emits is a value the site already ships.
+- **Colour merging is evidence-gated, not threshold-only**. The first implementation clustered at CIEDE2000 ΔE 8 and named the result `color-1..N`.
+- **Contrast reports what passes, not what fails**. The obvious design, listing the pairs that fail AA, was actively harmful.
+- **Semantic naming: usage leads, contrast breaks ties**. Names are inferred from what a colour is observed doing: its dominant role (text / background / border), how much of the site it carries, and whether it reads as a neutral or a hue.
+- **Type proposals are role-first; the modular ratio is optional**. Drift crawls websites, and a website's type system is a semantic hierarchy of h1 to h6, body, small and button, and not an abstract modular ladder.
+- **Controls are expressed as outcomes, not mechanisms**. An early colour proposal exposed a ΔE threshold picker, a contrast panel, a migration panel and dense token cards, six concepts deep, all in the tool's vocabulary rather than the user's.
+- **Proposals derive from the audit, not from separate endpoints**. Colour and type proposals originally fetched their own inventories.
 
 ---
 
@@ -515,13 +514,13 @@ deliberately off it. The exception list in `tokens.test.ts` is named and can onl
 shrink; new code cannot add to it.
 
 **The audit stylesheet is one 1542-line file** serving seven components. Splitting
-it was attempted and reverted: rules that mention a class without defining it —
-a `prefers-reduced-motion` block, an adjacency selector — carried class names into
+it was attempted and reverted. Rules that mention a class without defining it (a
+`prefers-reduced-motion` block, an adjacency selector) carried class names into
 the shared module while the declarations stayed behind, and components resolved
 to classes that existed but styled nothing. The lesson is recorded rather than the
 attempt: static analysis of CSS Modules was not sufficient evidence, twice. If it
 is retried, ownership must be assigned per class by where its declarations are,
-and verified by comparing computed styles rather than by reading source.
+and verified by comparing computed styles. Reading the source is what failed.
 
 **The client hand-copies `haus-tokens`.** All 112 primitive names in
 `tokens/primitives.css` also exist in `haus-tokens`, with identical values, and
@@ -529,13 +528,12 @@ nothing keeps them in step. They agree today by luck. This is the same class of
 problem Drift was built to detect, in Drift. The fix is to depend on the package,
 but it interacts with the semantic tier above: that tier does not exist in
 `haus-tokens` either, so adopting the package means either moving the tier into
-haus — where vault and loom would also get it — or keeping a local semantic layer
+haus, where vault and loom would also get it, or keeping a local semantic layer
 over remote primitives, which is the same split ownership in a different place.
 Worth settling before the Figma library work mirrors either shape.
 
 **The bundled demo capture can go stale silently.** The deployed build replays a
-real audit, so the capture is the product's output rather than a fixture standing
-in for it — which means a fix to the analysis makes the shipped demo wrong, and
+real audit, so the capture is the product's own output. It is not a fixture standing in for one. A fix to the analysis therefore makes the shipped demo wrong, and
 the README quotes its figures. `npm run capture` makes recapturing one command and
 prints the figures the docs need, but nothing yet fails when the capture predates
 a change to the analysis that produced it.

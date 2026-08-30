@@ -65,8 +65,8 @@ describe("tabs", () => {
 
   /**
    * The rule, not the roster. Which optional categories a site exercises is a
-   * fact about that site on the day it was crawled — the bundled capture had a
-   * blur value in August and has none now — so listing them by hand pins the
+   * fact about that site on the day it was crawled, the bundled capture had a
+   * blur value in August and has none now, so listing them by hand pins the
    * test to the fixture's incidents rather than to the behaviour. What should
    * hold is that a category appears exactly when it has values, in a fixed
    * order.
@@ -139,7 +139,7 @@ describe("the overview diagnosis", () => {
     render(<Audit audit={audit} />);
     // Read off the fixture rather than written in. The fixture is a real
     // capture and is recaptured when the analysis changes (`npm run capture`),
-    // so a literal here is a second copy of a number that moves — which is how
+    // so a literal here is a second copy of a number that moves, which is how
     // the previous pair of literals came to describe a capture two fixes old.
     const s = audit.summary;
     expect(
@@ -247,8 +247,8 @@ describe("export", () => {
 
     render(<Audit audit={audit} />);
     await userEvent.click(tabNamed(/Spacing/));
-    // The fixture detects a 4px grid. Ask for 8px — a strictly harsher reference
-    // that more values miss — then export.
+    // The fixture detects a 4px grid. Ask for 8px, a strictly harsher reference
+    // that more values miss, then export.
     await userEvent.click(screen.getByRole("tab", { name: /8px grid/ }));
     await userEvent.click(screen.getByRole("button", { name: "Export" }));
 
@@ -266,7 +266,7 @@ describe("export", () => {
   /**
    * On a fixture with a failing pair, not on the bundled one.
    *
-   * The bundled capture currently has none — picocss.com passes AA on every
+   * The bundled capture currently has none, picocss.com passes AA on every
    * pair once contrast is measured against the background a reader actually
    * sees. That is a fact about the site on the day it was crawled, and pinning
    * the most important finding in the export to it would mean the failing path

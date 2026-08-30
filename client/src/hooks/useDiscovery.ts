@@ -4,7 +4,7 @@
  * A screen that calls the data surface directly is a hook that has not been
  * written yet. `Configure` held the fetch, the in-flight flag, the error string
  * and the resolved site alongside its selection UI, which meant the one path
- * that matters most — the site that cannot be reached — could only be exercised
+ * that matters most, the site that cannot be reached, could only be exercised
  * by rendering the whole screen and driving it through two steps.
  *
  * The status is deliberately a single value rather than a `busy` boolean beside
@@ -22,7 +22,7 @@ export interface DiscoveredPage {
   title: string;
 }
 
-/** idle covers "not asked yet" and "asked and failed" — `error` tells them apart. */
+/** idle covers "not asked yet" and "asked and failed", `error` tells them apart. */
 export type DiscoveryStatus = "idle" | "discovering" | "ready";
 
 export interface Discovery {
@@ -32,19 +32,19 @@ export interface Discovery {
   pages: DiscoveredPage[];
   /** The URL the server resolved to, which may have gained a scheme or www. */
   rootUrl: string;
-  /** How the pages were found — "sitemap" or "links". */
+  /** How the pages were found, "sitemap" or "links". */
   via: string;
   host: string;
   /**
    * Returns the pages found, or null if the attempt failed. The caller needs
-   * them in the same tick — reading `pages` straight after awaiting this would
-   * see the previous render's value — and null is how a caller distinguishes
+   * them in the same tick, reading `pages` straight after awaiting this would
+   * see the previous render's value, and null is how a caller distinguishes
    * "failed" from "found nothing", which `pages.length` cannot.
    */
   discover: (url: string) => Promise<DiscoveredPage[] | null>;
   /** A page discovery missed, added by hand. */
   addPage: (page: DiscoveredPage) => void;
-  /** Back to the start, keeping nothing — the "change site" path. */
+  /** Back to the start, keeping nothing, the "change site" path. */
   reset: () => void;
 }
 
@@ -62,7 +62,7 @@ export function useDiscovery(): Discovery {
     try {
       const data = await discoverPages(url);
       // `rootUrl` and `host` are required on the response and always sent, so
-      // there is nothing to fall back to — a defensive `?? url` here would be
+      // there is nothing to fall back to, a defensive `?? url` here would be
       // dead code that reads as if the server sometimes omits them.
       setPages(data.pages);
       setRootUrl(data.rootUrl);

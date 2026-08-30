@@ -63,8 +63,8 @@ describe("useDiscovery", () => {
 
   /**
    * Two things at once, deliberately. The message a failed attempt surfaces has
-   * to be the API surface's own — replacing it with a generic one is what makes
-   * an error screen useless — and it has to disappear when the next attempt
+   * to be the API surface's own, replacing it with a generic one is what makes
+   * an error screen useless, and it has to disappear when the next attempt
    * starts, or a reader retries successfully and still sees the old failure.
    */
   it("surfaces the API's message, then clears it when the next attempt starts", async () => {

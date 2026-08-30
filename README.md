@@ -1,7 +1,7 @@
 # drift
 
 A design-system auditor for live websites. Point it at a URL you don't control, and Drift
-crawls the site and reports the design system that was *actually shipped* — every colour,
+crawls the site and reports the design system that was *actually shipped*: every colour,
 typeface, size, radius, shadow, border and spacing value in use, deduplicated, perceptually
 grouped, and mapped to the pages where it appears. Built with Node, Playwright and React.
 
@@ -13,22 +13,23 @@ Live at [drift.hipuku.dev](https://drift.hipuku.dev).
 
 - **The inventory.** The real token set, ranked by usage, deduplicated perceptually
   (CIEDE2000) and attributed to the pages it appears on. Colour, type, spacing, radius,
-  shadow, border, z-index, opacity, blur, gradients, motion and breakpoints — plus the
+  shadow, border, z-index, opacity, blur, gradients, motion and breakpoints. Plus the
   *authored* units read from the stylesheets, which `getComputedStyle` throws away.
 - **The diagnosis.** Where the system has drifted, in one sentence: *7 of 29 colours are
   near-duplicates, 6 of 9 type sizes fall off the scale, and 14 of 21 spacing values miss the
   4px grid. Radius, shadows and contrast hold steady.*
 - **A stated reference for every claim.** A named modular ratio for type, a 4px or 8px grid
-  for spacing, CIEDE2000 for colour, WCAG 2.1 for contrast — and the reference is selectable,
-  so you can ask "how far are we from a major third?" rather than only being told which scale
-  you happen to sit on.
-- **Contrast as measured, not as authored.** Every text/background pair is evaluated against
-  the colour a reader actually sees — the resolved ancestor background, with alpha composited
-  — so translucent text on a tinted panel is judged as it renders.
-- **The export.** The whole audit as JSON, leading with the diagnosis (`health`, `findings[]`
-  with severity and evidence, `verdicts`, `rules`) and carrying the full inventory underneath.
-  Built for machines: assert on it in CI, diff two runs, or hand it to a model.
-- **An API, not a UI helper.** Every screen is built on the same endpoints a CI job would use.
+  for spacing, CIEDE2000 for colour, WCAG 2.1 for contrast. The reference is selectable, so
+  you can ask "how far are we from a major third?" and see the answer for every named ratio.
+- **Contrast on the composited colour.** Every text/background pair is evaluated against the
+  colour a reader sees: the resolved ancestor background, with alpha composited. Translucent
+  text on a tinted panel is judged as it renders.
+- **The export.** The whole audit as one JSON artefact, leading with the diagnosis (`health`,
+  `findings[]` with severity and evidence, `verdicts`, `rules`) and carrying the full inventory
+  underneath. The shape is built for a machine to read: assert on it, diff two runs, or hand it
+  to a model. It is produced from the audit screen. No endpoint serves it yet, which is
+  [issue #3](../../issues/3).
+- **An API.** Every screen is built on the same endpoints a CI job would use.
 
 Nothing is invented and nothing is inferred by a model: the crawl, the aggregation and the
 verdicts are all computed. No API key, no per-run cost, and no model in the loop.
@@ -72,14 +73,13 @@ The client carries its own `dev`, `build`, `preview`, `test`, `test:watch` and
 
 ## The deployed demo
 
-Drift's engine is a Playwright crawler behind a Redis-backed queue — not something to leave
-running on a public URL, and not free to host. So the deployed build ships a **real audit
-captured from a real crawl** and replays it.
+Drift's engine is a Playwright crawler behind a Redis-backed queue. That is not something to
+leave running on a public URL, and it is not free to host, so the deployed build ships a
+**real audit captured from a real crawl** and replays it.
 
 Everything downstream of the crawl is the genuine output, because it *is* the genuine output:
 the inventory, the verdicts and the export all come from that capture. Only the network
-round-trip is stubbed, and the UI says so rather than pretending to crawl on demand. Run it
-locally to audit any site.
+round-trip is stubbed, and the UI says so on the page. Run it locally to audit any site.
 
 ```bash
 npm run capture                                    # recapture from picocss.com

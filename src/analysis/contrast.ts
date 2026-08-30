@@ -14,7 +14,7 @@
  *
  * ## Which background this measures
  *
- * `effectiveBackgroundColor` — what a reader sees behind the text — falling
+ * `effectiveBackgroundColor`, what a reader sees behind the text, falling
  * back to the element's own `backgroundColor` when extraction resolved no
  * effective value (a pre-effective crawl, or an element the probe could not
  * walk up from). Contrast is a claim about perception, so an inherited

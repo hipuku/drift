@@ -1,15 +1,15 @@
 /**
- * The Audit — Stage 1, "what it is".
+ * The Audit, Stage 1, "what it is".
  *
  * Two presentation modes, chosen by what the token *is*:
- *  - Cards for tokens you judge visually — colour swatches, type families,
+ *  - Cards for tokens you judge visually, colour swatches, type families,
  *    shadows, gradients. A specimen with its value and usage.
- *  - Tables for scalar tokens — the type scale, spacing, radius, borders, etc.
+ *  - Tables for scalar tokens, the type scale, spacing, radius, borders, etc.
  *    A small specimen, the value, and usage, in aligned rows with dividers.
  *
  * Overview is the diagnosis: a synthesised health line plus verdict cards
  * tinted green / orange / red (good / watch / needs-review) with the detail as
- * pills. The colour — and a bottom accent rule — is the verdict.
+ * pills. The colour, and a bottom accent rule, is the verdict.
  */
 
 import {
@@ -65,7 +65,7 @@ import { OverviewSection } from "./sections/overviewSection.js";
 import { SpacingSection, TypeSection } from "./sections/scaleSections.js";
 import styles from "./Audit.module.css";
 
-/** An icon per token tab — gives the strip identity and speeds scanning. */
+/** An icon per token tab, gives the strip identity and speeds scanning. */
 const TAB_ICON: Record<string, IconDefinition> = {
   overview: faChartSimple,
   colour: faPalette,
@@ -139,7 +139,7 @@ export function Audit({ audit, onBack }: Props) {
     return () => clearTimeout(t);
   }, [flashHex]);
 
-  // The detail rail belongs to the Colour tab — leaving it closes the rail.
+  // The detail rail belongs to the Colour tab, leaving it closes the rail.
   // Derived rather than cleared in an effect: the rail's visibility is a
   // function of the current tab, so computing it during render avoids the
   // extra pass a reset effect would schedule.
@@ -158,7 +158,7 @@ export function Audit({ audit, onBack }: Props) {
    * The closest scale is the one the fewest sizes miss, with mean relative error
    * as the tie-break. Ranking purely by mean error (what detectClosestRatio
    * returns) can crown a ratio that fits most sizes tightly but tips a couple
-   * over the tolerance — leaving the option marked "closest" showing a higher
+   * over the tolerance, leaving the option marked "closest" showing a higher
    * off-count than its neighbours, which reads as a bug.
    */
   const bestRatio = useMemo(() => {
@@ -191,7 +191,7 @@ export function Audit({ audit, onBack }: Props) {
     return best;
   }, [t.sizes, typeBasePx]);
 
-  /** Sizes that miss a given ratio — the ruler's red dots and the table's. */
+  /** Sizes that miss a given ratio, the ruler's red dots and the table's. */
   const offScaleFor = useCallback(
     (ratio: number): Set<number> => {
       const px = t.sizes.map((z) => z.px);
@@ -220,7 +220,7 @@ export function Audit({ audit, onBack }: Props) {
 
   const spacingValues = useMemo(() => audit.spacing.map((sp) => sp.value), [audit.spacing]);
   const detectedBase = useMemo(() => detectGridBase(spacingValues), [spacingValues]);
-  /** The grid the diagnosis was made against — see diagnosisOffScalePx above. */
+  /** The grid the diagnosis was made against, see diagnosisOffScalePx above. */
   const diagnosisOffGridSet = useMemo(
     () => offGrid(spacingValues, detectedBase),
     [spacingValues, detectedBase],
@@ -258,7 +258,7 @@ export function Audit({ audit, onBack }: Props) {
           {
             label: "Contrast",
             n: s.contrastPairs!,
-            // A failing pair is a reader who can't read the page — the one
+            // A failing pair is a reader who can't read the page, the one
             // finding that warrants "review" outright rather than "watch".
             verdict: ((s.contrastFailingAA ?? 0) > 0 ? "review" : "good") as Verdict,
             chips: [
@@ -336,7 +336,7 @@ export function Audit({ audit, onBack }: Props) {
   }
 
   /**
-   * The audit as data — for machines, not readers: a CI check to assert on, two
+   * The audit as data, for machines, not readers: a CI check to assert on, two
    * runs to diff, or a model to reason over. So it leads with the *diagnosis*
    * (health, findings, verdicts) and the rules those rest on, and keeps the full
    * inventory underneath as the evidence. Exporting the inventory alone would
@@ -481,15 +481,15 @@ export function Audit({ audit, onBack }: Props) {
     URL.revokeObjectURL(href);
   };
 
-  // Type scale rows — one per distinct size (largest first), so the table matches
+  // Type scale rows, one per distinct size (largest first), so the table matches
   // the ruler and the tab count, with every weight and the tags that use it.
-  // Sizes that miss the closest modular scale — mirrors the ruler's red dots.
+  // Sizes that miss the closest modular scale, mirrors the ruler's red dots.
 
   /**
    * Lead each scalar table with the unit the site actually authors in, rather
    * than a toggle the reader has to discover. `authored` reads the real unit
    * per category off the stylesheets, so a rem-authored type scale reads in rem
-   * and a px-authored one reads in px — the choice is a finding, not a setting.
+   * and a px-authored one reads in px. The choice is a finding, not a setting.
    */
   const unitFor = useCallback(
     (category: AuditAuthored["categories"][number]["category"]): DisplayUnit =>

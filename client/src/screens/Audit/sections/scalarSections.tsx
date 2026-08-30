@@ -2,8 +2,8 @@
  * The scalar token tabs: radius, shadow, gradient, border, contrast, opacity,
  * z-index, blur, breakpoints and motion.
  *
- * Each is the same shape — an inventory table of one token type, with a
- * specimen, the value, its element tags and a usage count — so they are grouped
+ * Each is the same shape, an inventory table of one token type, with a
+ * specimen, the value, its element tags and a usage count, so they are grouped
  * rather than given a file each. Every one takes only its own slice of the
  * audit and derives whatever it needs from that, which is what lets them sit
  * outside the screen component: none of them reads or writes screen state.

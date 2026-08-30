@@ -3,7 +3,7 @@
  *
  * A reader who opens an audit wants to know whether anything is wrong, not to
  * read twelve tables and work it out. So this leads with a sentence and a grid
- * of verdict cards tinted by severity — the colour is the finding — and each
+ * of verdict cards tinted by severity. The colour is the finding, and each
  * card is a link into the tab that evidences it.
  *
  * The verdicts are built by the screen rather than here, because the export
@@ -106,7 +106,7 @@ export function OverviewSection({
 }
 
 /**
- * How the site authors its tokens — read from the CSSOM, so it reflects intent
+ * How the site authors its tokens, read from the CSSOM, so it reflects intent
  * (`rem`, `%`, `clamp()`), not the resolved px the rest of the audit shows. The
  * accessibility flag fires when font-size is authored in px (won't respect zoom).
  * The declared custom properties are the site's own tokens, listed as shipped.
@@ -133,7 +133,7 @@ function AuthoringSummary({ authored }: { authored: AuditAuthored }) {
       )}
       {authored.typeInPx && (
         <Callout variant="warning">
-          Font size is authored in <strong>px</strong> — it won&rsquo;t scale with the reader&rsquo;s
+          Font size is authored in <strong>px</strong>, it won&rsquo;t scale with the reader&rsquo;s
           browser font size or zoom. Prefer <strong>rem</strong>.
         </Callout>
       )}
@@ -147,7 +147,7 @@ function AuthoringSummary({ authored }: { authored: AuditAuthored }) {
           >
             <span>
               Declares <strong>{props.length}</strong> CSS custom{" "}
-              {plural(props.length, "property", "properties")} — the site&rsquo;s own tokens
+              {plural(props.length, "property", "properties")}, the site&rsquo;s own tokens
             </span>
             <FontAwesomeIcon
               icon={open ? faChevronUp : faChevronDown}

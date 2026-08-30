@@ -9,13 +9,13 @@
  * tested implementation). The value added here is usage accounting: how many
  * times each colour appears, in which role (text / background / border), and
  * on which pages. clusterByPerceptualDistance dedupes its input, so frequency
- * — the signal that separates an intentional colour from an accidental one —
+ *, the signal that separates an intentional colour from an accidental one,
  * must be tracked here, before clustering, and folded back in afterward.
  *
  * ## Which background this records
  *
  * Every element carries two: `backgroundColor`, what this element declares,
- * and `effectiveBackgroundColor`, what a reader sees behind it — the nearest
+ * and `effectiveBackgroundColor`, what a reader sees behind it, the nearest
  * non-transparent ancestor, or the page canvas.
  *
  * This module records the **authored** one, and only that. It is an inventory
@@ -26,7 +26,7 @@
  *
  * `contrast.ts` takes the opposite value for the opposite reason: it asks what
  * a reader perceives, and inheritance is exactly what it needs. The two
- * disagreeing is the intended design, not an oversight — asserted in this
+ * disagreeing is the intended design. It is asserted in this
  * module's tests and in contrast's, so neither drifts into the other's rule.
  */
 
@@ -36,7 +36,7 @@ import type { CrawlResult } from "../crawler/types.js";
 export type ColourRole = "text" | "background" | "border";
 
 /**
- * CIEDE2000 ΔE below which two colours are *perceptually indistinguishable* —
+ * CIEDE2000 ΔE below which two colours are *perceptually indistinguishable*,
  * genuine redundancy, not a deliberate variant. Sits at/under the ~2.3
  * just-noticeable-difference, so an intentional light/mid/dark ramp (steps
  * typically ΔE 8+) is never counted as duplication. Distinct from the looser
@@ -46,7 +46,7 @@ export type ColourRole = "text" | "background" | "border";
  * The client mirrors this value in `client/src/screens/Audit/auditModel.ts`,
  * because it is a separate package that does not import from here. The two are
  * held in step by the client's `lib/contract.test.ts`, which reads this
- * declaration — so a rename or a change of form there needs updating too.
+ * declaration, so a rename or a change of form there needs updating too.
  *
  * ## What this module's tests cover, and what they do not
  *
@@ -72,7 +72,7 @@ export interface ColourUsage {
   count: number;
   /** Occurrences split by the role the colour played. */
   roles: Record<ColourRole, number>;
-  /** Which element types use this colour, in which role — the attribution. */
+  /** Which element types use this colour, and in which role. The attribution. */
   elements: ColourElementUsage[];
   /** Distinct page URLs the colour appears on. */
   pages: string[];
@@ -85,7 +85,7 @@ export interface ColourClusterReport {
   members: string[];
   /** Number of distinct hex values (members.length). */
   size: number;
-  /** Summed usage count across all members — the audit-relevant weight. */
+  /** Summed usage count across all members. This is the audit-relevant weight. */
   totalUsage: number;
   /** Distinct pages any member appears on. */
   pages: string[];
@@ -131,7 +131,7 @@ export function collectColourUsage(result: CrawlResult): ColourUsage[] {
     for (const el of page.elements) {
       const s = el.styles;
       if (s.color) record(s.color, "text", page.url, el.tag);
-      // Authored only — see the module comment. `effectiveBackgroundColor` is
+      // Authored only; see the module comment. `effectiveBackgroundColor` is
       // deliberately not consulted here.
       if (s.backgroundColor) record(s.backgroundColor, "background", page.url, el.tag);
       for (const border of s.borderColor) record(border, "border", page.url, el.tag);

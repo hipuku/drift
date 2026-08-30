@@ -1,7 +1,7 @@
 /**
  * Webhook delivery.
  *
- * A crawl runs for minutes, so a caller that isn't a browser — CI, a script —
+ * A crawl runs for minutes, so a caller that isn't a browser (CI, a script)
  * shouldn't have to poll. Give it a `callbackUrl` and Drift posts the finished
  * audit (or the failure) to it.
  *
@@ -10,7 +10,7 @@
  *  - **The URL is user-supplied**, so it is an SSRF vector: without a guard, a
  *    caller could make the server fetch its own metadata endpoint or something
  *    else on the private network. `assertDeliverable` rejects anything that
- *    isn't public http(s), and delivery does not follow redirects — checking the
+ *    isn't public http(s), and delivery does not follow redirects. Checking the
  *    URL and then letting `fetch` chase a `302` somewhere else would check one
  *    address and visit another.
  *  - **Delivery is best-effort**, and must never take the crawl down with it.
@@ -30,7 +30,7 @@ export type WebhookEvent =
   | { event: "crawl.completed"; jobId: string; site: string; audit: SiteAudit }
   | { event: "crawl.failed"; jobId: string; site: string; error: string };
 
-/** Private, loopback, link-local and unique-local ranges — never deliverable. */
+/** Private, loopback, link-local and unique-local ranges, never deliverable. */
 function isPrivateAddress(address: string, family: number): boolean {
   if (family === 6) {
     const v6 = address.toLowerCase();
@@ -50,7 +50,7 @@ function isPrivateAddress(address: string, family: number): boolean {
 /**
  * Hosts the operator has explicitly allowlisted via `DRIFT_WEBHOOK_ALLOWED_HOSTS`
  * (comma-separated), exempt from the private-address refusal. Empty by default,
- * so the SSRF guard is fully on unless someone opts a trusted internal host in —
+ * so the SSRF guard is fully on unless someone opts a trusted internal host in:
  * for example a receiver inside the same network, or a loopback receiver in a
  * test run. Read fresh each call so tests and config can set it at runtime.
  */
@@ -65,7 +65,7 @@ function allowedHosts(): Set<string> {
 
 /**
  * Throw unless the URL is a public http(s) endpoint. Resolves the host, because
- * a name can point anywhere — `localtest.me` resolves to 127.0.0.1. A host in
+ * a name can point anywhere: `localtest.me` resolves to 127.0.0.1. A host in
  * `DRIFT_WEBHOOK_ALLOWED_HOSTS` bypasses the private-address check.
  */
 export async function assertDeliverable(raw: string): Promise<URL> {
@@ -91,7 +91,7 @@ export async function assertDeliverable(raw: string): Promise<URL> {
 
 /**
  * Sign the body so the receiver can verify it came from us. Only when
- * DRIFT_WEBHOOK_SECRET is set — unsigned delivery is fine for a local CI run.
+ * DRIFT_WEBHOOK_SECRET is set. Unsigned delivery is fine for a local CI run.
  */
 function signature(body: string): string | null {
   const secret = process.env.DRIFT_WEBHOOK_SECRET;
@@ -100,7 +100,7 @@ function signature(body: string): string | null {
 }
 
 /**
- * Deliver one event, retrying a transient failure. Never throws — a webhook the
+ * Deliver one event, retrying a transient failure. Never throws. A webhook the
  * receiver can't accept is not a reason to fail an audit that succeeded.
  */
 export async function deliver(callbackUrl: string, payload: WebhookEvent): Promise<boolean> {
@@ -137,10 +137,10 @@ export async function deliver(callbackUrl: string, payload: WebhookEvent): Promi
       // A redirect is a receiver pointing us somewhere we never checked. Not a
       // transient failure, so retrying it is pointless as well as unsafe.
       if (res.status >= 300 && res.status < 400) return false;
-      // 4xx is the receiver rejecting us — retrying won't change their mind.
+      // 4xx is the receiver rejecting us. Retrying won't change their mind.
       if (res.status >= 400 && res.status < 500) return false;
     } catch {
-      // network error or timeout — fall through to the retry
+      // network error or timeout; fall through to the retry
     }
     if (attempt < MAX_ATTEMPTS) {
       await new Promise((r) => setTimeout(r, 500 * 2 ** (attempt - 1)));

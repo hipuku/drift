@@ -22,7 +22,7 @@
     --color-surface-default:  var(--damson-0);
     --color-surface-subtle:   var(--damson-100);
     --color-surface-raised:   var(--damson-0);    /* elevation via shadow, not colour */
-    --color-surface-overlay:  var(--damson-50);   /* modal / popover — barely off-white */
+    --color-surface-overlay:  var(--damson-50);   /* modal / popover, barely off-white */
     --color-surface-sunken:   var(--damson-200);
     --color-surface-inverse:  var(--damson-900);  /* dark chip, tooltip bg in light mode */
     --color-surface-disabled: var(--damson-100);
@@ -37,7 +37,7 @@
     /* Pairs with --color-primary-default, whatever the brand layer sets that to.
        Named for the role, not the palette: this was --color-ink-on-aronia, which
        stopped being true the moment drift.css re-skinned primary onto the accent
-       ramp — the token was still correct and its name was not. */
+       ramp. The token was still correct and its name was not. */
     --color-ink-on-primary: var(--damson-0);
 
     /* ── Border ───────────────────────────────────────────────────────────── */
@@ -47,7 +47,7 @@
     --color-border-focus:    var(--color-primary-default);
     --color-border-disabled: var(--damson-200);
 
-    /* ── Primary — Aronia ─────────────────────────────────────────────────── */
+    /* ── Primary, Aronia ─────────────────────────────────────────────────── */
     --color-primary-default:   var(--aronia-500);
     --color-primary-hover:     var(--aronia-600);
     --color-primary-pressed:   var(--aronia-700);
@@ -55,7 +55,7 @@
     --color-primary-on-subtle: var(--aronia-700);
     --color-primary-disabled:  var(--damson-200);
 
-    /* ── Feedback — Info (Elderberry · Indigo) ────────────────────────────── */
+    /* ── Feedback, Info (Elderberry · Indigo) ────────────────────────────── */
     --color-info-subtle:     var(--elderberry-100);
     --color-info-border:     var(--elderberry-200);
     --color-info-default:    var(--elderberry-500);
@@ -63,25 +63,25 @@
     --color-info-on-default: var(--damson-0);
     --color-info-emphasis:   var(--elderberry-900);
 
-    /* ── Feedback — Success (Greengage · Green) ───────────────────────────── */
+    /* ── Feedback, Success (Greengage · Green) ───────────────────────────── */
     --color-success-subtle:     var(--greengage-100);
     --color-success-border:     var(--greengage-200);
     --color-success-default:    var(--greengage-500);
     --color-success-on-subtle:  var(--greengage-700);
-    --color-success-on-default: var(--damson-900);  /* dark text — greengage-500 fails with white */
+    --color-success-on-default: var(--damson-900);  /* dark text, greengage-500 fails with white */
     --color-success-solid:      var(--greengage-700);  /* 700-level: white text passes at 6.82:1 */
     --color-success-emphasis:   var(--greengage-900);
 
-    /* ── Feedback — Warning (Mango · Golden) ──────────────────────────────── */
+    /* ── Feedback, Warning (Mango · Golden) ──────────────────────────────── */
     --color-warning-subtle:     var(--mango-100);
     --color-warning-border:     var(--mango-200);
     --color-warning-default:    var(--mango-500);
     --color-warning-on-subtle:  var(--mango-700);
-    --color-warning-on-default: var(--damson-900);  /* dark text — mango-500 fails with white */
+    --color-warning-on-default: var(--damson-900);  /* dark text, mango-500 fails with white */
     --color-warning-solid:      var(--mango-700);   /* 700-level: white text passes at 7.05:1 */
     --color-warning-emphasis:   var(--mango-900);
 
-    /* ── Feedback — Error (Cherry · Red) ─────────────────────────────────── */
+    /* ── Feedback, Error (Cherry · Red) ─────────────────────────────────── */
     --color-error-subtle:     var(--cherry-100);
     --color-error-border:     var(--cherry-200);
     --color-error-default:    var(--cherry-500);
@@ -106,18 +106,18 @@
 
     /* ── Spacing ──────────────────────────────────────────────────────────── */
     /* Three roles, one ladder. A step means the same size whichever role it
-       is read through, so the tiers stay comparable — the point of splitting
+       is read through, so the tiers stay comparable, the point of splitting
        them is that inset, gap and stack can later be retuned independently
        (denser forms without denser page rhythm) without hunting through
        modules to work out which --space-3 meant which. Only the steps in use
        are named; add one when a component needs it, rather than reaching past
        this layer for the primitive. */
 
-    /* Optical, below the 4px grid — see primitives.css. */
+    /* Optical, below the 4px grid, see primitives.css. */
     --space-inset-hairline: var(--space-hairline);
     --space-inset-tight:    var(--space-tight);
 
-    /* Padding — space *inside* a component, between its edge and its content. */
+    /* Padding, space *inside* a component, between its edge and its content. */
     --space-inset-2xs:         var(--space-1);       /* 4px */
     --space-inset-xs:          var(--space-2);       /* 8px */
     --space-inset-sm:          var(--space-3);       /* 12px */
@@ -130,7 +130,7 @@
     --space-inset-6xl:         var(--space-16);      /* 64px */
     --space-inset-7xl:         var(--space-20);      /* 80px */
 
-    /* Gap — space *between* siblings laid out together (flex and grid). */
+    /* Gap, space *between* siblings laid out together (flex and grid). */
     --space-gap-2xs:           var(--space-1);       /* 4px */
     --space-gap-xs:            var(--space-2);       /* 8px */
     --space-gap-sm:            var(--space-3);       /* 12px */
@@ -139,7 +139,7 @@
     --space-gap-2xl:           var(--space-7);       /* 28px */
     --space-gap-3xl:           var(--space-8);       /* 32px */
 
-    /* Stack — margin between blocks in normal flow, usually vertical. */
+    /* Stack, margin between blocks in normal flow, usually vertical. */
     --space-stack-2xs:         var(--space-1);       /* 4px */
     --space-stack-xs:          var(--space-2);       /* 8px */
     --space-stack-sm:          var(--space-3);       /* 12px */
@@ -186,8 +186,8 @@
     /* ── Stacking, border width and state ─────────────────────────────────── */
     /* These arrived from primitives.css, where they did not belong: their names
        already say what they are for rather than what they are. There is no
-       underlying scale to alias them from — `--z-modal` is not one step of a
-       z-index ramp, it is the answer to "how high does a modal sit" — so an
+       underlying scale to alias them from, `--z-modal` is not one step of a
+       z-index ramp, it is the answer to "how high does a modal sit", so an
        alias layer over them would be indirection with nothing on the other end.
        Moving them is the fix; a component reading one is reading a semantic. */
 

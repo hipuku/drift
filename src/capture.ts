@@ -11,8 +11,8 @@
  * numbers are what those bugs produced, and the README quotes them.
  *
  * This exists so recapturing is one command rather than a remembered sequence.
- * It is the crawler and the analysis, nothing else — no queue, no Redis, no
- * server — because the capture should be the analysis applied to a crawl and
+ * It is the crawler and the analysis: no queue, no Redis, no
+ * server. The capture should be the analysis applied to a crawl and
  * not a record of how the queue happened to route it that day.
  *
  * The default target is the site the bundled demo uses, at the page count it

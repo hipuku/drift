@@ -1,8 +1,8 @@
 /**
  * Shared presentation for the audit screen's sections.
  *
- * Every token tab renders the same three things — an inventory table, a value
- * with its unit, a cell of element-tag chips — so they live here rather than in
+ * Every token tab renders the same three things, an inventory table, a value
+ * with its unit, a cell of element-tag chips, so they live here rather than in
  * whichever section happened to need them first. Sections own what is specific
  * to their token; this file owns what they have in common.
  *
@@ -17,7 +17,7 @@ import styles from "../Audit.module.css";
 
 /**
  * A length value in the selected unit, with the other unit as a muted note (C2).
- * Both are always shown — px is what shipped, rem is the accessibility-relevant
+ * Both are always shown, px is what shipped, rem is the accessibility-relevant
  * form. `children` is the off-scale/off-grid dot, kept inside the primary span so
  * its positioning is unchanged.
  */
@@ -34,8 +34,8 @@ export function LengthValue({ px, unit, children }: { px: number; unit: DisplayU
 }
 
 /**
- * Every inventory table. Wrapped in an overflow-x container so a wide row —
- * a long shadow string, a site with many element tags — scrolls inside the
+ * Every inventory table. Wrapped in an overflow-x container so a wide row,
+ * a long shadow string, a site with many element tags, scrolls inside the
  * panel instead of stretching the page.
  */
 export function Table({ head, children, className }: { head: ReactNode[]; children: ReactNode; className?: string }) {
@@ -57,7 +57,7 @@ export function Table({ head, children, className }: { head: ReactNode[]; childr
   );
 }
 
-/** Stacking-order preview for z-index — offset layers, taller = higher in the stack. */
+/** Stacking-order preview for z-index, offset layers, taller = higher in the stack. */
 export function ZIndexLadder({ rank, total }: { rank: number; total: number }) {
   const layers = Math.min(rank + 1, 5);
   return (
@@ -74,12 +74,12 @@ export function ZIndexLadder({ rank, total }: { rank: number; total: number }) {
 }
 
 /** Rough device class for a breakpoint width. */
-/** A table cell of element-tag chips — the shared attribution column. */
+/** A table cell of element-tag chips, the shared attribution column. */
 
 /**
  * Element tags for a row. Accepts counted tags (most tables) or bare tag names
  * (contrast pairs). Caps the visible chips so a site that uses one value on
- * thirty element types doesn't turn one row into a paragraph — the rest are
+ * thirty element types doesn't turn one row into a paragraph. The rest are
  * summarised in a titled "+N" chip.
  */
 export function TagsCell({ tags }: { tags?: ({ tag: string; count: number } | string)[] }) {
