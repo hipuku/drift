@@ -125,7 +125,7 @@ export function healthLine(s: SiteAudit["summary"], extendedDrift: string[] = []
   const tail = extendedDrift.length ? ` Also drifting: ${joinList(extendedDrift)}.` : "";
 
   if (problems.length === 0) {
-    return `Nothing's drifting, ${joinList(clean)} all hold to a system.${tail}`;
+    return `Nothing's drifting. ${capFirst(joinList(clean))} all hold to a system.${tail}`;
   }
   const problemText = `${capFirst(joinList(problems))}.`;
   if (clean.length === 0) return `${problemText}${tail}`;

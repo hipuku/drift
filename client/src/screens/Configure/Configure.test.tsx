@@ -206,7 +206,7 @@ describe("adding a page discovery missed", () => {
     await userEvent.type(addField(), "https://other.test/about{Enter}");
 
     expect(
-      screen.getByText("Enter just the path, like /pricing — not the full URL."),
+      screen.getByText("Enter just the path, like /pricing, without the origin."),
     ).toBeInTheDocument();
     expect(screen.getByText(/1 selected/)).toBeInTheDocument();
   });
@@ -216,7 +216,7 @@ describe("adding a page discovery missed", () => {
     await userEvent.type(addField(), "example.com/about{Enter}");
 
     expect(
-      screen.getByText("Enter just the path, like /pricing — not the full URL."),
+      screen.getByText("Enter just the path, like /pricing, without the origin."),
     ).toBeInTheDocument();
   });
 
@@ -225,7 +225,7 @@ describe("adding a page discovery missed", () => {
     await userEvent.type(addField(), "//example.com/about{Enter}");
 
     expect(
-      screen.getByText("Enter just the path, like /pricing — not the full URL."),
+      screen.getByText("Enter just the path, like /pricing, without the origin."),
     ).toBeInTheDocument();
   });
 

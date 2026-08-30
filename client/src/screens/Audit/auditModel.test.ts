@@ -92,7 +92,7 @@ describe("prose helpers", () => {
 describe("healthLine", () => {
   it("says nothing is drifting when every category holds", () => {
     expect(healthLine(clean())).toBe(
-      "Nothing's drifting — colour, type, spacing, radius, shadows, and contrast all hold to a system.",
+      "Nothing's drifting. Colour, type, spacing, radius, shadows, and contrast all hold to a system.",
     );
   });
 

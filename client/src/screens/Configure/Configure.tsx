@@ -96,7 +96,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
     // or a leading domain segment ("example.com/about").
     const firstSeg = raw.replace(/^\//, "").split(/[/?#]/)[0] ?? "";
     if (/^[a-z][a-z0-9+.-]*:\/\//i.test(raw) || raw.startsWith("//") || firstSeg.includes(".")) {
-      setAddError("Enter just the path, like /pricing — not the full URL.");
+      setAddError("Enter just the path, like /pricing, without the origin.");
       return;
     }
     let full: URL;
@@ -151,13 +151,13 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
                 <strong>Demo.</strong> The crawler is a headless browser behind a
                 job queue, so it isn&rsquo;t left running on a public URL. This
                 build replays a real audit of <strong>{DEMO_SITE}</strong>{" "}
-                captured in {DEMO_CAPTURED} — the inventory, verdicts and export
+                captured in {DEMO_CAPTURED}. The inventory, verdicts and export
                 are the genuine output. Run it locally to audit any site.
               </div>
             )}
             <Text role="body" as="p" className={styles.intro}>
-              Paste a URL. Drift finds the site’s pages and lets you pick which ones to audit —
-              then reports where the design system has drifted.
+              Paste a URL. Drift finds the site’s pages, lets you pick which ones to audit, and
+              reports where the design system has drifted.
             </Text>
             <form
               className={styles.form}
@@ -207,7 +207,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
               Pick pages to audit
             </Text>
             <Text role="body" as="p" className={styles.intro}>
-              <strong className={styles.count}>{pages.length} pages found</strong> — audit one, a
+              <strong className={styles.count}>{pages.length} pages found</strong>. Audit one, a
               few, or the whole site. The design language lives in the shared stylesheet, so a
               handful captures most of it.
             </Text>
