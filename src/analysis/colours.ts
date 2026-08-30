@@ -11,6 +11,23 @@
  * on which pages. clusterByPerceptualDistance dedupes its input, so frequency
  * — the signal that separates an intentional colour from an accidental one —
  * must be tracked here, before clustering, and folded back in afterward.
+ *
+ * ## Which background this records
+ *
+ * Every element carries two: `backgroundColor`, what this element declares,
+ * and `effectiveBackgroundColor`, what a reader sees behind it — the nearest
+ * non-transparent ancestor, or the page canvas.
+ *
+ * This module records the **authored** one, and only that. It is an inventory
+ * of the colours a site chose, so an element that declares nothing contributes
+ * nothing. Recording the effective value would credit the page canvas to every
+ * element that merely sits on it, inflating one colour past every real one and
+ * filling the family view with white nobody wrote.
+ *
+ * `contrast.ts` takes the opposite value for the opposite reason: it asks what
+ * a reader perceives, and inheritance is exactly what it needs. The two
+ * disagreeing is the intended design, not an oversight — asserted in this
+ * module's tests and in contrast's, so neither drifts into the other's rule.
  */
 
 import { clusterByPerceptualDistance } from "haus-colour-utils";
@@ -105,6 +122,8 @@ export function collectColourUsage(result: CrawlResult): ColourUsage[] {
     for (const el of page.elements) {
       const s = el.styles;
       if (s.color) record(s.color, "text", page.url, el.tag);
+      // Authored only — see the module comment. `effectiveBackgroundColor` is
+      // deliberately not consulted here.
       if (s.backgroundColor) record(s.backgroundColor, "background", page.url, el.tag);
       for (const border of s.borderColor) record(border, "border", page.url, el.tag);
     }

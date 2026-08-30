@@ -11,6 +11,18 @@
  * aggregation: resolve alpha to the colour a reader actually sees, dedupe to
  * distinct foreground/background pairs, count how many text elements use each,
  * track tags and pages, and surface the worst-contrast pairs first.
+ *
+ * ## Which background this measures
+ *
+ * `effectiveBackgroundColor` — what a reader sees behind the text — falling
+ * back to the element's own `backgroundColor` when extraction resolved no
+ * effective value (a pre-effective crawl, or an element the probe could not
+ * walk up from). Contrast is a claim about perception, so an inherited
+ * background counts exactly as much as a declared one.
+ *
+ * `colours.ts` records the authored background instead, because it inventories
+ * what a site chose rather than what it renders. The two disagreeing is
+ * intended; both rules are asserted in tests so neither drifts into the other.
  */
 
 import { wcagContrast } from "haus-colour-utils";

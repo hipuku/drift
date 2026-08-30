@@ -65,6 +65,30 @@ describe("collectColourUsage", () => {
     expect(usage[0]!.hex).toBe("#001f3f");
   });
 
+  /**
+   * The rule this module and contrast.ts deliberately disagree on. Asserted on
+   * both sides so a later edit that "unifies" them fails rather than quietly
+   * changing what the family view means.
+   */
+  it("records the authored background and ignores the effective one", () => {
+    const r = result([
+      {
+        url: "https://example.test/a",
+        elements: [
+          // Declares nothing; sits on the page canvas. Contributes no colour.
+          element({ effectiveBackgroundColor: "#ffffff" }),
+          // Declares a panel, and inherits nothing meaningful behind it.
+          element({ backgroundColor: "#0d7a4f", effectiveBackgroundColor: "#ffffff" }),
+        ],
+      },
+    ]);
+
+    const usage = collectColourUsage(r);
+
+    expect(usage.map((u) => u.hex)).toEqual(["#0d7a4f"]);
+    expect(usage[0]!.roles.background).toBe(1);
+  });
+
   it("ignores null colours and empty borders", () => {
     const r = result([{ url: "https://example.test/a", elements: [element({})] }]);
     expect(collectColourUsage(r)).toEqual([]);

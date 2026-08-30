@@ -73,6 +73,32 @@ describe("collectContrastFindings", () => {
     const noBg = text("p", "#000000", null);
     expect(collectContrastFindings(result([noText, noBg]))).toEqual([]);
   });
+
+  /**
+   * The counterpart to colours.ts's rule: this module measures what a reader
+   * perceives, so it prefers the inherited background and only falls back to
+   * the authored one. colours.ts asserts the opposite. Neither should acquire
+   * the other's behaviour.
+   */
+  it("prefers the effective background over the element's own", () => {
+    const el = text("p", "#000000", "#ffffff");
+    el.styles.backgroundColor = "#0d7a4f";
+
+    const [finding] = collectContrastFindings(result([el]));
+
+    expect(finding!.background).toBe("#ffffff");
+  });
+
+  it("falls back to the authored background when no effective one was resolved", () => {
+    // A pre-effective crawl, or an element the probe could not walk up from.
+    // Something measured beats nothing measured.
+    const el = text("p", "#ffffff", null);
+    el.styles.backgroundColor = "#0d7a4f";
+
+    const [finding] = collectContrastFindings(result([el]));
+
+    expect(finding!.background).toBe("#0d7a4f");
+  });
 });
 
 describe("alpha", () => {
