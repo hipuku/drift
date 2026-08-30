@@ -1,0 +1,48 @@
+# Two manifests, because the client is a standalone package with its own
+# lockfile: the service's Playwright and BullMQ graph is deliberately kept out
+# of anything a browser downloads.
+#
+# Weekly and grouped, so a review is one pull request rather than nine.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      # These three move together or not at all: the queue is BullMQ over Redis,
+      # and the crawler is Playwright driving a browser build pinned by it.
+      runtime:
+        patterns: ['bullmq', 'playwright', '@playwright/*', 'express', 'ws']
+      haus:
+        patterns: ['haus-*']
+      tooling:
+        patterns: ['eslint*', '@eslint/*', 'typescript-eslint', 'vitest', 'prettier*', 'tsx']
+    commit-message:
+      prefix: 'deps'
+    ignore:
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: npm
+    directory: /client
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      react:
+        patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
+      haus:
+        patterns: ['haus-*']
+      tooling:
+        patterns: ['vite', '@vitejs/*', 'vitest', 'eslint*', '@eslint/*', 'typescript-eslint', 'jsdom', '@testing-library/*']
+    commit-message:
+      prefix: 'deps'
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

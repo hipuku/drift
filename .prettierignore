@@ -1,0 +1,5 @@
+node_modules
+dist
+client/dist
+client/src/demo/audit.json
+screenshots
