@@ -245,12 +245,15 @@ interface SwatchGeometry {
  * dropped: an opacity variant belongs in the same family as its base colour.
  *
  * The hue bins, the neutral chroma cut and the OKLCH conversion were all
- * declared here and are now haus-colour-utils'. They were written here first,
- * and the boundaries are the ones this file worked out: the midpoints between
- * the measured OKLCH hues of the colours each family is named after, rather
- * than HSL's, which offset every family by roughly one place. vault shipped
- * the HSL numbers against OKLCH hues and misnamed 16 of 27 canonical colours,
- * which is what a second copy of this decision costs.
+ * declared here and are now haus-colour-utils'. The boundaries this file worked
+ * out were the midpoints between the measured OKLCH hues of the colours each
+ * family is named after, which is not what 0.3.0 ships: they are fitted to
+ * 4,275 human-named colours now, because a family is not always centred on the
+ * colour it is named after. Both beat reading an HSL wheel as an OKLCH one,
+ * which is what vault shipped, misnaming 17 of 27 canonical colours.
+ *
+ * The correction arrived here as a version bump and no work, which is the
+ * argument for one copy rather than three.
  *
  * Two parses per swatch rather than one, since hueFamily takes a hex. The
  * colours reaching here are already de-duplicated by usage, so it is a few
