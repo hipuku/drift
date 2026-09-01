@@ -189,9 +189,7 @@ describe("openapi.yaml", () => {
     expect(Object.keys(spec.paths as object).sort()).toEqual([
       "/crawl",
       "/crawl/{jobId}/audit",
-      "/crawl/{jobId}/colours",
       "/crawl/{jobId}/result",
-      "/crawl/{jobId}/typography",
       "/discover",
     ]);
   });
@@ -307,11 +305,10 @@ describe("GET /crawl/{jobId}/result", () => {
 });
 
 describe("the analysis routes", () => {
-  const routes = [
-    "/crawl/{jobId}/typography",
-    "/crawl/{jobId}/colours",
-    "/crawl/{jobId}/audit",
-  ] as const;
+  // One route now. Kept as a table because the shape of the assertions is the
+  // interesting part, and because /audit is not the last analysis route this
+  // service will ever serve.
+  const routes = ["/crawl/{jobId}/audit"] as const;
   const segment = (r: string) => r.split("/").pop()!;
 
   it.each(routes)("%s 200 matches its schema", async (route) => {

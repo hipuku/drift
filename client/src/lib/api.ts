@@ -35,14 +35,6 @@ export interface CrawlResultMeta {
   pages: { url: string; title: string; elementCount: number }[];
 }
 
-/** The deterministic typography inventory (mirrors src/analysis/typography.ts). */
-export interface TypographyInventory {
-  families: { family: string; count: number; pages: string[] }[];
-  sizes: { px: number; count: number; weights: number[]; lineHeights: number[]; pages: string[] }[];
-  baseSizePx: number | null;
-  primaryFamily: string | null;
-}
-
 // ── Fetch helpers ───────────────────────────────────────────────────────────
 
 /** Pull the server's `{ error }` message out of a failed response, if present. */
@@ -98,35 +90,6 @@ export async function getCrawlStatus(jobId: string): Promise<CrawlStatus> {
   const res = await fetch(`/api/crawl/${encodeURIComponent(jobId)}/result`);
   if (!res.ok) throw await failure(res);
   return (await res.json()) as CrawlStatus;
-}
-
-/** The typography inventory for a completed crawl, which seeds the type proposals. */
-export async function getTypography(jobId: string): Promise<TypographyInventory> {
-  const res = await fetch(`/api/crawl/${encodeURIComponent(jobId)}/typography`);
-  if (!res.ok) throw await failure(res);
-  return (await res.json()) as TypographyInventory;
-}
-
-/** One perceptual colour cluster from the crawl. */
-export interface ColourCluster {
-  representative: string;
-  members: string[];
-  size: number;
-  totalUsage: number;
-  pages: string[];
-}
-
-export interface ColourInventory {
-  clusters: ColourCluster[];
-  clusterCount: number;
-  distinctColours: number;
-}
-
-/** The colour inventory for a completed crawl, which seeds the consolidation proposal. */
-export async function getColours(jobId: string): Promise<ColourInventory> {
-  const res = await fetch(`/api/crawl/${encodeURIComponent(jobId)}/colours`);
-  if (!res.ok) throw await failure(res);
-  return (await res.json()) as ColourInventory;
 }
 
 // ── The deterministic audit (the "what it is" diagnosis) ─────────────────────

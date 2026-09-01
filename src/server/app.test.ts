@@ -19,7 +19,7 @@ function fakeJobs(overrides: Partial<CrawlJobs> = {}): CrawlJobs {
   };
 }
 
-/** A crawl result with two text elements on one page, for the typography route. */
+/** A crawl result with two text elements on one page, for the audit route. */
 function fakeResult(): CrawlResult {
   const style = (over: Partial<ElementStyle>): ElementStyle => ({
     color: null,
@@ -141,60 +141,6 @@ describe("HTTP API", () => {
       body: JSON.stringify({}),
     });
     expect(res.status).toBe(400);
-  });
-
-  it("GET /crawl/:jobId/typography returns the inventory for a finished crawl", async () => {
-    const jobs = fakeJobs({
-      async getResult() {
-        return { status: "completed", result: fakeResult() };
-      },
-    });
-    const base = await listen({ jobs });
-
-    const res = await fetch(`${base}/crawl/job_1/typography`);
-    expect(res.status).toBe(200);
-    const body = await res.json();
-    expect(body.baseSizePx).toBe(16);
-    expect(body.primaryFamily).toBe("Inter");
-    expect(body.sizes.map((s: { px: number }) => s.px)).toEqual([16, 32]);
-  });
-
-  it("GET /crawl/:jobId/typography is 409 before the crawl finishes", async () => {
-    const jobs = fakeJobs({
-      async getResult() {
-        return { status: "active", result: undefined };
-      },
-    });
-    const base = await listen({ jobs });
-    const res = await fetch(`${base}/crawl/job_1/typography`);
-    expect(res.status).toBe(409);
-  });
-
-  it("GET /crawl/:jobId/typography is 404 for an unknown job", async () => {
-    const jobs = fakeJobs({
-      async getResult() {
-        return { status: "not_found", result: undefined };
-      },
-    });
-    const base = await listen({ jobs });
-    const res = await fetch(`${base}/crawl/nope/typography`);
-    expect(res.status).toBe(404);
-  });
-
-  it("GET /crawl/:jobId/colours returns clusters for a finished crawl", async () => {
-    const jobs = fakeJobs({
-      async getResult() {
-        return { status: "completed", result: fakeResult() };
-      },
-    });
-    const base = await listen({ jobs });
-
-    const res = await fetch(`${base}/crawl/job_1/colours`);
-    expect(res.status).toBe(200);
-    const body = await res.json();
-    expect(body.clusterCount).toBeGreaterThan(0);
-    expect(body.distinctColours).toBeGreaterThanOrEqual(2);
-    expect(Array.isArray(body.clusters)).toBe(true);
   });
 
   it("GET /crawl/:jobId/audit returns the full inventory for a finished crawl", async () => {

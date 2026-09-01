@@ -11,7 +11,6 @@ info:
     `maxPages`, `lastUrl`, `lastTitle`, `elementsTotal`; the `/crawl/{jobId}/result`
     endpoint is the authority on completion).
 
-
     No API key, no per-run cost, no model: every response is computed.
   license:
     name: MIT
@@ -167,41 +166,6 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
-
-  /crawl/{jobId}/typography:
-    get:
-      summary: Typography inventory only
-      operationId: getTypography
-      parameters:
-        - $ref: "#/components/parameters/JobId"
-      responses:
-        "200":
-          description: Deterministic typography inventory derived from the completed crawl.
-          content:
-            application/json:
-              schema: { type: object, description: "Font families, roles, sizes, weights, line-heights and letter-spacings in use." }
-        "404": { description: No such job., content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
-        "409": { description: The crawl has not finished., content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
-
-  /crawl/{jobId}/colours:
-    get:
-      summary: Colour clusters only
-      operationId: getColours
-      parameters:
-        - $ref: "#/components/parameters/JobId"
-      responses:
-        "200":
-          description: Perceptually clustered colours with usage.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  clusters: { type: array, items: { type: object } }
-                  clusterCount: { type: integer }
-                  distinctColours: { type: integer }
-        "404": { description: No such job., content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
-        "409": { description: The crawl has not finished., content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
 
 webhooks:
   crawlFinished:

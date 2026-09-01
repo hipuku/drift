@@ -189,8 +189,6 @@ contract, including the webhook callbacks, is in [`openapi.yaml`](openapi.yaml)
 | `POST` | `/crawl` | Enqueue a crawl. Returns `202 { jobId }`. |
 | `GET` | `/crawl/:jobId/result` | Job status and the raw crawl result. |
 | `GET` | `/crawl/:jobId/audit` | The audit for a completed crawl. |
-| `GET` | `/crawl/:jobId/typography` | Typography inventory only. |
-| `GET` | `/crawl/:jobId/colours` | Colour clusters only. |
 | `WS` | `/` | Live crawl progress for a job. |
 
 A crawl runs for minutes, so a caller that isn't a browser has two options: poll

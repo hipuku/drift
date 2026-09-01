@@ -7,16 +7,12 @@
  *
  *   POST /crawl                     enqueue a crawl, return { jobId }
  *   GET  /crawl/:jobId/result       fetch crawl status / result
- *   GET  /crawl/:jobId/typography   deterministic typography inventory
- *   GET  /crawl/:jobId/colours      deterministic colour clusters
  *   GET  /crawl/:jobId/audit        the full deterministic audit
  */
 
 import express, { type Express, type NextFunction, type Request, type Response } from "express";
 import { collectAudit } from "../analysis/audit.js";
 import { assertDeliverable } from "../queue/webhook.js";
-import { clusterColours } from "../analysis/colours.js";
-import { collectTypography } from "../analysis/typography.js";
 import { MAX_CRAWL_PAGES } from "../crawler/crawl.js";
 import type { DiscoverResult } from "../crawler/types.js";
 import type { CrawlJobs } from "../queue/crawlJobs.js";
@@ -131,47 +127,6 @@ export function createApp(deps: AppDeps): Express {
         return;
       }
       res.json({ status, result: result ?? null, ...(error ? { error } : {}) });
-    }),
-  );
-
-  // The deterministic typography inventory that seeds the Layer-2 type-scale
-  // proposals. Derived from the completed crawl.
-  app.get(
-    "/crawl/:jobId/typography",
-    wrap(async (req, res) => {
-      const { status, result } = await deps.jobs.getResult(String(req.params.jobId));
-      if (status === "not_found") {
-        res.status(404).json({ error: "job not found" });
-        return;
-      }
-      if (!result) {
-        res.status(409).json({ error: "the crawl has not finished" });
-        return;
-      }
-      res.json(collectTypography(result));
-    }),
-  );
-
-  // The deterministic colour inventory: perceptual clusters with usage. Seeds
-  // the Layer-2 consolidation proposal.
-  app.get(
-    "/crawl/:jobId/colours",
-    wrap(async (req, res) => {
-      const { status, result } = await deps.jobs.getResult(String(req.params.jobId));
-      if (status === "not_found") {
-        res.status(404).json({ error: "job not found" });
-        return;
-      }
-      if (!result) {
-        res.status(409).json({ error: "the crawl has not finished" });
-        return;
-      }
-      const clusters = clusterColours(result);
-      res.json({
-        clusters,
-        clusterCount: clusters.length,
-        distinctColours: clusters.reduce((n, c) => n + c.size, 0),
-      });
     }),
   );
 

@@ -3,9 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   discoverPages,
   getAudit,
-  getColours,
   getCrawlStatus,
-  getTypography,
   progressSocketUrl,
   startCrawl,
 } from "./api";
@@ -60,7 +58,7 @@ describe("error surfacing", () => {
     // A proxy or gateway returning HTML must not surface as a JSON parse error;
     // the user needs the status, not a stack trace about a `<`.
     fetchMock.mockResolvedValue(notJson(502));
-    await expect(getTypography("job-1")).rejects.toThrow("Request failed (502)");
+    await expect(getAudit("job-1")).rejects.toThrow("Request failed (502)");
   });
 });
 
@@ -100,8 +98,6 @@ describe("discoverPages", () => {
 describe("read endpoints", () => {
   const cases: [string, (id: string) => Promise<unknown>, string][] = [
     ["getCrawlStatus", getCrawlStatus, "result"],
-    ["getTypography", getTypography, "typography"],
-    ["getColours", getColours, "colours"],
     ["getAudit", getAudit, "audit"],
   ];
 
