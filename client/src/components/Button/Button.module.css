@@ -39,23 +39,22 @@
 .primary {
   background: var(--color-primary-default);
   color: var(--color-ink-on-primary);
-  /* A soft accent-tinted lift so the primary action reads as raised. */
-  box-shadow:
-    0 1px 2px oklch(40% 0.05 200 / 0.20),
-    0 4px 12px -4px oklch(50% 0.085 200 / 0.45);
+  /* A soft accent-tinted lift so the primary action reads as raised.
+     The value is a Drift role: the lift is this product's identity and haus's
+     Button has no vocabulary for it, so it stays here rather than moving to
+     haus-components — but it stays as a named role, not as literals. */
+  box-shadow: var(--drift-lift);
 }
 
 .primary:hover:not(:disabled) {
   background: var(--color-primary-hover);
-  box-shadow:
-    0 2px 4px oklch(40% 0.05 200 / 0.22),
-    0 8px 20px -4px oklch(50% 0.085 200 / 0.55);
+  box-shadow: var(--drift-lift-hover);
   transform: translateY(-1px);
 }
 
 .primary:active:not(:disabled) {
   background: var(--color-primary-pressed);
-  box-shadow: 0 1px 2px oklch(40% 0.05 200 / 0.25);
+  box-shadow: var(--drift-lift-pressed);
   transform: translateY(0);
 }
 

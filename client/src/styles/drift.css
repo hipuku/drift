@@ -114,6 +114,21 @@
     --shadow-xl: 0 3px 8px oklch(0% 0 0 / 0.40), 0 28px 56px -14px oklch(0% 0 0 / 0.60);
     --drift-card-border: oklch(from var(--neutral-50) l c h / 0.10);
 
+    /* The primary button's raised look, in three states.
+       A role rather than four literals in Button.module.css, and it takes its
+       hue from --accent-h so it follows the theme playground: pinned at 200
+       under a 239 brand, the lift was the one thing on the page that did not
+       move when the accent did. Lightness and chroma stay put — a shadow is
+       deliberately less saturated than the colour casting it. */
+    --drift-lift:
+      0 1px 2px  oklch(40% 0.05  var(--accent-h) / 0.20),
+      0 4px 12px -4px oklch(50% 0.085 var(--accent-h) / 0.45);
+    --drift-lift-hover:
+      0 2px 4px  oklch(40% 0.05  var(--accent-h) / 0.22),
+      0 8px 20px -4px oklch(50% 0.085 var(--accent-h) / 0.55);
+    --drift-lift-pressed:
+      0 1px 2px oklch(40% 0.05 var(--accent-h) / 0.25);
+
     --drift-alert-surface: color-mix(in oklab, var(--drift-severity-high) 18%, var(--color-surface-default));
     --drift-warn-surface:  color-mix(in oklab, var(--drift-severity-medium) 20%, var(--color-surface-default));
 
