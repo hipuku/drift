@@ -52,9 +52,8 @@ In that chain, **extraction reads twice**:
 author actually wrote. The second read is what makes authored units recoverable.
 
 Aggregation currently happens *after* the crawl, over the retained extractions.
-Memory is therefore bounded by the page cap, not by the work itself:
-see the crawl-reliability decision below for why that is a known limit and what
-replaces it.
+Memory is therefore bounded by the page cap. See the crawl-reliability decision
+below for why that is a known limit and what replaces it.
 
 ---
 
@@ -210,8 +209,8 @@ POST /discover
 }
 ```
 
-`rootUrl` is the *resolved* origin. Follow it, not the string you sent, since a
-host may only serve `www`. Invalid or unreachable URLs return `422` with
+`rootUrl` is the *resolved* origin. Follow it rather than the string you sent,
+since a host may only serve `www`. Invalid or unreachable URLs return `422` with
 a human-readable `error`.
 
 A **missing or empty `url` returns `400`**, distinct from the `422` an unusable
@@ -280,8 +279,8 @@ receiver always hears back either way. Headers carry `x-drift-event`, and
 `x-drift-signature` (`sha256=…`, HMAC of the raw body) when
 `DRIFT_WEBHOOK_SECRET` is set. Verify it before trusting the payload.
 
-The URL is validated when you enqueue the crawl, not at delivery time, so a
-mistake is a `422` while you're still on the line. It must be public http(s):
+The URL is validated when you enqueue the crawl, so a mistake is a `422` while
+you're still on the line. It must be public http(s):
 loopback, private ranges, and link-local addresses are refused, and the host is
 resolved before the check, since a public name can still point somewhere
 private. A trusted internal host can be allowlisted with the
@@ -294,8 +293,8 @@ audit is on the API regardless.
 The audit's `summary` counts (e.g. `contrastFailingAA`) and per-pair `contrast`
 verdicts close the CI loop: crawl on deploy, receive the audit, and fail the
 build when a threshold is crossed. (The plain-language `health` / `findings`
-diagnosis is assembled in the app when you open or export a run, not in this
-payload.)
+diagnosis is assembled in the app when you open or export a run, and does not
+appear in this payload.)
 
 #### Live progress
 
@@ -368,11 +367,11 @@ made with full awareness of what they replace.
 
 ### Backend framework: standalone Node + Express over Next.js API routes
 
-Core and hipuku.dev are Next.js apps, so Next was the default to beat. It loses here for a structural reason, not a preference one. Drift needs three things that want a single long-lived process: a persistent WebSocket connection feeding live crawl progress, Playwright workers driving headless Chromium, and BullMQ workers pulling jobs off a queue. Next.js API routes are request-scoped and, in their natural deployment target, serverless. There is no durable process to own a WebSocket server or a worker pool, and cold starts actively fight against both. Running Next purely as a custom server to host all this would be using the framework for none of the things it is good at while inheriting its constraints. Express is a thin, well-understood process that does exactly one job: stay alive and own the sockets and the queue workers. The frontend is a separate Vite SPA (see below), so there is no SSR requirement pulling back toward Next.
+Core and hipuku.dev are Next.js apps, so Next was the default to beat. It loses here for a structural reason. Drift needs three things that want a single long-lived process: a persistent WebSocket connection feeding live crawl progress, Playwright workers driving headless Chromium, and BullMQ workers pulling jobs off a queue. Next.js API routes are request-scoped and, in their natural deployment target, serverless. There is no durable process to own a WebSocket server or a worker pool, and cold starts actively fight against both. Running Next purely as a custom server to host all this would be using the framework for none of the things it is good at while inheriting its constraints. Express is a thin, well-understood process that does exactly one job: stay alive and own the sockets and the queue workers. The frontend is a separate Vite SPA (see below), so there is no SSR requirement pulling back toward Next.
 
 ### Frontend: Vite SPA over Next.js
 
-Drift's frontend is a single surface: crawl configuration, a live progress view, and the audit (originally with a proposals layer, since cut; see below). There are no public, SEO-relevant, server-rendered pages; the valuable output is generated per-run and streamed, not statically rendered. That removes the main reasons to reach for Next. A Vite + React SPA talking to the Express API over HTTP and WebSocket keeps the two halves cleanly separated and the build fast. It also makes the architecture legible at a glance: a server process and a client process, no blurred middle.
+Drift's frontend is a single surface: crawl configuration, a live progress view, and the audit (originally with a proposals layer, since cut; see below). There are no public, SEO-relevant, server-rendered pages; the valuable output is generated per-run and streamed. That removes the main reasons to reach for Next. A Vite + React SPA talking to the Express API over HTTP and WebSocket keeps the two halves cleanly separated and the build fast. The architecture is a server process and a client process, with no shared rendering layer between them.
 
 ### Job queue: BullMQ over pg-boss and in-memory
 
@@ -390,7 +389,7 @@ Drift combines BullMQ, WebSockets, Playwright, and Redis. The failure mode is in
 
 ### Docker multi-stage build to contain the Chromium binary
 
-**Status: planned, not built.** There is no Dockerfile in the repo yet. Recorded because it is the intended shape and it gates the CI story.
+**Status: planned.** There is no Dockerfile in the repo yet. Recorded because it is the intended shape and it gates the CI story.
 
 Playwright's Chromium adds roughly 300MB to an image if installed naively. The Dockerfile is multi-stage and installs only the Chromium browser (`playwright install chromium`, not the full browser set), keeping the runtime image as lean as a Chromium-bearing image can be. A `docker-compose.yml` would bring up the backend plus Redis for local development so the full stateful stack runs with one command. This also sets up the CI story: the same Redis runs as a service container in GitHub Actions, the test suite exercises real Redis and real BullMQ, and the Docker build/push runs only after tests pass.
 
@@ -436,7 +435,7 @@ restated and leaves the one that is not.
 
 ## Extraction and the audit
 
-### Contrast is measured on the composited colour, not the authored one
+### Contrast is measured on the composited colour
 
 An element's own `background-color` is frequently `transparent`, and its `color`
 frequently carries alpha. Evaluating the pair as authored, treating both as
@@ -468,7 +467,7 @@ what did this site choose, versus what does a reader perceive. Inheritance
 is noise to the first and the substance of the second. Both rules are asserted in
 tests so neither drifts into the other.
 
-### Audit reads authored CSS, not only computed styles
+### Audit reads authored CSS as well as computed styles
 
 The first audit read every value from `getComputedStyle`, which returns resolved px. It was fast and truly "as rendered", but lossy in four ways at once: it discards the authored unit (a `rem`-based system reads as a pile of px, and one authored value resolves to several sub-pixel-different "tokens" like `1.96195px` vs `1.96209px`), it ignores the site's own declared `--*` custom properties, it sees only one viewport and only the resting state, and it captures JS-set inline noise (e.g. a GSAP frame). You cannot recover `em`/`%`/`vw`/`clamp()` from a px number. Only `rem` is derivable (`px ÷ root font-size`), so the fix is to read the CSS source (CSSOM) alongside the computed pass, which `extractBreakpoints` already proves is feasible. Computed styles stay the truth of *what rendered*; authored CSS supplies *what was written*, the real token names, and the interactive states. The audit's verdicts depend on this: off-scale / off-grid judgments are invalid on the wrong unit, so the authored units land in the audit itself. (The cut proposal layer went further, recommending a unit per category: type in `rem` for zoom accessibility.)
 
@@ -492,7 +491,7 @@ Confidence: High. It turns a fixed assertion into a measurement with a stated re
 
 ## The API surface
 
-### The export leads with the diagnosis, not the inventory
+### The export leads with the diagnosis
 
 The export has one real audience, machines: a CI check to assert on, two runs to diff, a model to reason over. Shipping raw counts made the consumer re-derive the judgement Drift had already made. It now leads with `health` (the same sentence the report shows), `findings[]` (typed, with severity and the evidence behind each), `verdicts`, and a `rules` block stating the ΔE threshold, grid base, detected ratio, and WCAG standard, so the numbers are anchored to what they were measured against. The full inventory sits underneath as evidence.
 
@@ -544,13 +543,13 @@ recommendation:
 
 The decisions that governed it, kept because the reasoning still holds:
 
-- **Proposals are reductive, never generative**. Every token a proposal emits is a value the site already ships.
-- **Colour merging is evidence-gated, not threshold-only**. The first implementation clustered at CIEDE2000 ΔE 8 and named the result `color-1..N`.
-- **Contrast reports what passes, not what fails**. The obvious design, listing the pairs that fail AA, was actively harmful.
+- **Proposals are reductive**. Every token a proposal emits is a value the site already ships.
+- **Colour merging is evidence-gated**. The first implementation clustered at CIEDE2000 ΔE 8 and named the result `color-1..N`.
+- **Contrast reports what passes**. The obvious design, listing the pairs that fail AA, was actively harmful.
 - **Semantic naming: usage leads, contrast breaks ties**. Names are inferred from what a colour is observed doing: its dominant role (text / background / border), how much of the site it carries, and whether it reads as a neutral or a hue.
 - **Type proposals are role-first; the modular ratio is optional**. Drift crawls websites, and a website's type system is a semantic hierarchy of h1 to h6, body, small and button, and not an abstract modular ladder.
-- **Controls are expressed as outcomes, not mechanisms**. An early colour proposal exposed a ΔE threshold picker, a contrast panel, a migration panel and dense token cards, six concepts deep, all in the tool's vocabulary rather than the user's.
-- **Proposals derive from the audit, not from separate endpoints**. Colour and type proposals originally fetched their own inventories.
+- **Controls are expressed as outcomes**. An early colour proposal exposed a ΔE threshold picker, a contrast panel, a migration panel and dense token cards, six concepts deep, all in the tool's vocabulary rather than the user's.
+- **Proposals derive from the audit**. Colour and type proposals originally fetched their own inventories.
 
 ---
 
