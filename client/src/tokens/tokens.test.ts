@@ -49,9 +49,17 @@ function filesUnder(dir: string, extensions: string[]): string[] {
 }
 
 function matches(files: string[], pattern: RegExp): Set<string> {
-  const found = new Set<string>();
+  return new Set(countMatches(files, pattern).keys());
+}
+
+/** As `matches`, but keeping how many times each name was read rather than
+ *  only that it was. The type-tier ratchet below needs the count. */
+function countMatches(files: string[], pattern: RegExp): Map<string, number> {
+  const found = new Map<string, number>();
   for (const file of files) {
-    for (const m of readFileSync(file, "utf8").matchAll(pattern)) found.add(m[1]!);
+    for (const m of readFileSync(file, "utf8").matchAll(pattern)) {
+      found.set(m[1]!, (found.get(m[1]!) ?? 0) + 1);
+    }
   }
   return found;
 }
@@ -100,24 +108,54 @@ describe("custom properties", () => {
  * does, so this holds the line: 196 spacing reads, 61 radius, 21 elevation and
  * 70 motion were migrated, and a new one should not appear without a decision.
  *
- * The exceptions are the type tier, which exists but is bypassed by bare
- * `font-size` and `font-family` declarations. Those are not a mechanical swap,
- * a type role carries size, weight, leading and tracking together, so adopting
- * one changes how the text sits, site by site. They are listed rather than
- * ignored: the list should only ever get shorter.
+ * The exceptions are the type tier. They are counted rather than listed,
+ * because a list of names ratchets on the wrong thing: every name below was
+ * already on it when the total was 94 and when it was 89, so the debt changed
+ * twice and nothing here could tell. A number per name is what makes it a
+ * ratchet — adding a read fails, removing one fails until the number comes
+ * down with it.
+ *
+ * The split matters more than the total, and the totals are the two figures
+ * the docs quote:
+ *
+ * **42 are `font-family`, and are not debt at all.** No type role carries a
+ * family — the eleven roles set size, weight, leading and tracking, and
+ * `--type-mono-*` is no exception. A family therefore has no role to adopt,
+ * and most of these sit on `<button>` and `<input>`, which do not inherit one.
+ * They are counted here because they read a primitive and the rule is about
+ * primitives, not because there is anything to fix.
+ *
+ * **43 are size and weight, and those are the real number.** Adopting a role
+ * changes leading and tracking as well as size, so each is a judgement about
+ * whether the element wants the role or is deliberately off it. Two shapes
+ * recur and are worth naming:
+ *
+ * - 18 sit alongside `--font-mono` in dense table cells at 12px. The only mono
+ *   role is `--type-mono-*` at 13px with `leading-loose`, so there is nothing
+ *   to adopt without changing the size and the line height of a table. That is
+ *   a missing role rather than a bypassed one.
+ * - A few pair a role's size with a weight the role does not carry —
+ *   `.showMore` takes `--type-body-sm-size` at medium where the role is
+ *   regular, `.button` takes `--type-label-size` at semibold where the role is
+ *   medium. Deliberate, and the same evidence: the scale has no step for what
+ *   the element wants.
  */
-const TYPE_TIER_DEBT = new Set([
-  "--font-sans",
-  "--font-mono",
-  "--font-display",
-  "--text-11",
-  "--text-12",
-  "--text-13",
-  "--text-14",
-  "--text-24",
-  "--weight-medium",
-  "--weight-semibold",
+const TYPE_TIER_DEBT = new Map([
+  // Families. No role carries one; nothing to adopt.
+  ["--font-sans", 20],
+  ["--font-mono", 21],
+  ["--font-display", 1],
+  // Sizes and weights. This is the number to move.
+  ["--text-11", 5],
+  ["--text-12", 23],
+  ["--text-13", 1],
+  ["--text-14", 6],
+  ["--text-24", 1],
+  ["--weight-medium", 4],
+  ["--weight-semibold", 3],
 ]);
+
+const FAMILIES = ["--font-sans", "--font-mono", "--font-display"];
 
 /**
  * What counts as a primitive here: haus-tokens' two layers plus Drift's
@@ -142,11 +180,14 @@ function primitiveNames(): Set<string> {
 }
 
 describe("the two-tier rule", () => {
+  const read = () =>
+    countMatches(filesUnder(SRC, [".module.css"]), /var\((--[a-z0-9-]+)/g);
+
   it("keeps components off the primitives", () => {
     const primitives = primitiveNames();
-    const read = matches(filesUnder(SRC, [".module.css"]), /var\((--[a-z0-9-]+)/g);
-
-    const reaching = [...read].filter((n) => primitives.has(n) && !TYPE_TIER_DEBT.has(n)).sort();
+    const reaching = [...read().keys()]
+      .filter((n) => primitives.has(n) && !TYPE_TIER_DEBT.has(n))
+      .sort();
 
     expect(reaching).toEqual([]);
   });
@@ -155,11 +196,45 @@ describe("the two-tier rule", () => {
     // A name that is no longer read, or no longer a primitive, should leave the
     // list, otherwise the debt looks larger than it is and stops being read.
     const primitives = primitiveNames();
-    const read = matches(filesUnder(SRC, [".module.css"]), /var\((--[a-z0-9-]+)/g);
+    const counts = read();
 
-    const stale = [...TYPE_TIER_DEBT].filter((n) => !read.has(n) || !primitives.has(n)).sort();
+    const stale = [...TYPE_TIER_DEBT.keys()]
+      .filter((n) => !counts.has(n) || !primitives.has(n))
+      .sort();
 
     expect(stale).toEqual([]);
+  });
+
+  it("holds each exception at its recorded count", () => {
+    // The ratchet. Equality rather than an upper bound, in both directions: a
+    // read added fails, and a read removed fails until the number comes down
+    // with it. An upper bound would let the figures the docs quote go quietly
+    // stale, which is the failure this replaced — the total moved from 94 to 89
+    // with every name still on the list and nothing to notice.
+    const counts = read();
+    const actual = Object.fromEntries(
+      [...TYPE_TIER_DEBT.keys()].sort().map((n) => [n, counts.get(n) ?? 0]),
+    );
+    const recorded = Object.fromEntries(
+      [...TYPE_TIER_DEBT.entries()].sort(([a], [b]) => a.localeCompare(b)),
+    );
+
+    expect(actual).toEqual(recorded);
+  });
+
+  it("splits the total the way the docs quote it", () => {
+    // DESIGN.md and issue #1 both quote these two figures. Asserting them here
+    // is what stops a correction to one from leaving the other behind.
+    const sum = (names: string[]) =>
+      names.reduce((n, name) => n + (TYPE_TIER_DEBT.get(name) ?? 0), 0);
+    const families = sum(FAMILIES);
+    const scale = sum([...TYPE_TIER_DEBT.keys()].filter((n) => !FAMILIES.includes(n)));
+
+    expect({ families, scale, total: families + scale }).toEqual({
+      families: 42,
+      scale: 43,
+      total: 85,
+    });
   });
 });
 

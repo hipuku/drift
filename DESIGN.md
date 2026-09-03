@@ -555,16 +555,49 @@ The decisions that governed it, kept because the reasoning still holds:
 
 # Known trade-offs / next
 
-**The type tier is bypassed in 89 places.** Eleven type roles exist, each bundling
-size, weight, leading and tracking, and 89 declarations across six stylesheets
-reach past them for `--text-*`, `--font-*` and `--weight-*` directly. Issue #1 says
-94 across eight, which was true before Badge and TextField moved to
-`haus-components`; the list can only shrink, so the issue is the number to
-distrust. This is not
-a find-and-replace: adopting a role changes leading and tracking as well as size,
-so each site is a judgement about whether the element wants the role or is
-deliberately off it. The exception list in `tokens.test.ts` is named and can only
-shrink; new code cannot add to it.
+**The type tier is bypassed in 43 places, not 89.** The 89 was measured wrongly,
+and the correction is the more interesting half of the finding.
+
+**42 of the 89 were `font-family` reads, and they are not debt.** No type role
+carries a family: the eleven roles bundle size, weight, leading and tracking,
+and `--type-mono-*` is no exception. A `font-family` therefore has no role to
+adopt, and most of these sit on `<button>` and `<input>`, which do not inherit
+one from `body` — so those declarations are required rather than lazy. Counting
+them as bypasses inflated the figure by 88%.
+
+**43 are size and weight reads, and that is the number to move.** Adopting a
+role changes leading and tracking as well as size, so each is a judgement about
+whether the element wants the role or is deliberately off it. Two shapes account
+for most of them:
+
+- **18 are a missing role rather than a bypassed one.** They sit alongside
+  `--font-mono` in dense table cells at 12px — `.propName`, `.valueCell`,
+  `.contrastPair`, `.tabCount`. The only mono role is `--type-mono-*` at 13px
+  with `leading-loose`, so there is nothing to adopt that does not change both
+  the size and the line height of a table. Either the scale gains a dense mono
+  step or it records that 12px mono is deliberately off it; the CSS cannot
+  settle that.
+- **A few pair a role's size with a weight the role does not carry.**
+  `.showMore` takes `--type-body-sm-size` at medium where the role is regular;
+  `.button` takes `--type-label-size` at semibold where the role is medium.
+  Deliberate, and the same evidence in a different place.
+
+Four were free and are done: `.textAction`, `.back`, `.ghost` and `.tab` read a
+role for size and then reached past it for `--weight-medium`, which is the value
+that role's own weight token already resolves to. A rename, no visual change.
+
+**How the number went wrong, and what now holds it.** The debt was recorded in
+`tokens.test.ts` as a list of names, and a list of names ratchets on the wrong
+thing: every name on it was already there when the total was 94 and when it was
+89, so the figure moved twice with nothing able to notice. It is a count per
+name now, asserted for equality in both directions — a read added fails, and a
+read removed fails until the recorded number comes down with it. The 42/43 split
+is asserted too, because it is the pair of figures this document and issue #1
+both quote, and a correction to one should not leave the other behind.
+
+Issue #1 still says 89 across eight stylesheets. It said 94 before that, which
+was true before Badge and TextField moved to `haus-components`. It needs editing
+to 43, and the reason it has been wrong twice is that nothing checked it.
 
 **The audit stylesheet is one 1542-line file** serving seven components. Splitting
 it was attempted and reverted. Rules that mention a class without defining it (a
