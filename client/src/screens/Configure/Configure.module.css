@@ -291,3 +291,11 @@
   font-size: var(--text-14);
   line-height: 1.5;
 }
+
+/* Shown only in demo mode, where the capture fixes the page set. Sits between
+   the list actions and the list itself, so it is read before the rows it
+   explains rather than after them. */
+.lockedNote {
+  margin: 0;
+  color: var(--color-ink-tertiary);
+}

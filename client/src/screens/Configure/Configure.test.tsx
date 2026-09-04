@@ -262,3 +262,62 @@ describe("adding a page discovery missed", () => {
     expect(screen.getByText(/10 selected/)).toBeInTheDocument();
   });
 });
+
+/**
+ * Demo mode.
+ *
+ * `startCrawl` discards the page list when DEMO_MODE is on, because there is no
+ * crawler behind it: the build replays one captured audit whole. The picker has
+ * to say so. A control that accepts input and changes nothing is the failure
+ * this repo exists to report on other people's sites.
+ *
+ * Its own module rather than a describe block, because DEMO_MODE is read at
+ * module load and the mock has to be in place before Configure is imported.
+ */
+describe("demo mode", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.doMock("../../demo/index.js", () => ({
+      DEMO_MODE: true,
+      DEMO_SITE: "picocss.com",
+      DEMO_CAPTURED: "August 2026",
+    }));
+  });
+
+  afterEach(() => {
+    vi.doUnmock("../../demo/index.js");
+    vi.resetModules();
+  });
+
+  /** Re-imports Configure so the mocked DEMO_MODE is the one it read. */
+  async function reachDemoPicker(count = 3) {
+    const { Configure: Demo } = await import("./Configure");
+    discover.mockResolvedValue(discovery(count) as never);
+    render(<Demo onSubmit={vi.fn()} />);
+    await userEvent.type(screen.getByLabelText("URL"), "x.test");
+    await userEvent.click(screen.getByRole("button", { name: "Find pages" }));
+    await screen.findByRole("group", { name: "Pages to audit" });
+  }
+
+  it("selects every discovered page, not just the homepage", async () => {
+    await reachDemoPicker(3);
+    // Outside demo mode this would be "1 selected": the homepage alone.
+    expect(screen.getByText(/3 selected/)).toBeInTheDocument();
+  });
+
+  it("cannot be deselected, because the audit already ran", async () => {
+    await reachDemoPicker(3);
+    for (const row of rows()) expect(row).toBeDisabled();
+
+    await userEvent.click(rows()[1]!, { pointerEventsCheck: 0 });
+    expect(screen.getByText(/3 selected/)).toBeInTheDocument();
+
+    expect(screen.getByRole("button", { name: "Clear" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /Select all/ })).toBeDisabled();
+  });
+
+  it("says why the picker is fixed", async () => {
+    await reachDemoPicker(3);
+    expect(screen.getByText(/nothing left to choose/i)).toBeInTheDocument();
+  });
+});

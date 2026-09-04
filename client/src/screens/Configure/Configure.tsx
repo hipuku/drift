@@ -51,6 +51,13 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
   const [addUrl, setAddUrl] = useState("");
   const [addError, setAddError] = useState<string | null>(null);
 
+  // The demo has one captured audit and replays it whole: `startCrawl` drops the
+  // page list on the floor in demo mode, because there is no crawler behind it
+  // to configure. A picker that still took input would be a control that looks
+  // live and changes nothing, which is the one thing a tool about honest
+  // reporting cannot ship.
+  const locked = DEMO_MODE;
+
   // Before discovery we only know the typed host; after, the server's resolved
   // one (which may have gained www / a scheme).
   const host = resolvedHost || hostOf(url);
@@ -60,12 +67,17 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
     if (!found) return;
     // The selection is this screen's concern, not the hook's. Default to the
     // homepage, the single most representative page.
-    setSelected(new Set(found[0] ? [found[0].path] : []));
+    //
+    // The demo replays one captured audit, so the crawl it would configure has
+    // already happened and every page in it is included. Selecting all of them
+    // is the only state that matches what the next screen will show.
+    setSelected(new Set(locked ? found.map((p) => p.path) : found[0] ? [found[0].path] : []));
     setShowAll(false);
     setQuery("");
   };
 
   const toggle = (path: string) => {
+    if (locked) return;
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(path)) next.delete(path);
@@ -77,7 +89,10 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
 
   const selectAll = () =>
     setSelected(new Set(pages.slice(0, CRAWL_CEILING).map((p) => p.path)));
-  const clear = () => setSelected(new Set());
+  const clear = () => {
+    if (locked) return;
+    setSelected(new Set());
+  };
 
   // Add a page discovery missed (deep, unlinked, or not in the sitemap). Accepts
   // only a path or slug ("/about", "pricing"); the origin is already fixed by
@@ -231,7 +246,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
                 type="button"
                 className={styles.textAction}
                 onClick={selectAll}
-                disabled={allSelected}
+                disabled={locked || allSelected}
               >
                 Select all{overCeiling ? ` (first ${CRAWL_CEILING})` : ""}
               </button>
@@ -240,11 +255,18 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
                 type="button"
                 className={styles.textAction}
                 onClick={clear}
-                disabled={selected.size === 0}
+                disabled={locked || selected.size === 0}
               >
                 Clear
               </button>
             </div>
+
+            {locked && (
+              <Text role="body-sm" as="p" className={styles.lockedNote}>
+                Every page in the capture is included. The audit below already ran, so there is
+                nothing left to choose.
+              </Text>
+            )}
 
             <div className={styles.list} role="group" aria-label="Pages to audit">
               {visiblePages.length === 0 && (
@@ -256,7 +278,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
               )}
               {visiblePages.map((page) => {
                 const isOn = selected.has(page.path);
-                const disabled = !isOn && atLimit;
+                const disabled = locked || (!isOn && atLimit);
                 return (
                   <button
                     key={page.path}
