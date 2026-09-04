@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { Crawling } from "./Crawling";
 import type { CrawlProgress } from "../../lib/api.js";
+import { axe } from "vitest-axe";
 
 const progress = (over: Partial<CrawlProgress> = {}): CrawlProgress => ({
   pagesCrawled: 2,
@@ -110,5 +111,17 @@ describe("Crawling", () => {
       />,
     );
     expect(screen.getByText("1,042")).toBeInTheDocument();
+  });
+});
+
+describe("accessibility", () => {
+  it("has no violations while crawling", async () => {
+    const { container } = render(<Crawling host="picocss.com" progress={progress()} />);
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("has no violations before the first progress arrives", async () => {
+    const { container } = render(<Crawling host="x.test" progress={null} />);
+    expect((await axe(container)).violations).toEqual([]);
   });
 });

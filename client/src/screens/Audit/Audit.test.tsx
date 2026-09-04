@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Audit } from "./Audit";
 import auditFixture from "../../demo/audit.json";
 import type { SiteAudit } from "../../lib/api.js";
+import { axe } from "vitest-axe";
 
 /**
  * Driven by the committed demo fixture: a real picocss.com audit, not a
@@ -384,5 +385,18 @@ describe("resilience to a thinner payload", () => {
     expect(screen.queryAllByText(/undefined/)).toHaveLength(0);
     // With no drift signal at all, the diagnosis says so rather than blanking.
     expect(screen.getByText(/Nothing's drifting/)).toBeInTheDocument();
+  });
+});
+
+/**
+ * The densest screen in the client and the one the product is judged on: every
+ * tab, the health callout, the stat grid and the tables. If drift is going to
+ * report other people's contrast and labelling, this is the screen that has to
+ * survive the same check.
+ */
+describe("accessibility", () => {
+  it("has no violations on the overview", async () => {
+    const { container } = render(<Audit audit={audit} />);
+    expect((await axe(container)).violations).toEqual([]);
   });
 });

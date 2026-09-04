@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Configure } from "./Configure";
 import { discoverPages } from "../../lib/api.js";
+import { axe } from "vitest-axe";
 
 vi.mock("../../lib/api.js", () => ({ discoverPages: vi.fn() }));
 
@@ -319,5 +320,24 @@ describe("demo mode", () => {
   it("says why the picker is fixed", async () => {
     await reachDemoPicker(3);
     expect(screen.getByText(/nothing left to choose/i)).toBeInTheDocument();
+  });
+});
+
+describe("accessibility", () => {
+  it("has no violations on the URL form", async () => {
+    const { container } = render(<Configure onSubmit={vi.fn()} />);
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("has no violations on the page picker", async () => {
+    // Scoped to the render root, not document.body: in isolation the screen has
+    // no landmark, so axe's `region` rule fires on a wrapper the app shell
+    // supplies in reality. The same scoping is what haus and kern use.
+    discover.mockResolvedValue(discovery(3) as never);
+    const { container } = render(<Configure onSubmit={vi.fn()} />);
+    await userEvent.type(screen.getByLabelText("URL"), "x.test");
+    await userEvent.click(screen.getByRole("button", { name: "Find pages" }));
+    await screen.findByRole("group", { name: "Pages to audit" });
+    expect((await axe(container)).violations).toEqual([]);
   });
 });
