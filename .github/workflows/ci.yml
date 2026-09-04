@@ -50,3 +50,22 @@ jobs:
       - name: Build client
         working-directory: client
         run: npm run build
+
+      # End to end, against the built demo bundle. Every other test here stops
+      # at a component or an HTTP call: this is the only one that drives the
+      # product the way a reader will.
+      - name: Install Playwright
+        working-directory: client
+        run: npx playwright install chromium --with-deps
+
+      - name: End-to-end
+        working-directory: client
+        run: npm run e2e
+
+      - name: Keep the trace when it fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: client/playwright-report/
+          retention-days: 7

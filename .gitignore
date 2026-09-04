@@ -14,9 +14,12 @@ build
 npm-debug.log*
 
 # Playwright
-/test-results
-/playwright-report
-/playwright/.cache
+# Unanchored: the end-to-end suite runs from client/, so `/test-results` would
+# only have matched a root-level run that never happens.
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
 
 # Local data
 redis-data
