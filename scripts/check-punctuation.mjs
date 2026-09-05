@@ -36,13 +36,22 @@ const BASELINE = join(ROOT, 'scripts', 'punctuation-baseline.json')
    rule it enforces. U+2014 is the em dash. */
 const PATTERNS = [/\u2014/g, /&mdash;/gi]
 
+/* This file. A tool that defines the forbidden strings necessarily contains
+   them, and the entity below is one. Skipping it explicitly is clearer than
+   assembling the pattern from fragments to hide it from itself.
+
+   Found the hard way: the baseline was first written while this file was still
+   untracked, so `git ls-files` did not list it and the omission looked like a
+   pass. It became a failure in all seven repos the moment it was committed. */
+const SELF = 'scripts/check-punctuation.mjs'
+
 /** Anything whose bytes are not prose. A match inside a lockfile or a binary is
  *  noise, and a lockfile is not somewhere a house style applies. */
 const SKIP = /(^|\/)(package-lock\.json|pnpm-lock\.yaml|.*\.(png|jpg|jpeg|gif|webp|svg|ico|woff2?|ttf|pdf|zip))$/i
 
 function tracked() {
   return execFileSync('git', ['ls-files', '-z'], { cwd: ROOT, maxBuffer: 32 * 1024 * 1024 })
-    .toString('utf8').split('\0').filter(Boolean).filter((f) => !SKIP.test(f))
+    .toString('utf8').split('\0').filter(Boolean).filter((f) => f !== SELF && !SKIP.test(f))
 }
 
 function count(file) {
