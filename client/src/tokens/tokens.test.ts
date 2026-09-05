@@ -125,34 +125,43 @@ describe("custom properties", () => {
  * They are counted here because they read a primitive and the rule is about
  * primitives, not because there is anything to fix.
  *
- * **43 are size and weight, and those are the real number.** Adopting a role
- * changes leading and tracking as well as size, so each is a judgement about
- * whether the element wants the role or is deliberately off it. Two shapes
- * recur and are worth naming:
+ * **22 are size and weight**, down from 43 (drift#1, 2026-09-05). Twenty-one
+ * were converted, every one a byte-identical swap — `--type-label-sm-size` *is*
+ * `--text-12` and `--type-body-size` *is* `--text-14`, so the reads stopped
+ * reaching past the semantic layer and nothing moved on screen. Three of the
+ * twenty-one were exact pairs where size and weight both matched one role:
+ * `.feedbackChip` is `--type-label`, `.surfaceText` is `--type-heading-lg`,
+ * and `.table th` is `--type-label-sm`. `--text-13` and `--text-24` left the
+ * list entirely.
  *
- * - 18 sit alongside `--font-mono` in dense table cells at 12px. The only mono
- *   role is `--type-mono-*` at 13px with `leading-loose`, so there is nothing
- *   to adopt without changing the size and the line height of a table. That is
- *   a missing role rather than a bypassed one.
- * - A few pair a role's size with a weight the role does not carry —
- *   `.showMore` takes `--type-body-sm-size` at medium where the role is
- *   regular, `.button` takes `--type-label-size` at semibold where the role is
- *   medium. Deliberate, and the same evidence: the scale has no step for what
- *   the element wants.
+ * What is left is no longer a backlog. Every one of the 22 is a role that does
+ * not exist, and each is now commented in place:
+ *
+ * - **18 are mono**, at 11px, 12px and 14px. The only mono role is
+ *   `--type-mono` at 13px with `leading-loose`. The audit screen's token tables
+ *   are 12px so eighty properties fit without scrolling, and adopting the role
+ *   would change the size *and* the line height of every table on it. Adding
+ *   `--type-mono-sm` to close a lint number would be the tail wagging the dog.
+ * - **4 are weight-only bumps** on text that keeps its parent's size and
+ *   leading: a `<strong>` inside body copy, a count inside a sentence, and two
+ *   places pairing a role's size with a weight the role does not carry
+ *   (`.showMore` takes body-sm at medium, Button takes label at semibold).
+ *   Every role sets all four properties, so adopting one would resize the text.
+ *
+ * The next move on either is a decision about the scale, not a refactor.
  */
 const TYPE_TIER_DEBT = new Map([
   // Families. No role carries one; nothing to adopt.
-  ["--font-sans", 20],
-  ["--font-mono", 21],
-  ["--font-display", 1],
-  // Sizes and weights. This is the number to move.
-  ["--text-11", 5],
-  ["--text-12", 23],
-  ["--text-13", 1],
-  ["--text-14", 6],
-  ["--text-24", 1],
-  ["--weight-medium", 4],
-  ["--weight-semibold", 3],
+  ['--font-sans', 20],
+  ['--font-mono', 21],
+  ['--font-display', 1],
+  // Sizes and weights. 43 before drift#1, 22 after, and every one of these is
+  // a role that does not exist rather than a role that was skipped.
+  ['--text-11', 5],
+  ['--text-12', 12],
+  ['--text-14', 1],
+  ['--weight-medium', 2],
+  ['--weight-semibold', 2],
 ]);
 
 const FAMILIES = ["--font-sans", "--font-mono", "--font-display"];
@@ -232,8 +241,8 @@ describe("the two-tier rule", () => {
 
     expect({ families, scale, total: families + scale }).toEqual({
       families: 42,
-      scale: 43,
-      total: 85,
+      scale: 22,
+      total: 64,
     });
   });
 });

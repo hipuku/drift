@@ -25,6 +25,9 @@
 
 .note strong {
   color: var(--color-ink-secondary);
+  /* Weight only, on a <strong> inside body copy that keeps its parent's size
+     and leading. Every role sets all four, so adopting one here would resize
+     the emphasis. Off-role on purpose — drift#1. */
   font-weight: var(--weight-medium);
 }
 
@@ -66,6 +69,10 @@
 
 .chipLabel {
   font-family: var(--font-mono);
+  /* Off-role, deliberately. The only mono role is --type-mono at 13px with
+     leading-loose; these are 11px specimen captions in a dense grid, and
+     there is no 11px mono role to adopt. A missing role, not a bypassed
+     one — drift#1. */
   font-size: var(--text-11);
   color: var(--color-ink-tertiary);
 }
@@ -84,8 +91,8 @@
   padding: var(--space-inset-xs) var(--space-inset-sm);
   border-radius: var(--radius-pill);
   border: var(--border-width-default) solid;
-  font-size: var(--text-13);
-  font-weight: var(--weight-medium);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
 }
 
 .dot {
@@ -113,18 +120,26 @@
 
 .surfaceName {
   font-family: var(--font-mono);
+  /* Off-role, deliberately. The only mono role is --type-mono at 13px with
+     leading-loose; these are 11px specimen captions in a dense grid, and
+     there is no 11px mono role to adopt. A missing role, not a bypassed
+     one — drift#1. */
   font-size: var(--text-11);
   opacity: 0.75;
 }
 
 .surfaceText {
-  font-size: var(--text-24);
-  font-weight: var(--weight-semibold);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
 }
 
 /* ── Rows (type, space) ───────────────────────────────────────────────────── */
 .rowLabel {
   font-family: var(--font-mono);
+  /* Off-role, deliberately. The only mono role is --type-mono at 13px with
+     leading-loose; these are 11px specimen captions in a dense grid, and
+     there is no 11px mono role to adopt. A missing role, not a bypassed
+     one — drift#1. */
   font-size: var(--text-11);
   color: var(--color-ink-tertiary);
 }
@@ -178,6 +193,10 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
+  /* Off-role, deliberately. The only mono role is --type-mono at 13px with
+     leading-loose; these are 11px specimen captions in a dense grid, and
+     there is no 11px mono role to adopt. A missing role, not a bypassed
+     one — drift#1. */
   font-size: var(--text-11);
   color: var(--color-primary-on-subtle);
 }
@@ -191,6 +210,10 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
+  /* Off-role, deliberately. The only mono role is --type-mono at 13px with
+     leading-loose; these are 11px specimen captions in a dense grid, and
+     there is no 11px mono role to adopt. A missing role, not a bypassed
+     one — drift#1. */
   font-size: var(--text-11);
   color: var(--color-ink-tertiary);
 }

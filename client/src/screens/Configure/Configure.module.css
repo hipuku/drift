@@ -21,6 +21,8 @@
 
 .count {
   color: var(--color-ink-primary);
+  /* Weight only. The number is emphasised inside a line that keeps its own
+     size and leading, and every role sets all four. Off-role — drift#1. */
   font-weight: var(--weight-semibold);
 }
 
@@ -244,6 +246,9 @@
   border: none;
   font-family: var(--font-sans);
   font-size: var(--type-body-sm-size);
+  /* body-sm's own weight is regular. This is the role's size at a heavier
+     weight, which is the scale having no step for what the element wants
+     rather than a bypass. Off-role — drift#1. */
   font-weight: var(--weight-medium);
   color: var(--color-ink-link);
   cursor: pointer;
@@ -288,7 +293,7 @@
   background: var(--color-surface-sunken);
   color: var(--color-ink-secondary);
   font-family: var(--font-sans);
-  font-size: var(--text-14);
+  font-size: var(--type-body-size);
   line-height: 1.5;
 }
 

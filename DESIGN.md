@@ -555,8 +555,9 @@ The decisions that governed it, kept because the reasoning still holds:
 
 # Known trade-offs / next
 
-**The type tier is bypassed in 43 places, not 89.** The 89 was measured wrongly,
-and the correction is the more interesting half of the finding.
+**The type tier was bypassed in 43 places, not 89. It is 22 now** (drift#1,
+2026-09-05). The 89 was measured wrongly, and the correction was the more
+interesting half of the finding.
 
 **42 of the 89 were `font-family` reads, and they are not debt.** No type role
 carries a family: the eleven roles bundle size, weight, leading and tracking,
@@ -565,39 +566,48 @@ adopt, and most of these sit on `<button>` and `<input>`, which do not inherit
 one from `body` — so those declarations are required rather than lazy. Counting
 them as bypasses inflated the figure by 88%.
 
-**43 are size and weight reads, and that is the number to move.** Adopting a
-role changes leading and tracking as well as size, so each is a judgement about
-whether the element wants the role or is deliberately off it. Two shapes account
-for most of them:
+**Twenty-one of the remaining 43 are converted, and none of them moved.** Every
+one was a byte-identical swap: `--type-label-sm-size` *is* `--text-12` and
+`--type-body-size` *is* `--text-14`, so the read stopped reaching past the
+semantic layer and the rendered result is the same pixel. Three were exact
+pairs where size and weight both matched a single role — `.feedbackChip` is
+`--type-label`, `.surfaceText` is `--type-heading-lg`, `.table th` is
+`--type-label-sm`. `--text-13` and `--text-24` left the exception list
+entirely.
 
-- **18 are a missing role rather than a bypassed one.** They sit alongside
-  `--font-mono` in dense table cells at 12px — `.propName`, `.valueCell`,
-  `.contrastPair`, `.tabCount`. The only mono role is `--type-mono-*` at 13px
-  with `leading-loose`, so there is nothing to adopt that does not change both
-  the size and the line height of a table. Either the scale gains a dense mono
-  step or it records that 12px mono is deliberately off it; the CSS cannot
-  settle that.
-- **A few pair a role's size with a weight the role does not carry.**
-  `.showMore` takes `--type-body-sm-size` at medium where the role is regular;
-  `.button` takes `--type-label-size` at semibold where the role is medium.
-  Deliberate, and the same evidence in a different place.
+**The 22 that remain are not a backlog.** Every one is a role that does not
+exist, each is commented in place, and the next move on either group is a
+decision about the scale rather than a refactor:
 
-Four were free and are done: `.textAction`, `.back`, `.ghost` and `.tab` read a
-role for size and then reached past it for `--weight-medium`, which is the value
-that role's own weight token already resolves to. A rename, no visual change.
+- **18 are mono**, at 11px, 12px and 14px. The only mono role is `--type-mono`
+  at 13px with `leading-loose`. The audit screen's token tables are 12px so
+  eighty properties fit without scrolling, and adopting the role would change
+  the size *and* the line height of every table on it. Either the scale gains
+  a dense mono step or it records that 12px mono is deliberately off it; the
+  CSS cannot settle that, and adding `--type-mono-sm` to close a lint number
+  would be the tail wagging the dog.
+- **4 are weight-only bumps** on text that keeps its parent's size and leading:
+  a `<strong>` inside body copy, a count inside a sentence, and two places
+  pairing a role's size with a weight the role does not carry — `.showMore`
+  takes `--type-body-sm-size` at medium where the role is regular, `.button`
+  takes `--type-label-size` at semibold where the role is medium. Every role
+  sets all four properties, so adopting one would resize the text.
 
 **How the number went wrong, and what now holds it.** The debt was recorded in
 `tokens.test.ts` as a list of names, and a list of names ratchets on the wrong
 thing: every name on it was already there when the total was 94 and when it was
 89, so the figure moved twice with nothing able to notice. It is a count per
 name now, asserted for equality in both directions — a read added fails, and a
-read removed fails until the recorded number comes down with it. The 42/43 split
-is asserted too, because it is the pair of figures this document and issue #1
-both quote, and a correction to one should not leave the other behind.
+read removed fails until the recorded number comes down with it. The 42/22
+split is asserted too, because it is the pair of figures this document and
+issue #1 both quote, and a correction to one should not leave the other behind.
+That assertion is what forced this paragraph to be rewritten rather than left
+to rot: the conversion could not land until the numbers here moved with it.
 
-Issue #1 still says 89 across eight stylesheets. It said 94 before that, which
-was true before Badge and TextField moved to `haus-components`. It needs editing
-to 43, and the reason it has been wrong twice is that nothing checked it.
+**There is no stylelint in this repo**, which is how `font-weight: 600` sits
+raw in `.contrastSample`. haus has a hardcoded-value gate; drift, which is the
+tool that finds hardcoded values in other people's sites, does not run one on
+itself. Worth its own issue.
 
 **The audit stylesheet is one 1542-line file** serving seven components. Splitting
 it was attempted and reverted. Rules that mention a class without defining it (a
