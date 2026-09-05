@@ -555,8 +555,9 @@ The decisions that governed it, kept because the reasoning still holds:
 
 # Known trade-offs / next
 
-**The type tier was bypassed in 43 places, not 89. It is 22 now** (drift#1,
-2026-09-05). The 89 was measured wrongly, and the correction was the more
+**The type tier was bypassed in 43 places, not 89. It is 21 now** (drift#1,
+#25, #26, all 2026-09-05), and there is no longer a single weight read in the
+components. The 89 was measured wrongly, and the correction was the more
 interesting half of the finding.
 
 **42 of the 89 were `font-family` reads, and they are not debt.** No type role
@@ -575,7 +576,7 @@ pairs where size and weight both matched a single role — `.feedbackChip` is
 `--type-label-sm`. `--text-13` and `--text-24` left the exception list
 entirely.
 
-**The 22 that remain are not a backlog.** Every one is a role that does not
+**21 remain, and they are not a backlog.** Every one is a role that does not
 exist, each is commented in place, and the next move on either group is a
 decision about the scale rather than a refactor:
 
@@ -586,12 +587,18 @@ decision about the scale rather than a refactor:
   a dense mono step or it records that 12px mono is deliberately off it; the
   CSS cannot settle that, and adding `--type-mono-sm` to close a lint number
   would be the tail wagging the dog.
-- **4 are weight-only bumps** on text that keeps its parent's size and leading:
-  a `<strong>` inside body copy, a count inside a sentence, and two places
-  pairing a role's size with a weight the role does not carry — `.showMore`
-  takes `--type-body-sm-size` at medium where the role is regular, `.button`
-  takes `--type-label-size` at semibold where the role is medium. Every role
-  sets all four properties, so adopting one would resize the text.
+- ~~4 are weight-only bumps~~ **Settled, and weight left the debt entirely**
+  (#25, 2026-09-05). Five reads all wanted the same thing: text that keeps its
+  parent's size and leading and is heavier — a `<strong>` inside body copy, a
+  count inside a sentence, a 13px control, a 13px text button. No typeset role
+  can serve that structurally rather than by omission, because adopting one
+  would resize the word being emphasised. **Emphasis is a modifier, not a
+  role**, so `semantics.css` gained two weight-only roles, `--weight-emphasis`
+  and `--weight-strong`, in the shape `--radius-control: var(--radius-md)`
+  already uses: the role says why, the primitive says what. Deliberately not a
+  licence to unbundle the rest — leading and tracking stay inside the roles,
+  because those are the properties that are wrong at the wrong size, which is
+  the whole reason the roles bundle.
 
 **How the number went wrong, and what now holds it.** The debt was recorded in
 `tokens.test.ts` as a list of names, and a list of names ratchets on the wrong

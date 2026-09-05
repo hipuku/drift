@@ -262,6 +262,31 @@
     --type-display-leading:     var(--leading-tight);
     --type-display-tracking:    var(--tracking-tight);
 
+    /* ── Emphasis ──────────────────────────────────────────────────────────
+       Weight on its own, and the exception to the line above.
+
+       drift#25. Four places reached past the type tier for a weight, in three
+       files by three hands, and the shape was the same every time: text that
+       keeps its parent's size and leading and wants to be heavier. A <strong>
+       inside body copy. A count inside a sentence. A 13px control that wants
+       more presence than 13px prose.
+
+       No typeset role can serve that, and the reason is structural rather than
+       a gap in the scale: adopting any role would set size and leading too, so
+       emphasising a word would resize it. Emphasis is a *modifier* — it says
+       "heavier than whatever this is" — and the scale is a set of answers to
+       "what kind of text is this".
+
+       So the weights get role names of their own and nothing else. Two of
+       them, both aliases, exactly the shape --radius-control: var(--radius-md)
+       already uses one section up: the role says why, the primitive says what.
+
+       This is deliberately not a licence to unbundle the rest. Leading and
+       tracking stay inside the roles, because those are the properties that
+       are wrong at the wrong size, which is the whole reason the roles bundle. */
+    --weight-emphasis:  var(--weight-medium);    /* a word, a number, a label that sits above its neighbours */
+    --weight-strong:    var(--weight-semibold);  /* the heaviest the system goes outside display type          */
+
     --type-mono-size:           var(--text-13);
     --type-mono-weight:         var(--weight-regular);
     --type-mono-leading:        var(--leading-loose);

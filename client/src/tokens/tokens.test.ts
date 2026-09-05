@@ -125,37 +125,35 @@ describe("custom properties", () => {
  * They are counted here because they read a primitive and the rule is about
  * primitives, not because there is anything to fix.
  *
- * **28 are size, weight, leading and tracking.** 22 of them are size and
- * weight, down from 43 (drift#1, 2026-09-05). Twenty-one
- * were converted, every one a byte-identical swap — `--type-label-sm-size` *is*
- * `--text-12` and `--type-body-size` *is* `--text-14`, so the reads stopped
- * reaching past the semantic layer and nothing moved on screen. Three of the
- * twenty-one were exact pairs where size and weight both matched one role:
- * `.feedbackChip` is `--type-label`, `.surfaceText` is `--type-heading-lg`,
- * and `.table th` is `--type-label-sm`. `--text-13` and `--text-24` left the
- * list entirely.
+ * **21 are size, leading and tracking**, from 43 (drift#1) via 28 (drift#26)
+ * to 21 (drift#25), all on 2026-09-05. There is no longer a single weight read
+ * in the components, and that is the interesting half.
  *
- * What is left is no longer a backlog. Every one of the 22 is a role that does
- * not exist, and each is now commented in place:
+ * **Weight left entirely, and not by converting anything.** Five reads —
+ * a `<strong>` inside body copy, a count inside a sentence, a 13px control and
+ * a 13px text button — all wanted the same thing: text that keeps its parent's
+ * size and leading and is heavier. No typeset role can serve that, structurally
+ * rather than by omission, because adopting one would resize the word being
+ * emphasised. So `semantics.css` gained two weight-only roles, `--weight-emphasis`
+ * and `--weight-strong`, in the shape `--radius-control: var(--radius-md)`
+ * already uses: the role says why, the primitive says what. drift#25.
  *
- * - **18 are mono**, at 11px, 12px and 14px. The only mono role is
- *   `--type-mono` at 13px with `leading-loose`. The audit screen's token tables
- *   are 12px so eighty properties fit without scrolling, and adopting the role
- *   would change the size *and* the line height of every table on it. Adding
- *   `--type-mono-sm` to close a lint number would be the tail wagging the dog.
- * - **4 are weight-only bumps** on text that keeps its parent's size and
- *   leading: a `<strong>` inside body copy, a count inside a sentence, and two
- *   places pairing a role's size with a weight the role does not carry
- *   (`.showMore` takes body-sm at medium, Button takes label at semibold).
- *   Every role sets all four properties, so adopting one would resize the text.
+ * **What is left is 18 mono and 3 departures.**
  *
- * The other 6 arrived rather than remained. Adding the stylelint gate
- * (drift#26) found `line-height: 1.5` and `letter-spacing: -0.01em` sitting as
- * raw numbers, and naming the primitive is one tier better than a number even
- * though it makes this list longer: a tracked primitive read can be found, and
- * `1.5` could not. Where the element was already on a size role, the role's own
- * leading was taken instead and nothing was added here — `.demoNote` and
- * `.authoredToggle` both became `--type-body-leading`.
+ * - **18 mono** at 11px, 12px and 14px. The only mono role is `--type-mono` at
+ *   13px with `leading-loose`. The audit screen's token tables are 12px so
+ *   eighty properties fit without scrolling, and adopting the role would change
+ *   the size *and* the line height of every table on it. drift#24.
+ * - **3 departures** from a role the element is already on: `.pill` wants 1.5
+ *   leading where label-sm carries 1.4, `.healthLine` wants 1.25 where
+ *   heading-lg carries 1.2, `.healthKicker` is uppercase and wants 0.08em
+ *   tracking where label-sm carries 0.02em. Reading a primitive is what a
+ *   departure *is*; reading another role's property would be mixing roles,
+ *   which the semantics header forbids. Each says so at the call site.
+ *
+ * Two more declarations left by being deleted rather than converted: `.title`
+ * and `.healthLine` each carried a `letter-spacing` that re-stated the tracking
+ * of the role the element already rendered with. They did nothing at all.
  *
  * The next move on any of it is a decision about the scale, not a refactor.
  */
@@ -164,21 +162,14 @@ const TYPE_TIER_DEBT = new Map([
   ['--font-sans', 20],
   ['--font-mono', 21],
   ['--font-display', 1],
-  // Sizes and weights. 43 before drift#1, 22 after.
+  // Sizes. 43 before drift#1, and all 21 that are left are mono.
   ['--text-11', 5],
   ['--text-12', 12],
   ['--text-14', 1],
-  ['--weight-medium', 2],
-  ['--weight-semibold', 3],
-  // Leading and tracking, 6, all arriving with the stylelint gate (drift#26).
-  // These were raw values — `line-height: 1.5`, `letter-spacing: -0.01em` —
-  // until the gate found them, and naming the primitive is one tier better
-  // than a number even though it makes this list longer. Each is on an element
-  // with no size role to take the pair from, or one whose size role carries a
-  // different leading; both are drift#25's question.
+  // Departures from a role the element is already on. Three, each on one
+  // element, each with the reason at the call site.
   ['--leading-relaxed', 1],
   ['--leading-snug', 1],
-  ['--tracking-tight', 2],
   ['--tracking-widest', 1],
 ]);
 
@@ -259,8 +250,8 @@ describe("the two-tier rule", () => {
 
     expect({ families, scale, total: families + scale }).toEqual({
       families: 42,
-      scale: 28,
-      total: 70,
+      scale: 21,
+      total: 63,
     });
   });
 });

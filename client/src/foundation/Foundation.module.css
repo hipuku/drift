@@ -28,7 +28,7 @@
   /* Weight only, on a <strong> inside body copy that keeps its parent's size
      and leading. Every role sets all four, so adopting one here would resize
      the emphasis. Off-role on purpose — drift#1. */
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-emphasis);
 }
 
 .section {

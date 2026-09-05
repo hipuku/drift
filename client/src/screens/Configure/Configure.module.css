@@ -23,7 +23,7 @@
   color: var(--color-ink-primary);
   /* Weight only. The number is emphasised inside a line that keeps its own
      size and leading, and every role sets all four. Off-role — drift#1. */
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-strong);
 }
 
 .form {
@@ -249,7 +249,7 @@
   /* body-sm's own weight is regular. This is the role's size at a heavier
      weight, which is the scale having no step for what the element wants
      rather than a bypass. Off-role — drift#1. */
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-emphasis);
   color: var(--color-ink-link);
   cursor: pointer;
   border-radius: var(--radius-surface);

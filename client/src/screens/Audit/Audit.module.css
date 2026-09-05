@@ -173,11 +173,12 @@
 }
 
 .title {
-  /* Display type, tuned by eye against one string. 1.02 is below the leading
-     scale's tightest step; the tracking is a primitive read because there is
-     no size role on this rule to take it from. */
+  /* Display type, tuned by eye against one string: 1.02 is below the leading
+     scale's tightest step, so it stays a number. The letter-spacing that used
+     to sit here was --tracking-tight, which is exactly what --type-display
+     already carries — this element renders as <Text role="display">, so the
+     declaration was re-stating the role's own value and did nothing. */
   line-height: 1.02;
-  letter-spacing: var(--tracking-tight);
 }
 
 .intro {
@@ -346,6 +347,10 @@
 .healthKicker {
   display: block;
   text-transform: uppercase;
+  /* Renders as <Text role="label-sm">, whose tracking is 0.02em. Uppercase at
+     12px needs more than that to stay readable, so this is a departure from the
+     role rather than a bypass of the tier — and reading label-xs's tracking
+     instead would be mixing two roles, which the header above forbids. */
   letter-spacing: var(--tracking-widest);
   color: var(--color-primary-on-subtle);
   margin-bottom: var(--space-stack-sm);
@@ -353,8 +358,12 @@
 
 .healthLine {
   color: var(--color-ink-primary);
+  /* Renders as <Text role="heading-lg">, and takes 1.25 where the role carries
+     1.2 — a deliberate departure on one line of large text, so it reads the
+     primitive. Its letter-spacing used to sit here too and was --tracking-tight,
+     which is what heading-lg already carries: re-stating the role, doing
+     nothing. */
   line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-tight);
   text-wrap: pretty;
 }
 
@@ -1486,7 +1495,7 @@
   border: var(--border-width-default) solid var(--color-border-subtle);
   font-family: var(--font-sans);
   font-size: var(--type-body-size);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-strong);
 }
 
 .contrastPair {

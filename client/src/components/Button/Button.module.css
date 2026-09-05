@@ -5,7 +5,7 @@
   gap: var(--space-gap-xs);
   font-family: var(--font-sans);
   font-size: var(--type-label-size);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-strong);
   letter-spacing: var(--type-label-tracking);
   line-height: 1;
   padding: var(--space-inset-sm) var(--space-inset-lg);
