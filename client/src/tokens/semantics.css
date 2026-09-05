@@ -287,6 +287,29 @@
     --weight-emphasis:  var(--weight-medium);    /* a word, a number, a label that sits above its neighbours */
     --weight-strong:    var(--weight-semibold);  /* the heaviest the system goes outside display type          */
 
+    /* ── Data ──────────────────────────────────────────────────────────────
+       Mono for data rather than for prose, and the second exception to the
+       line above.
+
+       drift#24. Twelve elements on the audit screen read --font-mono and
+       --text-12 together and nothing else: property names, values, counts,
+       page chips, table cells. That is one decision — "this is tabular data" —
+       written twelve times as two primitive reads.
+
+       --type-mono is the prose answer: 13px with leading-loose, for a token
+       name inside a sentence. A table cell is a different job. Its size is
+       chosen against column width and row count, so that eighty properties fit
+       without scrolling, and 13px with 1.6 leading would not.
+
+       It carries family and size and stops there, on the same principle as
+       --weight-emphasis above: a role carries the properties the thing
+       actually chooses. Prose chooses all four. Emphasis chooses weight.
+       A data cell chooses the face and the size and leaves leading to the row
+       — every one of the twelve is a single line, four of them nowrap, and not
+       one of them sets a line-height today. */
+    --type-data-family:         var(--font-mono);
+    --type-data-size:           var(--text-12);
+
     --type-mono-size:           var(--text-13);
     --type-mono-weight:         var(--weight-regular);
     --type-mono-leading:        var(--leading-loose);

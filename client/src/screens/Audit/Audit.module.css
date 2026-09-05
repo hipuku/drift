@@ -269,8 +269,8 @@
    the tail wagging the dog. */
 
 .tabCount {
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
   color: var(--color-ink-tertiary);
   background: var(--color-surface-subtle);
   border-radius: var(--radius-pill);
@@ -399,6 +399,9 @@
 
 .unitVal {
   font-family: var(--font-mono);
+  /* The one mono size on this screen that is not tabular: a unit next to a
+     number, sized to sit beside body text rather than inside a column. One
+     occurrence, so it is a departure rather than a role — drift#24. */
   font-size: var(--text-14);
   color: var(--color-ink-primary);
 }
@@ -471,16 +474,16 @@
 
 .propName {
   flex-shrink: 0;
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
   color: var(--color-ink-primary);
 }
 
 .propValue {
   flex: 1;
   min-width: 0;
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
   color: var(--color-ink-tertiary);
   white-space: nowrap;
   overflow: hidden;
@@ -495,8 +498,8 @@
 
 .valueAlt {
   margin-left: var(--space-stack-xs);
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
   color: var(--color-ink-tertiary);
 }
 
@@ -901,8 +904,8 @@
 
 .elementCount {
   margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
   color: var(--color-ink-tertiary);
 }
 
@@ -953,8 +956,8 @@
   width: 2.5rem;
   flex-shrink: 0;
   text-align: right;
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
   color: var(--color-ink-tertiary);
 }
 
@@ -969,8 +972,8 @@
   border-radius: var(--radius-control);
   background: var(--color-surface-default);
   border: var(--border-width-default) solid var(--color-border-subtle);
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
   color: var(--color-ink-secondary);
 }
 
@@ -1110,8 +1113,8 @@
 }
 
 .valueCell {
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
   color: var(--color-ink-primary);
   white-space: nowrap;
 }
@@ -1155,8 +1158,8 @@
 
 .usageCell {
   text-align: right;
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
   color: var(--color-ink-tertiary);
   white-space: nowrap;
 }
@@ -1198,8 +1201,8 @@
   padding: var(--space-inset-hairline) var(--space-inset-xs);
   border-radius: var(--radius-control);
   background: color-mix(in oklab, var(--color-ink-primary) 8%, transparent);
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
   color: var(--color-ink-secondary);
   white-space: nowrap;
 }
@@ -1502,8 +1505,8 @@
   display: inline-flex;
   align-items: baseline;
   gap: var(--space-gap-xs);
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
 }
 
 .contrastOn {
@@ -1560,8 +1563,8 @@
 }
 
 .scaleChipCount {
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
   color: var(--color-ink-tertiary);
 }
 

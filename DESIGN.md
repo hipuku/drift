@@ -555,9 +555,19 @@ The decisions that governed it, kept because the reasoning still holds:
 
 # Known trade-offs / next
 
-**The type tier was bypassed in 43 places, not 89. It is 21 now** (drift#1,
-#25, #26, all 2026-09-05), and there is no longer a single weight read in the
-components. The 89 was measured wrongly, and the correction was the more
+**The type tier was bypassed in 43 places, not 89. It is 9 now** (drift#1,
+#24, #25, #26, all 2026-09-05), and there is no longer a single weight read or
+a single tabular-mono read in the components.
+
+**The four issues found one rule between them**, and it is the part worth
+keeping: *a role carries the properties the thing actually chooses.* Prose
+chooses all four, which is why the eleven typeset roles bundle. Emphasis
+chooses weight alone, so `--weight-emphasis` and `--weight-strong` carry
+nothing else. A data cell chooses the face and the size and leaves leading to
+the row, so `--type-data-*` stops at two. A role that carries more than the
+decision forces call sites to override it, and every override is a primitive
+read waiting to happen — which is how a 43-place finding came to exist in the
+first place. The 89 was measured wrongly, and the correction was the more
 interesting half of the finding.
 
 **42 of the 89 were `font-family` reads, and they are not debt.** No type role
@@ -580,13 +590,16 @@ entirely.
 exist, each is commented in place, and the next move on either group is a
 decision about the scale rather than a refactor:
 
-- **18 are mono**, at 11px, 12px and 14px. The only mono role is `--type-mono`
-  at 13px with `leading-loose`. The audit screen's token tables are 12px so
-  eighty properties fit without scrolling, and adopting the role would change
-  the size *and* the line height of every table on it. Either the scale gains
-  a dense mono step or it records that 12px mono is deliberately off it; the
-  CSS cannot settle that, and adding `--type-mono-sm` to close a lint number
-  would be the tail wagging the dog.
+- ~~18 are mono~~ **Settled** (#24, 2026-09-05). Twelve of them were one
+  decision written twelve times: `--font-mono` and `--text-12` together, on
+  property names, values, counts, chips and table cells. `--type-data-*` is
+  that decision, and it carries family and size and stops there — not one of
+  the twelve sets a line-height, four are `nowrap`, and a single-line cell
+  leaves leading to the row. `--type-mono` stays what it was: 13px with
+  `leading-loose`, for a token name inside a sentence. Five of the remaining
+  six are in `Foundation.module.css`, which renders only under `DevHarness`;
+  a role exists to be reused by the product, and giving one to a development
+  tool would put the tool inside the contract.
 - ~~4 are weight-only bumps~~ **Settled, and weight left the debt entirely**
   (#25, 2026-09-05). Five reads all wanted the same thing: text that keeps its
   parent's size and leading and is heavier — a `<strong>` inside body copy, a

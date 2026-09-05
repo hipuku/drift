@@ -118,56 +118,52 @@ describe("custom properties", () => {
  * The split matters more than the total, and the totals are the two figures
  * the docs quote:
  *
- * **42 are `font-family`, and are not debt at all.** No type role carries a
- * family — the eleven roles set size, weight, leading and tracking, and
- * `--type-mono-*` is no exception. A family therefore has no role to adopt,
- * and most of these sit on `<button>` and `<input>`, which do not inherit one.
- * They are counted here because they read a primitive and the rule is about
- * primitives, not because there is anything to fix.
+ * **30 are `font-family`.** Twenty are `--font-sans` on `<button>` and
+ * `<input>`, which do not inherit a family from `body`, so the declaration is
+ * required rather than lazy. That was true of 42 of them until drift#24, when
+ * twelve `--font-mono` reads became `--type-data-family`.
  *
- * **21 are size, leading and tracking**, from 43 (drift#1) via 28 (drift#26)
- * to 21 (drift#25), all on 2026-09-05. There is no longer a single weight read
- * in the components, and that is the interesting half.
+ * Which corrects something this comment used to assert. *"No type role carries
+ * a family"* was true when it was written and is not now: `--type-data-*` does,
+ * because mono is not a decoration on tabular data, it is the decision.
  *
- * **Weight left entirely, and not by converting anything.** Five reads —
- * a `<strong>` inside body copy, a count inside a sentence, a 13px control and
- * a 13px text button — all wanted the same thing: text that keeps its parent's
- * size and leading and is heavier. No typeset role can serve that, structurally
- * rather than by omission, because adopting one would resize the word being
- * emphasised. So `semantics.css` gained two weight-only roles, `--weight-emphasis`
- * and `--weight-strong`, in the shape `--radius-control: var(--radius-md)`
- * already uses: the role says why, the primitive says what. drift#25.
+ * **9 are size, leading and tracking**, from 43 (drift#1) through 28 (drift#26)
+ * and 21 (drift#25) to 9 (drift#24), all on 2026-09-05.
  *
- * **What is left is 18 mono and 3 departures.**
+ * The four issues found one rule between them, and it is worth stating rather
+ * than leaving in four commit messages: **a role carries the properties the
+ * thing actually chooses.** Prose chooses all four, which is why the eleven
+ * typeset roles bundle. Emphasis chooses weight alone, so `--weight-emphasis`
+ * and `--weight-strong` carry nothing else. A data cell chooses the face and
+ * the size and leaves leading to the row, so `--type-data-*` stops at two.
+ * Roles that carry more than the decision force call sites to override them,
+ * and every override is a primitive read waiting to happen.
  *
- * - **18 mono** at 11px, 12px and 14px. The only mono role is `--type-mono` at
- *   13px with `leading-loose`. The audit screen's token tables are 12px so
- *   eighty properties fit without scrolling, and adopting the role would change
- *   the size *and* the line height of every table on it. drift#24.
+ * **What is left is nine, in three groups, and none of it is a backlog:**
+ *
+ * - **5 in `Foundation.module.css`**, which renders only under `DevHarness`. It
+ *   is the token specimen sheet, not a product screen, and 11px mono is how it
+ *   labels its own swatches. A role exists to be reused by the product; giving
+ *   one to a development tool would put the tool inside the contract.
+ * - **1 `--text-14`**, `.unitVal`: the one mono size on the audit screen that is
+ *   not tabular, sized to sit beside body text rather than inside a column. One
+ *   occurrence is a departure, not a role.
  * - **3 departures** from a role the element is already on: `.pill` wants 1.5
- *   leading where label-sm carries 1.4, `.healthLine` wants 1.25 where
- *   heading-lg carries 1.2, `.healthKicker` is uppercase and wants 0.08em
- *   tracking where label-sm carries 0.02em. Reading a primitive is what a
- *   departure *is*; reading another role's property would be mixing roles,
- *   which the semantics header forbids. Each says so at the call site.
+ *   leading where label-sm carries 1.4, `.healthLine` 1.25 where heading-lg
+ *   carries 1.2, `.healthKicker` 0.08em tracking because it is uppercase where
+ *   label-sm carries 0.02em. Reading a primitive is what a departure *is*.
  *
- * Two more declarations left by being deleted rather than converted: `.title`
- * and `.healthLine` each carried a `letter-spacing` that re-stated the tracking
- * of the role the element already rendered with. They did nothing at all.
- *
- * The next move on any of it is a decision about the scale, not a refactor.
+ * Nothing here is waiting on a decision any more.
  */
 const TYPE_TIER_DEBT = new Map([
-  // Families. No role carries one; nothing to adopt.
+  // Families, 30. --font-sans is on controls that do not inherit one.
   ['--font-sans', 20],
-  ['--font-mono', 21],
+  ['--font-mono', 9],
   ['--font-display', 1],
-  // Sizes. 43 before drift#1, and all 21 that are left are mono.
+  // Sizes, 6. Five are the dev harness; one is a single unit label.
   ['--text-11', 5],
-  ['--text-12', 12],
   ['--text-14', 1],
-  // Departures from a role the element is already on. Three, each on one
-  // element, each with the reason at the call site.
+  // Departures from a role the element is already on, 3.
   ['--leading-relaxed', 1],
   ['--leading-snug', 1],
   ['--tracking-widest', 1],
@@ -249,9 +245,9 @@ describe("the two-tier rule", () => {
     const scale = sum([...TYPE_TIER_DEBT.keys()].filter((n) => !FAMILIES.includes(n)));
 
     expect({ families, scale, total: families + scale }).toEqual({
-      families: 42,
-      scale: 21,
-      total: 63,
+      families: 30,
+      scale: 9,
+      total: 39,
     });
   });
 });

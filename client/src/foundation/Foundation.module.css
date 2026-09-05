@@ -69,10 +69,11 @@
 
 .chipLabel {
   font-family: var(--font-mono);
-  /* Off-role, deliberately. The only mono role is --type-mono at 13px with
-     leading-loose; these are 11px specimen captions in a dense grid, and
-     there is no 11px mono role to adopt. A missing role, not a bypassed
-     one — drift#1. */
+  /* Off the scale on purpose, and drift#24 settled why: this file renders only
+     under DevHarness. It is the token specimen sheet, not a product screen, and
+     11px mono is how it labels its own swatches. A role exists to be reused by
+     the product; giving one to a development tool would put the tool inside the
+     contract. */
   font-size: var(--text-11);
   color: var(--color-ink-tertiary);
 }
@@ -120,10 +121,11 @@
 
 .surfaceName {
   font-family: var(--font-mono);
-  /* Off-role, deliberately. The only mono role is --type-mono at 13px with
-     leading-loose; these are 11px specimen captions in a dense grid, and
-     there is no 11px mono role to adopt. A missing role, not a bypassed
-     one — drift#1. */
+  /* Off the scale on purpose, and drift#24 settled why: this file renders only
+     under DevHarness. It is the token specimen sheet, not a product screen, and
+     11px mono is how it labels its own swatches. A role exists to be reused by
+     the product; giving one to a development tool would put the tool inside the
+     contract. */
   font-size: var(--text-11);
   opacity: 0.75;
 }
@@ -136,10 +138,11 @@
 /* ── Rows (type, space) ───────────────────────────────────────────────────── */
 .rowLabel {
   font-family: var(--font-mono);
-  /* Off-role, deliberately. The only mono role is --type-mono at 13px with
-     leading-loose; these are 11px specimen captions in a dense grid, and
-     there is no 11px mono role to adopt. A missing role, not a bypassed
-     one — drift#1. */
+  /* Off the scale on purpose, and drift#24 settled why: this file renders only
+     under DevHarness. It is the token specimen sheet, not a product screen, and
+     11px mono is how it labels its own swatches. A role exists to be reused by
+     the product; giving one to a development tool would put the tool inside the
+     contract. */
   font-size: var(--text-11);
   color: var(--color-ink-tertiary);
 }
@@ -193,10 +196,11 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
-  /* Off-role, deliberately. The only mono role is --type-mono at 13px with
-     leading-loose; these are 11px specimen captions in a dense grid, and
-     there is no 11px mono role to adopt. A missing role, not a bypassed
-     one — drift#1. */
+  /* Off the scale on purpose, and drift#24 settled why: this file renders only
+     under DevHarness. It is the token specimen sheet, not a product screen, and
+     11px mono is how it labels its own swatches. A role exists to be reused by
+     the product; giving one to a development tool would put the tool inside the
+     contract. */
   font-size: var(--text-11);
   color: var(--color-primary-on-subtle);
 }
@@ -210,10 +214,11 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
-  /* Off-role, deliberately. The only mono role is --type-mono at 13px with
-     leading-loose; these are 11px specimen captions in a dense grid, and
-     there is no 11px mono role to adopt. A missing role, not a bypassed
-     one — drift#1. */
+  /* Off the scale on purpose, and drift#24 settled why: this file renders only
+     under DevHarness. It is the token specimen sheet, not a product screen, and
+     11px mono is how it labels its own swatches. A role exists to be reused by
+     the product; giving one to a development tool would put the tool inside the
+     contract. */
   font-size: var(--text-11);
   color: var(--color-ink-tertiary);
 }
