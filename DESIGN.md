@@ -604,10 +604,30 @@ issue #1 both quote, and a correction to one should not leave the other behind.
 That assertion is what forced this paragraph to be rewritten rather than left
 to rot: the conversion could not land until the numbers here moved with it.
 
-**There is no stylelint in this repo**, which is how `font-weight: 600` sits
-raw in `.contrastSample`. haus has a hardcoded-value gate; drift, which is the
-tool that finds hardcoded values in other people's sites, does not run one on
-itself. Worth its own issue.
+**The hardcoded-value gate is in** (#26, 2026-09-05). drift audits other
+people's sites for raw values and, until then, ran no such check on itself.
+The first run found **44 problems**, not the one `font-weight: 600` that
+prompted it.
+
+Eight had an exact token and were fixed. Twenty-three are genuinely off the
+scale and are enumerated in `stylelint.config.js` with a reason per group —
+composed shadows whose colour is already a token, `em` sizes that are ratios to
+a parent, tracking between two steps, a deliberately theme-independent
+transparency checker. Nine composed shadows carry an inline disable naming the
+reason, because `ignoreValues` cannot match a value containing a comma. The
+config is JavaScript rather than JSON so those reasons can be written down.
+
+**`--fix` broke something, and it is worth recording.** Running it stripped
+`-webkit-backdrop-filter` from the shell header. There is no autoprefixer, no
+postcss config and no browserslist in this repo, so the prefixes are
+hand-written and load-bearing: Safari would have lost the glass effect and
+nothing in the test suite could have noticed. `property-no-vendor-prefix` is
+off, with that reason in the config. The same run also left a duplicate
+`mask-image` behind, which the next check caught.
+
+`--report-needless-disables` runs as part of `lint:css` rather than as a
+nicety. An exception that stops being needed should fail, or the disable
+comments become a list nobody prunes.
 
 **The audit stylesheet is one 1542-line file** serving seven components. Splitting
 it was attempted and reverted. Rules that mention a class without defining it (a

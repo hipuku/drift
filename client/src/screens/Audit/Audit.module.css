@@ -121,7 +121,7 @@
 }
 
 /* Narrow screens: stack the rail below the content, full width, not sticky. */
-@media (max-width: 60rem) {
+@media (width <= 60rem) {
   .layout,
   .layoutOpen {
     flex-direction: column;
@@ -173,8 +173,11 @@
 }
 
 .title {
+  /* Display type, tuned by eye against one string. 1.02 is below the leading
+     scale's tightest step; the tracking is a primitive read because there is
+     no size role on this rule to take it from. */
   line-height: 1.02;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--tracking-tight);
 }
 
 .intro {
@@ -322,7 +325,11 @@
   color: var(--color-ink-secondary);
   font-family: var(--font-sans);
   font-size: var(--type-label-sm-size);
-  line-height: 1.5;
+  /* label-sm's own leading is 1.4 and this pill wants 1.5, so the size comes
+     from the role and the leading does not. Recorded in TYPE_TIER_DEBT rather
+     than hidden — drift#25 is the question of whether the scale should carry
+     this pair. */
+  line-height: var(--leading-relaxed);
   white-space: nowrap;
 }
 
@@ -339,15 +346,15 @@
 .healthKicker {
   display: block;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-widest);
   color: var(--color-primary-on-subtle);
   margin-bottom: var(--space-stack-sm);
 }
 
 .healthLine {
   color: var(--color-ink-primary);
-  line-height: 1.25;
-  letter-spacing: -0.01em;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
   text-wrap: pretty;
 }
 
@@ -402,14 +409,13 @@
   width: 100%;
   align-items: baseline;
   gap: var(--space-gap-xs);
-  text-align: left;
   padding: 0;
   border: none;
   background: none;
   color: var(--color-ink-secondary);
   font-family: var(--font-sans);
   font-size: var(--type-body-size);
-  line-height: 1.5;
+  line-height: var(--type-body-leading);
   text-align: left;
   cursor: pointer;
 }
@@ -652,15 +658,18 @@
 @keyframes cardFlash {
   0%,
   35% {
+    /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
     box-shadow: 0 0 0 3px var(--color-primary-default);
   }
   100% {
+    /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
     box-shadow: 0 0 0 3px transparent;
   }
 }
 
 .swatchFill {
   height: 4.75rem;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 10%, transparent);
 }
 
@@ -686,6 +695,7 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: var(--radius-surface);
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 12%, transparent);
   flex-shrink: 0;
 }
@@ -754,6 +764,7 @@
   width: 100%;
   height: 100%;
   border-radius: inherit;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 12%, transparent);
 }
 
@@ -965,7 +976,7 @@
   color: var(--drift-alert-ink);
 }
 
-@media (max-width: 40rem) {
+@media (width <= 40rem) {
   .drawerContent {
     gap: var(--space-gap-lg);
   }
@@ -1085,6 +1096,7 @@
   width: 4rem;
   height: 2rem;
   border-radius: var(--radius-surface);
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 10%, transparent);
 }
 
@@ -1214,6 +1226,7 @@
   border-radius: var(--radius-control);
   border: var(--border-width-thick) solid var(--color-border-strong);
   background: var(--color-surface-raised);
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: inset 0 0.4rem 0 -0.3rem var(--color-border-default);
 }
 
@@ -1243,7 +1256,7 @@
   height: 2.5rem;
   border-radius: var(--radius-surface);
   overflow: hidden;
-  background-color: #ffffff;
+  background-color: #fff;
   background-image:
     linear-gradient(45deg, #c3c8d0 25%, transparent 25%),
     linear-gradient(-45deg, #c3c8d0 25%, transparent 25%),
@@ -1251,6 +1264,7 @@
     linear-gradient(-45deg, transparent 75%, #c3c8d0 75%);
   background-size: 12px 12px;
   background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 14%, transparent);
 }
 
@@ -1370,6 +1384,7 @@
   border-radius: var(--radius-pill);
   background: var(--color-primary-default);
   transform: translate(-50%, -50%);
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: 0 0 0 3px var(--color-surface-default);
 }
 
@@ -1432,7 +1447,7 @@
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
-@media (max-width: 40rem) {
+@media (width <= 40rem) {
   .titleRow {
     flex-direction: column;
   }
@@ -1471,7 +1486,7 @@
   border: var(--border-width-default) solid var(--color-border-subtle);
   font-family: var(--font-sans);
   font-size: var(--type-body-size);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 .contrastPair {

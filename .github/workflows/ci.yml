@@ -33,6 +33,12 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # The hardcoded-value gate (#26). --report-needless-disables is part of
+      # the check rather than a nicety: an exception that stops being needed
+      # should fail, or the disable comments become a list nobody prunes.
+      - name: Lint CSS
+        run: npm run lint:css
+
       - name: Typecheck backend
         run: npm run typecheck
 

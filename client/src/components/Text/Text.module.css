@@ -23,6 +23,10 @@
 .mono {
   font-family: var(--font-mono);
   margin: 0;
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-leading);
+  letter-spacing: var(--type-mono-tracking);
 }
 
 .display {
@@ -95,9 +99,3 @@
   letter-spacing: var(--type-label-xs-tracking);
 }
 
-.mono {
-  font-size: var(--type-mono-size);
-  font-weight: var(--type-mono-weight);
-  line-height: var(--type-mono-leading);
-  letter-spacing: var(--type-mono-tracking);
-}

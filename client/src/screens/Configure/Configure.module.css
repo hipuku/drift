@@ -294,7 +294,7 @@
   color: var(--color-ink-secondary);
   font-family: var(--font-sans);
   font-size: var(--type-body-size);
-  line-height: 1.5;
+  line-height: var(--type-body-leading);
 }
 
 /* Shown only in demo mode, where the capture fixes the page set. Sits between

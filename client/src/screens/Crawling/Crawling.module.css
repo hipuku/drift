@@ -62,8 +62,8 @@
   gap: var(--space-gap-2xs);
   max-height: 15rem;
   overflow: hidden;
-  mask-image: linear-gradient(to bottom, black 70%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent);
+  mask-image: linear-gradient(to bottom, black 70%, transparent);
 }
 
 .pageRow {
