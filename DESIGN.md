@@ -566,7 +566,7 @@ chooses weight alone, so `--weight-emphasis` and `--weight-strong` carry
 nothing else. A data cell chooses the face and the size and leaves leading to
 the row, so `--type-data-*` stops at two. A role that carries more than the
 decision forces call sites to override it, and every override is a primitive
-read waiting to happen — which is how a 43-place finding came to exist in the
+read waiting to happen: which is how a 43-place finding came to exist in the
 first place. The 89 was measured wrongly, and the correction was the more
 interesting half of the finding.
 
@@ -574,14 +574,14 @@ interesting half of the finding.
 carries a family: the eleven roles bundle size, weight, leading and tracking,
 and `--type-mono-*` is no exception. A `font-family` therefore has no role to
 adopt, and most of these sit on `<button>` and `<input>`, which do not inherit
-one from `body` — so those declarations are required rather than lazy. Counting
+one from `body`, so those declarations are required rather than lazy. Counting
 them as bypasses inflated the figure by 88%.
 
 **Twenty-one of the remaining 43 are converted, and none of them moved.** Every
 one was a byte-identical swap: `--type-label-sm-size` *is* `--text-12` and
 `--type-body-size` *is* `--text-14`, so the read stopped reaching past the
 semantic layer and the rendered result is the same pixel. Three were exact
-pairs where size and weight both matched a single role — `.feedbackChip` is
+pairs where size and weight both matched a single role: `.feedbackChip` is
 `--type-label`, `.surfaceText` is `--type-heading-lg`, `.table th` is
 `--type-label-sm`. `--text-13` and `--text-24` left the exception list
 entirely.
@@ -593,7 +593,7 @@ decision about the scale rather than a refactor:
 - ~~18 are mono~~ **Settled** (#24, 2026-09-05). Twelve of them were one
   decision written twelve times: `--font-mono` and `--text-12` together, on
   property names, values, counts, chips and table cells. `--type-data-*` is
-  that decision, and it carries family and size and stops there — not one of
+  that decision, and it carries family and size and stops there: not one of
   the twelve sets a line-height, four are `nowrap`, and a single-line cell
   leaves leading to the row. `--type-mono` stays what it was: 13px with
   `leading-loose`, for a token name inside a sentence. Five of the remaining
@@ -602,14 +602,14 @@ decision about the scale rather than a refactor:
   tool would put the tool inside the contract.
 - ~~4 are weight-only bumps~~ **Settled, and weight left the debt entirely**
   (#25, 2026-09-05). Five reads all wanted the same thing: text that keeps its
-  parent's size and leading and is heavier — a `<strong>` inside body copy, a
+  parent's size and leading and is heavier: a `<strong>` inside body copy, a
   count inside a sentence, a 13px control, a 13px text button. No typeset role
   can serve that structurally rather than by omission, because adopting one
   would resize the word being emphasised. **Emphasis is a modifier, not a
   role**, so `semantics.css` gained two weight-only roles, `--weight-emphasis`
   and `--weight-strong`, in the shape `--radius-control: var(--radius-md)`
   already uses: the role says why, the primitive says what. Deliberately not a
-  licence to unbundle the rest — leading and tracking stay inside the roles,
+  licence to unbundle the rest: leading and tracking stay inside the roles,
   because those are the properties that are wrong at the wrong size, which is
   the whole reason the roles bundle.
 
@@ -617,7 +617,7 @@ decision about the scale rather than a refactor:
 `tokens.test.ts` as a list of names, and a list of names ratchets on the wrong
 thing: every name on it was already there when the total was 94 and when it was
 89, so the figure moved twice with nothing able to notice. It is a count per
-name now, asserted for equality in both directions — a read added fails, and a
+name now, asserted for equality in both directions: a read added fails, and a
 read removed fails until the recorded number comes down with it. The 42/22
 split is asserted too, because it is the pair of figures this document and
 issue #1 both quote, and a correction to one should not leave the other behind.
@@ -630,7 +630,7 @@ The first run found **44 problems**, not the one `font-weight: 600` that
 prompted it.
 
 Eight had an exact token and were fixed. Twenty-three are genuinely off the
-scale and are enumerated in `stylelint.config.js` with a reason per group —
+scale and are enumerated in `stylelint.config.js` with a reason per group -
 composed shadows whose colour is already a token, `em` sizes that are ratios to
 a parent, tracking between two steps, a deliberately theme-independent
 transparency checker. Nine composed shadows carry an inline disable naming the

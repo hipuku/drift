@@ -112,7 +112,7 @@ describe("custom properties", () => {
  * because a list of names ratchets on the wrong thing: every name below was
  * already on it when the total was 94 and when it was 89, so the debt changed
  * twice and nothing here could tell. A number per name is what makes it a
- * ratchet — adding a read fails, removing one fails until the number comes
+ * ratchet: adding a read fails, removing one fails until the number comes
  * down with it.
  *
  * The split matters more than the total, and the totals are the two figures
@@ -223,7 +223,7 @@ describe("the two-tier rule", () => {
     // The ratchet. Equality rather than an upper bound, in both directions: a
     // read added fails, and a read removed fails until the number comes down
     // with it. An upper bound would let the figures the docs quote go quietly
-    // stale, which is the failure this replaced — the total moved from 94 to 89
+    // stale, which is the failure this replaced: the total moved from 94 to 89
     // with every name still on the list and nothing to notice.
     const counts = read();
     const actual = Object.fromEntries(

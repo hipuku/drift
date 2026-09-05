@@ -6,7 +6,7 @@
  * raw `font-weight: 600` sitting between two tokenised declarations.
  *
  * Ported from haus's config rather than invented, because the two should agree
- * about what counts as a bypass — drift is haus's only real consumer, and a
+ * about what counts as a bypass: drift is haus's only real consumer, and a
  * rule that is stricter in the system than in the product teaches nobody
  * anything.
  */
@@ -23,7 +23,7 @@
 const OFF_SCALE = [
   /* ── Composed shadows ──────────────────────────────────────────────────────
      Every one already tokenises the half that carries meaning: the colour. The
-     geometry — a 3px ring, a 1px inset hairline — is the shape of the affordance
+     geometry, a 3px ring, a 1px inset hairline, is the shape of the affordance
      rather than a value off a scale, and `/color$/` cannot reach inside a
      shorthand. A token per focus ring would be a token per call site. */
   '0 0 0 3px var(--color-primary-default)',
@@ -125,13 +125,13 @@ export default {
     'declaration-block-no-redundant-longhand-properties': null,
     'property-no-unknown': [true, { ignoreProperties: ['composes'] }],
 
-    /* Off, and this one is not house style — it is a correctness decision.
+    /* Off, and this one is not house style: it is a correctness decision.
        The rule assumes a build step re-adds what it strips, and this repo has
        no autoprefixer, no postcss config and no browserslist: the -webkit-
        prefixes here are hand-written and load-bearing. Running --fix with the
        rule on removed -webkit-backdrop-filter from the shell header, which
        Safari still requires, so the glass effect would have gone in Safari and
-       nowhere else — a regression no test in this repo could have caught. */
+       nowhere else: a regression no test in this repo could have caught. */
     'property-no-vendor-prefix': null,
   },
 

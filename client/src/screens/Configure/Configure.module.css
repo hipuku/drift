@@ -22,7 +22,7 @@
 .count {
   color: var(--color-ink-primary);
   /* Weight only. The number is emphasised inside a line that keeps its own
-     size and leading, and every role sets all four. Off-role — drift#1. */
+     size and leading, and every role sets all four. Off-role: drift#1. */
   font-weight: var(--weight-strong);
 }
 
@@ -248,7 +248,7 @@
   font-size: var(--type-body-sm-size);
   /* body-sm's own weight is regular. This is the role's size at a heavier
      weight, which is the scale having no step for what the element wants
-     rather than a bypass. Off-role — drift#1. */
+     rather than a bypass. Off-role: drift#1. */
   font-weight: var(--weight-emphasis);
   color: var(--color-ink-link);
   cursor: pointer;

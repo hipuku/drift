@@ -21,7 +21,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:css": "stylelint \"client/src/**/*.css\" --report-needless-disables",
-    "lint:css:fix": "stylelint \"client/src/**/*.css\" --fix"
+    "lint:css:fix": "stylelint \"client/src/**/*.css\" --fix",
+    "lint:prose": "node scripts/check-punctuation.mjs"
   },
   "dependencies": {
     "bullmq": "^6.3.1",

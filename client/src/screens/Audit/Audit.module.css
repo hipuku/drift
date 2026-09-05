@@ -176,7 +176,7 @@
   /* Display type, tuned by eye against one string: 1.02 is below the leading
      scale's tightest step, so it stays a number. The letter-spacing that used
      to sit here was --tracking-tight, which is exactly what --type-display
-     already carries — this element renders as <Text role="display">, so the
+     already carries: this element renders as <Text role="display">, so the
      declaration was re-stating the role's own value and did nothing. */
   line-height: 1.02;
 }
@@ -328,7 +328,7 @@
   font-size: var(--type-label-sm-size);
   /* label-sm's own leading is 1.4 and this pill wants 1.5, so the size comes
      from the role and the leading does not. Recorded in TYPE_TIER_DEBT rather
-     than hidden — drift#25 is the question of whether the scale should carry
+     than hidden: drift#25 is the question of whether the scale should carry
      this pair. */
   line-height: var(--leading-relaxed);
   white-space: nowrap;
@@ -349,7 +349,7 @@
   text-transform: uppercase;
   /* Renders as <Text role="label-sm">, whose tracking is 0.02em. Uppercase at
      12px needs more than that to stay readable, so this is a departure from the
-     role rather than a bypass of the tier — and reading label-xs's tracking
+     role rather than a bypass of the tier, and reading label-xs's tracking
      instead would be mixing two roles, which the header above forbids. */
   letter-spacing: var(--tracking-widest);
   color: var(--color-primary-on-subtle);
@@ -359,7 +359,7 @@
 .healthLine {
   color: var(--color-ink-primary);
   /* Renders as <Text role="heading-lg">, and takes 1.25 where the role carries
-     1.2 — a deliberate departure on one line of large text, so it reads the
+     1.2: a deliberate departure on one line of large text, so it reads the
      primitive. Its letter-spacing used to sit here too and was --tracking-tight,
      which is what heading-lg already carries: re-stating the role, doing
      nothing. */
@@ -401,7 +401,7 @@
   font-family: var(--font-mono);
   /* The one mono size on this screen that is not tabular: a unit next to a
      number, sized to sit beside body text rather than inside a column. One
-     occurrence, so it is a departure rather than a role — drift#24. */
+     occurrence, so it is a departure rather than a role: drift#24. */
   font-size: var(--text-14);
   color: var(--color-ink-primary);
 }

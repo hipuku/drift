@@ -42,7 +42,7 @@
   /* A soft accent-tinted lift so the primary action reads as raised.
      The value is a Drift role: the lift is this product's identity and haus's
      Button has no vocabulary for it, so it stays here rather than moving to
-     haus-components — but it stays as a named role, not as literals. */
+     haus-components, but it stays as a named role, not as literals. */
   box-shadow: var(--drift-lift);
 }
 
