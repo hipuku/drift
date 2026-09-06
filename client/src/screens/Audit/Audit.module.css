@@ -2,7 +2,7 @@
   width: 100%;
   /* Bottom breathing room lives on .main, not here, so the rail's sticky column
      spans the full scroll height and never releases at the very bottom. */
-  padding: var(--space-inset-5xl) var(--space-inset-xl) 0;
+  padding: var(--haus-space-inset-5xl) var(--haus-space-inset-xl) 0;
 }
 
 /* ── Master–detail layout ── the detail rail pushes content aside ─────────── */
@@ -11,7 +11,7 @@
   /* Stretch the rail column to the content's height so its sticky inner panel
      has room to stay pinned while the left side scrolls past it. */
   align-items: stretch;
-  gap: var(--space-gap-3xl);
+  gap: var(--haus-space-gap-3xl);
   width: 100%;
   max-width: 56rem;
   margin: 0 auto;
@@ -25,7 +25,7 @@
 .main {
   flex: 1;
   min-width: 0;
-  padding-bottom: var(--space-inset-7xl);
+  padding-bottom: var(--haus-space-inset-7xl);
 }
 
 .rail {
@@ -43,8 +43,8 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 6.5rem);
-  background: var(--color-surface-default);
-  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--haus-color-surface-default);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
   border-radius: var(--radius-panel);
   box-shadow: var(--elevation-modal);
   overflow: hidden;
@@ -54,8 +54,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-gap-sm);
-  padding: var(--space-inset-lg) var(--space-inset-lg) var(--space-inset-md);
+  gap: var(--haus-space-gap-sm);
+  padding: var(--haus-space-inset-lg) var(--haus-space-inset-lg) var(--haus-space-inset-md);
   flex-shrink: 0;
 }
 
@@ -67,28 +67,28 @@
   height: 2rem;
   flex-shrink: 0;
   border: none;
-  border-radius: var(--radius-surface);
+  border-radius: var(--haus-radius-surface);
   background: none;
-  color: var(--color-ink-tertiary);
-  font-size: var(--type-body-size);
+  color: var(--haus-color-ink-tertiary);
+  font-size: var(--haus-type-body-size);
   cursor: pointer;
   transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .railClose:hover {
-  background: var(--color-surface-sunken);
-  color: var(--color-ink-primary);
+  background: var(--haus-color-surface-sunken);
+  color: var(--haus-color-ink-primary);
 }
 
 .railClose:focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus);
+  box-shadow: var(--haus-focus-ring);
 }
 
 .railBody {
   flex: 1;
   min-height: 0;
-  padding: 0 var(--space-inset-lg) var(--space-inset-xl);
+  padding: 0 var(--haus-space-inset-lg) var(--haus-space-inset-xl);
   overflow-y: auto;
 }
 
@@ -133,7 +133,7 @@
     padding-bottom: 0;
   }
   .page {
-    padding-bottom: var(--space-inset-7xl);
+    padding-bottom: var(--haus-space-inset-7xl);
   }
   .rail {
     width: 100%;
@@ -148,76 +148,76 @@
 .back {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
   background: none;
   border: none;
   padding: 0;
-  margin-bottom: var(--space-stack-lg);
+  margin-bottom: var(--haus-space-stack-lg);
   font-family: var(--font-sans);
-  font-size: var(--type-label-size);
-  font-weight: var(--type-label-weight);
-  color: var(--color-ink-tertiary);
+  font-size: var(--haus-type-label-size);
+  font-weight: var(--haus-type-label-weight);
+  color: var(--haus-color-ink-tertiary);
   cursor: pointer;
   transition: color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .back:hover {
-  color: var(--color-ink-link);
+  color: var(--haus-color-ink-link);
 }
 
 .titleRow {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--space-gap-lg);
+  gap: var(--haus-space-gap-lg);
 }
 
 .title {
   /* Display type, tuned by eye against one string: 1.02 is below the leading
      scale's tightest step, so it stays a number. The letter-spacing that used
-     to sit here was --tracking-tight, which is exactly what --type-display
+     to sit here was --haus-tracking-tight, which is exactly what --type-display
      already carries: this element renders as <Text role="display">, so the
      declaration was re-stating the role's own value and did nothing. */
   line-height: 1.02;
 }
 
 .intro {
-  color: var(--color-ink-secondary);
-  margin-top: var(--space-stack-sm);
+  color: var(--haus-color-ink-secondary);
+  margin-top: var(--haus-space-stack-sm);
   max-width: 32rem;
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
   flex-shrink: 0;
 }
 
 .ghost {
-  padding: var(--space-inset-xs) var(--space-inset-md);
+  padding: var(--haus-space-inset-xs) var(--haus-space-inset-md);
   border: none;
   background: transparent;
-  border-radius: var(--radius-surface);
+  border-radius: var(--haus-radius-surface);
   font-family: var(--font-sans);
-  font-size: var(--type-label-size);
-  font-weight: var(--type-label-weight);
-  color: var(--color-ink-secondary);
+  font-size: var(--haus-type-label-size);
+  font-weight: var(--haus-type-label-weight);
+  color: var(--haus-color-ink-secondary);
   cursor: pointer;
   transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .ghost:hover {
-  background: var(--color-surface-subtle);
-  color: var(--color-ink-primary);
+  background: var(--haus-color-surface-subtle);
+  color: var(--haus-color-ink-primary);
 }
 
 /* ── Tabs ────────────────────────────────────────────────────────────────── */
 .tabs {
   display: flex;
-  gap: var(--space-gap-2xs);
-  margin-top: var(--space-stack-3xl);
-  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  gap: var(--haus-space-gap-2xs);
+  margin-top: var(--haus-space-stack-3xl);
+  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
   overflow-x: auto;
   /* Hide the native horizontal scrollbar: it scrolls by trackpad/wheel and a
      partially-cut tab signals there's more. */
@@ -236,28 +236,28 @@
 .tab {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-gap-xs);
-  padding: var(--space-inset-sm);
+  gap: var(--haus-space-gap-xs);
+  padding: var(--haus-space-inset-sm);
   border: none;
   background: transparent;
-  border-bottom: var(--border-width-thick) solid transparent;
+  border-bottom: var(--haus-border-width-thick) solid transparent;
   margin-bottom: -1px;
   white-space: nowrap;
   font-family: var(--font-sans);
-  font-size: var(--type-label-size);
-  font-weight: var(--type-label-weight);
-  color: var(--color-ink-tertiary);
+  font-size: var(--haus-type-label-size);
+  font-weight: var(--haus-type-label-weight);
+  color: var(--haus-color-ink-tertiary);
   cursor: pointer;
   transition: color var(--motion-duration-micro) var(--motion-ease-standard), border-color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .tab:hover {
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
 }
 
 .tabOn {
-  color: var(--color-ink-primary);
-  border-bottom-color: var(--color-primary-default);
+  color: var(--haus-color-ink-primary);
+  border-bottom-color: var(--haus-color-primary-default);
 }
 
 /* The mono reads below are off-role, deliberately and drift#1 records it.
@@ -271,20 +271,20 @@
 .tabCount {
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--color-ink-tertiary);
-  background: var(--color-surface-subtle);
-  border-radius: var(--radius-pill);
-  padding: var(--space-inset-hairline) var(--space-inset-xs);
+  color: var(--haus-color-ink-tertiary);
+  background: var(--haus-color-surface-subtle);
+  border-radius: var(--haus-radius-pill);
+  padding: var(--space-inset-hairline) var(--haus-space-inset-xs);
 }
 
 .tabOn .tabCount {
-  color: var(--color-primary-on-subtle);
-  background: var(--color-primary-subtle);
+  color: var(--haus-color-primary-on-subtle);
+  background: var(--haus-color-primary-subtle);
 }
 
 /* ── Panel ───────────────────────────────────────────────────────────────── */
 .panel {
-  margin-top: var(--space-stack-3xl);
+  margin-top: var(--haus-space-stack-3xl);
   animation: fade var(--motion-duration-ui) var(--motion-ease-standard);
 }
 
@@ -294,54 +294,54 @@
 }
 
 .muted {
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
 }
 
 .sectionLabel {
   display: block;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--color-ink-tertiary);
-  margin-bottom: var(--space-stack-md);
+  color: var(--haus-color-ink-tertiary);
+  margin-bottom: var(--haus-space-stack-md);
 }
 
 .sectionLabel:not(:first-child) {
-  margin-top: var(--space-stack-5xl);
+  margin-top: var(--haus-space-stack-5xl);
 }
 
 /* ── Pills: the shared chip for card metadata and verdict detail ─────────── */
 .pills {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-gap-xs);
-  margin-top: var(--space-stack-2xs);
+  gap: var(--haus-space-gap-xs);
+  margin-top: var(--haus-space-stack-2xs);
 }
 
 .pill {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-inset-tight) var(--space-inset-xs);
-  border-radius: var(--radius-pill);
-  background: color-mix(in oklab, var(--color-ink-primary) 8%, transparent);
-  color: var(--color-ink-secondary);
+  padding: var(--space-inset-tight) var(--haus-space-inset-xs);
+  border-radius: var(--haus-radius-pill);
+  background: color-mix(in oklab, var(--haus-color-ink-primary) 8%, transparent);
+  color: var(--haus-color-ink-secondary);
   font-family: var(--font-sans);
-  font-size: var(--type-label-sm-size);
+  font-size: var(--haus-type-label-sm-size);
   /* label-sm's own leading is 1.4 and this pill wants 1.5, so the size comes
      from the role and the leading does not. Recorded in TYPE_TIER_DEBT rather
      than hidden: drift#25 is the question of whether the scale should carry
      this pair. */
-  line-height: var(--leading-relaxed);
+  line-height: var(--haus-leading-relaxed);
   white-space: nowrap;
 }
 
 /* ── Design Health ───────────────────────────────────────────────────────── */
 .health {
-  padding: var(--space-inset-2xl) var(--space-inset-3xl);
-  margin-bottom: var(--space-stack-xl);
+  padding: var(--haus-space-inset-2xl) var(--haus-space-inset-3xl);
+  margin-bottom: var(--haus-space-stack-xl);
   border-radius: var(--radius-panel);
-  border: var(--border-width-default) solid
-    color-mix(in oklab, var(--color-primary-default) 22%, var(--drift-card-border));
-  background: var(--color-primary-subtle);
+  border: var(--haus-border-width-default) solid
+    color-mix(in oklab, var(--haus-color-primary-default) 22%, var(--drift-card-border));
+  background: var(--haus-color-primary-subtle);
 }
 
 .healthKicker {
@@ -351,50 +351,50 @@
      12px needs more than that to stay readable, so this is a departure from the
      role rather than a bypass of the tier, and reading label-xs's tracking
      instead would be mixing two roles, which the header above forbids. */
-  letter-spacing: var(--tracking-widest);
-  color: var(--color-primary-on-subtle);
-  margin-bottom: var(--space-stack-sm);
+  letter-spacing: var(--haus-tracking-widest);
+  color: var(--haus-color-primary-on-subtle);
+  margin-bottom: var(--haus-space-stack-sm);
 }
 
 .healthLine {
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
   /* Renders as <Text role="heading-lg">, and takes 1.25 where the role carries
      1.2: a deliberate departure on one line of large text, so it reads the
-     primitive. Its letter-spacing used to sit here too and was --tracking-tight,
+     primitive. Its letter-spacing used to sit here too and was --haus-tracking-tight,
      which is what heading-lg already carries: re-stating the role, doing
      nothing. */
-  line-height: var(--leading-snug);
+  line-height: var(--haus-leading-snug);
   text-wrap: pretty;
 }
 
 /* ── Authoring (authored units read from the CSSOM) ──────────────────────── */
 .authoring {
-  margin-top: var(--space-stack-xl);
-  padding: var(--space-inset-xl) var(--space-inset-2xl);
+  margin-top: var(--haus-space-stack-xl);
+  padding: var(--haus-space-inset-xl) var(--haus-space-inset-2xl);
   border-radius: var(--radius-panel);
-  border: var(--border-width-default) solid var(--drift-card-border);
-  background: color-mix(in oklab, var(--color-ink-primary) 3%, transparent);
+  border: var(--haus-border-width-default) solid var(--drift-card-border);
+  background: color-mix(in oklab, var(--haus-color-ink-primary) 3%, transparent);
 }
 
 .unitRow {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-gap-sm);
-  margin-bottom: var(--space-stack-md);
+  gap: var(--haus-space-gap-sm);
+  margin-bottom: var(--haus-space-stack-md);
 }
 
 .unitChip {
   display: inline-flex;
   align-items: baseline;
-  gap: var(--space-gap-xs);
-  padding: var(--space-inset-xs) var(--space-inset-sm);
-  border-radius: var(--radius-surface);
-  background: color-mix(in oklab, var(--color-ink-primary) 6%, transparent);
+  gap: var(--haus-space-gap-xs);
+  padding: var(--haus-space-inset-xs) var(--haus-space-inset-sm);
+  border-radius: var(--haus-radius-surface);
+  background: color-mix(in oklab, var(--haus-color-ink-primary) 6%, transparent);
 }
 
 .unitCat {
-  font-size: var(--type-label-sm-size);
-  color: var(--color-ink-tertiary);
+  font-size: var(--haus-type-label-sm-size);
+  color: var(--haus-color-ink-tertiary);
 }
 
 .unitVal {
@@ -402,17 +402,17 @@
   /* The one mono size on this screen that is not tabular: a unit next to a
      number, sized to sit beside body text rather than inside a column. One
      occurrence, so it is a departure rather than a role: drift#24. */
-  font-size: var(--text-14);
-  color: var(--color-ink-primary);
+  font-size: var(--haus-text-14);
+  color: var(--haus-color-ink-primary);
 }
 
 .authoredNote {
-  color: var(--color-ink-secondary);
-  margin-top: var(--space-stack-md);
+  color: var(--haus-color-ink-secondary);
+  margin-top: var(--haus-space-stack-md);
 }
 
 .authoredProps {
-  margin-top: var(--space-stack-md);
+  margin-top: var(--haus-space-stack-md);
 }
 
 .authoredToggle {
@@ -420,44 +420,44 @@
   display: flex;
   width: 100%;
   align-items: baseline;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
   padding: 0;
   border: none;
   background: none;
-  color: var(--color-ink-secondary);
+  color: var(--haus-color-ink-secondary);
   font-family: var(--font-sans);
-  font-size: var(--type-body-size);
-  line-height: var(--type-body-leading);
+  font-size: var(--haus-type-body-size);
+  line-height: var(--haus-type-body-leading);
   text-align: left;
   cursor: pointer;
 }
 
 .authoredToggle:hover {
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
 }
 
 .authoredCaret {
   margin-left: auto;
   align-self: center;
   flex-shrink: 0;
-  color: var(--color-ink-tertiary);
-  font-size: var(--type-body-size);
+  color: var(--haus-color-ink-tertiary);
+  font-size: var(--haus-type-body-size);
 }
 
 .propList {
   list-style: none;
-  margin: var(--space-stack-sm) 0 0;
+  margin: var(--haus-space-stack-sm) 0 0;
   padding: 0;
-  border: var(--border-width-default) solid var(--color-border-subtle);
-  border-radius: var(--radius-surface);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  border-radius: var(--haus-radius-surface);
 }
 
 .propRow {
   display: flex;
   align-items: center;
-  gap: var(--space-gap-sm);
-  padding: var(--space-inset-xs) var(--space-inset-sm);
-  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  gap: var(--haus-space-gap-sm);
+  padding: var(--haus-space-inset-xs) var(--haus-space-inset-sm);
+  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
 }
 
 .propRow:last-child {
@@ -468,15 +468,15 @@
   flex-shrink: 0;
   width: 1rem;
   height: 1rem;
-  border-radius: var(--radius-control);
-  border: var(--border-width-default) solid color-mix(in oklab, var(--color-ink-primary) 15%, transparent);
+  border-radius: var(--haus-radius-control);
+  border: var(--haus-border-width-default) solid color-mix(in oklab, var(--haus-color-ink-primary) 15%, transparent);
 }
 
 .propName {
   flex-shrink: 0;
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
 }
 
 .propValue {
@@ -484,7 +484,7 @@
   min-width: 0;
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -497,31 +497,31 @@
 
 
 .valueAlt {
-  margin-left: var(--space-stack-xs);
+  margin-left: var(--haus-space-stack-xs);
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
 }
 
 /* ── Overview verdict cards ── equal size; colour + bottom rule = verdict ─── */
 .verdictGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-  gap: var(--space-gap-md);
+  gap: var(--haus-space-gap-md);
 }
 
 .verdict {
   display: flex;
   flex-direction: column;
-  gap: var(--space-gap-xs);
-  padding: var(--space-inset-lg);
+  gap: var(--haus-space-gap-xs);
+  padding: var(--haus-space-inset-lg);
   width: 100%;
   text-align: left;
   font: inherit;
-  background: var(--color-surface-default);
-  border: var(--border-width-default) solid var(--drift-card-border);
+  background: var(--haus-color-surface-default);
+  border: var(--haus-border-width-default) solid var(--drift-card-border);
   border-bottom-width: 3px;
-  border-radius: var(--radius-overlay);
+  border-radius: var(--haus-radius-overlay);
   transition: transform var(--motion-duration-micro) var(--motion-ease-standard), box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
@@ -531,56 +531,56 @@
 
 .verdictClickable:hover {
   transform: translateY(-2px);
-  box-shadow: var(--elevation-overlay);
+  box-shadow: var(--haus-elevation-overlay);
 }
 
 .verdictClickable:focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus);
+  box-shadow: var(--haus-focus-ring);
 }
 
 .verdictLabelRow {
   order: -1;
   display: flex;
   align-items: center;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
 }
 
 .verdictIcon {
   font-size: 0.85em;
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
 }
 
 .verdictLabel {
-  color: var(--color-ink-secondary);
+  color: var(--haus-color-ink-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  font-size: var(--type-label-sm-size);
+  font-size: var(--haus-type-label-sm-size);
 }
 
 .verdictN {
   line-height: 0.9;
   font-size: clamp(2.5rem, 5vw, 3.25rem);
   letter-spacing: -0.02em;
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
 }
 
 .good {
-  background: color-mix(in oklab, var(--color-success-default) 12%, var(--color-surface-default));
-  border-color: color-mix(in oklab, var(--color-success-default) 26%, var(--drift-card-border));
-  border-bottom-color: var(--color-success-default);
+  background: color-mix(in oklab, var(--haus-color-success-default) 12%, var(--haus-color-surface-default));
+  border-color: color-mix(in oklab, var(--haus-color-success-default) 26%, var(--drift-card-border));
+  border-bottom-color: var(--haus-color-success-default);
 }
 
 .watch {
-  background: color-mix(in oklab, var(--color-warning-default) 14%, var(--color-surface-default));
-  border-color: color-mix(in oklab, var(--color-warning-default) 30%, var(--drift-card-border));
-  border-bottom-color: var(--color-warning-default);
+  background: color-mix(in oklab, var(--haus-color-warning-default) 14%, var(--haus-color-surface-default));
+  border-color: color-mix(in oklab, var(--haus-color-warning-default) 30%, var(--drift-card-border));
+  border-bottom-color: var(--haus-color-warning-default);
 }
 
 .review {
-  background: color-mix(in oklab, var(--color-error-default) 13%, var(--color-surface-default));
-  border-color: color-mix(in oklab, var(--color-error-default) 28%, var(--drift-card-border));
-  border-bottom-color: var(--color-error-default);
+  background: color-mix(in oklab, var(--haus-color-error-default) 13%, var(--haus-color-surface-default));
+  border-color: color-mix(in oklab, var(--haus-color-error-default) 28%, var(--drift-card-border));
+  border-bottom-color: var(--haus-color-error-default);
 }
 
 /* Greyed core-five card: the token category exists in the system's vocabulary
@@ -590,29 +590,29 @@
 }
 
 .empty .verdictN {
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
 }
 
 /* ── Cards (visual tokens: colour, type family, shadow, gradient) ─────────── */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
-  gap: var(--space-gap-md);
+  gap: var(--haus-space-gap-md);
 }
 
 .card {
   display: flex;
   flex-direction: column;
-  background: var(--color-surface-default);
-  border: var(--border-width-default) solid var(--drift-card-border);
-  border-radius: var(--radius-overlay);
+  background: var(--haus-color-surface-default);
+  border: var(--haus-border-width-default) solid var(--drift-card-border);
+  border-radius: var(--haus-radius-overlay);
   overflow: hidden;
   transition: transform var(--motion-duration-micro) var(--motion-ease-standard), box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--elevation-overlay);
+  box-shadow: var(--haus-elevation-overlay);
 }
 
 .cardSpecimen {
@@ -620,21 +620,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-inset-md);
-  background: var(--color-surface-subtle);
+  padding: var(--haus-space-inset-md);
+  background: var(--haus-color-surface-subtle);
 }
 
 .cardMeta {
-  padding: var(--space-inset-sm) var(--space-inset-md) var(--space-inset-md);
+  padding: var(--haus-space-inset-sm) var(--haus-space-inset-md) var(--haus-space-inset-md);
   display: flex;
   flex-direction: column;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
   min-width: 0;
 }
 
 .cardValue {
-  color: var(--color-ink-primary);
-  font-size: var(--type-label-sm-size);
+  color: var(--haus-color-ink-primary);
+  font-size: var(--haus-type-label-sm-size);
 }
 
 .cardValueTrunc {
@@ -654,12 +654,12 @@
 
 .cardBtn:focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus);
+  box-shadow: var(--haus-focus-ring);
 }
 
 .cardOn {
-  border-color: var(--color-primary-default);
-  box-shadow: 0 0 0 1px var(--color-primary-default);
+  border-color: var(--haus-color-primary-default);
+  box-shadow: 0 0 0 1px var(--haus-color-primary-default);
 }
 
 /* Brief pulse when a card is scrolled to after picking it from the rail. */
@@ -671,7 +671,7 @@
   0%,
   35% {
     /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-    box-shadow: 0 0 0 3px var(--color-primary-default);
+    box-shadow: 0 0 0 3px var(--haus-color-primary-default);
   }
   100% {
     /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
@@ -682,7 +682,7 @@
 .swatchFill {
   height: 4.75rem;
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 10%, transparent);
 }
 
 /* ── Colour detail: the full-width strip that unfolds under a selected swatch */
@@ -690,7 +690,7 @@
 .drawerContent {
   display: flex;
   flex-direction: column;
-  gap: var(--space-gap-2xl);
+  gap: var(--haus-space-gap-2xl);
 }
 
 .detailSection {
@@ -700,57 +700,57 @@
 .drawerTitle {
   display: flex;
   align-items: center;
-  gap: var(--space-gap-sm);
+  gap: var(--haus-space-gap-sm);
 }
 
 .drawerSwatch {
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: var(--radius-surface);
+  border-radius: var(--haus-radius-surface);
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 12%, transparent);
   flex-shrink: 0;
 }
 
 .drawerHex {
   display: block;
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
 }
 
 /* The stack of related-colour call-outs (opacity variants + near-duplicates). */
 .relatedList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-gap-sm);
+  gap: var(--haus-space-gap-sm);
 }
 
 /* Near-duplicate / nearest call-out. */
 .nearCallout {
   display: flex;
   align-items: center;
-  gap: var(--space-gap-md);
+  gap: var(--haus-space-gap-md);
   width: 100%;
   text-align: left;
-  padding: var(--space-inset-md);
-  border-radius: var(--radius-overlay);
-  border: var(--border-width-default) solid var(--color-border-default);
-  background: var(--color-surface-subtle);
+  padding: var(--haus-space-inset-md);
+  border-radius: var(--haus-radius-overlay);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
+  background: var(--haus-color-surface-subtle);
   cursor: pointer;
   transition: border-color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .nearCallout:hover {
-  border-color: var(--color-border-strong);
+  border-color: var(--haus-color-border-strong);
 }
 
 .nearCallout:focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus);
+  box-shadow: var(--haus-focus-ring);
 }
 
 .nearDup {
-  border-color: color-mix(in oklab, var(--color-error-default) 40%, var(--drift-card-border));
-  background: color-mix(in oklab, var(--color-error-default) 10%, var(--color-surface-default));
+  border-color: color-mix(in oklab, var(--haus-color-error-default) 40%, var(--drift-card-border));
+  background: color-mix(in oklab, var(--haus-color-error-default) 10%, var(--haus-color-surface-default));
 }
 
 /* Checker underlay: invisible behind an opaque swatch, showing through a
@@ -760,13 +760,13 @@
   width: 2rem;
   height: 2rem;
   flex-shrink: 0;
-  border-radius: var(--radius-surface);
+  border-radius: var(--haus-radius-surface);
   overflow: hidden;
   background-image:
-    linear-gradient(45deg, var(--color-surface-sunken) 25%, transparent 25%),
-    linear-gradient(-45deg, var(--color-surface-sunken) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, var(--color-surface-sunken) 75%),
-    linear-gradient(-45deg, transparent 75%, var(--color-surface-sunken) 75%);
+    linear-gradient(45deg, var(--haus-color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--haus-color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--haus-color-surface-sunken) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--haus-color-surface-sunken) 75%);
   background-size: 10px 10px;
   background-position: 0 0, 0 5px, 5px -5px, -5px 0;
 }
@@ -777,23 +777,23 @@
   height: 100%;
   border-radius: inherit;
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 12%, transparent);
 }
 
 .nearText {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  color: var(--color-ink-secondary);
+  color: var(--haus-color-ink-secondary);
 }
 
 .nearHex {
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
 }
 
 .nearDelta {
   margin-left: auto;
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
 }
 
 /* Section head with a trailing control (e.g. the elements group toggle). */
@@ -801,7 +801,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-gap-sm);
+  gap: var(--haus-space-gap-sm);
 }
 
 .detailHead .detailLabel {
@@ -815,29 +815,29 @@
   width: 1.75rem;
   height: 1.75rem;
   flex-shrink: 0;
-  margin-bottom: var(--space-stack-sm);
+  margin-bottom: var(--haus-space-stack-sm);
   border: none;
-  border-radius: var(--radius-surface);
+  border-radius: var(--haus-radius-surface);
   background: none;
-  color: var(--color-ink-tertiary);
-  font-size: var(--type-label-sm-size);
+  color: var(--haus-color-ink-tertiary);
+  font-size: var(--haus-type-label-sm-size);
   cursor: pointer;
   transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .sortToggle:hover {
-  background: var(--color-surface-sunken);
-  color: var(--color-ink-primary);
+  background: var(--haus-color-surface-sunken);
+  color: var(--haus-color-ink-primary);
 }
 
 .sortToggleOn {
-  background: var(--color-primary-subtle);
-  color: var(--color-primary-on-subtle);
+  background: var(--haus-color-primary-subtle);
+  color: var(--haus-color-primary-on-subtle);
 }
 
 .sortToggle:focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus);
+  box-shadow: var(--haus-focus-ring);
 }
 
 /* Elements-that-use-it list. */
@@ -848,8 +848,8 @@
 
 /* Grouped-by-tag view: a tag header with its total, then indented role rows. */
 .elementGroup {
-  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
-  padding-bottom: var(--space-inset-xs);
+  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  padding-bottom: var(--haus-space-inset-xs);
 }
 
 .elementGroup:last-child {
@@ -858,14 +858,14 @@
 }
 
 .elementGroup + .elementGroup {
-  padding-top: var(--space-inset-xs);
+  padding-top: var(--haus-space-inset-xs);
 }
 
 .elementGroupHead {
   display: flex;
   align-items: center;
-  gap: var(--space-gap-sm);
-  padding: var(--space-inset-xs) 0;
+  gap: var(--haus-space-gap-sm);
+  padding: var(--haus-space-inset-xs) 0;
 }
 
 .elementGroupHead .elementCount {
@@ -875,16 +875,16 @@
 .elementSubRow {
   display: flex;
   align-items: center;
-  gap: var(--space-gap-sm);
-  padding: var(--space-inset-tight) 0 var(--space-inset-tight) var(--space-inset-md);
+  gap: var(--haus-space-gap-sm);
+  padding: var(--space-inset-tight) 0 var(--space-inset-tight) var(--haus-space-inset-md);
 }
 
 .elementRow {
   display: flex;
   align-items: center;
-  gap: var(--space-gap-sm);
-  padding: var(--space-inset-xs) 0;
-  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  gap: var(--haus-space-gap-sm);
+  padding: var(--haus-space-inset-xs) 0;
+  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
 }
 
 .elementRow:last-child {
@@ -892,56 +892,56 @@
 }
 
 .elementTag {
-  color: var(--color-ink-primary);
-  font-size: var(--type-label-sm-size);
+  color: var(--haus-color-ink-primary);
+  font-size: var(--haus-type-label-sm-size);
 }
 
 .elementRole {
   font-family: var(--font-sans);
-  font-size: var(--type-label-sm-size);
-  color: var(--color-ink-tertiary);
+  font-size: var(--haus-type-label-sm-size);
+  color: var(--haus-color-ink-tertiary);
 }
 
 .elementCount {
   margin-left: auto;
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
 }
 
 .detailLabel {
   display: block;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--color-ink-tertiary);
-  margin-bottom: var(--space-stack-sm);
+  color: var(--haus-color-ink-tertiary);
+  margin-bottom: var(--haus-space-stack-sm);
 }
 
 .roleBars {
   display: flex;
   flex-direction: column;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
 }
 
 .roleRow {
   display: flex;
   align-items: center;
-  gap: var(--space-gap-sm);
+  gap: var(--haus-space-gap-sm);
 }
 
 .roleName {
   width: 5.5rem;
   flex-shrink: 0;
   font-family: var(--font-sans);
-  font-size: var(--type-label-sm-size);
-  color: var(--color-ink-secondary);
+  font-size: var(--haus-type-label-sm-size);
+  color: var(--haus-color-ink-secondary);
 }
 
 .roleTrack {
   flex: 1;
   height: 0.5rem;
-  border-radius: var(--radius-pill);
-  background: var(--color-surface-sunken);
+  border-radius: var(--haus-radius-pill);
+  background: var(--haus-color-surface-sunken);
   overflow: hidden;
 }
 
@@ -949,7 +949,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: var(--color-primary-default);
+  background: var(--haus-color-primary-default);
 }
 
 .rolePct {
@@ -958,60 +958,60 @@
   text-align: right;
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
 }
 
 .pageChips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
 }
 
 .pageChip {
-  padding: var(--space-inset-tight) var(--space-inset-xs);
-  border-radius: var(--radius-control);
-  background: var(--color-surface-default);
-  border: var(--border-width-default) solid var(--color-border-subtle);
+  padding: var(--space-inset-tight) var(--haus-space-inset-xs);
+  border-radius: var(--haus-radius-control);
+  background: var(--haus-color-surface-default);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--color-ink-secondary);
+  color: var(--haus-color-ink-secondary);
 }
 
 .tabIntro {
-  color: var(--color-ink-secondary);
+  color: var(--haus-color-ink-secondary);
   max-width: 40rem;
-  margin-bottom: var(--space-stack-xl);
+  margin-bottom: var(--haus-space-stack-xl);
 }
 
 .pillDup {
-  background: color-mix(in oklab, var(--color-error-default) 16%, transparent);
+  background: color-mix(in oklab, var(--haus-color-error-default) 16%, transparent);
   color: var(--drift-alert-ink);
 }
 
 @media (width <= 40rem) {
   .drawerContent {
-    gap: var(--space-gap-lg);
+    gap: var(--haus-space-gap-lg);
   }
 }
 
 .glyph {
   font-size: 2.25rem;
   line-height: 1;
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
 }
 
 .shadowChip {
   display: inline-block;
   width: 3rem;
   height: 2.5rem;
-  border-radius: var(--radius-surface);
-  background: var(--color-surface-raised);
+  border-radius: var(--haus-radius-surface);
+  background: var(--haus-color-surface-raised);
 }
 
 .gradientBox {
   width: 100%;
   height: 4.75rem;
-  border-bottom: var(--border-width-default) solid var(--drift-card-border);
+  border-bottom: var(--haus-border-width-default) solid var(--drift-card-border);
 }
 
 /* ── Tables (scalar tokens) ──────────────────────────────────────────────── */
@@ -1024,7 +1024,7 @@
 /* Stacked tables in one section (durations then easings) need air between them,
    or the second table's header reads as a row of the first. */
 .tableWrap + .tableWrap {
-  margin-top: var(--space-stack-3xl);
+  margin-top: var(--haus-space-stack-3xl);
 }
 
 .table {
@@ -1035,13 +1035,13 @@
 .table th {
   text-align: left;
   font-family: var(--font-sans);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
+  font-size: var(--haus-type-label-sm-size);
+  font-weight: var(--haus-type-label-sm-weight);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--color-ink-tertiary);
-  padding: 0 var(--space-inset-sm) var(--space-inset-sm);
-  border-bottom: var(--border-width-default) solid var(--color-border-default);
+  color: var(--haus-color-ink-tertiary);
+  padding: 0 var(--haus-space-inset-sm) var(--haus-space-inset-sm);
+  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-default);
 }
 
 .table th.thRight {
@@ -1049,8 +1049,8 @@
 }
 
 .table td {
-  padding: var(--space-inset-sm);
-  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  padding: var(--haus-space-inset-sm);
+  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
   vertical-align: middle;
 }
 
@@ -1092,14 +1092,14 @@
   position: absolute;
   width: 1.6rem;
   height: 1.1rem;
-  border-radius: var(--radius-control);
-  background: var(--color-surface-raised);
-  border: var(--border-width-default) solid var(--color-border-default);
+  border-radius: var(--haus-radius-control);
+  background: var(--haus-color-surface-raised);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
 }
 
 .zLayerTop {
-  background: var(--color-primary-subtle);
-  border-color: var(--color-primary-default);
+  background: var(--haus-color-primary-subtle);
+  border-color: var(--haus-color-primary-default);
 }
 
 /* Gradient swatch preview (in the gradient table). */
@@ -1107,15 +1107,15 @@
   display: block;
   width: 4rem;
   height: 2rem;
-  border-radius: var(--radius-surface);
+  border-radius: var(--haus-radius-surface);
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 10%, transparent);
 }
 
 .valueCell {
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
   white-space: nowrap;
 }
 
@@ -1138,7 +1138,7 @@
 
 /* Space the Easings table off the Durations table above it. */
 .motionTable + .motionTable {
-  margin-top: var(--space-stack-5xl);
+  margin-top: var(--haus-space-stack-5xl);
 }
 
 .motionTable th:nth-child(1),
@@ -1160,7 +1160,7 @@
   text-align: right;
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
   white-space: nowrap;
 }
 
@@ -1168,7 +1168,7 @@
 .sizeValue {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
 }
 
 
@@ -1179,8 +1179,8 @@
   width: 0.5rem;
   height: 0.5rem;
   flex-shrink: 0;
-  border-radius: var(--radius-pill);
-  background: var(--color-error-default);
+  border-radius: var(--haus-radius-pill);
+  background: var(--haus-color-error-default);
 }
 
 /* Tags-that-use-this-value: chips of element tag names. */
@@ -1193,39 +1193,39 @@
 .tagChips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-gap-xs);
-  row-gap: var(--space-gap-2xs);
+  gap: var(--haus-space-gap-xs);
+  row-gap: var(--haus-space-gap-2xs);
 }
 
 .tagChip {
-  padding: var(--space-inset-hairline) var(--space-inset-xs);
-  border-radius: var(--radius-control);
-  background: color-mix(in oklab, var(--color-ink-primary) 8%, transparent);
+  padding: var(--space-inset-hairline) var(--haus-space-inset-xs);
+  border-radius: var(--haus-radius-control);
+  background: color-mix(in oklab, var(--haus-color-ink-primary) 8%, transparent);
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--color-ink-secondary);
+  color: var(--haus-color-ink-secondary);
   white-space: nowrap;
 }
 
 /* ── Table specimens ─────────────────────────────────────────────────────── */
 .typeSpecimen {
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
   line-height: 1;
 }
 
 .bar {
   display: block;
   height: 0.5rem;
-  border-radius: var(--radius-pill);
-  background: var(--color-primary-default);
+  border-radius: var(--haus-radius-pill);
+  background: var(--haus-color-primary-default);
   min-width: 4px;
 }
 
 .bpBar {
   display: block;
   height: 0.5rem;
-  border-radius: var(--radius-pill);
-  background: var(--color-ink-tertiary);
+  border-radius: var(--haus-radius-pill);
+  background: var(--haus-color-ink-tertiary);
   min-width: 4px;
 }
 
@@ -1235,29 +1235,29 @@
   display: block;
   height: 1.6rem;
   min-width: 1rem;
-  border-radius: var(--radius-control);
-  border: var(--border-width-thick) solid var(--color-border-strong);
-  background: var(--color-surface-raised);
+  border-radius: var(--haus-radius-control);
+  border: var(--haus-border-width-thick) solid var(--haus-color-border-strong);
+  background: var(--haus-color-surface-raised);
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0.4rem 0 -0.3rem var(--color-border-default);
+  box-shadow: inset 0 0.4rem 0 -0.3rem var(--haus-color-border-default);
 }
 
 .radiusChip {
   display: block;
   width: 2.5rem;
   height: 2.5rem;
-  background: var(--color-primary-subtle);
-  border: var(--border-width-default) solid var(--color-primary-default);
+  background: var(--haus-color-primary-subtle);
+  border: var(--haus-border-width-default) solid var(--haus-color-primary-default);
 }
 
 .borderChip {
   display: block;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: var(--radius-surface);
+  border-radius: var(--haus-radius-surface);
   border-style: solid;
-  border-color: var(--color-ink-primary);
-  background: var(--color-surface-default);
+  border-color: var(--haus-color-ink-primary);
+  background: var(--haus-color-surface-default);
 }
 
 /* Transparency checker: fixed white/grey so the pattern is always visible
@@ -1266,7 +1266,7 @@
   display: inline-block;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: var(--radius-surface);
+  border-radius: var(--haus-radius-surface);
   overflow: hidden;
   background-color: #fff;
   background-image:
@@ -1277,23 +1277,23 @@
   background-size: 12px 12px;
   background-position: 0 0, 0 6px, 6px -6px, -6px 0;
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 14%, transparent);
 }
 
 .opacityFill {
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--color-primary-default);
+  background: var(--haus-color-primary-default);
 }
 
 .blurStage {
   display: inline-block;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: var(--radius-surface);
+  border-radius: var(--haus-radius-surface);
   overflow: hidden;
-  background: repeating-linear-gradient(45deg, var(--color-primary-default) 0 8px, var(--accent-300) 8px 16px);
+  background: repeating-linear-gradient(45deg, var(--haus-color-primary-default) 0 8px, var(--accent-300) 8px 16px);
   position: relative;
 }
 
@@ -1308,8 +1308,8 @@
   width: 100%;
   max-width: 9rem;
   height: 0.6rem;
-  border-radius: var(--radius-pill);
-  background: var(--color-surface-sunken);
+  border-radius: var(--haus-radius-pill);
+  background: var(--haus-color-surface-sunken);
 }
 
 .motionDot,
@@ -1319,8 +1319,8 @@
   left: 0;
   width: 0.7rem;
   height: 0.7rem;
-  border-radius: var(--radius-pill);
-  background: var(--color-primary-default);
+  border-radius: var(--haus-radius-pill);
+  background: var(--haus-color-primary-default);
   transform: translateY(-50%);
 }
 
@@ -1334,7 +1334,7 @@
 
 /* ── Scale / grid ruler: the visual evidence behind the verdicts ─────────── */
 .ruler {
-  margin-bottom: var(--space-stack-4xl);
+  margin-bottom: var(--haus-space-stack-4xl);
 }
 
 
@@ -1343,19 +1343,19 @@
 .rulerTrack {
   position: relative;
   height: 3rem;
-  margin: 0 var(--space-stack-sm);
+  margin: 0 var(--haus-space-stack-sm);
 }
 
 /* Info affordance in a table header (e.g. "Preview" ⓘ). */
 .headInfo {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
 }
 
 .infoIcon {
   font-size: 0.85em;
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
   cursor: help;
 }
 
@@ -1365,7 +1365,7 @@
   right: 0;
   top: 1rem;
   height: 1px;
-  background: var(--color-border-default);
+  background: var(--haus-color-border-default);
 }
 
 .rulerTick {
@@ -1373,7 +1373,7 @@
   top: 0.75rem;
   width: 1px;
   height: 0.5rem;
-  background: var(--color-border-strong);
+  background: var(--haus-color-border-strong);
   transform: translateX(-50%);
 }
 
@@ -1384,7 +1384,7 @@
   transform: translateX(-50%);
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
   white-space: nowrap;
 }
 
@@ -1393,15 +1393,15 @@
   top: 1rem;
   width: 0.6rem;
   height: 0.6rem;
-  border-radius: var(--radius-pill);
-  background: var(--color-primary-default);
+  border-radius: var(--haus-radius-pill);
+  background: var(--haus-color-primary-default);
   transform: translate(-50%, -50%);
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: 0 0 0 3px var(--color-surface-default);
+  box-shadow: 0 0 0 3px var(--haus-color-surface-default);
 }
 
 .rulerDotOff {
-  background: var(--color-error-default);
+  background: var(--haus-color-error-default);
   z-index: 1;
 }
 
@@ -1409,30 +1409,30 @@
 .familyList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-gap-sm);
+  gap: var(--haus-space-gap-sm);
 }
 
 .familyRow {
   display: flex;
   align-items: center;
-  gap: var(--space-gap-md);
-  padding: var(--space-inset-md) var(--space-inset-lg);
-  background: var(--color-surface-default);
-  border: var(--border-width-default) solid var(--drift-card-border);
-  border-radius: var(--radius-overlay);
+  gap: var(--haus-space-gap-md);
+  padding: var(--haus-space-inset-md) var(--haus-space-inset-lg);
+  background: var(--haus-color-surface-default);
+  border: var(--haus-border-width-default) solid var(--drift-card-border);
+  border-radius: var(--haus-radius-overlay);
 }
 
 .familyRowGlyph {
   font-size: 2rem;
   line-height: 1;
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
   flex-shrink: 0;
 }
 
 .familyRowName {
   font-family: var(--font-sans);
-  font-size: var(--type-body-size);
-  color: var(--color-ink-primary);
+  font-size: var(--haus-type-body-size);
+  color: var(--haus-color-ink-primary);
 }
 
 .familyRow .pill {
@@ -1443,19 +1443,19 @@
    below the family rows. */
 .familyList + .ruler,
 .familyList + .table {
-  margin-top: var(--space-stack-5xl);
+  margin-top: var(--haus-space-stack-5xl);
 }
 
 /* ── Colour families (grouping headers over the card grid) ───────────────── */
 .family + .family {
-  margin-top: var(--space-stack-5xl);
+  margin-top: var(--haus-space-stack-5xl);
 }
 
 .familyHead {
   display: flex;
   align-items: baseline;
-  gap: var(--space-gap-sm);
-  margin-bottom: var(--space-stack-md);
+  gap: var(--haus-space-gap-sm);
+  margin-bottom: var(--haus-space-stack-md);
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
@@ -1494,23 +1494,23 @@
   justify-content: center;
   width: 44px;
   height: 28px;
-  border-radius: var(--radius-control);
-  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--haus-radius-control);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
   font-family: var(--font-sans);
-  font-size: var(--type-body-size);
-  font-weight: var(--weight-strong);
+  font-size: var(--haus-type-body-size);
+  font-weight: var(--haus-weight-strong);
 }
 
 .contrastPair {
   display: inline-flex;
   align-items: baseline;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
 }
 
 .contrastOn {
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
 }
 
 /* Reference-scale picker under a ruler. Each option carries its own off-count,
@@ -1518,8 +1518,8 @@
    rather than a bare setting. */
 .scaleOptions {
   display: flex;
-  gap: var(--space-gap-xs);
-  margin-bottom: var(--space-stack-xl);
+  gap: var(--haus-space-gap-xs);
+  margin-bottom: var(--haus-space-stack-xl);
   /* One line, scrolled, the same behaviour as the tab strip above. */
   overflow-x: auto;
   scrollbar-width: none;
@@ -1534,44 +1534,44 @@
   flex-shrink: 0;
   white-space: nowrap;
   align-items: baseline;
-  gap: var(--space-gap-xs);
-  padding: var(--space-inset-2xs) var(--space-inset-sm);
-  border: var(--border-width-default) solid var(--color-border-subtle);
-  border-radius: var(--radius-pill);
+  gap: var(--haus-space-gap-xs);
+  padding: var(--haus-space-inset-2xs) var(--haus-space-inset-sm);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  border-radius: var(--haus-radius-pill);
   background: transparent;
-  color: var(--color-ink-secondary);
+  color: var(--haus-color-ink-secondary);
   font-family: var(--font-sans);
-  font-size: var(--type-label-sm-size);
+  font-size: var(--haus-type-label-sm-size);
   cursor: pointer;
   transition: color 150ms, border-color 150ms, background 150ms;
 }
 
 .scaleChip:hover {
-  color: var(--color-ink-primary);
-  border-color: var(--color-border-default);
+  color: var(--haus-color-ink-primary);
+  border-color: var(--haus-color-border-default);
 }
 
 .scaleChip:focus-visible {
-  outline: var(--border-width-thick) solid var(--color-primary-default);
+  outline: var(--haus-border-width-thick) solid var(--haus-color-primary-default);
   outline-offset: 2px;
 }
 
 .scaleChipOn {
-  background: var(--color-surface-raised);
-  border-color: var(--color-primary-default);
-  color: var(--color-ink-primary);
+  background: var(--haus-color-surface-raised);
+  border-color: var(--haus-color-primary-default);
+  color: var(--haus-color-ink-primary);
 }
 
 .scaleChipCount {
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
 }
 
 /* The automatically-chosen option: "closest" ratio / "detected" grid. Named on
    the chip rather than in a separate title, so the strip is the whole story. */
 .scaleChipBest {
   font-family: var(--font-sans);
-  font-size: var(--type-label-sm-size);
-  color: var(--color-primary-default);
+  font-size: var(--haus-type-label-sm-size);
+  color: var(--haus-color-primary-default);
 }

@@ -8,9 +8,22 @@
    theme that loses to the thing it themes is not a theme.
 
    haus.semantics is here because haus-components reads roles from it. Drift
-   shares 118 of those role names and resolves five differently, so base.semantics
-   sits above it and Drift's resolution is the one that applies.
+   overrides 148 of haus's 164 role names, so base.semantics and drift.semantics
+   sit above it and Drift's resolution is the one that applies.
+
+   That sentence was false until the haus 1.0 upgrade, and the reason is worth
+   keeping. Drift declared --color-surface-default while haus-components read
+   --haus-color-surface-default: different properties, so layer order decided
+   nothing and Drift's theme never reached the two components it renders. They
+   drew in haus's aronia purple inside a cool blue product, and no test could
+   see it because both names resolved perfectly well on their own. haus 1.0
+   prefixed every property, Drift's roles were renamed to match, and the
+   override is real now rather than assumed.
+
+   haus.brand is loaded too. It is the layer that says which primitive each role
+   takes, haus's semantics.css reads 54 --haus-brand-* entries from it, and the
+   sixteen roles Drift does not override resolve through it.
    ─────────────────────────────────────────────────────────────────────────── */
 
-@layer haus.primitives, haus.motion, haus.semantics, base.primitives, base.semantics,
-  drift.primitives, drift.semantics;
+@layer haus.primitives, haus.brand, haus.motion, haus.semantics, base.primitives,
+  base.semantics, drift.primitives, drift.semantics;

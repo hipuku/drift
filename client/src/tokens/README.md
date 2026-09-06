@@ -28,14 +28,30 @@ over shared primitives is the shape the architecture is for.
 ## Why haus's semantic layer is loaded as well
 
 [`haus-components`](https://www.npmjs.com/package/haus-components) supplies Badge
-and Input, and its stylesheet reads 113 roles with no fallback. Five were
-undefined here, and they are exactly the five haus declares that Drift does not:
-`--color-ink-on-aronia`, `--elevation-floating`, `--motion-duration-emphasis`,
-`--radius-marker` and `--shadow-focus-error`. Declaring those five locally would
-be the copy this directory just stopped keeping.
+and Input, and its stylesheet reads roles with no fallback. Declaring those
+locally would be the copy this directory exists to stop keeping.
 
 haus's layer sits below Drift's in the order declared by `layers.css`, so the
-118 role names the two share resolve to Drift's values.
+**148 role names the two share resolve to Drift's values**.
+
+**They did not until haus 1.0, and this file said otherwise.** Drift declared
+`--color-surface-default`; haus-components read `--haus-color-surface-default`.
+Two different properties, so the cascade order this section describes decided
+nothing, and Badge and Input drew in haus's aronia purple inside a cool blue
+product. Nothing caught it because each name resolved fine on its own: the
+failure was not an unresolved `var()` but two vocabularies that never met. haus
+1.0 prefixed every custom property, the 148 shared roles here were renamed to
+match, and the override is now the thing this paragraph always claimed.
+
+Six names are deliberately **not** renamed, because Drift means something
+different by them: `--font-sans`, `--font-mono` and the four `--shadow-*` steps.
+Drift has its own faces and its own shadow ramp, and pointing those at haus's
+would have changed the product's look while every test stayed green.
+
+`brand.css` is loaded as well, and is not optional. It is the layer that says
+which primitive each role takes, haus's `semantics.css` reads 54
+`--haus-brand-*` entries from it, and the sixteen roles Drift does not override
+resolve through it.
 
 `tokens.test.ts` reads the two installed packages as well as this directory, so
 its three guards see what will actually load: nothing reads an undefined

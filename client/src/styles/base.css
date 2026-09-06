@@ -16,11 +16,11 @@ html {
 
 body {
   font-family: var(--font-sans);
-  font-size: var(--text-14);
-  line-height: var(--leading-normal);
-  letter-spacing: var(--tracking-normal);
-  color: var(--color-ink-primary);
-  background: var(--color-surface-subtle);
+  font-size: var(--haus-text-14);
+  line-height: var(--haus-leading-normal);
+  letter-spacing: var(--haus-tracking-normal);
+  color: var(--haus-color-ink-primary);
+  background: var(--haus-color-surface-subtle);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -34,10 +34,10 @@ samp,
 }
 
 a {
-  color: var(--color-ink-link);
+  color: var(--haus-color-ink-link);
 }
 
 :focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus);
+  box-shadow: var(--haus-focus-ring);
 }

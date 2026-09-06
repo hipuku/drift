@@ -229,8 +229,8 @@ const MOCK_SITE_AUDIT: SiteAudit = {
     customProperties: [
       { name: "--color-primary", value: "#2563eb" },
       { name: "--color-ink", value: "#111111" },
-      { name: "--space-4", value: "1rem" },
-      { name: "--radius-md", value: "8px" },
+      { name: "--haus-space-4", value: "1rem" },
+      { name: "--haus-radius-md", value: "8px" },
     ],
     typeInPx: true,
   },

@@ -141,7 +141,7 @@ export function ContrastSection({ contrast }: { contrast: NonNullable<SiteAudit[
           </td>
           <td className={styles.valueCell}>{c.ratio.toFixed(2)}:1</td>
           <td>
-            <Badge variant={c.passAA ? "neutral" : "error"}>
+            <Badge tone={c.passAA ? "neutral" : "error"}>
               {c.passAAA ? "AAA" : c.passAA ? "AA" : c.passAALarge ? "AA large only" : "Fails AA"}
             </Badge>
           </td>

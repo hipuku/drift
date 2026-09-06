@@ -13,10 +13,10 @@ const FEEDBACK = [
 ] as const;
 
 const SURFACES = [
-  { label: "default", bg: "--color-surface-default", ink: "--color-ink-primary" },
-  { label: "subtle", bg: "--color-surface-subtle", ink: "--color-ink-primary" },
-  { label: "sunken", bg: "--color-surface-sunken", ink: "--color-ink-secondary" },
-  { label: "inverse", bg: "--color-surface-inverse", ink: "--color-ink-inverse" },
+  { label: "default", bg: "--haus-color-surface-default", ink: "--haus-color-ink-primary" },
+  { label: "subtle", bg: "--haus-color-surface-subtle", ink: "--haus-color-ink-primary" },
+  { label: "sunken", bg: "--haus-color-surface-sunken", ink: "--haus-color-ink-secondary" },
+  { label: "inverse", bg: "--haus-color-surface-inverse", ink: "--haus-color-ink-inverse" },
 ] as const;
 
 const TYPE: { role: TypeRole; text: string }[] = [

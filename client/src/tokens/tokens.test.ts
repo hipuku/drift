@@ -29,7 +29,7 @@ const SRC = resolve(process.cwd(), "src");
  * of the package's names are primitives and which are roles.
  */
 const HAUS_TOKENS = resolve(process.cwd(), "node_modules/haus-tokens/dist");
-const HAUS_PRIMITIVES = ["primitives.css", "motion.css"].map((f) => join(HAUS_TOKENS, f));
+const HAUS_PRIMITIVES = ["primitives.css", "brand.css", "motion.css"].map((f) => join(HAUS_TOKENS, f));
 const HAUS_SEMANTICS = join(HAUS_TOKENS, "semantics.css");
 const HAUS_CSS = [...HAUS_PRIMITIVES, HAUS_SEMANTICS];
 
@@ -133,8 +133,8 @@ describe("custom properties", () => {
  * The four issues found one rule between them, and it is worth stating rather
  * than leaving in four commit messages: **a role carries the properties the
  * thing actually chooses.** Prose chooses all four, which is why the eleven
- * typeset roles bundle. Emphasis chooses weight alone, so `--weight-emphasis`
- * and `--weight-strong` carry nothing else. A data cell chooses the face and
+ * typeset roles bundle. Emphasis chooses weight alone, so `--haus-weight-emphasis`
+ * and `--haus-weight-strong` carry nothing else. A data cell chooses the face and
  * the size and leaves leading to the row, so `--type-data-*` stops at two.
  * Roles that carry more than the decision force call sites to override them,
  * and every override is a primitive read waiting to happen.
@@ -145,7 +145,7 @@ describe("custom properties", () => {
  *   is the token specimen sheet, not a product screen, and 11px mono is how it
  *   labels its own swatches. A role exists to be reused by the product; giving
  *   one to a development tool would put the tool inside the contract.
- * - **1 `--text-14`**, `.unitVal`: the one mono size on the audit screen that is
+ * - **1 `--haus-text-14`**, `.unitVal`: the one mono size on the audit screen that is
  *   not tabular, sized to sit beside body text rather than inside a column. One
  *   occurrence is a departure, not a role.
  * - **3 departures** from a role the element is already on: `.pill` wants 1.5
@@ -161,12 +161,12 @@ const TYPE_TIER_DEBT = new Map([
   ['--font-mono', 9],
   ['--font-display', 1],
   // Sizes, 6. Five are the dev harness; one is a single unit label.
-  ['--text-11', 5],
-  ['--text-14', 1],
+  ['--haus-text-11', 5],
+  ['--haus-text-14', 1],
   // Departures from a role the element is already on, 3.
-  ['--leading-relaxed', 1],
-  ['--leading-snug', 1],
-  ['--tracking-widest', 1],
+  ['--haus-leading-relaxed', 1],
+  ['--haus-leading-snug', 1],
+  ['--haus-tracking-widest', 1],
 ]);
 
 const FAMILIES = ["--font-sans", "--font-mono", "--font-display"];
@@ -285,9 +285,20 @@ describe("haus-components", () => {
       ...filesUnder(resolve(SRC, "styles"), [".css"]),
     ];
     const defined = matches(loaded, /^\s*(--[a-z0-9-]+)\s*:/gm);
+
+    // A component's own internal properties are defined by the component, on
+    // its own class rather than at :root, and they are not roles Drift is being
+    // asked to supply. --haus-btn-solid is Button's remap of a tone; nothing
+    // outside Button should set it. So they are matched anywhere in the
+    // stylesheet, not only at the start of a line, and subtracted from what is
+    // read. Twenty-four of them arrived with the six overlay components in
+    // haus 1.0, which is why this list was empty until the upgrade.
+    const selfDefined = matches([HAUS_COMPONENTS_CSS], /(--[a-z0-9-]+)\s*:/g);
     const read = matches([HAUS_COMPONENTS_CSS], /var\((--[a-z0-9-]+)\)/g);
 
-    const undefined_ = [...read].filter((name) => !defined.has(name)).sort();
+    const undefined_ = [...read]
+      .filter((name) => !defined.has(name) && !selfDefined.has(name))
+      .sort();
 
     expect(undefined_).toEqual([]);
   });

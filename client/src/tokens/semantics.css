@@ -19,97 +19,97 @@
   :root {
 
     /* ── Surface ──────────────────────────────────────────────────────────── */
-    --color-surface-default:  var(--damson-0);
-    --color-surface-subtle:   var(--damson-100);
-    --color-surface-raised:   var(--damson-0);    /* elevation via shadow, not colour */
-    --color-surface-overlay:  var(--damson-50);   /* modal / popover, barely off-white */
-    --color-surface-sunken:   var(--damson-200);
-    --color-surface-inverse:  var(--damson-900);  /* dark chip, tooltip bg in light mode */
-    --color-surface-disabled: var(--damson-100);
+    --haus-color-surface-default:  var(--haus-damson-0);
+    --haus-color-surface-subtle:   var(--haus-damson-100);
+    --haus-color-surface-raised:   var(--haus-damson-0);    /* elevation via shadow, not colour */
+    --haus-color-surface-overlay:  var(--haus-damson-50);   /* modal / popover, barely off-white */
+    --haus-color-surface-sunken:   var(--haus-damson-200);
+    --haus-color-surface-inverse:  var(--haus-damson-900);  /* dark chip, tooltip bg in light mode */
+    --haus-color-surface-disabled: var(--haus-damson-100);
 
     /* ── Ink (text) ───────────────────────────────────────────────────────── */
-    --color-ink-primary:    var(--damson-900);
-    --color-ink-secondary:  var(--damson-700);
-    --color-ink-tertiary:   var(--damson-500);
-    --color-ink-disabled:   var(--damson-400);
-    --color-ink-inverse:    var(--damson-0);
-    --color-ink-link:       var(--aronia-500);
-    /* Pairs with --color-primary-default, whatever the brand layer sets that to.
+    --haus-color-ink-primary:    var(--haus-damson-900);
+    --haus-color-ink-secondary:  var(--haus-damson-700);
+    --haus-color-ink-tertiary:   var(--haus-damson-500);
+    --haus-color-ink-disabled:   var(--haus-damson-400);
+    --haus-color-ink-inverse:    var(--haus-damson-0);
+    --haus-color-ink-link:       var(--haus-aronia-500);
+    /* Pairs with --haus-color-primary-default, whatever the brand layer sets that to.
        Named for the role, not the palette: this was --color-ink-on-aronia, which
        stopped being true the moment drift.css re-skinned primary onto the accent
        ramp. The token was still correct and its name was not. */
-    --color-ink-on-primary: var(--damson-0);
+    --haus-color-ink-on-primary: var(--haus-damson-0);
 
     /* ── Border ───────────────────────────────────────────────────────────── */
-    --color-border-subtle:   var(--damson-100);
-    --color-border-default:  var(--damson-200);
-    --color-border-strong:   var(--damson-300);
-    --color-border-focus:    var(--color-primary-default);
-    --color-border-disabled: var(--damson-200);
+    --haus-color-border-subtle:   var(--haus-damson-100);
+    --haus-color-border-default:  var(--haus-damson-200);
+    --haus-color-border-strong:   var(--haus-damson-300);
+    --haus-color-border-focus:    var(--haus-color-primary-default);
+    --haus-color-border-disabled: var(--haus-damson-200);
 
     /* ── Primary, Aronia ─────────────────────────────────────────────────── */
-    --color-primary-default:   var(--aronia-500);
-    --color-primary-hover:     var(--aronia-600);
-    --color-primary-pressed:   var(--aronia-700);
-    --color-primary-subtle:    var(--aronia-100);
-    --color-primary-on-subtle: var(--aronia-700);
-    --color-primary-disabled:  var(--damson-200);
+    --haus-color-primary-default:   var(--haus-aronia-500);
+    --haus-color-primary-hover:     var(--haus-aronia-600);
+    --haus-color-primary-pressed:   var(--haus-aronia-700);
+    --haus-color-primary-subtle:    var(--haus-aronia-100);
+    --haus-color-primary-on-subtle: var(--haus-aronia-700);
+    --haus-color-primary-disabled:  var(--haus-damson-200);
 
     /* ── Feedback, Info (Elderberry · Indigo) ────────────────────────────── */
-    --color-info-subtle:     var(--elderberry-100);
-    --color-info-border:     var(--elderberry-200);
-    --color-info-default:    var(--elderberry-500);
-    --color-info-on-subtle:  var(--elderberry-700);
-    --color-info-on-default: var(--damson-0);
-    --color-info-emphasis:   var(--elderberry-900);
+    --haus-color-info-subtle:     var(--haus-elderberry-100);
+    --haus-color-info-border:     var(--haus-elderberry-200);
+    --haus-color-info-default:    var(--haus-elderberry-500);
+    --haus-color-info-on-subtle:  var(--haus-elderberry-700);
+    --haus-color-info-on-default: var(--haus-damson-0);
+    --haus-color-info-emphasis:   var(--haus-elderberry-900);
 
     /* ── Feedback, Success (Greengage · Green) ───────────────────────────── */
-    --color-success-subtle:     var(--greengage-100);
-    --color-success-border:     var(--greengage-200);
-    --color-success-default:    var(--greengage-500);
-    --color-success-on-subtle:  var(--greengage-700);
-    --color-success-on-default: var(--damson-900);  /* dark text, greengage-500 fails with white */
-    --color-success-solid:      var(--greengage-700);  /* 700-level: white text passes at 6.82:1 */
-    --color-success-emphasis:   var(--greengage-900);
+    --haus-color-success-subtle:     var(--haus-greengage-100);
+    --haus-color-success-border:     var(--haus-greengage-200);
+    --haus-color-success-default:    var(--haus-greengage-500);
+    --haus-color-success-on-subtle:  var(--haus-greengage-700);
+    --haus-color-success-on-default: var(--haus-damson-900);  /* dark text, greengage-500 fails with white */
+    --haus-color-success-solid:      var(--haus-greengage-700);  /* 700-level: white text passes at 6.82:1 */
+    --haus-color-success-emphasis:   var(--haus-greengage-900);
 
     /* ── Feedback, Warning (Mango · Golden) ──────────────────────────────── */
-    --color-warning-subtle:     var(--mango-100);
-    --color-warning-border:     var(--mango-200);
-    --color-warning-default:    var(--mango-500);
-    --color-warning-on-subtle:  var(--mango-700);
-    --color-warning-on-default: var(--damson-900);  /* dark text, mango-500 fails with white */
-    --color-warning-solid:      var(--mango-700);   /* 700-level: white text passes at 7.05:1 */
-    --color-warning-emphasis:   var(--mango-900);
+    --haus-color-warning-subtle:     var(--haus-mango-100);
+    --haus-color-warning-border:     var(--haus-mango-200);
+    --haus-color-warning-default:    var(--haus-mango-500);
+    --haus-color-warning-on-subtle:  var(--haus-mango-700);
+    --haus-color-warning-on-default: var(--haus-damson-900);  /* dark text, mango-500 fails with white */
+    --haus-color-warning-solid:      var(--haus-mango-700);   /* 700-level: white text passes at 7.05:1 */
+    --haus-color-warning-emphasis:   var(--haus-mango-900);
 
     /* ── Feedback, Error (Cherry · Red) ─────────────────────────────────── */
-    --color-error-subtle:     var(--cherry-100);
-    --color-error-border:     var(--cherry-200);
-    --color-error-default:    var(--cherry-500);
-    --color-error-on-subtle:  var(--cherry-700);
-    --color-error-on-default: var(--damson-0);
-    --color-error-emphasis:   var(--cherry-900);
+    --haus-color-error-subtle:     var(--haus-cherry-100);
+    --haus-color-error-border:     var(--haus-cherry-200);
+    --haus-color-error-default:    var(--haus-cherry-500);
+    --haus-color-error-on-subtle:  var(--haus-cherry-700);
+    --haus-color-error-on-default: var(--haus-damson-0);
+    --haus-color-error-emphasis:   var(--haus-cherry-900);
 
     /* ── Backdrop (Modal, Drawer, etc.) ──────────────────────────────────── */
-    /* Relative colour syntax: damson-950's l/c/h at --opacity-overlay alpha  */
-    --color-backdrop: oklch(from var(--damson-950) l c h / var(--opacity-overlay));
+    /* Relative colour syntax: damson-950's l/c/h at --haus-opacity-overlay alpha  */
+    --haus-color-backdrop: oklch(from var(--haus-damson-950) l c h / var(--haus-opacity-overlay));
 
     /* ── Inverse surface interactions (UI placed on dark/inverted surfaces) ── */
     /* Relative colour syntax: white (damson-0) at three opacity levels.      */
     /* Opacity fractions here are interaction-layer values, not raw colours.  */
-    --color-border-inverse:        oklch(from var(--damson-0) l c h / 0.30);
-    --color-border-inverse-hover:  oklch(from var(--damson-0) l c h / 0.50);
-    --color-surface-inverse-hover: oklch(from var(--damson-0) l c h / 0.10);
+    --haus-color-border-inverse:        oklch(from var(--haus-damson-0) l c h / 0.30);
+    --haus-color-border-inverse-hover:  oklch(from var(--haus-damson-0) l c h / 0.50);
+    --haus-color-surface-inverse-hover: oklch(from var(--haus-damson-0) l c h / 0.10);
 
     /* ── Focus ring ───────────────────────────────────────────────────────── */
     /* Inner ring matches surface (creates gap), outer ring is focus colour   */
-    --shadow-focus: 0 0 0 2px var(--color-surface-default), 0 0 0 4px var(--color-border-focus);
+    --haus-focus-ring: 0 0 0 2px var(--haus-color-surface-default), 0 0 0 4px var(--haus-color-border-focus);
 
     /* ── Spacing ──────────────────────────────────────────────────────────── */
     /* Three roles, one ladder. A step means the same size whichever role it
        is read through, so the tiers stay comparable, the point of splitting
        them is that inset, gap and stack can later be retuned independently
        (denser forms without denser page rhythm) without hunting through
-       modules to work out which --space-3 meant which. Only the steps in use
+       modules to work out which --haus-space-3 meant which. Only the steps in use
        are named; add one when a component needs it, rather than reaching past
        this layer for the primitive. */
 
@@ -118,55 +118,55 @@
     --space-inset-tight:    var(--space-tight);
 
     /* Padding, space *inside* a component, between its edge and its content. */
-    --space-inset-2xs:         var(--space-1);       /* 4px */
-    --space-inset-xs:          var(--space-2);       /* 8px */
-    --space-inset-sm:          var(--space-3);       /* 12px */
-    --space-inset-md:          var(--space-4);       /* 16px */
-    --space-inset-lg:          var(--space-5);       /* 20px */
-    --space-inset-xl:          var(--space-6);       /* 24px */
-    --space-inset-2xl:         var(--space-7);       /* 28px */
-    --space-inset-3xl:         var(--space-8);       /* 32px */
-    --space-inset-5xl:         var(--space-12);      /* 48px */
-    --space-inset-6xl:         var(--space-16);      /* 64px */
-    --space-inset-7xl:         var(--space-20);      /* 80px */
+    --haus-space-inset-2xs:         var(--haus-space-1);       /* 4px */
+    --haus-space-inset-xs:          var(--haus-space-2);       /* 8px */
+    --haus-space-inset-sm:          var(--haus-space-3);       /* 12px */
+    --haus-space-inset-md:          var(--haus-space-4);       /* 16px */
+    --haus-space-inset-lg:          var(--haus-space-5);       /* 20px */
+    --haus-space-inset-xl:          var(--haus-space-6);       /* 24px */
+    --haus-space-inset-2xl:         var(--haus-space-7);       /* 28px */
+    --haus-space-inset-3xl:         var(--haus-space-8);       /* 32px */
+    --haus-space-inset-5xl:         var(--haus-space-12);      /* 48px */
+    --haus-space-inset-6xl:         var(--haus-space-16);      /* 64px */
+    --haus-space-inset-7xl:         var(--haus-space-20);      /* 80px */
 
     /* Gap, space *between* siblings laid out together (flex and grid). */
-    --space-gap-2xs:           var(--space-1);       /* 4px */
-    --space-gap-xs:            var(--space-2);       /* 8px */
-    --space-gap-sm:            var(--space-3);       /* 12px */
-    --space-gap-md:            var(--space-4);       /* 16px */
-    --space-gap-lg:            var(--space-5);       /* 20px */
-    --space-gap-2xl:           var(--space-7);       /* 28px */
-    --space-gap-3xl:           var(--space-8);       /* 32px */
+    --haus-space-gap-2xs:           var(--haus-space-1);       /* 4px */
+    --haus-space-gap-xs:            var(--haus-space-2);       /* 8px */
+    --haus-space-gap-sm:            var(--haus-space-3);       /* 12px */
+    --haus-space-gap-md:            var(--haus-space-4);       /* 16px */
+    --haus-space-gap-lg:            var(--haus-space-5);       /* 20px */
+    --haus-space-gap-2xl:           var(--haus-space-7);       /* 28px */
+    --haus-space-gap-3xl:           var(--haus-space-8);       /* 32px */
 
     /* Stack, margin between blocks in normal flow, usually vertical. */
-    --space-stack-2xs:         var(--space-1);       /* 4px */
-    --space-stack-xs:          var(--space-2);       /* 8px */
-    --space-stack-sm:          var(--space-3);       /* 12px */
-    --space-stack-md:          var(--space-4);       /* 16px */
-    --space-stack-lg:          var(--space-5);       /* 20px */
-    --space-stack-xl:          var(--space-6);       /* 24px */
-    --space-stack-2xl:         var(--space-7);       /* 28px */
-    --space-stack-3xl:         var(--space-8);       /* 32px */
-    --space-stack-4xl:         var(--space-10);      /* 40px */
-    --space-stack-5xl:         var(--space-12);      /* 48px */
+    --haus-space-stack-2xs:         var(--haus-space-1);       /* 4px */
+    --haus-space-stack-xs:          var(--haus-space-2);       /* 8px */
+    --haus-space-stack-sm:          var(--haus-space-3);       /* 12px */
+    --haus-space-stack-md:          var(--haus-space-4);       /* 16px */
+    --haus-space-stack-lg:          var(--haus-space-5);       /* 20px */
+    --haus-space-stack-xl:          var(--haus-space-6);       /* 24px */
+    --haus-space-stack-2xl:         var(--haus-space-7);       /* 28px */
+    --haus-space-stack-3xl:         var(--haus-space-8);       /* 32px */
+    --haus-space-stack-4xl:         var(--haus-space-10);      /* 40px */
+    --haus-space-stack-5xl:         var(--haus-space-12);      /* 48px */
 
     /* ── Radius ───────────────────────────────────────────────────────────── */
     /* Named for what is being rounded. The scale steps are a vocabulary of
        sizes; these say which size a thing of each kind takes, so a control and
        a card cannot drift apart by one step without someone choosing to. */
-    --radius-control: var(--radius-sm);    /* inputs, buttons, chips */
-    --radius-surface: var(--radius-md);    /* cards, panels, table wells */
-    --radius-overlay: var(--radius-lg);    /* popovers, drawers */
-    --radius-panel:   var(--radius-xl);    /* the largest containers */
-    --radius-pill:    var(--radius-full);  /* fully-rounded: badges, avatars */
+    --haus-radius-control: var(--haus-radius-sm);    /* inputs, buttons, chips */
+    --haus-radius-surface: var(--haus-radius-md);    /* cards, panels, table wells */
+    --haus-radius-overlay: var(--haus-radius-lg);    /* popovers, drawers */
+    --radius-panel:   var(--haus-radius-xl);    /* the largest containers */
+    --haus-radius-pill:    var(--haus-radius-full);  /* fully-rounded: badges, avatars */
 
     /* ── Elevation ────────────────────────────────────────────────────────── */
     /* Height above the page, not shadow size. A component asks to sit at a
        level; how that level is drawn is this layer's business, which is what
        lets the brand layer restyle every shadow at once. */
-    --elevation-raised:  var(--shadow-sm);  /* lifted off the page: cards */
-    --elevation-overlay: var(--shadow-md);  /* above content: dropdowns */
+    --haus-elevation-raised:  var(--shadow-sm);  /* lifted off the page: cards */
+    --haus-elevation-overlay: var(--shadow-md);  /* above content: dropdowns */
     --elevation-modal:   var(--shadow-lg);  /* above everything: dialogs */
     --elevation-popover: var(--shadow-xl);  /* the highest surfaces */
 
@@ -174,93 +174,93 @@
     /* Named for what is moving. The durations differ because the distances do:
        a chip's colour change should be over before it is noticed, a panel
        sliding in should be followed by the eye. */
-    --motion-duration-micro: var(--duration-fast);      /* hover, focus, check */
-    --motion-duration-ui:    var(--duration-normal);    /* reveals, tab changes */
-    --motion-duration-panel: var(--duration-moderate);  /* drawers, modals */
-    --motion-ease-standard:  var(--ease-move);          /* the default curve */
+    --motion-duration-micro: var(--haus-duration-fast);      /* hover, focus, check */
+    --motion-duration-ui:    var(--haus-duration-normal);    /* reveals, tab changes */
+    --motion-duration-panel: var(--haus-duration-moderate);  /* drawers, modals */
+    --motion-ease-standard:  var(--haus-ease-move);          /* the default curve */
 
     /* ── Sizing and state ─────────────────────────────────────────────────── */
-    --size-icon-inline:        var(--icon-sm);          /* an icon set in text */
-    --opacity-control-disabled: var(--opacity-disabled);
+    --size-icon-inline:        var(--haus-icon-sm);          /* an icon set in text */
+    --opacity-control-disabled: var(--haus-opacity-disabled);
 
     /* ── Stacking, border width and state ─────────────────────────────────── */
     /* These arrived from primitives.css, where they did not belong: their names
        already say what they are for rather than what they are. There is no
-       underlying scale to alias them from, `--z-modal` is not one step of a
+       underlying scale to alias them from, `--haus-z-modal` is not one step of a
        z-index ramp, it is the answer to "how high does a modal sit", so an
        alias layer over them would be indirection with nothing on the other end.
        Moving them is the fix; a component reading one is reading a semantic. */
 
     /* ── Z-index ──────────────────────────────────────────────────────────────── */
-    --z-base:     0;
-    --z-raised:   10;
-    --z-dropdown: 100;
-    --z-sticky:   200;
-    --z-overlay:  300;
-    --z-modal:    400;
-    --z-toast:    500;
-    --z-tooltip:  600;
+    --haus-z-base:     0;
+    --haus-z-raised:   10;
+    --haus-z-dropdown: 100;
+    --haus-z-sticky:   200;
+    --haus-z-overlay:  300;
+    --haus-z-modal:    400;
+    --haus-z-toast:    500;
+    --haus-z-tooltip:  600;
 
     /* ── Border width ─────────────────────────────────────────────────────────── */
-    --border-width-default: 1px;
-    --border-width-thick:   2px;
+    --haus-border-width-default: 1px;
+    --haus-border-width-thick:   2px;
 
     /* ── Opacity ──────────────────────────────────────────────────────────────── */
-    --opacity-disabled: 0.4;
-    --opacity-overlay:  0.6;
+    --haus-opacity-disabled: 0.4;
+    --haus-opacity-overlay:  0.6;
 
     /* ── Typography roles ─────────────────────────────────────────────────── */
     /* Use all four props together. Components must not mix roles.            */
 
-    --type-label-xs-size:     var(--text-11);
-    --type-label-xs-weight:   var(--weight-medium);
-    --type-label-xs-leading:  var(--leading-normal);
-    --type-label-xs-tracking: var(--tracking-widest);
+    --haus-type-label-xs-size:     var(--haus-text-11);
+    --haus-type-label-xs-weight:   var(--haus-weight-medium);
+    --haus-type-label-xs-leading:  var(--haus-leading-normal);
+    --haus-type-label-xs-tracking: var(--haus-tracking-widest);
 
-    --type-label-sm-size:     var(--text-12);
-    --type-label-sm-weight:   var(--weight-medium);
-    --type-label-sm-leading:  var(--leading-normal);
-    --type-label-sm-tracking: var(--tracking-wide);
+    --haus-type-label-sm-size:     var(--haus-text-12);
+    --haus-type-label-sm-weight:   var(--haus-weight-medium);
+    --haus-type-label-sm-leading:  var(--haus-leading-normal);
+    --haus-type-label-sm-tracking: var(--haus-tracking-wide);
 
-    --type-label-size:        var(--text-13);
-    --type-label-weight:      var(--weight-medium);
-    --type-label-leading:     var(--leading-normal);
-    --type-label-tracking:    var(--tracking-normal);
+    --haus-type-label-size:        var(--haus-text-13);
+    --haus-type-label-weight:      var(--haus-weight-medium);
+    --haus-type-label-leading:     var(--haus-leading-normal);
+    --haus-type-label-tracking:    var(--haus-tracking-normal);
 
-    --type-body-sm-size:      var(--text-13);
-    --type-body-sm-weight:    var(--weight-regular);
-    --type-body-sm-leading:   var(--leading-relaxed);
-    --type-body-sm-tracking:  var(--tracking-normal);
+    --haus-type-body-sm-size:      var(--haus-text-13);
+    --haus-type-body-sm-weight:    var(--haus-weight-regular);
+    --haus-type-body-sm-leading:   var(--haus-leading-relaxed);
+    --haus-type-body-sm-tracking:  var(--haus-tracking-normal);
 
-    --type-body-size:         var(--text-14);
-    --type-body-weight:       var(--weight-regular);
-    --type-body-leading:      var(--leading-relaxed);
-    --type-body-tracking:     var(--tracking-normal);
+    --haus-type-body-size:         var(--haus-text-14);
+    --haus-type-body-weight:       var(--haus-weight-regular);
+    --haus-type-body-leading:      var(--haus-leading-relaxed);
+    --haus-type-body-tracking:     var(--haus-tracking-normal);
 
-    --type-body-lg-size:      var(--text-16);
-    --type-body-lg-weight:    var(--weight-regular);
-    --type-body-lg-leading:   var(--leading-loose);
-    --type-body-lg-tracking:  var(--tracking-normal);
+    --haus-type-body-lg-size:      var(--haus-text-16);
+    --haus-type-body-lg-weight:    var(--haus-weight-regular);
+    --haus-type-body-lg-leading:   var(--haus-leading-loose);
+    --haus-type-body-lg-tracking:  var(--haus-tracking-normal);
 
-    --type-heading-sm-size:     var(--text-16);
-    --type-heading-sm-weight:   var(--weight-semibold);
-    --type-heading-sm-leading:  var(--leading-compact);
-    --type-heading-sm-tracking: var(--tracking-tight);
+    --haus-type-heading-sm-size:     var(--haus-text-16);
+    --haus-type-heading-sm-weight:   var(--haus-weight-semibold);
+    --haus-type-heading-sm-leading:  var(--haus-leading-compact);
+    --haus-type-heading-sm-tracking: var(--haus-tracking-tight);
 
-    --type-heading-size:        var(--text-20);
-    --type-heading-weight:      var(--weight-semibold);
-    --type-heading-leading:     var(--leading-snug);
-    --type-heading-tracking:    var(--tracking-tight);
+    --haus-type-heading-size:        var(--haus-text-20);
+    --haus-type-heading-weight:      var(--haus-weight-semibold);
+    --haus-type-heading-leading:     var(--haus-leading-snug);
+    --haus-type-heading-tracking:    var(--haus-tracking-tight);
 
-    --type-heading-lg-size:     var(--text-24);
-    --type-heading-lg-weight:   var(--weight-semibold);
-    --type-heading-lg-leading:  var(--leading-tighter);
-    --type-heading-lg-tracking: var(--tracking-tight);
+    --haus-type-heading-lg-size:     var(--haus-text-24);
+    --haus-type-heading-lg-weight:   var(--haus-weight-semibold);
+    --haus-type-heading-lg-leading:  var(--haus-leading-tighter);
+    --haus-type-heading-lg-tracking: var(--haus-tracking-tight);
 
-    --type-display-size:        var(--text-30);
-    --type-display-weight:      var(--weight-bold);
-    --type-display-leading:     var(--leading-tight);
-    --type-display-tracking:    var(--tracking-tight);
+    --haus-type-display-size:        var(--haus-text-30);
+    --haus-type-display-weight:      var(--haus-weight-bold);
+    --haus-type-display-leading:     var(--haus-leading-tight);
+    --haus-type-display-tracking:    var(--haus-tracking-tight);
 
     /* ── Emphasis ──────────────────────────────────────────────────────────
        Weight on its own, and the exception to the line above.
@@ -278,21 +278,21 @@
        "what kind of text is this".
 
        So the weights get role names of their own and nothing else. Two of
-       them, both aliases, exactly the shape --radius-control: var(--radius-md)
+       them, both aliases, exactly the shape --haus-radius-control: var(--haus-radius-md)
        already uses one section up: the role says why, the primitive says what.
 
        This is deliberately not a licence to unbundle the rest. Leading and
        tracking stay inside the roles, because those are the properties that
        are wrong at the wrong size, which is the whole reason the roles bundle. */
-    --weight-emphasis:  var(--weight-medium);    /* a word, a number, a label that sits above its neighbours */
-    --weight-strong:    var(--weight-semibold);  /* the heaviest the system goes outside display type          */
+    --haus-weight-emphasis:  var(--haus-weight-medium);    /* a word, a number, a label that sits above its neighbours */
+    --haus-weight-strong:    var(--haus-weight-semibold);  /* the heaviest the system goes outside display type          */
 
     /* ── Data ──────────────────────────────────────────────────────────────
        Mono for data rather than for prose, and the second exception to the
        line above.
 
        drift#24. Twelve elements on the audit screen read --font-mono and
-       --text-12 together and nothing else: property names, values, counts,
+       --haus-text-12 together and nothing else: property names, values, counts,
        page chips, table cells. That is one decision: "this is tabular data"        written twelve times as two primitive reads.
 
        --type-mono is the prose answer: 13px with leading-loose, for a token
@@ -301,18 +301,18 @@
        without scrolling, and 13px with 1.6 leading would not.
 
        It carries family and size and stops there, on the same principle as
-       --weight-emphasis above: a role carries the properties the thing
+       --haus-weight-emphasis above: a role carries the properties the thing
        actually chooses. Prose chooses all four. Emphasis chooses weight.
        A data cell chooses the face and the size and leaves leading to the row
       , every one of the twelve is a single line, four of them nowrap, and not
        one of them sets a line-height today. */
     --type-data-family:         var(--font-mono);
-    --type-data-size:           var(--text-12);
+    --type-data-size:           var(--haus-text-12);
 
-    --type-mono-size:           var(--text-13);
-    --type-mono-weight:         var(--weight-regular);
-    --type-mono-leading:        var(--leading-loose);
-    --type-mono-tracking:       var(--tracking-normal);
+    --haus-type-mono-size:           var(--haus-text-13);
+    --haus-type-mono-weight:         var(--haus-weight-regular);
+    --haus-type-mono-leading:        var(--haus-leading-loose);
+    --haus-type-mono-tracking:       var(--haus-tracking-normal);
 
   }
 }

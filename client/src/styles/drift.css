@@ -73,33 +73,33 @@
   :root {
     color-scheme: dark;
 
-    --color-surface-default:  var(--neutral-900);   /* cards */
-    --color-surface-subtle:   var(--neutral-950);   /* page bg, darker than cards */
-    --color-surface-raised:   var(--neutral-800);
-    --color-surface-overlay:  var(--neutral-800);
-    --color-surface-sunken:   oklch(12% 0.012 266);
-    --color-surface-inverse:  var(--neutral-50);
-    --color-surface-disabled: var(--neutral-800);
+    --haus-color-surface-default:  var(--neutral-900);   /* cards */
+    --haus-color-surface-subtle:   var(--neutral-950);   /* page bg, darker than cards */
+    --haus-color-surface-raised:   var(--neutral-800);
+    --haus-color-surface-overlay:  var(--neutral-800);
+    --haus-color-surface-sunken:   oklch(12% 0.012 266);
+    --haus-color-surface-inverse:  var(--neutral-50);
+    --haus-color-surface-disabled: var(--neutral-800);
 
-    --color-ink-primary:   var(--neutral-50);
-    --color-ink-secondary: var(--neutral-300);
-    --color-ink-tertiary:  var(--neutral-400);
-    --color-ink-disabled:  var(--neutral-600);
-    --color-ink-inverse:   var(--neutral-900);
-    --color-ink-link:      var(--accent-400);
+    --haus-color-ink-primary:   var(--neutral-50);
+    --haus-color-ink-secondary: var(--neutral-300);
+    --haus-color-ink-tertiary:  var(--neutral-400);
+    --haus-color-ink-disabled:  var(--neutral-600);
+    --haus-color-ink-inverse:   var(--neutral-900);
+    --haus-color-ink-link:      var(--accent-400);
 
-    --color-border-subtle:   var(--neutral-800);
-    --color-border-default:  var(--neutral-700);
-    --color-border-strong:   var(--neutral-600);
-    --color-border-disabled: var(--neutral-800);
+    --haus-color-border-subtle:   var(--neutral-800);
+    --haus-color-border-default:  var(--neutral-700);
+    --haus-color-border-strong:   var(--neutral-600);
+    --haus-color-border-disabled: var(--neutral-800);
 
     /* Same accessible anchor as light (white text clears AA); it already pops
        against the charcoal page. Subtle/link tokens lift lighter for dark. */
-    --color-primary-default:   var(--accent-600);
-    --color-primary-hover:     var(--accent-700);
-    --color-primary-pressed:   var(--accent-800);
-    --color-primary-subtle:    oklch(from var(--accent-600) l c h / 0.20);
-    --color-primary-on-subtle: var(--accent-300);
+    --haus-color-primary-default:   var(--accent-600);
+    --haus-color-primary-hover:     var(--accent-700);
+    --haus-color-primary-pressed:   var(--accent-800);
+    --haus-color-primary-subtle:    oklch(from var(--accent-600) l c h / 0.20);
+    --haus-color-primary-on-subtle: var(--accent-300);
 
     --drift-app-bg:
       radial-gradient(120% 85% at 50% -15%, oklch(from var(--accent-600) l c h / 0.16) 0%, transparent 55%),
@@ -129,18 +129,18 @@
     --drift-lift-pressed:
       0 1px 2px oklch(40% 0.05 var(--accent-h) / 0.25);
 
-    --drift-alert-surface: color-mix(in oklab, var(--drift-severity-high) 18%, var(--color-surface-default));
-    --drift-warn-surface:  color-mix(in oklab, var(--drift-severity-medium) 20%, var(--color-surface-default));
+    --drift-alert-surface: color-mix(in oklab, var(--drift-severity-high) 18%, var(--haus-color-surface-default));
+    --drift-warn-surface:  color-mix(in oklab, var(--drift-severity-medium) 20%, var(--haus-color-surface-default));
 
     /* Not theme-dependent: severity hues, mono ramp, grid metrics. */
-    --color-primary-disabled:  var(--neutral-200);
+    --haus-color-primary-disabled:  var(--neutral-200);
     --drift-grid-size: 32px;
     --drift-mono: var(--font-mono);
-    --drift-data-size: var(--text-12);
-    --drift-severity-high:   var(--color-error-default);
-    --drift-severity-medium: var(--color-warning-default);
-    --drift-severity-low:    var(--color-ink-tertiary);
-    --drift-alert-ink:     color-mix(in oklab, var(--drift-severity-high) 70%, var(--color-ink-primary));
-    --drift-warn-ink:      color-mix(in oklab, var(--drift-severity-medium) 78%, var(--color-ink-primary));
+    --drift-data-size: var(--haus-text-12);
+    --drift-severity-high:   var(--haus-color-error-default);
+    --drift-severity-medium: var(--haus-color-warning-default);
+    --drift-severity-low:    var(--haus-color-ink-tertiary);
+    --drift-alert-ink:     color-mix(in oklab, var(--drift-severity-high) 70%, var(--haus-color-ink-primary));
+    --drift-warn-ink:      color-mix(in oklab, var(--drift-severity-medium) 78%, var(--haus-color-ink-primary));
   }
 }

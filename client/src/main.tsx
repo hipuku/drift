@@ -11,10 +11,18 @@ import "@fontsource/fira-code/500.css";
 // Cascade layer order, declared before anything opens a layer.
 import "./tokens/layers.css";
 
-// The primitive, motion and semantic layers are haus-tokens'. Drift's semantic
-// layer sits above haus's and wins where the two resolve a role differently,
-// and primitives.css is only what Drift overrides (see tokens/README.md).
+// The primitive, brand, motion and semantic layers are haus-tokens'. Drift's
+// semantic layer sits above haus's and wins where the two resolve a role
+// differently, and primitives.css is only what Drift overrides (see
+// tokens/README.md).
+//
+// brand.css arrived with haus 1.0 and is not optional. It is the layer that
+// says which primitive each role takes, and haus's semantics.css reads it: 54
+// --haus-brand-* entries. Drift overrides 148 of haus's 164 roles, so the
+// sixteen it does not override resolve through this file, and without it those
+// sixteen are unresolved var() and silently drop.
 import "haus-tokens/primitives.css";
+import "haus-tokens/brand.css";
 import "haus-tokens/motion.css";
 import "haus-tokens/semantics.css";
 import "./tokens/primitives.css";

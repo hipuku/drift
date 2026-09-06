@@ -1,70 +1,70 @@
 .page {
   max-width: 60rem;
   margin: 0 auto;
-  padding: var(--space-inset-6xl) var(--space-inset-xl) var(--space-inset-7xl);
+  padding: var(--haus-space-inset-6xl) var(--haus-space-inset-xl) var(--haus-space-inset-7xl);
 }
 
 .header {
-  margin-bottom: var(--space-stack-5xl);
+  margin-bottom: var(--haus-space-stack-5xl);
 }
 
 /* These set only colour/layout; <Text> owns the type properties via roles. */
 .wordmark {
-  color: var(--color-primary-default);
+  color: var(--haus-color-primary-default);
 }
 
 .subtitle {
-  color: var(--color-ink-primary);
-  margin-top: var(--space-stack-sm);
+  color: var(--haus-color-ink-primary);
+  margin-top: var(--haus-space-stack-sm);
 }
 
 .note {
-  color: var(--color-ink-tertiary);
-  margin-top: var(--space-stack-xs);
+  color: var(--haus-color-ink-tertiary);
+  margin-top: var(--haus-space-stack-xs);
 }
 
 .note strong {
-  color: var(--color-ink-secondary);
+  color: var(--haus-color-ink-secondary);
   /* Weight only, on a <strong> inside body copy that keeps its parent's size
      and leading. Every role sets all four, so adopting one here would resize
      the emphasis. Off-role on purpose: drift#1. */
-  font-weight: var(--weight-emphasis);
+  font-weight: var(--haus-weight-emphasis);
 }
 
 .section {
-  background: var(--color-surface-default);
-  border: var(--border-width-default) solid var(--color-border-subtle);
-  border-radius: var(--radius-overlay);
-  padding: var(--space-inset-xl);
-  margin-bottom: var(--space-stack-lg);
-  box-shadow: var(--elevation-raised);
+  background: var(--haus-color-surface-default);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  border-radius: var(--haus-radius-overlay);
+  padding: var(--haus-space-inset-xl);
+  margin-bottom: var(--haus-space-stack-lg);
+  box-shadow: var(--haus-elevation-raised);
 }
 
 .sectionLabel {
   text-transform: uppercase;
-  color: var(--color-ink-tertiary);
-  margin-bottom: var(--space-stack-lg);
+  color: var(--haus-color-ink-tertiary);
+  margin-bottom: var(--haus-space-stack-lg);
 }
 
 /* ── Ramps ────────────────────────────────────────────────────────────────── */
 .ramp {
   display: flex;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
   flex-wrap: wrap;
 }
 
 .chipWrap {
   display: flex;
   flex-direction: column;
-  gap: var(--space-gap-xs);
+  gap: var(--haus-space-gap-xs);
   align-items: center;
 }
 
 .chip {
   width: 3rem;
   height: 3rem;
-  border-radius: var(--radius-surface);
-  border: var(--border-width-default) solid var(--color-border-subtle);
+  border-radius: var(--haus-radius-surface);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
 }
 
 .chipLabel {
@@ -74,46 +74,46 @@
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--text-11);
-  color: var(--color-ink-tertiary);
+  font-size: var(--haus-text-11);
+  color: var(--haus-color-ink-tertiary);
 }
 
 /* ── Feedback ─────────────────────────────────────────────────────────────── */
 .feedbackRow {
   display: flex;
-  gap: var(--space-gap-sm);
+  gap: var(--haus-space-gap-sm);
   flex-wrap: wrap;
 }
 
 .feedbackChip {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-gap-xs);
-  padding: var(--space-inset-xs) var(--space-inset-sm);
-  border-radius: var(--radius-pill);
-  border: var(--border-width-default) solid;
-  font-size: var(--type-label-size);
-  font-weight: var(--type-label-weight);
+  gap: var(--haus-space-gap-xs);
+  padding: var(--haus-space-inset-xs) var(--haus-space-inset-sm);
+  border-radius: var(--haus-radius-pill);
+  border: var(--haus-border-width-default) solid;
+  font-size: var(--haus-type-label-size);
+  font-weight: var(--haus-type-label-weight);
 }
 
 .dot {
   width: 0.5rem;
   height: 0.5rem;
-  border-radius: var(--radius-pill);
+  border-radius: var(--haus-radius-pill);
 }
 
 /* ── Surfaces ─────────────────────────────────────────────────────────────── */
 .surfaceRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-gap-sm);
+  gap: var(--haus-space-gap-sm);
 }
 
 .surfaceCell {
   aspect-ratio: 3 / 2;
-  border-radius: var(--radius-surface);
-  border: var(--border-width-default) solid var(--color-border-subtle);
-  padding: var(--space-inset-sm);
+  border-radius: var(--haus-radius-surface);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  padding: var(--haus-space-inset-sm);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -126,13 +126,13 @@
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--text-11);
+  font-size: var(--haus-text-11);
   opacity: 0.75;
 }
 
 .surfaceText {
-  font-size: var(--type-heading-lg-size);
-  font-weight: var(--type-heading-lg-weight);
+  font-size: var(--haus-type-heading-lg-size);
+  font-weight: var(--haus-type-heading-lg-weight);
 }
 
 /* ── Rows (type, space) ───────────────────────────────────────────────────── */
@@ -143,55 +143,55 @@
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--text-11);
-  color: var(--color-ink-tertiary);
+  font-size: var(--haus-text-11);
+  color: var(--haus-color-ink-tertiary);
 }
 
 .typeList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-gap-lg);
+  gap: var(--haus-space-gap-lg);
 }
 
 .typeRow {
   display: grid;
   grid-template-columns: 5rem 1fr;
-  gap: var(--space-gap-md);
+  gap: var(--haus-space-gap-md);
   align-items: baseline;
 }
 
 .spaceList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-gap-sm);
+  gap: var(--haus-space-gap-sm);
 }
 
 .spaceRow {
   display: grid;
   grid-template-columns: 5rem 1fr;
-  gap: var(--space-gap-md);
+  gap: var(--haus-space-gap-md);
   align-items: center;
 }
 
 .spaceBar {
   height: 0.75rem;
-  background: var(--color-primary-default);
-  border-radius: var(--radius-control);
+  background: var(--haus-color-primary-default);
+  border-radius: var(--haus-radius-control);
   display: block;
 }
 
 /* ── Boxes (radius, shadow) ───────────────────────────────────────────────── */
 .boxRow {
   display: flex;
-  gap: var(--space-gap-md);
+  gap: var(--haus-space-gap-md);
   flex-wrap: wrap;
 }
 
 .box {
   width: 4rem;
   height: 4rem;
-  background: var(--color-primary-subtle);
-  border: var(--border-width-default) solid var(--color-primary-default);
+  background: var(--haus-color-primary-subtle);
+  border: var(--haus-border-width-default) solid var(--haus-color-primary-default);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -201,15 +201,15 @@
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--text-11);
-  color: var(--color-primary-on-subtle);
+  font-size: var(--haus-text-11);
+  color: var(--haus-color-primary-on-subtle);
 }
 
 .shadowBox {
   width: 4rem;
   height: 4rem;
-  background: var(--color-surface-default);
-  border-radius: var(--radius-surface);
+  background: var(--haus-color-surface-default);
+  border-radius: var(--haus-radius-surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -219,6 +219,6 @@
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--text-11);
-  color: var(--color-ink-tertiary);
+  font-size: var(--haus-text-11);
+  color: var(--haus-color-ink-tertiary);
 }

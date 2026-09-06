@@ -26,15 +26,15 @@
 .bar {
   position: sticky;
   top: 0;
-  z-index: var(--z-sticky);
+  z-index: var(--haus-z-sticky);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-inset-md) var(--space-inset-xl);
-  background: oklch(from var(--color-surface-default) l c h / 0.72);
+  padding: var(--haus-space-inset-md) var(--haus-space-inset-xl);
+  background: oklch(from var(--haus-color-surface-default) l c h / 0.72);
   backdrop-filter: saturate(1.4) blur(12px);
   -webkit-backdrop-filter: saturate(1.4) blur(12px);
-  border-bottom: var(--border-width-default) solid var(--drift-card-border);
+  border-bottom: var(--haus-border-width-default) solid var(--drift-card-border);
 }
 
 .brand {
@@ -62,34 +62,34 @@
 
 .brand:focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus);
-  border-radius: var(--radius-control);
+  box-shadow: var(--haus-focus-ring);
+  border-radius: var(--haus-radius-control);
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: var(--space-gap-lg);
+  gap: var(--haus-space-gap-lg);
 }
 
 .iconLink {
   display: inline-flex;
   align-items: center;
   font-size: var(--size-icon-inline);
-  color: var(--color-ink-tertiary);
+  color: var(--haus-color-ink-tertiary);
   text-decoration: none;
   cursor: pointer;
   transition: color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .iconLink:hover {
-  color: var(--color-ink-primary);
+  color: var(--haus-color-ink-primary);
 }
 
 .iconLink:focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus);
-  border-radius: var(--radius-control);
+  box-shadow: var(--haus-focus-ring);
+  border-radius: var(--haus-radius-control);
 }
 
 /* Content sits above the fixed grid layer. */

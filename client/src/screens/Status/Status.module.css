@@ -1,32 +1,32 @@
 .screen {
   display: flex;
   justify-content: center;
-  padding: var(--space-inset-7xl) var(--space-inset-xl);
+  padding: var(--haus-space-inset-7xl) var(--haus-space-inset-xl);
 }
 
 .card {
   width: 100%;
   max-width: 32rem;
-  background: var(--color-surface-default);
-  border: var(--border-width-default) solid var(--color-border-subtle);
+  background: var(--haus-color-surface-default);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
   border-radius: var(--radius-panel);
-  box-shadow: var(--elevation-overlay);
-  padding: var(--space-inset-3xl);
+  box-shadow: var(--haus-elevation-overlay);
+  padding: var(--haus-space-inset-3xl);
 }
 
 .row {
   display: flex;
   align-items: center;
-  gap: var(--space-gap-md);
+  gap: var(--haus-space-gap-md);
 }
 
 .detail {
-  color: var(--color-ink-secondary);
-  margin-top: var(--space-stack-md);
+  color: var(--haus-color-ink-secondary);
+  margin-top: var(--haus-space-stack-md);
 }
 
 .callout {
-  margin: var(--space-stack-lg) 0 var(--space-stack-xl);
+  margin: var(--haus-space-stack-lg) 0 var(--haus-space-stack-xl);
 }
 
 .spinner {
@@ -34,8 +34,8 @@
   height: 1.4rem;
   flex-shrink: 0;
   border-radius: 50%;
-  border: var(--border-width-thick) solid var(--color-primary-subtle);
-  border-top-color: var(--color-primary-default);
+  border: var(--haus-border-width-thick) solid var(--haus-color-primary-subtle);
+  border-top-color: var(--haus-color-primary-default);
   animation: spin 0.7s linear infinite;
 }
 
