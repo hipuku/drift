@@ -33,7 +33,7 @@ const BASELINE = join(HERE, "__computed__", "audit-report.json");
 
 /**
  * The properties worth comparing: the ones a stylesheet split can plausibly
- * change. Deliberately not "every computed property" — that pulls in hundreds
+ * change. Deliberately not "every computed property": that pulls in hundreds
  * of inherited defaults per element, makes the baseline unreadable, and buries
  * a real regression in noise.
  */
