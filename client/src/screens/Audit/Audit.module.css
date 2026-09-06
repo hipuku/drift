@@ -17,23 +17,19 @@
   margin: 0 auto;
   transition: max-width var(--motion-duration-ui) var(--motion-ease-standard);
 }
-
 .layoutOpen {
   max-width: 82rem;
 }
-
 .main {
   flex: 1;
   min-width: 0;
   padding-bottom: var(--haus-space-inset-7xl);
 }
-
 .rail {
   flex-shrink: 0;
   width: 22rem;
   animation: railIn var(--motion-duration-ui) var(--motion-ease-standard);
 }
-
 .railInner {
   position: sticky;
   /* Clear the 65px top nav with a comfortable gap so the rail never tucks
@@ -49,7 +45,6 @@
   box-shadow: var(--elevation-modal);
   overflow: hidden;
 }
-
 .railHeader {
   display: flex;
   align-items: center;
@@ -58,7 +53,6 @@
   padding: var(--haus-space-inset-lg) var(--haus-space-inset-lg) var(--haus-space-inset-md);
   flex-shrink: 0;
 }
-
 .railClose {
   display: inline-flex;
   align-items: center;
@@ -74,17 +68,14 @@
   cursor: pointer;
   transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
 }
-
 .railClose:hover {
   background: var(--haus-color-surface-sunken);
   color: var(--haus-color-ink-primary);
 }
-
 .railClose:focus-visible {
   outline: none;
   box-shadow: var(--haus-focus-ring);
 }
-
 .railBody {
   flex: 1;
   min-height: 0;
@@ -94,13 +85,14 @@
 
 @keyframes railIn {
   from {
-    opacity: 0;
-    transform: translateX(16px);
-  }
+      opacity: 0;
+      transform: translateX(16px);
+    }
+
   to {
-    opacity: 1;
-    transform: none;
-  }
+      opacity: 1;
+      transform: none;
+    }
 }
 
 /* Cross-fade the detail content when the selected colour changes (keyed by hex),
@@ -111,37 +103,42 @@
 
 @keyframes railFade {
   from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
   to {
-    opacity: 1;
-    transform: none;
-  }
+      opacity: 1;
+      transform: none;
+    }
 }
 
 /* Narrow screens: stack the rail below the content, full width, not sticky. */
 @media (width <= 60rem) {
   .layout,
-  .layoutOpen {
-    flex-direction: column;
-    max-width: 56rem;
-  }
+    .layoutOpen {
+      flex-direction: column;
+      max-width: 56rem;
+    }
+
   .main {
-    /* Stacked: the rail follows the content, so the breathing room goes back to
-       the page bottom rather than between the content and the rail. */
-    padding-bottom: 0;
-  }
+      /* Stacked: the rail follows the content, so the breathing room goes back to
+         the page bottom rather than between the content and the rail. */
+      padding-bottom: 0;
+    }
+
   .page {
-    padding-bottom: var(--haus-space-inset-7xl);
-  }
+      padding-bottom: var(--haus-space-inset-7xl);
+    }
+
   .rail {
-    width: 100%;
-  }
+      width: 100%;
+    }
+
   .railInner {
-    position: static;
-    height: auto;
-  }
+      position: static;
+      height: auto;
+    }
 }
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
@@ -160,18 +157,15 @@
   cursor: pointer;
   transition: color var(--motion-duration-micro) var(--motion-ease-standard);
 }
-
 .back:hover {
   color: var(--haus-color-ink-link);
 }
-
 .titleRow {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--haus-space-gap-lg);
 }
-
 .title {
   /* Display type, tuned by eye against one string: 1.02 is below the leading
      scale's tightest step, so it stays a number. The letter-spacing that used
@@ -180,20 +174,17 @@
      declaration was re-stating the role's own value and did nothing. */
   line-height: 1.02;
 }
-
 .intro {
   color: var(--haus-color-ink-secondary);
   margin-top: var(--haus-space-stack-sm);
   max-width: 32rem;
 }
-
 .actions {
   display: flex;
   align-items: center;
   gap: var(--haus-space-gap-xs);
   flex-shrink: 0;
 }
-
 .ghost {
   padding: var(--haus-space-inset-xs) var(--haus-space-inset-md);
   border: none;
@@ -206,7 +197,6 @@
   cursor: pointer;
   transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
 }
-
 .ghost:hover {
   background: var(--haus-color-surface-subtle);
   color: var(--haus-color-ink-primary);
@@ -223,16 +213,13 @@
      partially-cut tab signals there's more. */
   scrollbar-width: none;
 }
-
 .tabs::-webkit-scrollbar {
   display: none;
 }
-
 .tabIcon {
   font-size: 0.85em;
   opacity: 0.85;
 }
-
 .tab {
   display: inline-flex;
   align-items: center;
@@ -250,11 +237,9 @@
   cursor: pointer;
   transition: color var(--motion-duration-micro) var(--motion-ease-standard), border-color var(--motion-duration-micro) var(--motion-ease-standard);
 }
-
 .tab:hover {
   color: var(--haus-color-ink-primary);
 }
-
 .tabOn {
   color: var(--haus-color-ink-primary);
   border-bottom-color: var(--haus-color-primary-default);
@@ -267,7 +252,6 @@
    of every table on the audit screen. That is a missing role rather than a
    bypassed one, and inventing --type-mono-sm to close a lint number would be
    the tail wagging the dog. */
-
 .tabCount {
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
@@ -276,7 +260,6 @@
   border-radius: var(--haus-radius-pill);
   padding: var(--space-inset-hairline) var(--haus-space-inset-xs);
 }
-
 .tabOn .tabCount {
   color: var(--haus-color-primary-on-subtle);
   background: var(--haus-color-primary-subtle);
@@ -290,13 +273,12 @@
 
 @keyframes fade {
   from { opacity: 0; transform: translateY(4px); }
+
   to { opacity: 1; transform: none; }
 }
-
 .muted {
   color: var(--haus-color-ink-tertiary);
 }
-
 .sectionLabel {
   display: block;
   text-transform: uppercase;
@@ -304,7 +286,6 @@
   color: var(--haus-color-ink-tertiary);
   margin-bottom: var(--haus-space-stack-md);
 }
-
 .sectionLabel:not(:first-child) {
   margin-top: var(--haus-space-stack-5xl);
 }
@@ -316,7 +297,6 @@
   gap: var(--haus-space-gap-xs);
   margin-top: var(--haus-space-stack-2xs);
 }
-
 .pill {
   display: inline-flex;
   align-items: center;
@@ -343,7 +323,6 @@
     color-mix(in oklab, var(--haus-color-primary-default) 22%, var(--drift-card-border));
   background: var(--haus-color-primary-subtle);
 }
-
 .healthKicker {
   display: block;
   text-transform: uppercase;
@@ -355,7 +334,6 @@
   color: var(--haus-color-primary-on-subtle);
   margin-bottom: var(--haus-space-stack-sm);
 }
-
 .healthLine {
   color: var(--haus-color-ink-primary);
   /* Renders as <Text role="heading-lg">, and takes 1.25 where the role carries
@@ -375,14 +353,12 @@
   border: var(--haus-border-width-default) solid var(--drift-card-border);
   background: color-mix(in oklab, var(--haus-color-ink-primary) 3%, transparent);
 }
-
 .unitRow {
   display: flex;
   flex-wrap: wrap;
   gap: var(--haus-space-gap-sm);
   margin-bottom: var(--haus-space-stack-md);
 }
-
 .unitChip {
   display: inline-flex;
   align-items: baseline;
@@ -391,12 +367,10 @@
   border-radius: var(--haus-radius-surface);
   background: color-mix(in oklab, var(--haus-color-ink-primary) 6%, transparent);
 }
-
 .unitCat {
   font-size: var(--haus-type-label-sm-size);
   color: var(--haus-color-ink-tertiary);
 }
-
 .unitVal {
   font-family: var(--font-mono);
   /* The one mono size on this screen that is not tabular: a unit next to a
@@ -405,16 +379,13 @@
   font-size: var(--haus-text-14);
   color: var(--haus-color-ink-primary);
 }
-
 .authoredNote {
   color: var(--haus-color-ink-secondary);
   margin-top: var(--haus-space-stack-md);
 }
-
 .authoredProps {
   margin-top: var(--haus-space-stack-md);
 }
-
 .authoredToggle {
   /* Full width so the chevron can sit at the far end of the row. */
   display: flex;
@@ -431,11 +402,9 @@
   text-align: left;
   cursor: pointer;
 }
-
 .authoredToggle:hover {
   color: var(--haus-color-ink-primary);
 }
-
 .authoredCaret {
   margin-left: auto;
   align-self: center;
@@ -443,7 +412,6 @@
   color: var(--haus-color-ink-tertiary);
   font-size: var(--haus-type-body-size);
 }
-
 .propList {
   list-style: none;
   margin: var(--haus-space-stack-sm) 0 0;
@@ -451,7 +419,6 @@
   border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
   border-radius: var(--haus-radius-surface);
 }
-
 .propRow {
   display: flex;
   align-items: center;
@@ -459,11 +426,9 @@
   padding: var(--haus-space-inset-xs) var(--haus-space-inset-sm);
   border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
 }
-
 .propRow:last-child {
   border-bottom: none;
 }
-
 .propSwatch {
   flex-shrink: 0;
   width: 1rem;
@@ -471,14 +436,12 @@
   border-radius: var(--haus-radius-control);
   border: var(--haus-border-width-default) solid color-mix(in oklab, var(--haus-color-ink-primary) 15%, transparent);
 }
-
 .propName {
   flex-shrink: 0;
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
   color: var(--haus-color-ink-primary);
 }
-
 .propValue {
   flex: 1;
   min-width: 0;
@@ -492,10 +455,6 @@
 }
 
 /* ── px / rem unit toggle + secondary-unit annotation ────────────────────── */
-
-
-
-
 .valueAlt {
   margin-left: var(--haus-space-stack-xs);
   font-family: var(--type-data-family);
@@ -509,7 +468,6 @@
   grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
   gap: var(--haus-space-gap-md);
 }
-
 .verdict {
   display: flex;
   flex-direction: column;
@@ -524,59 +482,49 @@
   border-radius: var(--haus-radius-overlay);
   transition: transform var(--motion-duration-micro) var(--motion-ease-standard), box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
 }
-
 .verdictClickable {
   cursor: pointer;
 }
-
 .verdictClickable:hover {
   transform: translateY(-2px);
   box-shadow: var(--haus-elevation-overlay);
 }
-
 .verdictClickable:focus-visible {
   outline: none;
   box-shadow: var(--haus-focus-ring);
 }
-
 .verdictLabelRow {
   order: -1;
   display: flex;
   align-items: center;
   gap: var(--haus-space-gap-xs);
 }
-
 .verdictIcon {
   font-size: 0.85em;
   color: var(--haus-color-ink-tertiary);
 }
-
 .verdictLabel {
   color: var(--haus-color-ink-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-size: var(--haus-type-label-sm-size);
 }
-
 .verdictN {
   line-height: 0.9;
   font-size: clamp(2.5rem, 5vw, 3.25rem);
   letter-spacing: -0.02em;
   color: var(--haus-color-ink-primary);
 }
-
 .good {
   background: color-mix(in oklab, var(--haus-color-success-default) 12%, var(--haus-color-surface-default));
   border-color: color-mix(in oklab, var(--haus-color-success-default) 26%, var(--drift-card-border));
   border-bottom-color: var(--haus-color-success-default);
 }
-
 .watch {
   background: color-mix(in oklab, var(--haus-color-warning-default) 14%, var(--haus-color-surface-default));
   border-color: color-mix(in oklab, var(--haus-color-warning-default) 30%, var(--drift-card-border));
   border-bottom-color: var(--haus-color-warning-default);
 }
-
 .review {
   background: color-mix(in oklab, var(--haus-color-error-default) 13%, var(--haus-color-surface-default));
   border-color: color-mix(in oklab, var(--haus-color-error-default) 28%, var(--drift-card-border));
@@ -588,7 +536,6 @@
 .empty {
   opacity: 0.5;
 }
-
 .empty .verdictN {
   color: var(--haus-color-ink-tertiary);
 }
@@ -599,22 +546,6 @@
   grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
   gap: var(--haus-space-gap-md);
 }
-
-.card {
-  display: flex;
-  flex-direction: column;
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--drift-card-border);
-  border-radius: var(--haus-radius-overlay);
-  overflow: hidden;
-  transition: transform var(--motion-duration-micro) var(--motion-ease-standard), box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--haus-elevation-overlay);
-}
-
 .cardSpecimen {
   height: 4.75rem;
   display: flex;
@@ -623,383 +554,34 @@
   padding: var(--haus-space-inset-md);
   background: var(--haus-color-surface-subtle);
 }
-
-.cardMeta {
-  padding: var(--haus-space-inset-sm) var(--haus-space-inset-md) var(--haus-space-inset-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--haus-space-gap-xs);
-  min-width: 0;
-}
-
-.cardValue {
-  color: var(--haus-color-ink-primary);
-  font-size: var(--haus-type-label-sm-size);
-}
-
 .cardValueTrunc {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Colour cards are buttons (click to expand). */
-.cardBtn {
-  width: 100%;
-  text-align: left;
-  font: inherit;
-  cursor: pointer;
-  padding: 0;
-}
-
-.cardBtn:focus-visible {
-  outline: none;
-  box-shadow: var(--haus-focus-ring);
-}
-
-.cardOn {
-  border-color: var(--haus-color-primary-default);
-  box-shadow: 0 0 0 1px var(--haus-color-primary-default);
-}
-
-/* Brief pulse when a card is scrolled to after picking it from the rail. */
-.cardFlash {
-  animation: cardFlash 1.1s var(--motion-ease-standard);
-}
-
 @keyframes cardFlash {
   0%,
-  35% {
-    /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-    box-shadow: 0 0 0 3px var(--haus-color-primary-default);
-  }
+    35% {
+      /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+      box-shadow: 0 0 0 3px var(--haus-color-primary-default);
+    }
+
   100% {
-    /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-    box-shadow: 0 0 0 3px transparent;
-  }
+      /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+      box-shadow: 0 0 0 3px transparent;
+    }
 }
-
-.swatchFill {
-  height: 4.75rem;
-  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 10%, transparent);
-}
-
-/* ── Colour detail: the full-width strip that unfolds under a selected swatch */
-/* ── Colour drawer content ───────────────────────────────────────────────── */
-.drawerContent {
-  display: flex;
-  flex-direction: column;
-  gap: var(--haus-space-gap-2xl);
-}
-
-.detailSection {
-  min-width: 0;
-}
-
-.drawerTitle {
-  display: flex;
-  align-items: center;
-  gap: var(--haus-space-gap-sm);
-}
-
-.drawerSwatch {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: var(--haus-radius-surface);
-  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 12%, transparent);
-  flex-shrink: 0;
-}
-
-.drawerHex {
-  display: block;
-  color: var(--haus-color-ink-primary);
-}
-
-/* The stack of related-colour call-outs (opacity variants + near-duplicates). */
-.relatedList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--haus-space-gap-sm);
-}
-
-/* Near-duplicate / nearest call-out. */
-.nearCallout {
-  display: flex;
-  align-items: center;
-  gap: var(--haus-space-gap-md);
-  width: 100%;
-  text-align: left;
-  padding: var(--haus-space-inset-md);
-  border-radius: var(--haus-radius-overlay);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
-  background: var(--haus-color-surface-subtle);
-  cursor: pointer;
-  transition: border-color var(--motion-duration-micro) var(--motion-ease-standard);
-}
-
-.nearCallout:hover {
-  border-color: var(--haus-color-border-strong);
-}
-
-.nearCallout:focus-visible {
-  outline: none;
-  box-shadow: var(--haus-focus-ring);
-}
-
-.nearDup {
-  border-color: color-mix(in oklab, var(--haus-color-error-default) 40%, var(--drift-card-border));
-  background: color-mix(in oklab, var(--haus-color-error-default) 10%, var(--haus-color-surface-default));
-}
-
-/* Checker underlay: invisible behind an opaque swatch, showing through a
-   translucent one so an opacity variant reads as translucent, not just darker. */
-.nearSwatchWrap {
-  display: block;
-  width: 2rem;
-  height: 2rem;
-  flex-shrink: 0;
-  border-radius: var(--haus-radius-surface);
-  overflow: hidden;
-  background-image:
-    linear-gradient(45deg, var(--haus-color-surface-sunken) 25%, transparent 25%),
-    linear-gradient(-45deg, var(--haus-color-surface-sunken) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, var(--haus-color-surface-sunken) 75%),
-    linear-gradient(-45deg, transparent 75%, var(--haus-color-surface-sunken) 75%);
-  background-size: 10px 10px;
-  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
-}
-
-.nearSwatch {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 12%, transparent);
-}
-
-.nearText {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  color: var(--haus-color-ink-secondary);
-}
-
-.nearHex {
-  color: var(--haus-color-ink-primary);
-}
-
-.nearDelta {
-  margin-left: auto;
-  color: var(--haus-color-ink-tertiary);
-}
-
-/* Section head with a trailing control (e.g. the elements group toggle). */
-.detailHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--haus-space-gap-sm);
-}
-
-.detailHead .detailLabel {
-  margin-bottom: 0;
-}
-
-.sortToggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  flex-shrink: 0;
-  margin-bottom: var(--haus-space-stack-sm);
-  border: none;
-  border-radius: var(--haus-radius-surface);
-  background: none;
-  color: var(--haus-color-ink-tertiary);
-  font-size: var(--haus-type-label-sm-size);
-  cursor: pointer;
-  transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
-}
-
-.sortToggle:hover {
-  background: var(--haus-color-surface-sunken);
-  color: var(--haus-color-ink-primary);
-}
-
-.sortToggleOn {
-  background: var(--haus-color-primary-subtle);
-  color: var(--haus-color-primary-on-subtle);
-}
-
-.sortToggle:focus-visible {
-  outline: none;
-  box-shadow: var(--haus-focus-ring);
-}
-
-/* Elements-that-use-it list. */
-.elementList {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Grouped-by-tag view: a tag header with its total, then indented role rows. */
-.elementGroup {
-  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-  padding-bottom: var(--haus-space-inset-xs);
-}
-
-.elementGroup:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.elementGroup + .elementGroup {
-  padding-top: var(--haus-space-inset-xs);
-}
-
-.elementGroupHead {
-  display: flex;
-  align-items: center;
-  gap: var(--haus-space-gap-sm);
-  padding: var(--haus-space-inset-xs) 0;
-}
-
-.elementGroupHead .elementCount {
-  margin-left: auto;
-}
-
-.elementSubRow {
-  display: flex;
-  align-items: center;
-  gap: var(--haus-space-gap-sm);
-  padding: var(--space-inset-tight) 0 var(--space-inset-tight) var(--haus-space-inset-md);
-}
-
-.elementRow {
-  display: flex;
-  align-items: center;
-  gap: var(--haus-space-gap-sm);
-  padding: var(--haus-space-inset-xs) 0;
-  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-}
-
-.elementRow:last-child {
-  border-bottom: none;
-}
-
-.elementTag {
-  color: var(--haus-color-ink-primary);
-  font-size: var(--haus-type-label-sm-size);
-}
-
-.elementRole {
-  font-family: var(--font-sans);
-  font-size: var(--haus-type-label-sm-size);
-  color: var(--haus-color-ink-tertiary);
-}
-
-.elementCount {
-  margin-left: auto;
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
-  color: var(--haus-color-ink-tertiary);
-}
-
-.detailLabel {
-  display: block;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--haus-color-ink-tertiary);
-  margin-bottom: var(--haus-space-stack-sm);
-}
-
-.roleBars {
-  display: flex;
-  flex-direction: column;
-  gap: var(--haus-space-gap-xs);
-}
-
-.roleRow {
-  display: flex;
-  align-items: center;
-  gap: var(--haus-space-gap-sm);
-}
-
-.roleName {
-  width: 5.5rem;
-  flex-shrink: 0;
-  font-family: var(--font-sans);
-  font-size: var(--haus-type-label-sm-size);
-  color: var(--haus-color-ink-secondary);
-}
-
-.roleTrack {
-  flex: 1;
-  height: 0.5rem;
-  border-radius: var(--haus-radius-pill);
-  background: var(--haus-color-surface-sunken);
-  overflow: hidden;
-}
-
-.roleFill {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--haus-color-primary-default);
-}
-
-.rolePct {
-  width: 2.5rem;
-  flex-shrink: 0;
-  text-align: right;
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
-  color: var(--haus-color-ink-tertiary);
-}
-
-.pageChips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--haus-space-gap-xs);
-}
-
-.pageChip {
-  padding: var(--space-inset-tight) var(--haus-space-inset-xs);
-  border-radius: var(--haus-radius-control);
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
-  color: var(--haus-color-ink-secondary);
-}
-
 .tabIntro {
   color: var(--haus-color-ink-secondary);
   max-width: 40rem;
   margin-bottom: var(--haus-space-stack-xl);
 }
-
-.pillDup {
-  background: color-mix(in oklab, var(--haus-color-error-default) 16%, transparent);
-  color: var(--drift-alert-ink);
-}
-
-@media (width <= 40rem) {
-  .drawerContent {
-    gap: var(--haus-space-gap-lg);
-  }
-}
-
 .glyph {
   font-size: 2.25rem;
   line-height: 1;
   color: var(--haus-color-ink-primary);
 }
-
 .shadowChip {
   display: inline-block;
   width: 3rem;
@@ -1007,7 +589,6 @@
   border-radius: var(--haus-radius-surface);
   background: var(--haus-color-surface-raised);
 }
-
 .gradientBox {
   width: 100%;
   height: 4.75rem;
@@ -1026,12 +607,10 @@
 .tableWrap + .tableWrap {
   margin-top: var(--haus-space-stack-3xl);
 }
-
 .table {
   width: 100%;
   border-collapse: collapse;
 }
-
 .table th {
   text-align: left;
   font-family: var(--font-sans);
@@ -1043,21 +622,17 @@
   padding: 0 var(--haus-space-inset-sm) var(--haus-space-inset-sm);
   border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-default);
 }
-
 .table th.thRight {
   text-align: right;
 }
-
 .table td {
   padding: var(--haus-space-inset-sm);
   border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
   vertical-align: middle;
 }
-
 .table tbody tr:last-child td {
   border-bottom: none;
 }
-
 .specimenCell {
   width: 42%;
 }
@@ -1087,7 +662,6 @@
   width: 3rem;
   height: 2.25rem;
 }
-
 .zLayer {
   position: absolute;
   width: 1.6rem;
@@ -1096,7 +670,6 @@
   background: var(--haus-color-surface-raised);
   border: var(--haus-border-width-default) solid var(--haus-color-border-default);
 }
-
 .zLayerTop {
   background: var(--haus-color-primary-subtle);
   border-color: var(--haus-color-primary-default);
@@ -1111,14 +684,12 @@
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 10%, transparent);
 }
-
 .valueCell {
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
   color: var(--haus-color-ink-primary);
   white-space: nowrap;
 }
-
 .valueCellTrunc {
   max-width: 12rem;
   overflow: hidden;
@@ -1140,22 +711,18 @@
 .motionTable + .motionTable {
   margin-top: var(--haus-space-stack-5xl);
 }
-
 .motionTable th:nth-child(1),
 .motionTable td:nth-child(1) {
   width: 30%;
 }
-
 .motionTable th:nth-child(2),
 .motionTable td:nth-child(2) {
   width: 24%;
 }
-
 .motionTable th:nth-child(4),
 .motionTable td:nth-child(4) {
   width: 12%;
 }
-
 .usageCell {
   text-align: right;
   font-family: var(--type-data-family);
@@ -1170,7 +737,6 @@
   align-items: center;
   gap: var(--haus-space-gap-xs);
 }
-
 
 /* An off-scale / off-grid / near-duplicate marker, inline with the value.
    Deliberately a dot rather than a labelled badge: the tables carry one per row and
@@ -1189,14 +755,12 @@
   /* Chips wrap within a sane column width instead of pushing the table wide. */
   max-width: 18rem;
 }
-
 .tagChips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--haus-space-gap-xs);
   row-gap: var(--haus-space-gap-2xs);
 }
-
 .tagChip {
   padding: var(--space-inset-hairline) var(--haus-space-inset-xs);
   border-radius: var(--haus-radius-control);
@@ -1212,7 +776,6 @@
   color: var(--haus-color-ink-primary);
   line-height: 1;
 }
-
 .bar {
   display: block;
   height: 0.5rem;
@@ -1220,7 +783,6 @@
   background: var(--haus-color-primary-default);
   min-width: 4px;
 }
-
 .bpBar {
   display: block;
   height: 0.5rem;
@@ -1241,7 +803,6 @@
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: inset 0 0.4rem 0 -0.3rem var(--haus-color-border-default);
 }
-
 .radiusChip {
   display: block;
   width: 2.5rem;
@@ -1249,7 +810,6 @@
   background: var(--haus-color-primary-subtle);
   border: var(--haus-border-width-default) solid var(--haus-color-primary-default);
 }
-
 .borderChip {
   display: block;
   width: 2.5rem;
@@ -1279,14 +839,12 @@
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 14%, transparent);
 }
-
 .opacityFill {
   display: block;
   width: 100%;
   height: 100%;
   background: var(--haus-color-primary-default);
 }
-
 .blurStage {
   display: inline-block;
   width: 2.5rem;
@@ -1296,12 +854,10 @@
   background: repeating-linear-gradient(45deg, var(--haus-color-primary-default) 0 8px, var(--accent-300) 8px 16px);
   position: relative;
 }
-
 .blurGlass {
   position: absolute;
   inset: 0;
 }
-
 .motionTrack {
   position: relative;
   display: block;
@@ -1311,7 +867,6 @@
   border-radius: var(--haus-radius-pill);
   background: var(--haus-color-surface-sunken);
 }
-
 .motionDot,
 .easingDot {
   position: absolute;
@@ -1323,12 +878,12 @@
   background: var(--haus-color-primary-default);
   transform: translateY(-50%);
 }
-
 .motionDot { animation: slideTrack var(--dur, 200ms) var(--motion-ease-standard) infinite alternate; }
 .easingDot { animation: slideTrack 1.4s var(--ease, ease) infinite alternate; }
 
 @keyframes slideTrack {
   from { left: 0; }
+
   to { left: calc(100% - 0.7rem); }
 }
 
@@ -1336,10 +891,6 @@
 .ruler {
   margin-bottom: var(--haus-space-stack-4xl);
 }
-
-
-
-
 .rulerTrack {
   position: relative;
   height: 3rem;
@@ -1352,13 +903,11 @@
   align-items: center;
   gap: var(--haus-space-gap-xs);
 }
-
 .infoIcon {
   font-size: 0.85em;
   color: var(--haus-color-ink-tertiary);
   cursor: help;
 }
-
 .rulerLine {
   position: absolute;
   left: 0;
@@ -1367,7 +916,6 @@
   height: 1px;
   background: var(--haus-color-border-default);
 }
-
 .rulerTick {
   position: absolute;
   top: 0.75rem;
@@ -1376,7 +924,6 @@
   background: var(--haus-color-border-strong);
   transform: translateX(-50%);
 }
-
 .rulerTickLabel {
   position: absolute;
   top: 0.6rem;
@@ -1387,7 +934,6 @@
   color: var(--haus-color-ink-tertiary);
   white-space: nowrap;
 }
-
 .rulerDot {
   position: absolute;
   top: 1rem;
@@ -1399,7 +945,6 @@
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: 0 0 0 3px var(--haus-color-surface-default);
 }
-
 .rulerDotOff {
   background: var(--haus-color-error-default);
   z-index: 1;
@@ -1411,7 +956,6 @@
   flex-direction: column;
   gap: var(--haus-space-gap-sm);
 }
-
 .familyRow {
   display: flex;
   align-items: center;
@@ -1421,20 +965,17 @@
   border: var(--haus-border-width-default) solid var(--drift-card-border);
   border-radius: var(--haus-radius-overlay);
 }
-
 .familyRowGlyph {
   font-size: 2rem;
   line-height: 1;
   color: var(--haus-color-ink-primary);
   flex-shrink: 0;
 }
-
 .familyRowName {
   font-family: var(--font-sans);
   font-size: var(--haus-type-body-size);
   color: var(--haus-color-ink-primary);
 }
-
 .familyRow .pill {
   margin-left: auto;
 }
@@ -1450,7 +991,6 @@
 .family + .family {
   margin-top: var(--haus-space-stack-5xl);
 }
-
 .familyHead {
   display: flex;
   align-items: baseline;
@@ -1461,29 +1001,28 @@
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (width <= 40rem) {
   .titleRow {
-    flex-direction: column;
-  }
+      flex-direction: column;
+    }
+
   .specimenCell {
-    width: 30%;
-  }
+      width: 30%;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .panel {
-    animation: none;
-  }
-  .card,
+      animation: none;
+    }
+
   .verdict {
-    transition: none;
-  }
-  .cardFlash {
-    animation: none;
-  }
+      transition: none;
+    }
+
   .motionDot,
-  .easingDot {
-    animation: none;
-    left: calc(100% - 0.7rem);
-  }
+    .easingDot {
+      animation: none;
+      left: calc(100% - 0.7rem);
+    }
 }
 
 /* Contrast: a live specimen of the pair as the site actually renders it, so
@@ -1500,7 +1039,6 @@
   font-size: var(--haus-type-body-size);
   font-weight: var(--haus-weight-strong);
 }
-
 .contrastPair {
   display: inline-flex;
   align-items: baseline;
@@ -1508,7 +1046,6 @@
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
 }
-
 .contrastOn {
   color: var(--haus-color-ink-tertiary);
 }
@@ -1524,11 +1061,9 @@
   overflow-x: auto;
   scrollbar-width: none;
 }
-
 .scaleOptions::-webkit-scrollbar {
   display: none;
 }
-
 .scaleChip {
   display: inline-flex;
   flex-shrink: 0;
@@ -1545,23 +1080,19 @@
   cursor: pointer;
   transition: color 150ms, border-color 150ms, background 150ms;
 }
-
 .scaleChip:hover {
   color: var(--haus-color-ink-primary);
   border-color: var(--haus-color-border-default);
 }
-
 .scaleChip:focus-visible {
   outline: var(--haus-border-width-thick) solid var(--haus-color-primary-default);
   outline-offset: 2px;
 }
-
 .scaleChipOn {
   background: var(--haus-color-surface-raised);
   border-color: var(--haus-color-primary-default);
   color: var(--haus-color-ink-primary);
 }
-
 .scaleChipCount {
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);

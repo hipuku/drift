@@ -21,7 +21,13 @@ import {
   usageText,
   type NearKind,
 } from "../auditModel.js";
-import styles from "../Audit.module.css";
+/* Two stylesheets, because this component reads from two. Its own 41 classes
+   live beside it; `muted`, `pills` and `pill` are the audit screen's, shared
+   with the tables and the scalar sections, and stay there. Naming the shared
+   one `shared` rather than aliasing the local one keeps every `styles.` read in
+   this file pointing at the file next to it. */
+import shared from "../Audit.module.css";
+import styles from "./colour.module.css";
 
 export function ColourCard({
   sw,
@@ -54,9 +60,9 @@ export function ColourCard({
         <Text role="mono" className={styles.cardValue}>
           {sw.hex.toUpperCase()}
         </Text>
-        <span className={styles.pills}>
-          <span className={styles.pill}>{sw.count.toLocaleString()}× used</span>
-          {isDup && <span className={`${styles.pill} ${styles.pillDup}`}>≈ ΔE {sw.nearest!.deltaE}</span>}
+        <span className={shared.pills}>
+          <span className={shared.pill}>{sw.count.toLocaleString()}× used</span>
+          {isDup && <span className={`${shared.pill} ${styles.pillDup}`}>≈ ΔE {sw.nearest!.deltaE}</span>}
         </span>
       </span>
     </button>
@@ -78,7 +84,7 @@ export function ColourDrawerTitle({ sw, totalPages }: { sw: AuditColourSwatch; t
         <Text role="heading-sm" as="span" className={styles.drawerHex}>
           {sw.hex.toUpperCase()}
         </Text>
-        <Text role="label-xs" className={styles.muted}>
+        <Text role="label-xs" className={shared.muted}>
           {usageText(sw.count, totalPages, sw.pages.length)}
         </Text>
       </div>

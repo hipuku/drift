@@ -1,0 +1,391 @@
+/* ─── Audit / colour ─────────────────────────────────────────────────────────
+   The colour section's own styles, beside the component that reads them.
+
+   Split out of Audit.module.css, which was 1577 lines serving seven
+   components. That split was attempted once before and reverted, drift#2: the
+   ownership of each rule was decided by which classes its selector mentioned,
+   so a prefers-reduced-motion block reading `.card, .verdict { transition:
+   none }` was filed as shared and took `.card`'s name with it while `.card`'s
+   real declarations stayed behind. The component then read a class whose only
+   rule was `transition: none`, and the colour cards rendered unstyled.
+
+   This time ownership is per class, by where a class's declarations are, and
+   that one selector is split in two: the half naming a class from here is
+   here, and the half naming one from there is there.
+
+   The evidence is not this comment. `e2e/computed-styles.spec.ts` records what
+   the browser computes for every element of the report across every tab, and
+   the split is only correct if that diff is empty.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--haus-color-surface-default);
+  border: var(--haus-border-width-default) solid var(--drift-card-border);
+  border-radius: var(--haus-radius-overlay);
+  overflow: hidden;
+  transition: transform var(--motion-duration-micro) var(--motion-ease-standard), box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--haus-elevation-overlay);
+}
+
+.cardMeta {
+  padding: var(--haus-space-inset-sm) var(--haus-space-inset-md) var(--haus-space-inset-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--haus-space-gap-xs);
+  min-width: 0;
+}
+
+.cardValue {
+  color: var(--haus-color-ink-primary);
+  font-size: var(--haus-type-label-sm-size);
+}
+
+/* Colour cards are buttons (click to expand). */
+.cardBtn {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cardBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--haus-focus-ring);
+}
+
+.cardOn {
+  border-color: var(--haus-color-primary-default);
+  box-shadow: 0 0 0 1px var(--haus-color-primary-default);
+}
+
+/* Brief pulse when a card is scrolled to after picking it from the rail. */
+.cardFlash {
+  animation: cardFlash 1.1s var(--motion-ease-standard);
+}
+
+.swatchFill {
+  height: 4.75rem;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 10%, transparent);
+}
+
+/* ── Colour detail: the full-width strip that unfolds under a selected swatch */
+/* ── Colour drawer content ───────────────────────────────────────────────── */
+.drawerContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--haus-space-gap-2xl);
+}
+
+.detailSection {
+  min-width: 0;
+}
+
+.drawerTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--haus-space-gap-sm);
+}
+
+.drawerSwatch {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--haus-radius-surface);
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 12%, transparent);
+  flex-shrink: 0;
+}
+
+.drawerHex {
+  display: block;
+  color: var(--haus-color-ink-primary);
+}
+
+/* The stack of related-colour call-outs (opacity variants + near-duplicates). */
+.relatedList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--haus-space-gap-sm);
+}
+
+/* Near-duplicate / nearest call-out. */
+.nearCallout {
+  display: flex;
+  align-items: center;
+  gap: var(--haus-space-gap-md);
+  width: 100%;
+  text-align: left;
+  padding: var(--haus-space-inset-md);
+  border-radius: var(--haus-radius-overlay);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
+  background: var(--haus-color-surface-subtle);
+  cursor: pointer;
+  transition: border-color var(--motion-duration-micro) var(--motion-ease-standard);
+}
+
+.nearCallout:hover {
+  border-color: var(--haus-color-border-strong);
+}
+
+.nearCallout:focus-visible {
+  outline: none;
+  box-shadow: var(--haus-focus-ring);
+}
+
+.nearDup {
+  border-color: color-mix(in oklab, var(--haus-color-error-default) 40%, var(--drift-card-border));
+  background: color-mix(in oklab, var(--haus-color-error-default) 10%, var(--haus-color-surface-default));
+}
+
+/* Checker underlay: invisible behind an opaque swatch, showing through a
+   translucent one so an opacity variant reads as translucent, not just darker. */
+.nearSwatchWrap {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: var(--haus-radius-surface);
+  overflow: hidden;
+  background-image:
+    linear-gradient(45deg, var(--haus-color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--haus-color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--haus-color-surface-sunken) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--haus-color-surface-sunken) 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+}
+
+.nearSwatch {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 12%, transparent);
+}
+
+.nearText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--haus-color-ink-secondary);
+}
+
+.nearHex {
+  color: var(--haus-color-ink-primary);
+}
+
+.nearDelta {
+  margin-left: auto;
+  color: var(--haus-color-ink-tertiary);
+}
+
+/* Section head with a trailing control (e.g. the elements group toggle). */
+.detailHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--haus-space-gap-sm);
+}
+
+.detailHead .detailLabel {
+  margin-bottom: 0;
+}
+
+.sortToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  margin-bottom: var(--haus-space-stack-sm);
+  border: none;
+  border-radius: var(--haus-radius-surface);
+  background: none;
+  color: var(--haus-color-ink-tertiary);
+  font-size: var(--haus-type-label-sm-size);
+  cursor: pointer;
+  transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
+}
+
+.sortToggle:hover {
+  background: var(--haus-color-surface-sunken);
+  color: var(--haus-color-ink-primary);
+}
+
+.sortToggleOn {
+  background: var(--haus-color-primary-subtle);
+  color: var(--haus-color-primary-on-subtle);
+}
+
+.sortToggle:focus-visible {
+  outline: none;
+  box-shadow: var(--haus-focus-ring);
+}
+
+/* Elements-that-use-it list. */
+.elementList {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Grouped-by-tag view: a tag header with its total, then indented role rows. */
+.elementGroup {
+  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  padding-bottom: var(--haus-space-inset-xs);
+}
+
+.elementGroup:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.elementGroup + .elementGroup {
+  padding-top: var(--haus-space-inset-xs);
+}
+
+.elementGroupHead {
+  display: flex;
+  align-items: center;
+  gap: var(--haus-space-gap-sm);
+  padding: var(--haus-space-inset-xs) 0;
+}
+
+.elementGroupHead .elementCount {
+  margin-left: auto;
+}
+
+.elementSubRow {
+  display: flex;
+  align-items: center;
+  gap: var(--haus-space-gap-sm);
+  padding: var(--space-inset-tight) 0 var(--space-inset-tight) var(--haus-space-inset-md);
+}
+
+.elementRow {
+  display: flex;
+  align-items: center;
+  gap: var(--haus-space-gap-sm);
+  padding: var(--haus-space-inset-xs) 0;
+  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+}
+
+.elementRow:last-child {
+  border-bottom: none;
+}
+
+.elementTag {
+  color: var(--haus-color-ink-primary);
+  font-size: var(--haus-type-label-sm-size);
+}
+
+.elementRole {
+  font-family: var(--font-sans);
+  font-size: var(--haus-type-label-sm-size);
+  color: var(--haus-color-ink-tertiary);
+}
+
+.elementCount {
+  margin-left: auto;
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
+  color: var(--haus-color-ink-tertiary);
+}
+
+.detailLabel {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--haus-color-ink-tertiary);
+  margin-bottom: var(--haus-space-stack-sm);
+}
+
+.roleBars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--haus-space-gap-xs);
+}
+
+.roleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--haus-space-gap-sm);
+}
+
+.roleName {
+  width: 5.5rem;
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  font-size: var(--haus-type-label-sm-size);
+  color: var(--haus-color-ink-secondary);
+}
+
+.roleTrack {
+  flex: 1;
+  height: 0.5rem;
+  border-radius: var(--haus-radius-pill);
+  background: var(--haus-color-surface-sunken);
+  overflow: hidden;
+}
+
+.roleFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--haus-color-primary-default);
+}
+
+.rolePct {
+  width: 2.5rem;
+  flex-shrink: 0;
+  text-align: right;
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
+  color: var(--haus-color-ink-tertiary);
+}
+
+.pageChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--haus-space-gap-xs);
+}
+
+.pageChip {
+  padding: var(--space-inset-tight) var(--haus-space-inset-xs);
+  border-radius: var(--haus-radius-control);
+  background: var(--haus-color-surface-default);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
+  color: var(--haus-color-ink-secondary);
+}
+
+.pillDup {
+  background: color-mix(in oklab, var(--haus-color-error-default) 16%, transparent);
+  color: var(--drift-alert-ink);
+}
+
+@media (width <= 40rem) {
+  .drawerContent {
+      gap: var(--haus-space-gap-lg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+      transition: none;
+    }
+
+  .cardFlash {
+      animation: none;
+    }
+}
+
