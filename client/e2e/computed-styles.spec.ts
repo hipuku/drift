@@ -155,6 +155,30 @@ async function walkEveryTab(
   return merged;
 }
 
+/* Not run in CI, and that is a limit rather than an oversight.
+ *
+ * A computed style is what a particular browser on a particular machine
+ * resolved, so the baseline carries that machine's font metrics and layout
+ * rounding with it. Recorded on macOS and replayed on CI's Ubuntu it reports
+ * around 1456 differences with the tree structurally identical: nothing moved,
+ * everything measured slightly differently.
+ *
+ * That could be papered over by dropping every property whose value depends on
+ * layout, but the ones left would be a poor net, and the exercise this was
+ * built for does not need it. drift#2 asks for "comparing computed styles
+ * before and after", and before and after happen on the same machine within
+ * minutes of each other. That is what this does, and it caught what it was
+ * built to catch.
+ *
+ * To use it: `npm run styles:baseline`, make the change, `npx playwright test
+ * computed-styles`. An empty diff is the evidence. Delete the baseline
+ * afterwards or leave it; it is regenerated, not maintained.
+ */
+test.skip(
+  !!process.env.CI,
+  "The baseline is machine-specific: a before-and-after instrument, not a cross-machine gate.",
+);
+
 test("the audit report computes the styles it is recorded as computing", async ({ page }) => {
   await reachTheReport(page);
   const current = await walkEveryTab(page, PROPERTIES);
