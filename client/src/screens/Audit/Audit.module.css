@@ -85,14 +85,14 @@
 
 @keyframes railIn {
   from {
-      opacity: 0;
-      transform: translateX(16px);
-    }
+          opacity: 0;
+          transform: translateX(16px);
+        }
 
   to {
-      opacity: 1;
-      transform: none;
-    }
+          opacity: 1;
+          transform: none;
+        }
 }
 
 /* Cross-fade the detail content when the selected colour changes (keyed by hex),
@@ -103,42 +103,42 @@
 
 @keyframes railFade {
   from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
+          opacity: 0;
+          transform: translateY(6px);
+        }
 
   to {
-      opacity: 1;
-      transform: none;
-    }
+          opacity: 1;
+          transform: none;
+        }
 }
 
 /* Narrow screens: stack the rail below the content, full width, not sticky. */
 @media (width <= 60rem) {
   .layout,
-    .layoutOpen {
-      flex-direction: column;
-      max-width: 56rem;
-    }
+        .layoutOpen {
+          flex-direction: column;
+          max-width: 56rem;
+        }
 
   .main {
-      /* Stacked: the rail follows the content, so the breathing room goes back to
-         the page bottom rather than between the content and the rail. */
-      padding-bottom: 0;
-    }
+          /* Stacked: the rail follows the content, so the breathing room goes back to
+             the page bottom rather than between the content and the rail. */
+          padding-bottom: 0;
+        }
 
   .page {
-      padding-bottom: var(--haus-space-inset-7xl);
-    }
+          padding-bottom: var(--haus-space-inset-7xl);
+        }
 
   .rail {
-      width: 100%;
-    }
+          width: 100%;
+        }
 
   .railInner {
-      position: static;
-      height: auto;
-    }
+          position: static;
+          height: auto;
+        }
 }
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
@@ -313,145 +313,9 @@
   line-height: var(--haus-leading-relaxed);
   white-space: nowrap;
 }
-
-/* ── Design Health ───────────────────────────────────────────────────────── */
-.health {
-  padding: var(--haus-space-inset-2xl) var(--haus-space-inset-3xl);
-  margin-bottom: var(--haus-space-stack-xl);
-  border-radius: var(--radius-panel);
-  border: var(--haus-border-width-default) solid
-    color-mix(in oklab, var(--haus-color-primary-default) 22%, var(--drift-card-border));
-  background: var(--haus-color-primary-subtle);
-}
-.healthKicker {
-  display: block;
-  text-transform: uppercase;
-  /* Renders as <Text role="label-sm">, whose tracking is 0.02em. Uppercase at
-     12px needs more than that to stay readable, so this is a departure from the
-     role rather than a bypass of the tier, and reading label-xs's tracking
-     instead would be mixing two roles, which the header above forbids. */
-  letter-spacing: var(--haus-tracking-widest);
-  color: var(--haus-color-primary-on-subtle);
-  margin-bottom: var(--haus-space-stack-sm);
-}
-.healthLine {
-  color: var(--haus-color-ink-primary);
-  /* Renders as <Text role="heading-lg">, and takes 1.25 where the role carries
-     1.2: a deliberate departure on one line of large text, so it reads the
-     primitive. Its letter-spacing used to sit here too and was --haus-tracking-tight,
-     which is what heading-lg already carries: re-stating the role, doing
-     nothing. */
-  line-height: var(--haus-leading-snug);
-  text-wrap: pretty;
-}
-
-/* ── Authoring (authored units read from the CSSOM) ──────────────────────── */
-.authoring {
-  margin-top: var(--haus-space-stack-xl);
-  padding: var(--haus-space-inset-xl) var(--haus-space-inset-2xl);
-  border-radius: var(--radius-panel);
-  border: var(--haus-border-width-default) solid var(--drift-card-border);
-  background: color-mix(in oklab, var(--haus-color-ink-primary) 3%, transparent);
-}
-.unitRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--haus-space-gap-sm);
-  margin-bottom: var(--haus-space-stack-md);
-}
-.unitChip {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--haus-space-gap-xs);
-  padding: var(--haus-space-inset-xs) var(--haus-space-inset-sm);
-  border-radius: var(--haus-radius-surface);
-  background: color-mix(in oklab, var(--haus-color-ink-primary) 6%, transparent);
-}
-.unitCat {
-  font-size: var(--haus-type-label-sm-size);
-  color: var(--haus-color-ink-tertiary);
-}
-.unitVal {
-  font-family: var(--font-mono);
-  /* The one mono size on this screen that is not tabular: a unit next to a
-     number, sized to sit beside body text rather than inside a column. One
-     occurrence, so it is a departure rather than a role: drift#24. */
-  font-size: var(--haus-text-14);
-  color: var(--haus-color-ink-primary);
-}
 .authoredNote {
   color: var(--haus-color-ink-secondary);
   margin-top: var(--haus-space-stack-md);
-}
-.authoredProps {
-  margin-top: var(--haus-space-stack-md);
-}
-.authoredToggle {
-  /* Full width so the chevron can sit at the far end of the row. */
-  display: flex;
-  width: 100%;
-  align-items: baseline;
-  gap: var(--haus-space-gap-xs);
-  padding: 0;
-  border: none;
-  background: none;
-  color: var(--haus-color-ink-secondary);
-  font-family: var(--font-sans);
-  font-size: var(--haus-type-body-size);
-  line-height: var(--haus-type-body-leading);
-  text-align: left;
-  cursor: pointer;
-}
-.authoredToggle:hover {
-  color: var(--haus-color-ink-primary);
-}
-.authoredCaret {
-  margin-left: auto;
-  align-self: center;
-  flex-shrink: 0;
-  color: var(--haus-color-ink-tertiary);
-  font-size: var(--haus-type-body-size);
-}
-.propList {
-  list-style: none;
-  margin: var(--haus-space-stack-sm) 0 0;
-  padding: 0;
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-  border-radius: var(--haus-radius-surface);
-}
-.propRow {
-  display: flex;
-  align-items: center;
-  gap: var(--haus-space-gap-sm);
-  padding: var(--haus-space-inset-xs) var(--haus-space-inset-sm);
-  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-}
-.propRow:last-child {
-  border-bottom: none;
-}
-.propSwatch {
-  flex-shrink: 0;
-  width: 1rem;
-  height: 1rem;
-  border-radius: var(--haus-radius-control);
-  border: var(--haus-border-width-default) solid color-mix(in oklab, var(--haus-color-ink-primary) 15%, transparent);
-}
-.propName {
-  flex-shrink: 0;
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
-  color: var(--haus-color-ink-primary);
-}
-.propValue {
-  flex: 1;
-  min-width: 0;
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
-  color: var(--haus-color-ink-tertiary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: right;
 }
 
 /* ── px / rem unit toggle + secondary-unit annotation ────────────────────── */
@@ -459,84 +323,6 @@
   margin-left: var(--haus-space-stack-xs);
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-tertiary);
-}
-
-/* ── Overview verdict cards ── equal size; colour + bottom rule = verdict ─── */
-.verdictGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-  gap: var(--haus-space-gap-md);
-}
-.verdict {
-  display: flex;
-  flex-direction: column;
-  gap: var(--haus-space-gap-xs);
-  padding: var(--haus-space-inset-lg);
-  width: 100%;
-  text-align: left;
-  font: inherit;
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--drift-card-border);
-  border-bottom-width: 3px;
-  border-radius: var(--haus-radius-overlay);
-  transition: transform var(--motion-duration-micro) var(--motion-ease-standard), box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
-}
-.verdictClickable {
-  cursor: pointer;
-}
-.verdictClickable:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--haus-elevation-overlay);
-}
-.verdictClickable:focus-visible {
-  outline: none;
-  box-shadow: var(--haus-focus-ring);
-}
-.verdictLabelRow {
-  order: -1;
-  display: flex;
-  align-items: center;
-  gap: var(--haus-space-gap-xs);
-}
-.verdictIcon {
-  font-size: 0.85em;
-  color: var(--haus-color-ink-tertiary);
-}
-.verdictLabel {
-  color: var(--haus-color-ink-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: var(--haus-type-label-sm-size);
-}
-.verdictN {
-  line-height: 0.9;
-  font-size: clamp(2.5rem, 5vw, 3.25rem);
-  letter-spacing: -0.02em;
-  color: var(--haus-color-ink-primary);
-}
-.good {
-  background: color-mix(in oklab, var(--haus-color-success-default) 12%, var(--haus-color-surface-default));
-  border-color: color-mix(in oklab, var(--haus-color-success-default) 26%, var(--drift-card-border));
-  border-bottom-color: var(--haus-color-success-default);
-}
-.watch {
-  background: color-mix(in oklab, var(--haus-color-warning-default) 14%, var(--haus-color-surface-default));
-  border-color: color-mix(in oklab, var(--haus-color-warning-default) 30%, var(--drift-card-border));
-  border-bottom-color: var(--haus-color-warning-default);
-}
-.review {
-  background: color-mix(in oklab, var(--haus-color-error-default) 13%, var(--haus-color-surface-default));
-  border-color: color-mix(in oklab, var(--haus-color-error-default) 28%, var(--drift-card-border));
-  border-bottom-color: var(--haus-color-error-default);
-}
-
-/* Greyed core-five card: the token category exists in the system's vocabulary
-   but isn't used on this site. */
-.empty {
-  opacity: 0.5;
-}
-.empty .verdictN {
   color: var(--haus-color-ink-tertiary);
 }
 
@@ -562,15 +348,15 @@
 
 @keyframes cardFlash {
   0%,
-    35% {
-      /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-      box-shadow: 0 0 0 3px var(--haus-color-primary-default);
-    }
+        35% {
+          /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+          box-shadow: 0 0 0 3px var(--haus-color-primary-default);
+        }
 
   100% {
-      /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-      box-shadow: 0 0 0 3px transparent;
-    }
+          /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+          box-shadow: 0 0 0 3px transparent;
+        }
 }
 .tabIntro {
   color: var(--haus-color-ink-secondary);
@@ -581,13 +367,6 @@
   font-size: 2.25rem;
   line-height: 1;
   color: var(--haus-color-ink-primary);
-}
-.shadowChip {
-  display: inline-block;
-  width: 3rem;
-  height: 2.5rem;
-  border-radius: var(--haus-radius-surface);
-  background: var(--haus-color-surface-raised);
 }
 .gradientBox {
   width: 100%;
@@ -633,9 +412,6 @@
 .table tbody tr:last-child td {
   border-bottom: none;
 }
-.specimenCell {
-  width: 42%;
-}
 
 /* The type scale specimen only needs room for "Ag"; keep it tight so Size,
    Weight, Tags and Uses share the rest evenly instead of bunching up right. */
@@ -647,12 +423,6 @@
    and Tags columns have room. */
 .spacingPreviewCell {
   width: 22%;
-}
-
-/* Fixed-size chip previews (radius, shadow) only need room for the chip, so the
-   Value/Tags/Uses columns don't get squeezed to the right. */
-.chipPreviewCell {
-  width: 6rem;
 }
 
 /* Z-index stacking ladder: offset layers, the frontmost accented. */
@@ -674,16 +444,6 @@
   background: var(--haus-color-primary-subtle);
   border-color: var(--haus-color-primary-default);
 }
-
-/* Gradient swatch preview (in the gradient table). */
-.gradientSwatch {
-  display: block;
-  width: 4rem;
-  height: 2rem;
-  border-radius: var(--haus-radius-surface);
-  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 10%, transparent);
-}
 .valueCell {
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
@@ -694,34 +454,6 @@
   max-width: 12rem;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-/* Long declarations (e.g. gradients) wrap onto multiple lines instead of clipping. */
-.valueCellWrap {
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
-
-/* Motion tables share a fixed column layout so Durations and Easings align. */
-.motionTable {
-  table-layout: fixed;
-}
-
-/* Space the Easings table off the Durations table above it. */
-.motionTable + .motionTable {
-  margin-top: var(--haus-space-stack-5xl);
-}
-.motionTable th:nth-child(1),
-.motionTable td:nth-child(1) {
-  width: 30%;
-}
-.motionTable th:nth-child(2),
-.motionTable td:nth-child(2) {
-  width: 24%;
-}
-.motionTable th:nth-child(4),
-.motionTable td:nth-child(4) {
-  width: 12%;
 }
 .usageCell {
   text-align: right;
@@ -790,96 +522,6 @@
   background: var(--haus-color-ink-tertiary);
   min-width: 4px;
 }
-
-/* Breakpoint preview: a viewport/screen outline whose width scales with the
-   breakpoint, so the row reads as a device size. */
-.bpScreen {
-  display: block;
-  height: 1.6rem;
-  min-width: 1rem;
-  border-radius: var(--haus-radius-control);
-  border: var(--haus-border-width-thick) solid var(--haus-color-border-strong);
-  background: var(--haus-color-surface-raised);
-  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0.4rem 0 -0.3rem var(--haus-color-border-default);
-}
-.radiusChip {
-  display: block;
-  width: 2.5rem;
-  height: 2.5rem;
-  background: var(--haus-color-primary-subtle);
-  border: var(--haus-border-width-default) solid var(--haus-color-primary-default);
-}
-.borderChip {
-  display: block;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: var(--haus-radius-surface);
-  border-style: solid;
-  border-color: var(--haus-color-ink-primary);
-  background: var(--haus-color-surface-default);
-}
-
-/* Transparency checker: fixed white/grey so the pattern is always visible
-   regardless of theme; the fill on top then shows how opaque the value is. */
-.checker {
-  display: inline-block;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: var(--haus-radius-surface);
-  overflow: hidden;
-  background-color: #fff;
-  background-image:
-    linear-gradient(45deg, #c3c8d0 25%, transparent 25%),
-    linear-gradient(-45deg, #c3c8d0 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #c3c8d0 75%),
-    linear-gradient(-45deg, transparent 75%, #c3c8d0 75%);
-  background-size: 12px 12px;
-  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
-  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 14%, transparent);
-}
-.opacityFill {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--haus-color-primary-default);
-}
-.blurStage {
-  display: inline-block;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: var(--haus-radius-surface);
-  overflow: hidden;
-  background: repeating-linear-gradient(45deg, var(--haus-color-primary-default) 0 8px, var(--accent-300) 8px 16px);
-  position: relative;
-}
-.blurGlass {
-  position: absolute;
-  inset: 0;
-}
-.motionTrack {
-  position: relative;
-  display: block;
-  width: 100%;
-  max-width: 9rem;
-  height: 0.6rem;
-  border-radius: var(--haus-radius-pill);
-  background: var(--haus-color-surface-sunken);
-}
-.motionDot,
-.easingDot {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 0.7rem;
-  height: 0.7rem;
-  border-radius: var(--haus-radius-pill);
-  background: var(--haus-color-primary-default);
-  transform: translateY(-50%);
-}
-.motionDot { animation: slideTrack var(--dur, 200ms) var(--motion-ease-standard) infinite alternate; }
-.easingDot { animation: slideTrack 1.4s var(--ease, ease) infinite alternate; }
 
 @keyframes slideTrack {
   from { left: 0; }
@@ -1001,53 +643,14 @@
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (width <= 40rem) {
   .titleRow {
-      flex-direction: column;
-    }
-
-  .specimenCell {
-      width: 30%;
-    }
+          flex-direction: column;
+        }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .panel {
-      animation: none;
-    }
-
-  .verdict {
-      transition: none;
-    }
-
-  .motionDot,
-    .easingDot {
-      animation: none;
-      left: calc(100% - 0.7rem);
-    }
-}
-
-/* Contrast: a live specimen of the pair as the site actually renders it, so
-   the verdict is visible, not just asserted. */
-.contrastSample {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 28px;
-  border-radius: var(--haus-radius-control);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-  font-family: var(--font-sans);
-  font-size: var(--haus-type-body-size);
-  font-weight: var(--haus-weight-strong);
-}
-.contrastPair {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--haus-space-gap-xs);
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
-}
-.contrastOn {
-  color: var(--haus-color-ink-tertiary);
+          animation: none;
+        }
 }
 
 /* Reference-scale picker under a ruler. Each option carries its own off-count,

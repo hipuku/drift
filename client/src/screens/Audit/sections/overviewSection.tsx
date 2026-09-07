@@ -25,7 +25,11 @@ import {
   unitLabel,
   type Verdict,
 } from "../auditModel.js";
-import styles from "../Audit.module.css";
+/* Two stylesheets, because this section reads from two. Its own classes live
+   beside it; the ones below are the audit screen's, shared with other parts
+   of the report, and stay there. */
+import shared from "../Audit.module.css";
+import styles from "./overview.module.css";
 
 export interface VerdictCard {
   label: string;
@@ -80,9 +84,9 @@ export function OverviewSection({
                 <Text role="display" as="span" className={styles.verdictN}>
                   {v.n}
                 </Text>
-                <div className={styles.pills}>
+                <div className={shared.pills}>
                   {v.chips.map((c) => (
-                    <span key={c} className={styles.pill}>
+                    <span key={c} className={shared.pill}>
                       {c}
                     </span>
                   ))}

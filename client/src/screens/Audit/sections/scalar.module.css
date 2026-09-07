@@ -1,0 +1,213 @@
+/* ─── Audit / scalar sections ──────────────────────────────────────────
+   The scalar inventories: colour contrast, spacing, radius, each a table of what the site ships.
+
+   Phase 2 of drift#2. Ownership is per class, by where its declarations are,
+   and the read map resolves each file's own import alias rather than assuming
+   every `styles.` means this stylesheet. Phase 1 introduced a second alias and
+   the first attempt at this split did assume it, which moved three classes out
+   from under parts/colour.tsx.
+
+   Verified by e2e/computed-styles.spec.ts against a baseline recorded before
+   the move: zero differences across 2680 elements, every tab.
+   ──────────────────────────────────────────────────────────────────────── */
+
+.shadowChip {
+  display: inline-block;
+  width: 3rem;
+  height: 2.5rem;
+  border-radius: var(--haus-radius-surface);
+  background: var(--haus-color-surface-raised);
+}
+
+.specimenCell {
+  width: 42%;
+}
+
+/* Fixed-size chip previews (radius, shadow) only need room for the chip, so the
+   Value/Tags/Uses columns don't get squeezed to the right. */
+.chipPreviewCell {
+  width: 6rem;
+}
+
+/* Gradient swatch preview (in the gradient table). */
+.gradientSwatch {
+  display: block;
+  width: 4rem;
+  height: 2rem;
+  border-radius: var(--haus-radius-surface);
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 10%, transparent);
+}
+
+/* Long declarations (e.g. gradients) wrap onto multiple lines instead of clipping. */
+.valueCellWrap {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Motion tables share a fixed column layout so Durations and Easings align. */
+.motionTable {
+  table-layout: fixed;
+}
+
+/* Space the Easings table off the Durations table above it. */
+.motionTable + .motionTable {
+  margin-top: var(--haus-space-stack-5xl);
+}
+
+.motionTable th:nth-child(1),
+.motionTable td:nth-child(1) {
+  width: 30%;
+}
+
+.motionTable th:nth-child(2),
+.motionTable td:nth-child(2) {
+  width: 24%;
+}
+
+.motionTable th:nth-child(4),
+.motionTable td:nth-child(4) {
+  width: 12%;
+}
+
+/* Breakpoint preview: a viewport/screen outline whose width scales with the
+   breakpoint, so the row reads as a device size. */
+.bpScreen {
+  display: block;
+  height: 1.6rem;
+  min-width: 1rem;
+  border-radius: var(--haus-radius-control);
+  border: var(--haus-border-width-thick) solid var(--haus-color-border-strong);
+  background: var(--haus-color-surface-raised);
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+  box-shadow: inset 0 0.4rem 0 -0.3rem var(--haus-color-border-default);
+}
+
+.radiusChip {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--haus-color-primary-subtle);
+  border: var(--haus-border-width-default) solid var(--haus-color-primary-default);
+}
+
+.borderChip {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--haus-radius-surface);
+  border-style: solid;
+  border-color: var(--haus-color-ink-primary);
+  background: var(--haus-color-surface-default);
+}
+
+/* Transparency checker: fixed white/grey so the pattern is always visible
+   regardless of theme; the fill on top then shows how opaque the value is. */
+.checker {
+  display: inline-block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--haus-radius-surface);
+  overflow: hidden;
+  background-color: #fff;
+  background-image:
+    linear-gradient(45deg, #c3c8d0 25%, transparent 25%),
+    linear-gradient(-45deg, #c3c8d0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #c3c8d0 75%),
+    linear-gradient(-45deg, transparent 75%, #c3c8d0 75%);
+  background-size: 12px 12px;
+  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 14%, transparent);
+}
+
+.opacityFill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--haus-color-primary-default);
+}
+
+.blurStage {
+  display: inline-block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--haus-radius-surface);
+  overflow: hidden;
+  background: repeating-linear-gradient(45deg, var(--haus-color-primary-default) 0 8px, var(--accent-300) 8px 16px);
+  position: relative;
+}
+
+.blurGlass {
+  position: absolute;
+  inset: 0;
+}
+
+.motionTrack {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 9rem;
+  height: 0.6rem;
+  border-radius: var(--haus-radius-pill);
+  background: var(--haus-color-surface-sunken);
+}
+
+.motionDot,
+.easingDot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: var(--haus-radius-pill);
+  background: var(--haus-color-primary-default);
+  transform: translateY(-50%);
+}
+
+.motionDot { animation: slideTrack var(--dur, 200ms) var(--motion-ease-standard) infinite alternate; }
+
+.easingDot { animation: slideTrack 1.4s var(--ease, ease) infinite alternate; }
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (width <= 40rem) {
+  .specimenCell {
+        width: 30%;
+      }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motionDot,
+      .easingDot {
+        animation: none;
+        left: calc(100% - 0.7rem);
+      }
+}
+
+/* Contrast: a live specimen of the pair as the site actually renders it, so
+   the verdict is visible, not just asserted. */
+.contrastSample {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 28px;
+  border-radius: var(--haus-radius-control);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--haus-type-body-size);
+  font-weight: var(--haus-weight-strong);
+}
+
+.contrastPair {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--haus-space-gap-xs);
+  font-family: var(--type-data-family);
+  font-size: var(--type-data-size);
+}
+
+.contrastOn {
+  color: var(--haus-color-ink-tertiary);
+}
+
