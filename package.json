@@ -25,7 +25,7 @@
     "lint:prose": "node scripts/check-punctuation.mjs"
   },
   "dependencies": {
-    "bullmq": "^6.3.1",
+    "bullmq": "^6.3.4",
     "express": "^5.2.1",
     "haus-colour-utils": "^1.0.0",
     "haus-style-probe": "^1.0.0",
