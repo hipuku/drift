@@ -45,18 +45,42 @@ test("every tab reaches a populated panel", async ({ page }) => {
   await page.getByRole("button", { name: /^Run audit/ }).click();
   await expect(page.getByText("Design Health")).toBeVisible({ timeout: 30_000 });
 
-  // Walked by keyboard: tablists are arrow-key navigable, and a tab that only
-  // responds to a click is a tablist in appearance only.
+  /* Walked by keyboard: a tab that only answers a click is a tablist in
+     appearance only.
+
+     This asserted that the selected tab is focused, and could not fail. There
+     was no arrow handling at all, so the selection never moved, and "the
+     selected tab is focused" was true of the first tab on every iteration of
+     the loop. drift#27. It now asserts that the selection actually advances,
+     which is the thing the comment always claimed. */
   const tabs = page.getByRole("tab");
   const count = await tabs.count();
   expect(count).toBeGreaterThan(5);
 
+  const names = await tabs.allTextContents();
   await tabs.first().focus();
+
   for (let i = 1; i < count; i++) {
     await page.keyboard.press("ArrowRight");
     const selected = page.getByRole("tab", { selected: true });
     await expect(selected).toBeFocused();
+    await expect(selected).toHaveText(names[i]!);
+    /* And the panel it selected is the one it says it controls. */
+    const controls = await selected.getAttribute("aria-controls");
+    await expect(page.locator(`#${controls}`)).toHaveAttribute(
+      "aria-labelledby",
+      (await selected.getAttribute("id"))!,
+    );
   }
+
+  /* Wrapping, Home and End, because a tablist that stops at the last tab
+     leaves a keyboard user to Tab out and come back round. */
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("tab", { selected: true })).toHaveText(names[0]!);
+  await page.keyboard.press("End");
+  await expect(page.getByRole("tab", { selected: true })).toHaveText(names[count - 1]!);
+  await page.keyboard.press("Home");
+  await expect(page.getByRole("tab", { selected: true })).toHaveText(names[0]!);
 });
 
 test("nothing is left invisible once it is on screen", async ({ page }) => {

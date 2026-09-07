@@ -37,6 +37,8 @@ import {
   INDISTINGUISHABLE_DELTA_E,
   RADIUS_NEAR_DUPLICATE_PX,
   cardId,
+  tabId,
+  tabPanelId,
   detectGridBase,
   extendedDriftAreas,
   healthLine,
@@ -525,13 +527,48 @@ export function Audit({ audit, onBack }: Props) {
           </div>
         </div>
 
-        <div className={styles.tabs} role="tablist" aria-label="Audit sections">
+        {/* ⛔ The whole tablist pattern, not half of it. This carried role="tab"
+            and aria-selected and nothing else: no aria-controls, no tabpanel to
+            point at, and no arrow keys. A tab that only answers a click is a
+            tablist in appearance, which is what the end-to-end suite's comment
+            claimed it was testing while its assertion could not fail: with no
+            arrow handling the selected tab never moved, so "the selected tab is
+            focused" held on every iteration of the walk.
+
+            Roving tabindex, so the tablist is one stop and the arrows move
+            inside it rather than Tab landing on each of eight buttons. */}
+        <div
+          className={styles.tabs}
+          role="tablist"
+          aria-label="Audit sections"
+          onKeyDown={(e) => {
+            const keys = ["ArrowRight", "ArrowLeft", "Home", "End"];
+            if (!keys.includes(e.key)) return;
+            e.preventDefault();
+            const i = tabs.findIndex((t) => t.id === tab);
+            const next =
+              e.key === "Home"
+                ? 0
+                : e.key === "End"
+                  ? tabs.length - 1
+                  : (i + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+            const id = tabs[next]!.id;
+            setTab(id);
+            /* Focus follows selection, which is what the pattern asks for and
+               what makes the panel readable without a second keystroke. The
+               button is already rendered, so it can be focused now. */
+            document.getElementById(tabId(id))?.focus();
+          }}
+        >
           {tabs.map((tb) => (
             <button
               key={tb.id}
+              id={tabId(tb.id)}
               type="button"
               role="tab"
               aria-selected={tab === tb.id}
+              aria-controls={tabPanelId(tb.id)}
+              tabIndex={tab === tb.id ? 0 : -1}
               className={tab === tb.id ? `${styles.tab} ${styles.tabOn}` : styles.tab}
               onClick={() => setTab(tb.id)}
             >
@@ -543,7 +580,17 @@ export function Audit({ audit, onBack }: Props) {
         </div>
       </header>
 
-      <div className={styles.panel} key={tab}>
+      {/* The other half. tabIndex 0 because a panel whose content has no
+          focusable element still has to be reachable, or the tab selects
+          something a keyboard cannot then read. */}
+      <div
+        className={styles.panel}
+        key={tab}
+        id={tabPanelId(tab)}
+        role="tabpanel"
+        aria-labelledby={tabId(tab)}
+        tabIndex={0}
+      >
         {tab === "overview" && (
           <OverviewSection
             health={healthLine(s, extendedDrift)}

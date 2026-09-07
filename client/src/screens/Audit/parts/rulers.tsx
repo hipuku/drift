@@ -85,13 +85,44 @@ export function ScaleOptions({
   onSelect: (id: string) => void;
 }) {
   return (
-    <div className={styles.scaleOptions} role="tablist" aria-label="Compare against scale">
+    /* ⛔ A radiogroup, not a tablist, and it carried role="tab" until drift#27.
+       Tabs promise a panel per tab: pick one and a different region of content
+       appears, which is why the pattern requires aria-controls and a tabpanel
+       to point at. These do not do that. They pick which scale the rulers below
+       are compared against, and the same region redraws. That is choosing one
+       of a set, which is a radiogroup, and announcing it as tabs told a screen
+       reader user to look for panels that were never there.
+
+       Roving tabindex and arrows, as the pattern asks: the group is one tab
+       stop and the arrows move within it. */
+    <div
+      className={styles.scaleOptions}
+      role="radiogroup"
+      aria-label="Compare against scale"
+      onKeyDown={(e) => {
+        const keys = ["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp", "Home", "End"];
+        if (!keys.includes(e.key)) return;
+        e.preventDefault();
+        const i = options.findIndex((o) => o.id === activeId);
+        const forward = e.key === "ArrowRight" || e.key === "ArrowDown";
+        const next =
+          e.key === "Home"
+            ? 0
+            : e.key === "End"
+              ? options.length - 1
+              : (i + (forward ? 1 : -1) + options.length) % options.length;
+        const id = options[next]!.id;
+        onSelect(id);
+        (e.currentTarget.children[next] as HTMLElement | undefined)?.focus();
+      }}
+    >
       {options.map((o) => (
         <button
           key={o.id}
           type="button"
-          role="tab"
-          aria-selected={o.id === activeId}
+          role="radio"
+          aria-checked={o.id === activeId}
+          tabIndex={o.id === activeId ? 0 : -1}
           className={o.id === activeId ? `${styles.scaleChip} ${styles.scaleChipOn}` : styles.scaleChip}
           onClick={() => onSelect(o.id)}
         >

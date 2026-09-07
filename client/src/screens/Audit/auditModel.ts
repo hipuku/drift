@@ -139,6 +139,17 @@ export function cardId(hex: string): string {
   return `swatch-${hex.replace(/[^a-z0-9]/gi, "")}`;
 }
 
+/** Stable DOM ids for the tablist, so each tab can name the panel it controls
+ *  and the panel can name the tab that labels it. Both halves are required:
+ *  a tab with no aria-controls announces "tab, selected" and offers no way to
+ *  reach what it selected. */
+export function tabId(id: string): string {
+  return `audit-tab-${id}`;
+}
+export function tabPanelId(id: string): string {
+  return `audit-panel-${id}`;
+}
+
 /** Alpha channel of an 8-digit hex as a 0–1 fraction; 1 for an opaque #RRGGBB. */
 export function alphaOf(hex: string): number {
   return hex.length >= 9 ? parseInt(hex.slice(7, 9), 16) / 255 : 1;

@@ -250,7 +250,10 @@ describe("export", () => {
     await userEvent.click(tabNamed(/Spacing/));
     // The fixture detects a 4px grid. Ask for 8px, a strictly harsher reference
     // that more values miss, then export.
-    await userEvent.click(screen.getByRole("tab", { name: /8px grid/ }));
+    /* radio, not tab. The scale chips announced themselves as tabs and had no
+       panels to control, so drift#27 made them the radiogroup they always were:
+       they pick what the rulers compare against, and the same region redraws. */
+    await userEvent.click(screen.getByRole("radio", { name: /8px grid/ }));
     await userEvent.click(screen.getByRole("button", { name: "Export" }));
 
     const payload = JSON.parse(await (captured as Blob).text()) as {
