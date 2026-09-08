@@ -19,24 +19,42 @@ overlap).
 was a copy and it is gone.
 
 **`semantics.css` is a copy too, and this paragraph used to deny it.** Measured on
-2026-09-08 by parsing both files and comparing key by key: of the **148 role
-names it shares** with `haus-tokens`' semantic layer, **75 are byte-identical
-restatements** of haus's own declaration. `--haus-space-inset-md:
-var(--haus-space-4)` is written on both sides. That is 51% of this file doing
-nothing but keeping a second copy that nothing holds in step, which is the same
-defect the paragraph above says was removed from `primitives.css`.
+2026-09-08 by parsing both files and comparing key by key, **against the
+`haus-tokens@1.0.0` this directory actually installs** rather than against haus's
+current source. That distinction is the whole of the second correction below.
 
-The other 73 divide cleanly. **54 are colour**, and they are a brand: 54 colour
-roles resolving to haus primitives, which is the shape of `brands/vault.css`.
-They are written here as output overrides instead of supplied as brand inputs,
-so both semantic layers ship and every role is computed twice. **19 are genuine
-non-colour departures** with no mechanism to express them, because haus's brand
-contract covers colour and nothing else: 8 z-index, 3 radius, 2 elevation, 2
-opacity, 2 border-width, 2 type.
+Of the **148 role names** it shares with haus's semantic layer:
 
-Two earlier claims here are withdrawn. It shares 148 role names, not 118. And
-**one** role is Drift's alone, `--haus-text-12`, not thirty-nine; the rename that
-closed `drift#1` made that sentence false and nothing re-read it.
+| | Count | What it is |
+|---|---|---|
+| Byte-identical restatements | **77** | haus's own declaration, retyped. `--haus-space-inset-md: var(--haus-space-4)` on both sides |
+| Same value, hardcoded | **12** | the eight `z-index` roles at `0` to `600`, `border-width` at `1px` and `2px`, `opacity` at `0.4` and `0.6`. Every one is exactly what the haus primitive resolves to, with the reference replaced by the literal |
+| Colour | **54** | a brand: 54 colour roles resolving to haus primitives, which is the shape of `brands/vault.css`. Written here as output overrides instead of supplied as brand inputs, so both semantic layers ship and every role is computed twice |
+| **Genuine departures** | **5** | three `radius` roles one step tighter, and two `elevation` roles on Drift's own shadow ramp |
+
+**So 89 of 148, 60%, are haus's values restated**, and Drift genuinely re-decides
+**five** things. The paragraph above says the same defect was removed from
+`primitives.css`; it was not removed from here.
+
+**A first pass at this said 75 restatements and 19 non-colour departures, and both
+were wrong.** It compared against haus's working tree, which is 2.x, while this
+directory installs 1.0.0. Two of the nineteen were `--haus-type-display-tracking`
+and `--haus-type-heading-lg-tracking`, which look like departures against haus 2.x
+and are byte-identical to haus 1.0.0: `haus#37` retightened them after this file
+was written. **Comparing a consumer against a version it does not install
+manufactures departures that are really version skew**, and the corrected method
+is to diff against the installed package.
+
+Two earlier claims in this file are also withdrawn. It shares 148 role names, not
+118. And **one** role is Drift's alone, `--haus-text-12`, not thirty-nine; the
+rename that closed `drift#1` made that sentence false and nothing re-read it.
+
+**The five that are real are worth keeping.** `--haus-radius-control`, `-surface`
+and `-overlay` each sit one step tighter than haus's, and `--haus-elevation-raised`
+and `-overlay` point at Drift's own `--shadow-*` ramp, one of the six names
+deliberately not renamed in the haus 1.0 migration. Both are exactly what a brand
+should be able to state and cannot: haus's brand contract covers colour and
+nothing else, which is `haus#53`.
 
 **Why no check caught any of this:** `vault` hit the same defect as `vault#25`,
 closed it, and wrote a guard that fails on any value restated locally that haus
