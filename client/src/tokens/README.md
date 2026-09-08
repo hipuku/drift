@@ -18,52 +18,31 @@ overlap).
 `haus-tokens`' values restated by hand with nothing keeping them in step. That
 was a copy and it is gone.
 
-**`semantics.css` was a copy and is not one any more.** Measured on 2026-09-08 by
-parsing both files and comparing key by key, **against the `haus-tokens@1.0.0`
-this directory actually installs** rather than against haus's working tree. Of the
-148 role names it shared with haus's semantic layer, **89 were haus's own values
-restated**: 77 byte-identical, and 12 more that hardcoded the literal a haus
-primitive resolves to, the eight `z-index` roles at `0` to `600`, `border-width`
-at `1px` and `2px`, and `opacity` at `0.4` and `0.6`.
+**`semantics.css` was a copy, then a brand in the wrong layer, and is now neither.**
 
-**All 89 are deleted.** Every one of them now resolves through haus's layer to
-exactly the value it had, checked by re-resolving the whole cascade before and
-after rather than by reading the diff: **zero of the 89 moved, and zero of every
-other declared property moved with them.** `haus-tokens/guard`'s
-`findRestatedTokens` reports **0** against this file.
+**D1, 2026-09-08.** Of the 148 role names it shared with the `haus-tokens@1.0.0` it installed, **89
+were haus's own values restated**: 77 byte-identical, and 12 more that hardcoded the literal a haus
+primitive resolves to. All deleted, and every one re-resolved to exactly the value it had.
 
-Two of the eighty-nine are worth naming, because they went home rather than
-away. `--haus-weight-emphasis` and `--haus-weight-strong` are `drift#25`'s
-finding, that emphasis is a modifier rather than a role. **haus took both**, and
-this file went on declaring them at haus's values for a release afterwards. The
-eleven typeset roles went the same way. That is the consumer teaching the system
-something and then, correctly, stopping saying it.
+**D2, the same day.** The 54 colour roles that remained were **a brand written as role overrides**.
+They are `haus-tokens/brands/drift.css` now, applied at `[data-haus-theme='drift']` on the document
+element, exactly as vault's is. **53 of the 54 values are byte-identical**; `backdrop` reads
+`--haus-opacity-60` where this file read the `--haus-opacity-overlay` role, because a brand supplies
+inputs and may not read the layer it feeds. Same value, correct layer.
 
-**What is left is 72 declarations, and each third has a job.**
+That shape is what produced the defect this file already records: Badge and Input rendered in haus's
+aronia purple inside a cool blue product, because the two sides named different properties and the
+cascade order decided nothing. **Supplying inputs cannot fail that way.**
 
-| | Count | What it is |
-|---|---|---|
-| `color/*` | **54** | Drift's palette, and **a brand written as role overrides**. It resolves correctly and lives in the wrong layer, which is `D2`: these become `brands/drift.css` and leave this file |
-| `radius` and `elevation` | **5** | The genuine departures. Three radius roles one step tighter than haus's, two elevation roles on Drift's own `--shadow-*` ramp. `D3` moves them onto haus's form tier, which `haus#53` added for exactly this |
-| Drift's own names | **13** | Roles haus has no name for: two spacing steps, a panel radius, two elevation roles, four motion durations and an easing, an inline icon size, a disabled-control opacity, and `--type-data-*` from `drift#24` |
+**Two values did move, and they are the only two.** Every one of the 409 declared properties was
+re-resolved through both cascades and compared. `--haus-type-display-tracking` went `-0.01em` to
+`-0.03em` and `--haus-type-heading-lg-tracking` went `-0.01em` to `-0.02em`: `haus#37` retightened
+both after this file was written, and D1 deleted Drift's copies because against haus 1.0.0 they were
+restatements. Taking 2.3.1 therefore takes haus's newer values. **Accepted deliberately** rather
+than re-added as departures, on the user's call that text tightening is a change Drift can wear.
 
-**After `D2` and `D3` this file is thirteen declarations**, all of them Drift's
-own, and nothing in it will be a name haus also uses.
-
-**Two earlier claims are withdrawn.** It shared 148 role names, not 118. And
-**one** role was Drift's alone under the old counting, `--haus-text-12`, not
-thirty-nine; the rename that closed `drift#1` made that sentence false and
-nothing re-read it.
-
-**A first pass at all this said 75 restatements and 19 non-colour departures, and
-both were wrong.** It compared against haus's working tree, which is 2.x, while
-this directory installs 1.0.0. Two of the nineteen were
-`--haus-type-display-tracking` and `--haus-type-heading-lg-tracking`, which look
-like departures against haus 2.x and are byte-identical to haus 1.0.0, because
-`haus#37` retightened them after this file was written. **Comparing a consumer
-against a version it does not install manufactures departures that are really
-version skew**, and it does so in the flattering direction: it makes a copy look
-like a decision. The corrected method is to diff against the installed package.
+**21 declarations remain**, all Drift's own bar the five departures `D3` will move onto haus's form
+tier: three `radius` roles one step tighter, two `elevation` roles on Drift's `--shadow-*` ramp.
 
 **Why no check caught any of this:** `vault` hit the same defect as `vault#25`,
 closed it, and wrote a guard that fails on any value restated locally that haus
