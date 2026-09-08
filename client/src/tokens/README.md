@@ -18,12 +18,32 @@ overlap).
 `haus-tokens`' values restated by hand with nothing keeping them in step. That
 was a copy and it is gone.
 
-`semantics.css` is not a copy. It shares 118 role names with `haus-tokens`'
-semantic layer, which is what a role name is for, and resolves five of them
-differently on purpose: the three radius roles are one step tighter than haus's,
-`--elevation-overlay` sits one shadow step lower, and `--space-inset-2xl` is one
-space step smaller. Thirty-nine more roles are Drift's alone. A theme
-over shared primitives is the shape the architecture is for.
+**`semantics.css` is a copy too, and this paragraph used to deny it.** Measured on
+2026-09-08 by parsing both files and comparing key by key: of the **148 role
+names it shares** with `haus-tokens`' semantic layer, **75 are byte-identical
+restatements** of haus's own declaration. `--haus-space-inset-md:
+var(--haus-space-4)` is written on both sides. That is 51% of this file doing
+nothing but keeping a second copy that nothing holds in step, which is the same
+defect the paragraph above says was removed from `primitives.css`.
+
+The other 73 divide cleanly. **54 are colour**, and they are a brand: 54 colour
+roles resolving to haus primitives, which is the shape of `brands/vault.css`.
+They are written here as output overrides instead of supplied as brand inputs,
+so both semantic layers ship and every role is computed twice. **19 are genuine
+non-colour departures** with no mechanism to express them, because haus's brand
+contract covers colour and nothing else: 8 z-index, 3 radius, 2 elevation, 2
+opacity, 2 border-width, 2 type.
+
+Two earlier claims here are withdrawn. It shares 148 role names, not 118. And
+**one** role is Drift's alone, `--haus-text-12`, not thirty-nine; the rename that
+closed `drift#1` made that sentence false and nothing re-read it.
+
+**Why no check caught any of this:** `vault` hit the same defect as `vault#25`,
+closed it, and wrote a guard that fails on any value restated locally that haus
+already ships. `tokens.test.ts` here has no duplication rule. The guard existed
+in the repository next door and was never ported. PORTFOLIO section 13 has the
+plan: the restatements are deleted, the 54 become `brands/drift.css`, the 19 move
+onto a mechanism haus grows for them, and the guard ships from `haus-tokens`.
 
 ## Why haus's semantic layer is loaded as well
 
