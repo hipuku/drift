@@ -44,7 +44,6 @@
     --haus-color-border-subtle:   var(--haus-damson-100);
     --haus-color-border-default:  var(--haus-damson-200);
     --haus-color-border-strong:   var(--haus-damson-300);
-    --haus-color-border-focus:    var(--haus-color-primary-default);
     --haus-color-border-disabled: var(--haus-damson-200);
 
     /* ── Primary, Aronia ─────────────────────────────────────────────────── */
@@ -100,10 +99,6 @@
     --haus-color-border-inverse-hover:  oklch(from var(--haus-damson-0) l c h / 0.50);
     --haus-color-surface-inverse-hover: oklch(from var(--haus-damson-0) l c h / 0.10);
 
-    /* ── Focus ring ───────────────────────────────────────────────────────── */
-    /* Inner ring matches surface (creates gap), outer ring is focus colour   */
-    --haus-focus-ring: 0 0 0 2px var(--haus-color-surface-default), 0 0 0 4px var(--haus-color-border-focus);
-
     /* ── Spacing ──────────────────────────────────────────────────────────── */
     /* Three roles, one ladder. A step means the same size whichever role it
        is read through, so the tiers stay comparable, the point of splitting
@@ -118,38 +113,10 @@
     --space-inset-tight:    var(--space-tight);
 
     /* Padding, space *inside* a component, between its edge and its content. */
-    --haus-space-inset-2xs:         var(--haus-space-1);       /* 4px */
-    --haus-space-inset-xs:          var(--haus-space-2);       /* 8px */
-    --haus-space-inset-sm:          var(--haus-space-3);       /* 12px */
-    --haus-space-inset-md:          var(--haus-space-4);       /* 16px */
-    --haus-space-inset-lg:          var(--haus-space-5);       /* 20px */
-    --haus-space-inset-xl:          var(--haus-space-6);       /* 24px */
-    --haus-space-inset-2xl:         var(--haus-space-7);       /* 28px */
-    --haus-space-inset-3xl:         var(--haus-space-8);       /* 32px */
-    --haus-space-inset-5xl:         var(--haus-space-12);      /* 48px */
-    --haus-space-inset-6xl:         var(--haus-space-16);      /* 64px */
-    --haus-space-inset-7xl:         var(--haus-space-20);      /* 80px */
 
     /* Gap, space *between* siblings laid out together (flex and grid). */
-    --haus-space-gap-2xs:           var(--haus-space-1);       /* 4px */
-    --haus-space-gap-xs:            var(--haus-space-2);       /* 8px */
-    --haus-space-gap-sm:            var(--haus-space-3);       /* 12px */
-    --haus-space-gap-md:            var(--haus-space-4);       /* 16px */
-    --haus-space-gap-lg:            var(--haus-space-5);       /* 20px */
-    --haus-space-gap-2xl:           var(--haus-space-7);       /* 28px */
-    --haus-space-gap-3xl:           var(--haus-space-8);       /* 32px */
 
     /* Stack, margin between blocks in normal flow, usually vertical. */
-    --haus-space-stack-2xs:         var(--haus-space-1);       /* 4px */
-    --haus-space-stack-xs:          var(--haus-space-2);       /* 8px */
-    --haus-space-stack-sm:          var(--haus-space-3);       /* 12px */
-    --haus-space-stack-md:          var(--haus-space-4);       /* 16px */
-    --haus-space-stack-lg:          var(--haus-space-5);       /* 20px */
-    --haus-space-stack-xl:          var(--haus-space-6);       /* 24px */
-    --haus-space-stack-2xl:         var(--haus-space-7);       /* 28px */
-    --haus-space-stack-3xl:         var(--haus-space-8);       /* 32px */
-    --haus-space-stack-4xl:         var(--haus-space-10);      /* 40px */
-    --haus-space-stack-5xl:         var(--haus-space-12);      /* 48px */
 
     /* ── Radius ───────────────────────────────────────────────────────────── */
     /* Named for what is being rounded. The scale steps are a vocabulary of
@@ -159,7 +126,6 @@
     --haus-radius-surface: var(--haus-radius-md);    /* cards, panels, table wells */
     --haus-radius-overlay: var(--haus-radius-lg);    /* popovers, drawers */
     --radius-panel:   var(--haus-radius-xl);    /* the largest containers */
-    --haus-radius-pill:    var(--haus-radius-full);  /* fully-rounded: badges, avatars */
 
     /* ── Elevation ────────────────────────────────────────────────────────── */
     /* Height above the page, not shadow size. A component asks to sit at a
@@ -183,109 +149,19 @@
     --size-icon-inline:        var(--haus-icon-sm);          /* an icon set in text */
     --opacity-control-disabled: var(--haus-opacity-disabled);
 
-    /* ── Stacking, border width and state ─────────────────────────────────── */
-    /* These arrived from primitives.css, where they did not belong: their names
-       already say what they are for rather than what they are. There is no
-       underlying scale to alias them from, `--haus-z-modal` is not one step of a
-       z-index ramp, it is the answer to "how high does a modal sit", so an
-       alias layer over them would be indirection with nothing on the other end.
-       Moving them is the fix; a component reading one is reading a semantic. */
+    /* ── Typography, and the two weights that flowed back ──────────────────
+       Nothing here any more, and that is the result.
 
-    /* ── Z-index ──────────────────────────────────────────────────────────────── */
-    --haus-z-base:     0;
-    --haus-z-raised:   10;
-    --haus-z-dropdown: 100;
-    --haus-z-sticky:   200;
-    --haus-z-overlay:  300;
-    --haus-z-modal:    400;
-    --haus-z-toast:    500;
-    --haus-z-tooltip:  600;
+       drift#25 argued that emphasis is a modifier rather than a role: four
+       places reached past the type tier for a weight, and no typeset role can
+       serve that, because adopting one would set size and leading too and
+       emphasising a word would resize it. So the weights got role names of
+       their own and nothing else.
 
-    /* ── Border width ─────────────────────────────────────────────────────────── */
-    --haus-border-width-default: 1px;
-    --haus-border-width-thick:   2px;
-
-    /* ── Opacity ──────────────────────────────────────────────────────────────── */
-    --haus-opacity-disabled: 0.4;
-    --haus-opacity-overlay:  0.6;
-
-    /* ── Typography roles ─────────────────────────────────────────────────── */
-    /* Use all four props together. Components must not mix roles.            */
-
-    --haus-type-label-xs-size:     var(--haus-text-11);
-    --haus-type-label-xs-weight:   var(--haus-weight-medium);
-    --haus-type-label-xs-leading:  var(--haus-leading-normal);
-    --haus-type-label-xs-tracking: var(--haus-tracking-widest);
-
-    --haus-type-label-sm-size:     var(--haus-text-12);
-    --haus-type-label-sm-weight:   var(--haus-weight-medium);
-    --haus-type-label-sm-leading:  var(--haus-leading-normal);
-    --haus-type-label-sm-tracking: var(--haus-tracking-wide);
-
-    --haus-type-label-size:        var(--haus-text-13);
-    --haus-type-label-weight:      var(--haus-weight-medium);
-    --haus-type-label-leading:     var(--haus-leading-normal);
-    --haus-type-label-tracking:    var(--haus-tracking-normal);
-
-    --haus-type-body-sm-size:      var(--haus-text-13);
-    --haus-type-body-sm-weight:    var(--haus-weight-regular);
-    --haus-type-body-sm-leading:   var(--haus-leading-relaxed);
-    --haus-type-body-sm-tracking:  var(--haus-tracking-normal);
-
-    --haus-type-body-size:         var(--haus-text-14);
-    --haus-type-body-weight:       var(--haus-weight-regular);
-    --haus-type-body-leading:      var(--haus-leading-relaxed);
-    --haus-type-body-tracking:     var(--haus-tracking-normal);
-
-    --haus-type-body-lg-size:      var(--haus-text-16);
-    --haus-type-body-lg-weight:    var(--haus-weight-regular);
-    --haus-type-body-lg-leading:   var(--haus-leading-loose);
-    --haus-type-body-lg-tracking:  var(--haus-tracking-normal);
-
-    --haus-type-heading-sm-size:     var(--haus-text-16);
-    --haus-type-heading-sm-weight:   var(--haus-weight-semibold);
-    --haus-type-heading-sm-leading:  var(--haus-leading-compact);
-    --haus-type-heading-sm-tracking: var(--haus-tracking-tight);
-
-    --haus-type-heading-size:        var(--haus-text-20);
-    --haus-type-heading-weight:      var(--haus-weight-semibold);
-    --haus-type-heading-leading:     var(--haus-leading-snug);
-    --haus-type-heading-tracking:    var(--haus-tracking-tight);
-
-    --haus-type-heading-lg-size:     var(--haus-text-24);
-    --haus-type-heading-lg-weight:   var(--haus-weight-semibold);
-    --haus-type-heading-lg-leading:  var(--haus-leading-tighter);
-    --haus-type-heading-lg-tracking: var(--haus-tracking-tight);
-
-    --haus-type-display-size:        var(--haus-text-30);
-    --haus-type-display-weight:      var(--haus-weight-bold);
-    --haus-type-display-leading:     var(--haus-leading-tight);
-    --haus-type-display-tracking:    var(--haus-tracking-tight);
-
-    /* ── Emphasis ──────────────────────────────────────────────────────────
-       Weight on its own, and the exception to the line above.
-
-       drift#25. Four places reached past the type tier for a weight, in three
-       files by three hands, and the shape was the same every time: text that
-       keeps its parent's size and leading and wants to be heavier. A <strong>
-       inside body copy. A count inside a sentence. A 13px control that wants
-       more presence than 13px prose.
-
-       No typeset role can serve that, and the reason is structural rather than
-       a gap in the scale: adopting any role would set size and leading too, so
-       emphasising a word would resize it. Emphasis is a *modifier*. It says
-       "heavier than whatever this is" and the scale is a set of answers to
-       "what kind of text is this".
-
-       So the weights get role names of their own and nothing else. Two of
-       them, both aliases, exactly the shape --haus-radius-control: var(--haus-radius-md)
-       already uses one section up: the role says why, the primitive says what.
-
-       This is deliberately not a licence to unbundle the rest. Leading and
-       tracking stay inside the roles, because those are the properties that
-       are wrong at the wrong size, which is the whole reason the roles bundle. */
-    --haus-weight-emphasis:  var(--haus-weight-medium);    /* a word, a number, a label that sits above its neighbours */
-    --haus-weight-strong:    var(--haus-weight-semibold);  /* the heaviest the system goes outside display type          */
+       haus took the same two, --haus-weight-emphasis and --haus-weight-strong,
+       and drift kept declaring them at haus's values until haus#53 deleted the
+       copies. The eleven typeset roles went the same way. This is the consumer
+       teaching the system something and then, correctly, stopping saying it. */
 
     /* ── Data ──────────────────────────────────────────────────────────────
        Mono for data rather than for prose, and the second exception to the
@@ -308,11 +184,6 @@
        one of them sets a line-height today. */
     --type-data-family:         var(--font-mono);
     --type-data-size:           var(--haus-text-12);
-
-    --haus-type-mono-size:           var(--haus-text-13);
-    --haus-type-mono-weight:         var(--haus-weight-regular);
-    --haus-type-mono-leading:        var(--haus-leading-loose);
-    --haus-type-mono-tracking:       var(--haus-tracking-normal);
 
   }
 }
