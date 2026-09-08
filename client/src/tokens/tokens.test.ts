@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { findRestatedTokens } from "haus-tokens/guard";
 
 /**
  * Every custom property a stylesheet reads must be defined somewhere.
@@ -303,3 +304,23 @@ describe("haus-components", () => {
     expect(undefined_).toEqual([]);
   });
 });
+
+describe("restatement", () => {
+  it("restates no value haus already ships", () => {
+    // D1 deleted 89 of these and D2 and D3 moved the rest into brands/drift.css,
+    // so this is the check that holds the result. It ships from the package
+    // (haus#53) rather than being written here, because vault had written its own
+    // by hand after vault#25 and drift never got one: a guard living in one
+    // consumer is a habit, not a guard.
+    //
+    // brand.css is deliberately not in `upstream`. Including it asks "does drift
+    // restate anything haus ships, our colour choices included", which is the
+    // right question for a consumer with no brand of its own. drift has one now,
+    // so the question is the other one: does it restate anything structural.
+    const copies = findRestatedTokens({
+      defines: [join(SRC, "tokens/semantics.css"), join(SRC, "tokens/primitives.css")].map((f) => readFileSync(f, "utf8")),
+      upstream: [...HAUS_PRIMITIVES.filter(f => !f.endsWith("brand.css")), HAUS_SEMANTICS].map((f) => readFileSync(f, "utf8")),
+    })
+    expect(copies.map(c => `${c.name} (${c.kind})`)).toEqual([])
+  })
+})

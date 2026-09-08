@@ -43,9 +43,6 @@
     /* Named for what is being rounded. The scale steps are a vocabulary of
        sizes; these say which size a thing of each kind takes, so a control and
        a card cannot drift apart by one step without someone choosing to. */
-    --haus-radius-control: var(--haus-radius-sm);    /* inputs, buttons, chips */
-    --haus-radius-surface: var(--haus-radius-md);    /* cards, panels, table wells */
-    --haus-radius-overlay: var(--haus-radius-lg);    /* popovers, drawers */
     --radius-panel:   var(--haus-radius-xl);    /* the largest containers */
 
     /* ── Elevation ────────────────────────────────────────────────────────── */

@@ -41,8 +41,24 @@ both after this file was written, and D1 deleted Drift's copies because against 
 restatements. Taking 2.3.1 therefore takes haus's newer values. **Accepted deliberately** rather
 than re-added as departures, on the user's call that text tightening is a change Drift can wear.
 
-**21 declarations remain**, all Drift's own bar the five departures `D3` will move onto haus's form
-tier: three `radius` roles one step tighter, two `elevation` roles on Drift's `--shadow-*` ramp.
+**D3, the same day.** The three `radius` roles moved into `brands/drift.css` as form-tier entries,
+with `radius-marker` stated at haus's own value because the group is all or nothing: a brand
+supplying half a group leaves the other half inheriting, which renders as two shapes with nothing
+reporting it. Nothing moved, checked across all 442 declared properties.
+
+**The two `elevation` roles stayed, and the reason is a limitation rather than an oversight.** They
+point at Drift's own `--shadow-*` ramp, one of the six names deliberately not renamed in the 1.0
+migration, and **a brand may only reference what haus ships.** `brand.test.ts` allows a brand its
+own ramp only in the shape `--haus-<name>-<digits>`, which `--shadow-sm` is not. So the form tier
+carries Drift's radius and cannot carry its shadows.
+
+That is worth knowing before a fourth consumer arrives: **a brand file living inside the design
+system can only express the parts of a product's identity the system already has vocabulary for.**
+
+**18 declarations remain**, all Drift's own bar those two, and `tokens.test.ts` now runs
+`findRestatedTokens` from `haus-tokens/guard` so none of this can come back. It is the package's
+check rather than a hand-written one, because vault wrote its own after `vault#25` and Drift never
+got a copy: **a guard living in one consumer is a habit, not a guard.**
 
 **Why no check caught any of this:** `vault` hit the same defect as `vault#25`,
 closed it, and wrote a guard that fails on any value restated locally that haus
