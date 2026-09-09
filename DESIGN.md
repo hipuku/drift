@@ -309,7 +309,7 @@ rather than hanging.
 
 Drift owns its whole token layer, under `--drift-*`. It read `haus-tokens` until
 2026-09-09; Drift is independent now, and no package supplies a token it reads.
-Four cascade layers, low to high:
+Eight cascade layers in three families, low to high:
 
 - **`foundation.*`** (`tokens/foundation.css`): the primitives, the brand inputs,
   the motion values and the semantic roles, self-contained. Generated as the
@@ -325,11 +325,14 @@ declares the order once, before anything opens a layer, so it is a statement
 rather than a consequence of import order in `main.tsx`.
 
 The semantic tier covers colour, type, spacing, radius, elevation and motion.
-Above the foundation, `tokens/semantics.css` names 15 roles of Drift's own, for
-what a general foundation has no name for: two elevation steps for the modal and
-the popover, three motion durations and an easing, a control-disabled opacity, a
-panel radius, an inline icon size, two sub-grid spacing insets, and the
-two-property tabular-data role.
+Above the foundation, `tokens/semantics.css` declares 15 properties. Thirteen
+are for what the foundation has no name for: two elevation steps for the modal
+and the popover, three motion durations and an easing, a control-disabled
+opacity, a panel radius, an inline icon size, two sub-grid spacing insets, and
+the two-property tabular-data role. The other two, `--drift-elevation-raised`
+and `--drift-elevation-overlay`, share a name with the foundation and override
+it, because Drift draws its own shadow ramp and the foundation's elevation roles
+point at the foundation's.
 
 Spacing is aliased three ways, `inset` (padding), `gap` (between siblings) and
 `stack` (margin), over one ladder, so a
@@ -350,17 +353,32 @@ there is no scale beneath them: `--z-modal` is not one step of a ramp, it is the
 answer to "how high does a modal sit". An alias over those would be indirection
 with nothing on the other end.
 
-Two guards hold the layer, because CSS fails silently at both edges. An
+Three guards hold the layer, because CSS fails silently at every edge. An
 undefined `var()` is dropped and the property inherits, with no warning at build
 or in review. That is how `--duration-default`, which never existed, left five
 animations running instantly. And a CSS-module class that does not exist is a
 clean typecheck and an `undefined` at runtime. `client/src/tokens/tokens.test.ts`
-asserts that every custom property read is defined, and that no component reads a
-primitive outside a named exception list that can only shrink. The first reads
-every layer Drift ships, the foundation included, so internalising the foundation
-did not weaken it: a role dropped by the generator fails the build with its name
-rather than resolving to nothing at runtime. A third guard, against restating
-values `haus-tokens` already shipped, retired with the dependency.
+asserts that every custom property read is defined, that no component reads a
+primitive outside a named exception list that can only shrink, and that every
+`@keyframes` a module names is defined in that module.
+
+The first reads every layer Drift ships, the foundation included, so
+internalising the foundation did not weaken it: a role dropped by the generator
+fails the build with its name rather than resolving to nothing at runtime.
+
+**The third was added on 2026-09-09 because the other two could not see the
+defect it catches.** CSS Modules hashes `@keyframes` names exactly as it hashes
+class names, so a rule and its keyframes must share a file. The stylesheet split
+moved the motion tab's dots and the colour card's flash into their own modules
+and left `slideTrack` and `cardFlash` behind, and neither animation had run
+since. A keyframes name is not a custom property, so the first guard was looking
+elsewhere; and `animation-name` computes to the same string whether or not the
+keyframes exist, so the computed-styles harness diffed to nothing. **It is green
+across that fix, before and after, which is what proves it was blind rather than
+watching.**
+
+A fourth guard, against restating values `haus-tokens` already shipped, retired
+with the dependency.
 
 # Decisions
 
@@ -431,7 +449,7 @@ change nobody asked for. Independence is a positioning decision before it is a
 technical one.
 
 The mechanics: `tokens/foundation.css` carries the closure of what Drift
-actually read from the package: 218 declarations, renamed wholesale from
+actually read from the package: 197 declarations, renamed wholesale from
 `--haus-*` to `--drift-*`, leaving out the ramps it never reached (ruby, paper,
 cobalt) and the roles its own theme overrides. It was generated once, against
 `haus-tokens@3.2.0`, and is hand-maintained now.

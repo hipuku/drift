@@ -16,7 +16,7 @@ overlap).
 **The foundation used to be [`haus-tokens`](https://www.npmjs.com/package/haus-tokens), and is
 Drift's own now.** The reasoning is in `DESIGN.md`; the short version is that a tool which audits
 design systems should not be wearing one it does not control. `foundation.css` is the closure of
-what Drift actually read from that package: **218 declarations**, renamed `--haus-*` to
+what Drift actually read from that package: **197 declarations**, renamed `--haus-*` to
 `--drift-*`, leaving out the ramps Drift never reached (ruby, paper, cobalt) and the roles its own
 theme overrides.
 
@@ -27,6 +27,14 @@ rename.
 `foundation.css` was generated once, against `haus-tokens@3.2.0`, by a script that read the
 installed package. **That package is gone, so the file is not regenerable** and is maintained by
 hand like any other source. `tokens.test.ts` is what holds it.
+
+**The generated closure was 218 declarations and the file is 197**, because the brand layer
+collapsed on the way in. It arrived as a default block plus a `[data-theme='drift']` override,
+which is the shape haus's brand mechanism required, and **18 of its 21 entries were byte-identical
+across the two**: only the three radius roles ever differed. Drift ships one theme and owns the
+file, so the second block was 21 declarations restating 18 values with nothing keeping them in
+step. That is this repository's own subject, found in this repository, so it went. The
+`data-theme` attribute it needed is off `index.html`.
 
 ## Why the split survives the dependency
 
