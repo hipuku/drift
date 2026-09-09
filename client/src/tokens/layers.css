@@ -3,27 +3,18 @@
    here rather than a consequence of the order things happen to be imported in
    main.tsx.
 
-   haus-tokens ships its own layer names, and they have to sit below Drift's.
-   The package is the foundation; the layers above it are the theme, and a
-   theme that loses to the thing it themes is not a theme.
+   `foundation.*` is Drift's own token foundation (tokens/foundation.css). It was
+   haus-tokens' primitive, brand, motion and semantic layers until 2026-09-09;
+   Drift is independent now and owns them, under --drift-*. It is the base, and
+   the layers above it are the theme: a theme that loses to the thing it themes
+   is not a theme.
 
-   haus.semantics is here because haus-components reads roles from it. Drift
-   overrides 148 of haus's 164 role names, so base.semantics and drift.semantics
-   sit above it and Drift's resolution is the one that applies.
-
-   That sentence was false until the haus 1.0 upgrade, and the reason is worth
-   keeping. Drift declared --color-surface-default while haus-components read
-   --haus-color-surface-default: different properties, so layer order decided
-   nothing and Drift's theme never reached the two components it renders. They
-   drew in haus's aronia purple inside a cool blue product, and no test could
-   see it because both names resolved perfectly well on their own. haus 1.0
-   prefixed every property, Drift's roles were renamed to match, and the
-   override is real now rather than assumed.
-
-   haus.brand is loaded too. It is the layer that says which primitive each role
-   takes, haus's semantics.css reads 54 --haus-brand-* entries from it, and the
-   sixteen roles Drift does not override resolve through it.
+   `base.*` is tokens/primitives.css and tokens/semantics.css, the roles and
+   overrides Drift adds on top of the foundation. `drift.*` is styles/drift.css,
+   the cool, dark, editorial re-skin that resolves surface, ink, border and
+   primary onto Drift's blue-slate neutral ramp and its cobalt accent, and wins
+   where it overlaps.
    ─────────────────────────────────────────────────────────────────────────── */
 
-@layer haus.primitives, haus.brand, haus.motion, haus.semantics, base.primitives,
-  base.semantics, drift.primitives, drift.semantics;
+@layer foundation.primitives, foundation.brand, foundation.motion, foundation.semantics,
+  base.primitives, base.semantics, drift.primitives, drift.semantics;

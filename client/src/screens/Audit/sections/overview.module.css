@@ -13,12 +13,12 @@
 
 /* ── Design Health ───────────────────────────────────────────────────────── */
 .health {
-  padding: var(--haus-space-inset-2xl) var(--haus-space-inset-3xl);
-  margin-bottom: var(--haus-space-stack-xl);
+  padding: var(--drift-space-inset-2xl) var(--drift-space-inset-3xl);
+  margin-bottom: var(--drift-space-stack-xl);
   border-radius: var(--radius-panel);
-  border: var(--haus-border-width-default) solid
-    color-mix(in oklab, var(--haus-color-primary-default) 22%, var(--drift-card-border));
-  background: var(--haus-color-primary-subtle);
+  border: var(--drift-border-width-default) solid
+    color-mix(in oklab, var(--drift-color-primary-default) 22%, var(--drift-card-border));
+  background: var(--drift-color-primary-subtle);
 }
 
 .healthKicker {
@@ -28,50 +28,50 @@
      12px needs more than that to stay readable, so this is a departure from the
      role rather than a bypass of the tier, and reading label-xs's tracking
      instead would be mixing two roles, which the header above forbids. */
-  letter-spacing: var(--haus-tracking-widest);
-  color: var(--haus-color-primary-on-subtle);
-  margin-bottom: var(--haus-space-stack-sm);
+  letter-spacing: var(--drift-tracking-widest);
+  color: var(--drift-color-primary-on-subtle);
+  margin-bottom: var(--drift-space-stack-sm);
 }
 
 .healthLine {
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
   /* Renders as <Text role="heading-lg">, and takes 1.25 where the role carries
      1.2: a deliberate departure on one line of large text, so it reads the
-     primitive. Its letter-spacing used to sit here too and was --haus-tracking-tight,
+     primitive. Its letter-spacing used to sit here too and was --drift-tracking-tight,
      which is what heading-lg already carries: re-stating the role, doing
      nothing. */
-  line-height: var(--haus-leading-snug);
+  line-height: var(--drift-leading-snug);
   text-wrap: pretty;
 }
 
 /* ── Authoring (authored units read from the CSSOM) ──────────────────────── */
 .authoring {
-  margin-top: var(--haus-space-stack-xl);
-  padding: var(--haus-space-inset-xl) var(--haus-space-inset-2xl);
+  margin-top: var(--drift-space-stack-xl);
+  padding: var(--drift-space-inset-xl) var(--drift-space-inset-2xl);
   border-radius: var(--radius-panel);
-  border: var(--haus-border-width-default) solid var(--drift-card-border);
-  background: color-mix(in oklab, var(--haus-color-ink-primary) 3%, transparent);
+  border: var(--drift-border-width-default) solid var(--drift-card-border);
+  background: color-mix(in oklab, var(--drift-color-ink-primary) 3%, transparent);
 }
 
 .unitRow {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--haus-space-gap-sm);
-  margin-bottom: var(--haus-space-stack-md);
+  gap: var(--drift-space-gap-sm);
+  margin-bottom: var(--drift-space-stack-md);
 }
 
 .unitChip {
   display: inline-flex;
   align-items: baseline;
-  gap: var(--haus-space-gap-xs);
-  padding: var(--haus-space-inset-xs) var(--haus-space-inset-sm);
-  border-radius: var(--haus-radius-surface);
-  background: color-mix(in oklab, var(--haus-color-ink-primary) 6%, transparent);
+  gap: var(--drift-space-gap-xs);
+  padding: var(--drift-space-inset-xs) var(--drift-space-inset-sm);
+  border-radius: var(--drift-radius-surface);
+  background: color-mix(in oklab, var(--drift-color-ink-primary) 6%, transparent);
 }
 
 .unitCat {
-  font-size: var(--haus-type-label-sm-size);
-  color: var(--haus-color-ink-tertiary);
+  font-size: var(--drift-type-label-sm-size);
+  color: var(--drift-color-ink-tertiary);
 }
 
 .unitVal {
@@ -79,12 +79,12 @@
   /* The one mono size on this screen that is not tabular: a unit next to a
      number, sized to sit beside body text rather than inside a column. One
      occurrence, so it is a departure rather than a role: drift#24. */
-  font-size: var(--haus-text-14);
-  color: var(--haus-color-ink-primary);
+  font-size: var(--drift-text-14);
+  color: var(--drift-color-ink-primary);
 }
 
 .authoredProps {
-  margin-top: var(--haus-space-stack-md);
+  margin-top: var(--drift-space-stack-md);
 }
 
 .authoredToggle {
@@ -92,44 +92,44 @@
   display: flex;
   width: 100%;
   align-items: baseline;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
   padding: 0;
   border: none;
   background: none;
-  color: var(--haus-color-ink-secondary);
+  color: var(--drift-color-ink-secondary);
   font-family: var(--font-sans);
-  font-size: var(--haus-type-body-size);
-  line-height: var(--haus-type-body-leading);
+  font-size: var(--drift-type-body-size);
+  line-height: var(--drift-type-body-leading);
   text-align: left;
   cursor: pointer;
 }
 
 .authoredToggle:hover {
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
 }
 
 .authoredCaret {
   margin-left: auto;
   align-self: center;
   flex-shrink: 0;
-  color: var(--haus-color-ink-tertiary);
-  font-size: var(--haus-type-body-size);
+  color: var(--drift-color-ink-tertiary);
+  font-size: var(--drift-type-body-size);
 }
 
 .propList {
   list-style: none;
-  margin: var(--haus-space-stack-sm) 0 0;
+  margin: var(--drift-space-stack-sm) 0 0;
   padding: 0;
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-  border-radius: var(--haus-radius-surface);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
+  border-radius: var(--drift-radius-surface);
 }
 
 .propRow {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-sm);
-  padding: var(--haus-space-inset-xs) var(--haus-space-inset-sm);
-  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  gap: var(--drift-space-gap-sm);
+  padding: var(--drift-space-inset-xs) var(--drift-space-inset-sm);
+  border-bottom: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
 }
 
 .propRow:last-child {
@@ -140,15 +140,15 @@
   flex-shrink: 0;
   width: 1rem;
   height: 1rem;
-  border-radius: var(--haus-radius-control);
-  border: var(--haus-border-width-default) solid color-mix(in oklab, var(--haus-color-ink-primary) 15%, transparent);
+  border-radius: var(--drift-radius-control);
+  border: var(--drift-border-width-default) solid color-mix(in oklab, var(--drift-color-ink-primary) 15%, transparent);
 }
 
 .propName {
   flex-shrink: 0;
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
 }
 
 .propValue {
@@ -156,7 +156,7 @@
   min-width: 0;
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -167,21 +167,21 @@
 .verdictGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-  gap: var(--haus-space-gap-md);
+  gap: var(--drift-space-gap-md);
 }
 
 .verdict {
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-xs);
-  padding: var(--haus-space-inset-lg);
+  gap: var(--drift-space-gap-xs);
+  padding: var(--drift-space-inset-lg);
   width: 100%;
   text-align: left;
   font: inherit;
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--drift-card-border);
+  background: var(--drift-color-surface-default);
+  border: var(--drift-border-width-default) solid var(--drift-card-border);
   border-bottom-width: 3px;
-  border-radius: var(--haus-radius-overlay);
+  border-radius: var(--drift-radius-overlay);
   transition: transform var(--motion-duration-micro) var(--motion-ease-standard), box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
@@ -191,56 +191,56 @@
 
 .verdictClickable:hover {
   transform: translateY(-2px);
-  box-shadow: var(--haus-elevation-overlay);
+  box-shadow: var(--drift-elevation-overlay);
 }
 
 .verdictClickable:focus-visible {
   outline: none;
-  box-shadow: var(--haus-focus-ring);
+  box-shadow: var(--drift-focus-ring);
 }
 
 .verdictLabelRow {
   order: -1;
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
 }
 
 .verdictIcon {
   font-size: 0.85em;
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 .verdictLabel {
-  color: var(--haus-color-ink-secondary);
+  color: var(--drift-color-ink-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  font-size: var(--haus-type-label-sm-size);
+  font-size: var(--drift-type-label-sm-size);
 }
 
 .verdictN {
   line-height: 0.9;
   font-size: clamp(2.5rem, 5vw, 3.25rem);
   letter-spacing: -0.02em;
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
 }
 
 .good {
-  background: color-mix(in oklab, var(--haus-color-success-default) 12%, var(--haus-color-surface-default));
-  border-color: color-mix(in oklab, var(--haus-color-success-default) 26%, var(--drift-card-border));
-  border-bottom-color: var(--haus-color-success-default);
+  background: color-mix(in oklab, var(--drift-color-success-default) 12%, var(--drift-color-surface-default));
+  border-color: color-mix(in oklab, var(--drift-color-success-default) 26%, var(--drift-card-border));
+  border-bottom-color: var(--drift-color-success-default);
 }
 
 .watch {
-  background: color-mix(in oklab, var(--haus-color-warning-default) 14%, var(--haus-color-surface-default));
-  border-color: color-mix(in oklab, var(--haus-color-warning-default) 30%, var(--drift-card-border));
-  border-bottom-color: var(--haus-color-warning-default);
+  background: color-mix(in oklab, var(--drift-color-warning-default) 14%, var(--drift-color-surface-default));
+  border-color: color-mix(in oklab, var(--drift-color-warning-default) 30%, var(--drift-card-border));
+  border-bottom-color: var(--drift-color-warning-default);
 }
 
 .review {
-  background: color-mix(in oklab, var(--haus-color-error-default) 13%, var(--haus-color-surface-default));
-  border-color: color-mix(in oklab, var(--haus-color-error-default) 28%, var(--drift-card-border));
-  border-bottom-color: var(--haus-color-error-default);
+  background: color-mix(in oklab, var(--drift-color-error-default) 13%, var(--drift-color-surface-default));
+  border-color: color-mix(in oklab, var(--drift-color-error-default) 28%, var(--drift-card-border));
+  border-bottom-color: var(--drift-color-error-default);
 }
 
 /* Greyed core-five card: the token category exists in the system's vocabulary
@@ -250,7 +250,7 @@
 }
 
 .empty .verdictN {
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -15,8 +15,8 @@
   display: inline-block;
   width: 3rem;
   height: 2.5rem;
-  border-radius: var(--haus-radius-surface);
-  background: var(--haus-color-surface-raised);
+  border-radius: var(--drift-radius-surface);
+  background: var(--drift-color-surface-raised);
 }
 
 .specimenCell {
@@ -34,9 +34,9 @@
   display: block;
   width: 4rem;
   height: 2rem;
-  border-radius: var(--haus-radius-surface);
+  border-radius: var(--drift-radius-surface);
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--drift-color-ink-primary) 10%, transparent);
 }
 
 /* Long declarations (e.g. gradients) wrap onto multiple lines instead of clipping. */
@@ -52,7 +52,7 @@
 
 /* Space the Easings table off the Durations table above it. */
 .motionTable + .motionTable {
-  margin-top: var(--haus-space-stack-5xl);
+  margin-top: var(--drift-space-stack-5xl);
 }
 
 .motionTable th:nth-child(1),
@@ -76,29 +76,29 @@
   display: block;
   height: 1.6rem;
   min-width: 1rem;
-  border-radius: var(--haus-radius-control);
-  border: var(--haus-border-width-thick) solid var(--haus-color-border-strong);
-  background: var(--haus-color-surface-raised);
+  border-radius: var(--drift-radius-control);
+  border: var(--drift-border-width-thick) solid var(--drift-color-border-strong);
+  background: var(--drift-color-surface-raised);
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0.4rem 0 -0.3rem var(--haus-color-border-default);
+  box-shadow: inset 0 0.4rem 0 -0.3rem var(--drift-color-border-default);
 }
 
 .radiusChip {
   display: block;
   width: 2.5rem;
   height: 2.5rem;
-  background: var(--haus-color-primary-subtle);
-  border: var(--haus-border-width-default) solid var(--haus-color-primary-default);
+  background: var(--drift-color-primary-subtle);
+  border: var(--drift-border-width-default) solid var(--drift-color-primary-default);
 }
 
 .borderChip {
   display: block;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: var(--haus-radius-surface);
+  border-radius: var(--drift-radius-surface);
   border-style: solid;
-  border-color: var(--haus-color-ink-primary);
-  background: var(--haus-color-surface-default);
+  border-color: var(--drift-color-ink-primary);
+  background: var(--drift-color-surface-default);
 }
 
 /* Transparency checker: fixed white/grey so the pattern is always visible
@@ -107,7 +107,7 @@
   display: inline-block;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: var(--haus-radius-surface);
+  border-radius: var(--drift-radius-surface);
   overflow: hidden;
   background-color: #fff;
   background-image:
@@ -118,23 +118,23 @@
   background-size: 12px 12px;
   background-position: 0 0, 0 6px, 6px -6px, -6px 0;
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--drift-color-ink-primary) 14%, transparent);
 }
 
 .opacityFill {
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--haus-color-primary-default);
+  background: var(--drift-color-primary-default);
 }
 
 .blurStage {
   display: inline-block;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: var(--haus-radius-surface);
+  border-radius: var(--drift-radius-surface);
   overflow: hidden;
-  background: repeating-linear-gradient(45deg, var(--haus-color-primary-default) 0 8px, var(--accent-300) 8px 16px);
+  background: repeating-linear-gradient(45deg, var(--drift-color-primary-default) 0 8px, var(--drift-accent-300) 8px 16px);
   position: relative;
 }
 
@@ -149,8 +149,8 @@
   width: 100%;
   max-width: 9rem;
   height: 0.6rem;
-  border-radius: var(--haus-radius-pill);
-  background: var(--haus-color-surface-sunken);
+  border-radius: var(--drift-radius-pill);
+  background: var(--drift-color-surface-sunken);
 }
 
 .motionDot,
@@ -160,8 +160,8 @@
   left: 0;
   width: 0.7rem;
   height: 0.7rem;
-  border-radius: var(--haus-radius-pill);
-  background: var(--haus-color-primary-default);
+  border-radius: var(--drift-radius-pill);
+  background: var(--drift-color-primary-default);
   transform: translateY(-50%);
 }
 
@@ -192,22 +192,22 @@
   justify-content: center;
   width: 44px;
   height: 28px;
-  border-radius: var(--haus-radius-control);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  border-radius: var(--drift-radius-control);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
   font-family: var(--font-sans);
-  font-size: var(--haus-type-body-size);
-  font-weight: var(--haus-weight-strong);
+  font-size: var(--drift-type-body-size);
+  font-weight: var(--drift-weight-strong);
 }
 
 .contrastPair {
   display: inline-flex;
   align-items: baseline;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
 }
 
 .contrastOn {
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 

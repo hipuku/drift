@@ -8,10 +8,10 @@
    the `drift.*` cascade layers are declared after the `base.*` layers (see import
    order in main.tsx), these definitions win where they overlap.
 
-   Both ramps are theme-agnostic in name (--neutral-*, --accent-*) so switching
+   Both ramps are theme-agnostic in name (--drift-neutral-*, --drift-accent-*) so switching
    the whole palette warm↔cool is only ever a values edit. The accent is
-   generated as an OKLCH tonal ramp from two custom properties (--accent-h,
-   --accent-c), so the live theme playground retunes the entire brand by changing
+   generated as an OKLCH tonal ramp from two custom properties (--drift-accent-h,
+   --drift-accent-c), so the live theme playground retunes the entire brand by changing
    a hue and a chroma, the same OKLCH-ramp idea Drift ships as a product
    feature, eaten as its own dog food.
    ─────────────────────────────────────────────────────────────────────────── */
@@ -23,38 +23,38 @@
     /* ── Accent seed ── Drift's brand blue (H≈239°, high chroma) ────────────
        The entire accent ramp, every button, link, focus ring and the
        background glow, is generated from these two values. */
-    --accent-h: 239;
-    --accent-c: 0.19;
+    --drift-accent-h: 239;
+    --drift-accent-c: 0.19;
 
     /* Accent: a cool tonal ramp generated from the seed above. Lightness is
        fixed per step (hue-agnostic, so white-on-anchor keeps its contrast
        whatever the hue); chroma scales off the seed. */
-    --accent-50:  oklch(97%   calc(var(--accent-c) * 0.14) var(--accent-h));
-    --accent-100: oklch(94%   calc(var(--accent-c) * 0.26) var(--accent-h));
-    --accent-200: oklch(88%   calc(var(--accent-c) * 0.44) var(--accent-h));
-    --accent-300: oklch(80%   calc(var(--accent-c) * 0.66) var(--accent-h));
-    --accent-400: oklch(71%   calc(var(--accent-c) * 0.88) var(--accent-h));
-    --accent-500: oklch(64%   calc(var(--accent-c) * 1.00) var(--accent-h));
-    --accent-600: oklch(53%   calc(var(--accent-c) * 0.96) var(--accent-h));  /* button anchor: white text clears AA */
-    --accent-700: oklch(46%   calc(var(--accent-c) * 0.86) var(--accent-h));
-    --accent-800: oklch(38%   calc(var(--accent-c) * 0.68) var(--accent-h));
-    --accent-900: oklch(30%   calc(var(--accent-c) * 0.52) var(--accent-h));
+    --drift-accent-50:  oklch(97%   calc(var(--drift-accent-c) * 0.14) var(--drift-accent-h));
+    --drift-accent-100: oklch(94%   calc(var(--drift-accent-c) * 0.26) var(--drift-accent-h));
+    --drift-accent-200: oklch(88%   calc(var(--drift-accent-c) * 0.44) var(--drift-accent-h));
+    --drift-accent-300: oklch(80%   calc(var(--drift-accent-c) * 0.66) var(--drift-accent-h));
+    --drift-accent-400: oklch(71%   calc(var(--drift-accent-c) * 0.88) var(--drift-accent-h));
+    --drift-accent-500: oklch(64%   calc(var(--drift-accent-c) * 1.00) var(--drift-accent-h));
+    --drift-accent-600: oklch(53%   calc(var(--drift-accent-c) * 0.96) var(--drift-accent-h));  /* button anchor: white text clears AA */
+    --drift-accent-700: oklch(46%   calc(var(--drift-accent-c) * 0.86) var(--drift-accent-h));
+    --drift-accent-800: oklch(38%   calc(var(--drift-accent-c) * 0.68) var(--drift-accent-h));
+    --drift-accent-900: oklch(30%   calc(var(--drift-accent-c) * 0.52) var(--drift-accent-h));
 
     /* Neutral: cool blue-slate ramp (H≈255, very low chroma). Replaces Damson
        as the basis for every surface, ink, and border. Reads like cool paper /
        cool charcoal, not a warm template grey. */
-    --neutral-0:   oklch(99.3% 0.003 250);
-    --neutral-50:  oklch(98%   0.004 250);
-    --neutral-100: oklch(96%   0.006 250);
-    --neutral-200: oklch(92%   0.008 250);
-    --neutral-300: oklch(86%   0.010 252);
-    --neutral-400: oklch(72%   0.013 254);
-    --neutral-500: oklch(53%   0.015 256);
-    --neutral-600: oklch(46%   0.016 258);
-    --neutral-700: oklch(37%   0.017 260);
-    --neutral-800: oklch(27%   0.017 262);
-    --neutral-900: oklch(20%   0.015 264);
-    --neutral-950: oklch(15%   0.013 266);
+    --drift-neutral-0:   oklch(99.3% 0.003 250);
+    --drift-neutral-50:  oklch(98%   0.004 250);
+    --drift-neutral-100: oklch(96%   0.006 250);
+    --drift-neutral-200: oklch(92%   0.008 250);
+    --drift-neutral-300: oklch(86%   0.010 252);
+    --drift-neutral-400: oklch(72%   0.013 254);
+    --drift-neutral-500: oklch(53%   0.015 256);
+    --drift-neutral-600: oklch(46%   0.016 258);
+    --drift-neutral-700: oklch(37%   0.017 260);
+    --drift-neutral-800: oklch(27%   0.017 262);
+    --drift-neutral-900: oklch(20%   0.015 264);
+    --drift-neutral-950: oklch(15%   0.013 266);
 
     /* Drift's type family: Stack Sans Text for body/UI, Stack Sans Notch for
        display + headings, Fira Code for token values. */
@@ -73,38 +73,38 @@
   :root {
     color-scheme: dark;
 
-    --haus-color-surface-default:  var(--neutral-900);   /* cards */
-    --haus-color-surface-subtle:   var(--neutral-950);   /* page bg, darker than cards */
-    --haus-color-surface-raised:   var(--neutral-800);
-    --haus-color-surface-overlay:  var(--neutral-800);
-    --haus-color-surface-sunken:   oklch(12% 0.012 266);
-    --haus-color-surface-inverse:  var(--neutral-50);
-    --haus-color-surface-disabled: var(--neutral-800);
+    --drift-color-surface-default:  var(--drift-neutral-900);   /* cards */
+    --drift-color-surface-subtle:   var(--drift-neutral-950);   /* page bg, darker than cards */
+    --drift-color-surface-raised:   var(--drift-neutral-800);
+    --drift-color-surface-overlay:  var(--drift-neutral-800);
+    --drift-color-surface-sunken:   oklch(12% 0.012 266);
+    --drift-color-surface-inverse:  var(--drift-neutral-50);
+    --drift-color-surface-disabled: var(--drift-neutral-800);
 
-    --haus-color-ink-primary:   var(--neutral-50);
-    --haus-color-ink-secondary: var(--neutral-300);
-    --haus-color-ink-tertiary:  var(--neutral-400);
-    --haus-color-ink-disabled:  var(--neutral-600);
-    --haus-color-ink-inverse:   var(--neutral-900);
-    --haus-color-ink-link:      var(--accent-400);
+    --drift-color-ink-primary:   var(--drift-neutral-50);
+    --drift-color-ink-secondary: var(--drift-neutral-300);
+    --drift-color-ink-tertiary:  var(--drift-neutral-400);
+    --drift-color-ink-disabled:  var(--drift-neutral-600);
+    --drift-color-ink-inverse:   var(--drift-neutral-900);
+    --drift-color-ink-link:      var(--drift-accent-400);
 
-    --haus-color-border-subtle:   var(--neutral-800);
-    --haus-color-border-default:  var(--neutral-700);
-    --haus-color-border-strong:   var(--neutral-600);
-    --haus-color-border-disabled: var(--neutral-800);
+    --drift-color-border-subtle:   var(--drift-neutral-800);
+    --drift-color-border-default:  var(--drift-neutral-700);
+    --drift-color-border-strong:   var(--drift-neutral-600);
+    --drift-color-border-disabled: var(--drift-neutral-800);
 
     /* Same accessible anchor as light (white text clears AA); it already pops
        against the charcoal page. Subtle/link tokens lift lighter for dark. */
-    --haus-color-primary-default:   var(--accent-600);
-    --haus-color-primary-hover:     var(--accent-700);
-    --haus-color-primary-pressed:   var(--accent-800);
-    --haus-color-primary-subtle:    oklch(from var(--accent-600) l c h / 0.20);
-    --haus-color-primary-on-subtle: var(--accent-300);
+    --drift-color-primary-default:   var(--drift-accent-600);
+    --drift-color-primary-hover:     var(--drift-accent-700);
+    --drift-color-primary-pressed:   var(--drift-accent-800);
+    --drift-color-primary-subtle:    oklch(from var(--drift-accent-600) l c h / 0.20);
+    --drift-color-primary-on-subtle: var(--drift-accent-300);
 
     --drift-app-bg:
-      radial-gradient(120% 85% at 50% -15%, oklch(from var(--accent-600) l c h / 0.16) 0%, transparent 55%),
+      radial-gradient(120% 85% at 50% -15%, oklch(from var(--drift-accent-600) l c h / 0.16) 0%, transparent 55%),
       radial-gradient(90% 60% at 100% 0%, oklch(28% 0.02 260) 0%, transparent 55%),
-      var(--neutral-950);
+      var(--drift-neutral-950);
     --drift-grid-line: oklch(85% 0.02 255 / 0.045);
 
     /* In the dark, shadows barely read, so lean on a visible hairline instead. */
@@ -112,35 +112,35 @@
     --shadow-md: 0 2px 4px oklch(0% 0 0 / 0.30), 0 8px 20px -8px oklch(0% 0 0 / 0.45);
     --shadow-lg: 0 2px 6px oklch(0% 0 0 / 0.35), 0 16px 34px -10px oklch(0% 0 0 / 0.55);
     --shadow-xl: 0 3px 8px oklch(0% 0 0 / 0.40), 0 28px 56px -14px oklch(0% 0 0 / 0.60);
-    --drift-card-border: oklch(from var(--neutral-50) l c h / 0.10);
+    --drift-card-border: oklch(from var(--drift-neutral-50) l c h / 0.10);
 
     /* The primary button's raised look, in three states.
        A role rather than four literals in Button.module.css, and it takes its
-       hue from --accent-h so it follows the theme playground: pinned at 200
+       hue from --drift-accent-h so it follows the theme playground: pinned at 200
        under a 239 brand, the lift was the one thing on the page that did not
        move when the accent did. Lightness and chroma stay put — a shadow is
        deliberately less saturated than the colour casting it. */
     --drift-lift:
-      0 1px 2px  oklch(40% 0.05  var(--accent-h) / 0.20),
-      0 4px 12px -4px oklch(50% 0.085 var(--accent-h) / 0.45);
+      0 1px 2px  oklch(40% 0.05  var(--drift-accent-h) / 0.20),
+      0 4px 12px -4px oklch(50% 0.085 var(--drift-accent-h) / 0.45);
     --drift-lift-hover:
-      0 2px 4px  oklch(40% 0.05  var(--accent-h) / 0.22),
-      0 8px 20px -4px oklch(50% 0.085 var(--accent-h) / 0.55);
+      0 2px 4px  oklch(40% 0.05  var(--drift-accent-h) / 0.22),
+      0 8px 20px -4px oklch(50% 0.085 var(--drift-accent-h) / 0.55);
     --drift-lift-pressed:
-      0 1px 2px oklch(40% 0.05 var(--accent-h) / 0.25);
+      0 1px 2px oklch(40% 0.05 var(--drift-accent-h) / 0.25);
 
-    --drift-alert-surface: color-mix(in oklab, var(--drift-severity-high) 18%, var(--haus-color-surface-default));
-    --drift-warn-surface:  color-mix(in oklab, var(--drift-severity-medium) 20%, var(--haus-color-surface-default));
+    --drift-alert-surface: color-mix(in oklab, var(--drift-severity-high) 18%, var(--drift-color-surface-default));
+    --drift-warn-surface:  color-mix(in oklab, var(--drift-severity-medium) 20%, var(--drift-color-surface-default));
 
     /* Not theme-dependent: severity hues, mono ramp, grid metrics. */
-    --haus-color-primary-disabled:  var(--neutral-200);
+    --drift-color-primary-disabled:  var(--drift-neutral-200);
     --drift-grid-size: 32px;
     --drift-mono: var(--font-mono);
-    --drift-data-size: var(--haus-text-12);
-    --drift-severity-high:   var(--haus-color-error-default);
-    --drift-severity-medium: var(--haus-color-warning-default);
-    --drift-severity-low:    var(--haus-color-ink-tertiary);
-    --drift-alert-ink:     color-mix(in oklab, var(--drift-severity-high) 70%, var(--haus-color-ink-primary));
-    --drift-warn-ink:      color-mix(in oklab, var(--drift-severity-medium) 78%, var(--haus-color-ink-primary));
+    --drift-data-size: var(--drift-text-12);
+    --drift-severity-high:   var(--drift-color-error-default);
+    --drift-severity-medium: var(--drift-color-warning-default);
+    --drift-severity-low:    var(--drift-color-ink-tertiary);
+    --drift-alert-ink:     color-mix(in oklab, var(--drift-severity-high) 70%, var(--drift-color-ink-primary));
+    --drift-warn-ink:      color-mix(in oklab, var(--drift-severity-medium) 78%, var(--drift-color-ink-primary));
   }
 }

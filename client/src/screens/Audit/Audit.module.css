@@ -2,7 +2,7 @@
   width: 100%;
   /* Bottom breathing room lives on .main, not here, so the rail's sticky column
      spans the full scroll height and never releases at the very bottom. */
-  padding: var(--haus-space-inset-5xl) var(--haus-space-inset-xl) 0;
+  padding: var(--drift-space-inset-5xl) var(--drift-space-inset-xl) 0;
 }
 
 /* ── Master–detail layout ── the detail rail pushes content aside ─────────── */
@@ -11,7 +11,7 @@
   /* Stretch the rail column to the content's height so its sticky inner panel
      has room to stay pinned while the left side scrolls past it. */
   align-items: stretch;
-  gap: var(--haus-space-gap-3xl);
+  gap: var(--drift-space-gap-3xl);
   width: 100%;
   max-width: 56rem;
   margin: 0 auto;
@@ -23,7 +23,7 @@
 .main {
   flex: 1;
   min-width: 0;
-  padding-bottom: var(--haus-space-inset-7xl);
+  padding-bottom: var(--drift-space-inset-7xl);
 }
 .rail {
   flex-shrink: 0;
@@ -39,8 +39,8 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 6.5rem);
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
+  background: var(--drift-color-surface-default);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-default);
   border-radius: var(--radius-panel);
   box-shadow: var(--elevation-modal);
   overflow: hidden;
@@ -49,8 +49,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--haus-space-gap-sm);
-  padding: var(--haus-space-inset-lg) var(--haus-space-inset-lg) var(--haus-space-inset-md);
+  gap: var(--drift-space-gap-sm);
+  padding: var(--drift-space-inset-lg) var(--drift-space-inset-lg) var(--drift-space-inset-md);
   flex-shrink: 0;
 }
 .railClose {
@@ -61,25 +61,25 @@
   height: 2rem;
   flex-shrink: 0;
   border: none;
-  border-radius: var(--haus-radius-surface);
+  border-radius: var(--drift-radius-surface);
   background: none;
-  color: var(--haus-color-ink-tertiary);
-  font-size: var(--haus-type-body-size);
+  color: var(--drift-color-ink-tertiary);
+  font-size: var(--drift-type-body-size);
   cursor: pointer;
   transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 .railClose:hover {
-  background: var(--haus-color-surface-sunken);
-  color: var(--haus-color-ink-primary);
+  background: var(--drift-color-surface-sunken);
+  color: var(--drift-color-ink-primary);
 }
 .railClose:focus-visible {
   outline: none;
-  box-shadow: var(--haus-focus-ring);
+  box-shadow: var(--drift-focus-ring);
 }
 .railBody {
   flex: 1;
   min-height: 0;
-  padding: 0 var(--haus-space-inset-lg) var(--haus-space-inset-xl);
+  padding: 0 var(--drift-space-inset-lg) var(--drift-space-inset-xl);
   overflow-y: auto;
 }
 
@@ -128,7 +128,7 @@
         }
 
   .page {
-          padding-bottom: var(--haus-space-inset-7xl);
+          padding-bottom: var(--drift-space-inset-7xl);
         }
 
   .rail {
@@ -145,69 +145,69 @@
 .back {
   display: inline-flex;
   align-items: center;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
   background: none;
   border: none;
   padding: 0;
-  margin-bottom: var(--haus-space-stack-lg);
+  margin-bottom: var(--drift-space-stack-lg);
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-size);
-  font-weight: var(--haus-type-label-weight);
-  color: var(--haus-color-ink-tertiary);
+  font-size: var(--drift-type-label-size);
+  font-weight: var(--drift-type-label-weight);
+  color: var(--drift-color-ink-tertiary);
   cursor: pointer;
   transition: color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 .back:hover {
-  color: var(--haus-color-ink-link);
+  color: var(--drift-color-ink-link);
 }
 .titleRow {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--haus-space-gap-lg);
+  gap: var(--drift-space-gap-lg);
 }
 .title {
   /* Display type, tuned by eye against one string: 1.02 is below the leading
      scale's tightest step, so it stays a number. The letter-spacing that used
-     to sit here was --haus-tracking-tight, which is exactly what --type-display
+     to sit here was --drift-tracking-tight, which is exactly what --type-display
      already carries: this element renders as <Text role="display">, so the
      declaration was re-stating the role's own value and did nothing. */
   line-height: 1.02;
 }
 .intro {
-  color: var(--haus-color-ink-secondary);
-  margin-top: var(--haus-space-stack-sm);
+  color: var(--drift-color-ink-secondary);
+  margin-top: var(--drift-space-stack-sm);
   max-width: 32rem;
 }
 .actions {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
   flex-shrink: 0;
 }
 .ghost {
-  padding: var(--haus-space-inset-xs) var(--haus-space-inset-md);
+  padding: var(--drift-space-inset-xs) var(--drift-space-inset-md);
   border: none;
   background: transparent;
-  border-radius: var(--haus-radius-surface);
+  border-radius: var(--drift-radius-surface);
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-size);
-  font-weight: var(--haus-type-label-weight);
-  color: var(--haus-color-ink-secondary);
+  font-size: var(--drift-type-label-size);
+  font-weight: var(--drift-type-label-weight);
+  color: var(--drift-color-ink-secondary);
   cursor: pointer;
   transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 .ghost:hover {
-  background: var(--haus-color-surface-subtle);
-  color: var(--haus-color-ink-primary);
+  background: var(--drift-color-surface-subtle);
+  color: var(--drift-color-ink-primary);
 }
 
 /* ── Tabs ────────────────────────────────────────────────────────────────── */
 .tabs {
   display: flex;
-  gap: var(--haus-space-gap-2xs);
-  margin-top: var(--haus-space-stack-3xl);
-  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  gap: var(--drift-space-gap-2xs);
+  margin-top: var(--drift-space-stack-3xl);
+  border-bottom: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
   overflow-x: auto;
   /* Hide the native horizontal scrollbar: it scrolls by trackpad/wheel and a
      partially-cut tab signals there's more. */
@@ -223,26 +223,26 @@
 .tab {
   display: inline-flex;
   align-items: center;
-  gap: var(--haus-space-gap-xs);
-  padding: var(--haus-space-inset-sm);
+  gap: var(--drift-space-gap-xs);
+  padding: var(--drift-space-inset-sm);
   border: none;
   background: transparent;
-  border-bottom: var(--haus-border-width-thick) solid transparent;
+  border-bottom: var(--drift-border-width-thick) solid transparent;
   margin-bottom: -1px;
   white-space: nowrap;
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-size);
-  font-weight: var(--haus-type-label-weight);
-  color: var(--haus-color-ink-tertiary);
+  font-size: var(--drift-type-label-size);
+  font-weight: var(--drift-type-label-weight);
+  color: var(--drift-color-ink-tertiary);
   cursor: pointer;
   transition: color var(--motion-duration-micro) var(--motion-ease-standard), border-color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 .tab:hover {
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
 }
 .tabOn {
-  color: var(--haus-color-ink-primary);
-  border-bottom-color: var(--haus-color-primary-default);
+  color: var(--drift-color-ink-primary);
+  border-bottom-color: var(--drift-color-primary-default);
 }
 
 /* The mono reads below are off-role, deliberately and drift#1 records it.
@@ -255,19 +255,19 @@
 .tabCount {
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-tertiary);
-  background: var(--haus-color-surface-subtle);
-  border-radius: var(--haus-radius-pill);
-  padding: var(--space-inset-hairline) var(--haus-space-inset-xs);
+  color: var(--drift-color-ink-tertiary);
+  background: var(--drift-color-surface-subtle);
+  border-radius: var(--drift-radius-pill);
+  padding: var(--space-inset-hairline) var(--drift-space-inset-xs);
 }
 .tabOn .tabCount {
-  color: var(--haus-color-primary-on-subtle);
-  background: var(--haus-color-primary-subtle);
+  color: var(--drift-color-primary-on-subtle);
+  background: var(--drift-color-primary-subtle);
 }
 
 /* ── Panel ───────────────────────────────────────────────────────────────── */
 .panel {
-  margin-top: var(--haus-space-stack-3xl);
+  margin-top: var(--drift-space-stack-3xl);
   animation: fade var(--motion-duration-ui) var(--motion-ease-standard);
 }
 
@@ -277,68 +277,68 @@
   to { opacity: 1; transform: none; }
 }
 .muted {
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 .sectionLabel {
   display: block;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--haus-color-ink-tertiary);
-  margin-bottom: var(--haus-space-stack-md);
+  color: var(--drift-color-ink-tertiary);
+  margin-bottom: var(--drift-space-stack-md);
 }
 .sectionLabel:not(:first-child) {
-  margin-top: var(--haus-space-stack-5xl);
+  margin-top: var(--drift-space-stack-5xl);
 }
 
 /* ── Pills: the shared chip for card metadata and verdict detail ─────────── */
 .pills {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--haus-space-gap-xs);
-  margin-top: var(--haus-space-stack-2xs);
+  gap: var(--drift-space-gap-xs);
+  margin-top: var(--drift-space-stack-2xs);
 }
 .pill {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-inset-tight) var(--haus-space-inset-xs);
-  border-radius: var(--haus-radius-pill);
-  background: color-mix(in oklab, var(--haus-color-ink-primary) 8%, transparent);
-  color: var(--haus-color-ink-secondary);
+  padding: var(--space-inset-tight) var(--drift-space-inset-xs);
+  border-radius: var(--drift-radius-pill);
+  background: color-mix(in oklab, var(--drift-color-ink-primary) 8%, transparent);
+  color: var(--drift-color-ink-secondary);
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-sm-size);
+  font-size: var(--drift-type-label-sm-size);
   /* label-sm's own leading is 1.4 and this pill wants 1.5, so the size comes
      from the role and the leading does not. Recorded in TYPE_TIER_DEBT rather
      than hidden: drift#25 is the question of whether the scale should carry
      this pair. */
-  line-height: var(--haus-leading-relaxed);
+  line-height: var(--drift-leading-relaxed);
   white-space: nowrap;
 }
 .authoredNote {
-  color: var(--haus-color-ink-secondary);
-  margin-top: var(--haus-space-stack-md);
+  color: var(--drift-color-ink-secondary);
+  margin-top: var(--drift-space-stack-md);
 }
 
 /* ── px / rem unit toggle + secondary-unit annotation ────────────────────── */
 .valueAlt {
-  margin-left: var(--haus-space-stack-xs);
+  margin-left: var(--drift-space-stack-xs);
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 /* ── Cards (visual tokens: colour, type family, shadow, gradient) ─────────── */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
-  gap: var(--haus-space-gap-md);
+  gap: var(--drift-space-gap-md);
 }
 .cardSpecimen {
   height: 4.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--haus-space-inset-md);
-  background: var(--haus-color-surface-subtle);
+  padding: var(--drift-space-inset-md);
+  background: var(--drift-color-surface-subtle);
 }
 .cardValueTrunc {
   white-space: nowrap;
@@ -350,7 +350,7 @@
   0%,
         35% {
           /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-          box-shadow: 0 0 0 3px var(--haus-color-primary-default);
+          box-shadow: 0 0 0 3px var(--drift-color-primary-default);
         }
 
   100% {
@@ -359,19 +359,19 @@
         }
 }
 .tabIntro {
-  color: var(--haus-color-ink-secondary);
+  color: var(--drift-color-ink-secondary);
   max-width: 40rem;
-  margin-bottom: var(--haus-space-stack-xl);
+  margin-bottom: var(--drift-space-stack-xl);
 }
 .glyph {
   font-size: 2.25rem;
   line-height: 1;
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
 }
 .gradientBox {
   width: 100%;
   height: 4.75rem;
-  border-bottom: var(--haus-border-width-default) solid var(--drift-card-border);
+  border-bottom: var(--drift-border-width-default) solid var(--drift-card-border);
 }
 
 /* ── Tables (scalar tokens) ──────────────────────────────────────────────── */
@@ -384,7 +384,7 @@
 /* Stacked tables in one section (durations then easings) need air between them,
    or the second table's header reads as a row of the first. */
 .tableWrap + .tableWrap {
-  margin-top: var(--haus-space-stack-3xl);
+  margin-top: var(--drift-space-stack-3xl);
 }
 .table {
   width: 100%;
@@ -393,20 +393,20 @@
 .table th {
   text-align: left;
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-sm-size);
-  font-weight: var(--haus-type-label-sm-weight);
+  font-size: var(--drift-type-label-sm-size);
+  font-weight: var(--drift-type-label-sm-weight);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--haus-color-ink-tertiary);
-  padding: 0 var(--haus-space-inset-sm) var(--haus-space-inset-sm);
-  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-default);
+  color: var(--drift-color-ink-tertiary);
+  padding: 0 var(--drift-space-inset-sm) var(--drift-space-inset-sm);
+  border-bottom: var(--drift-border-width-default) solid var(--drift-color-border-default);
 }
 .table th.thRight {
   text-align: right;
 }
 .table td {
-  padding: var(--haus-space-inset-sm);
-  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  padding: var(--drift-space-inset-sm);
+  border-bottom: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
   vertical-align: middle;
 }
 .table tbody tr:last-child td {
@@ -436,18 +436,18 @@
   position: absolute;
   width: 1.6rem;
   height: 1.1rem;
-  border-radius: var(--haus-radius-control);
-  background: var(--haus-color-surface-raised);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
+  border-radius: var(--drift-radius-control);
+  background: var(--drift-color-surface-raised);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-default);
 }
 .zLayerTop {
-  background: var(--haus-color-primary-subtle);
-  border-color: var(--haus-color-primary-default);
+  background: var(--drift-color-primary-subtle);
+  border-color: var(--drift-color-primary-default);
 }
 .valueCell {
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
   white-space: nowrap;
 }
 .valueCellTrunc {
@@ -459,7 +459,7 @@
   text-align: right;
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
   white-space: nowrap;
 }
 
@@ -467,7 +467,7 @@
 .sizeValue {
   display: inline-flex;
   align-items: center;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
 }
 
 /* An off-scale / off-grid / near-duplicate marker, inline with the value.
@@ -477,8 +477,8 @@
   width: 0.5rem;
   height: 0.5rem;
   flex-shrink: 0;
-  border-radius: var(--haus-radius-pill);
-  background: var(--haus-color-error-default);
+  border-radius: var(--drift-radius-pill);
+  background: var(--drift-color-error-default);
 }
 
 /* Tags-that-use-this-value: chips of element tag names. */
@@ -490,36 +490,36 @@
 .tagChips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--haus-space-gap-xs);
-  row-gap: var(--haus-space-gap-2xs);
+  gap: var(--drift-space-gap-xs);
+  row-gap: var(--drift-space-gap-2xs);
 }
 .tagChip {
-  padding: var(--space-inset-hairline) var(--haus-space-inset-xs);
-  border-radius: var(--haus-radius-control);
-  background: color-mix(in oklab, var(--haus-color-ink-primary) 8%, transparent);
+  padding: var(--space-inset-hairline) var(--drift-space-inset-xs);
+  border-radius: var(--drift-radius-control);
+  background: color-mix(in oklab, var(--drift-color-ink-primary) 8%, transparent);
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-secondary);
+  color: var(--drift-color-ink-secondary);
   white-space: nowrap;
 }
 
 /* ── Table specimens ─────────────────────────────────────────────────────── */
 .typeSpecimen {
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
   line-height: 1;
 }
 .bar {
   display: block;
   height: 0.5rem;
-  border-radius: var(--haus-radius-pill);
-  background: var(--haus-color-primary-default);
+  border-radius: var(--drift-radius-pill);
+  background: var(--drift-color-primary-default);
   min-width: 4px;
 }
 .bpBar {
   display: block;
   height: 0.5rem;
-  border-radius: var(--haus-radius-pill);
-  background: var(--haus-color-ink-tertiary);
+  border-radius: var(--drift-radius-pill);
+  background: var(--drift-color-ink-tertiary);
   min-width: 4px;
 }
 
@@ -531,23 +531,23 @@
 
 /* ── Scale / grid ruler: the visual evidence behind the verdicts ─────────── */
 .ruler {
-  margin-bottom: var(--haus-space-stack-4xl);
+  margin-bottom: var(--drift-space-stack-4xl);
 }
 .rulerTrack {
   position: relative;
   height: 3rem;
-  margin: 0 var(--haus-space-stack-sm);
+  margin: 0 var(--drift-space-stack-sm);
 }
 
 /* Info affordance in a table header (e.g. "Preview" ⓘ). */
 .headInfo {
   display: inline-flex;
   align-items: center;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
 }
 .infoIcon {
   font-size: 0.85em;
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
   cursor: help;
 }
 .rulerLine {
@@ -556,14 +556,14 @@
   right: 0;
   top: 1rem;
   height: 1px;
-  background: var(--haus-color-border-default);
+  background: var(--drift-color-border-default);
 }
 .rulerTick {
   position: absolute;
   top: 0.75rem;
   width: 1px;
   height: 0.5rem;
-  background: var(--haus-color-border-strong);
+  background: var(--drift-color-border-strong);
   transform: translateX(-50%);
 }
 .rulerTickLabel {
@@ -573,7 +573,7 @@
   transform: translateX(-50%);
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
   white-space: nowrap;
 }
 .rulerDot {
@@ -581,14 +581,14 @@
   top: 1rem;
   width: 0.6rem;
   height: 0.6rem;
-  border-radius: var(--haus-radius-pill);
-  background: var(--haus-color-primary-default);
+  border-radius: var(--drift-radius-pill);
+  background: var(--drift-color-primary-default);
   transform: translate(-50%, -50%);
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: 0 0 0 3px var(--haus-color-surface-default);
+  box-shadow: 0 0 0 3px var(--drift-color-surface-default);
 }
 .rulerDotOff {
-  background: var(--haus-color-error-default);
+  background: var(--drift-color-error-default);
   z-index: 1;
 }
 
@@ -596,27 +596,27 @@
 .familyList {
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-sm);
+  gap: var(--drift-space-gap-sm);
 }
 .familyRow {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-md);
-  padding: var(--haus-space-inset-md) var(--haus-space-inset-lg);
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--drift-card-border);
-  border-radius: var(--haus-radius-overlay);
+  gap: var(--drift-space-gap-md);
+  padding: var(--drift-space-inset-md) var(--drift-space-inset-lg);
+  background: var(--drift-color-surface-default);
+  border: var(--drift-border-width-default) solid var(--drift-card-border);
+  border-radius: var(--drift-radius-overlay);
 }
 .familyRowGlyph {
   font-size: 2rem;
   line-height: 1;
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
   flex-shrink: 0;
 }
 .familyRowName {
   font-family: var(--font-sans);
-  font-size: var(--haus-type-body-size);
-  color: var(--haus-color-ink-primary);
+  font-size: var(--drift-type-body-size);
+  color: var(--drift-color-ink-primary);
 }
 .familyRow .pill {
   margin-left: auto;
@@ -626,18 +626,18 @@
    below the family rows. */
 .familyList + .ruler,
 .familyList + .table {
-  margin-top: var(--haus-space-stack-5xl);
+  margin-top: var(--drift-space-stack-5xl);
 }
 
 /* ── Colour families (grouping headers over the card grid) ───────────────── */
 .family + .family {
-  margin-top: var(--haus-space-stack-5xl);
+  margin-top: var(--drift-space-stack-5xl);
 }
 .familyHead {
   display: flex;
   align-items: baseline;
-  gap: var(--haus-space-gap-sm);
-  margin-bottom: var(--haus-space-stack-md);
+  gap: var(--drift-space-gap-sm);
+  margin-bottom: var(--drift-space-stack-md);
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
@@ -658,8 +658,8 @@
    rather than a bare setting. */
 .scaleOptions {
   display: flex;
-  gap: var(--haus-space-gap-xs);
-  margin-bottom: var(--haus-space-stack-xl);
+  gap: var(--drift-space-gap-xs);
+  margin-bottom: var(--drift-space-stack-xl);
   /* One line, scrolled, the same behaviour as the tab strip above. */
   overflow-x: auto;
   scrollbar-width: none;
@@ -672,40 +672,40 @@
   flex-shrink: 0;
   white-space: nowrap;
   align-items: baseline;
-  gap: var(--haus-space-gap-xs);
-  padding: var(--haus-space-inset-2xs) var(--haus-space-inset-sm);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-  border-radius: var(--haus-radius-pill);
+  gap: var(--drift-space-gap-xs);
+  padding: var(--drift-space-inset-2xs) var(--drift-space-inset-sm);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
+  border-radius: var(--drift-radius-pill);
   background: transparent;
-  color: var(--haus-color-ink-secondary);
+  color: var(--drift-color-ink-secondary);
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-sm-size);
+  font-size: var(--drift-type-label-sm-size);
   cursor: pointer;
   transition: color 150ms, border-color 150ms, background 150ms;
 }
 .scaleChip:hover {
-  color: var(--haus-color-ink-primary);
-  border-color: var(--haus-color-border-default);
+  color: var(--drift-color-ink-primary);
+  border-color: var(--drift-color-border-default);
 }
 .scaleChip:focus-visible {
-  outline: var(--haus-border-width-thick) solid var(--haus-color-primary-default);
+  outline: var(--drift-border-width-thick) solid var(--drift-color-primary-default);
   outline-offset: 2px;
 }
 .scaleChipOn {
-  background: var(--haus-color-surface-raised);
-  border-color: var(--haus-color-primary-default);
-  color: var(--haus-color-ink-primary);
+  background: var(--drift-color-surface-raised);
+  border-color: var(--drift-color-primary-default);
+  color: var(--drift-color-ink-primary);
 }
 .scaleChipCount {
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 /* The automatically-chosen option: "closest" ratio / "detected" grid. Named on
    the chip rather than in a separate title, so the strip is the whole story. */
 .scaleChipBest {
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-sm-size);
-  color: var(--haus-color-primary-default);
+  font-size: var(--drift-type-label-sm-size);
+  color: var(--drift-color-primary-default);
 }

@@ -2,15 +2,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-size);
-  font-weight: var(--haus-weight-strong);
-  letter-spacing: var(--haus-type-label-tracking);
+  font-size: var(--drift-type-label-size);
+  font-weight: var(--drift-weight-strong);
+  letter-spacing: var(--drift-type-label-tracking);
   line-height: 1;
-  padding: var(--haus-space-inset-sm) var(--haus-space-inset-lg);
-  border-radius: var(--haus-radius-surface);
-  border: var(--haus-border-width-default) solid transparent;
+  padding: var(--drift-space-inset-sm) var(--drift-space-inset-lg);
+  border-radius: var(--drift-radius-surface);
+  border: var(--drift-border-width-default) solid transparent;
   cursor: pointer;
   transition:
     background var(--motion-duration-micro) var(--motion-ease-standard),
@@ -22,7 +22,7 @@
 
 .button:focus-visible {
   outline: none;
-  box-shadow: var(--haus-focus-ring);
+  box-shadow: var(--drift-focus-ring);
 }
 
 .button:disabled {
@@ -37,8 +37,8 @@
 }
 
 .primary {
-  background: var(--haus-color-primary-default);
-  color: var(--haus-color-ink-on-primary);
+  background: var(--drift-color-primary-default);
+  color: var(--drift-color-ink-on-primary);
   /* A soft accent-tinted lift so the primary action reads as raised.
      The value is a Drift role: the lift is this product's identity and haus's
      Button has no vocabulary for it, so it stays here rather than moving to
@@ -47,26 +47,26 @@
 }
 
 .primary:hover:not(:disabled) {
-  background: var(--haus-color-primary-hover);
+  background: var(--drift-color-primary-hover);
   box-shadow: var(--drift-lift-hover);
   transform: translateY(-1px);
 }
 
 .primary:active:not(:disabled) {
-  background: var(--haus-color-primary-pressed);
+  background: var(--drift-color-primary-pressed);
   box-shadow: var(--drift-lift-pressed);
   transform: translateY(0);
 }
 
 .secondary {
-  background: var(--haus-color-surface-default);
-  color: var(--haus-color-ink-primary);
-  border-color: var(--haus-color-border-default);
+  background: var(--drift-color-surface-default);
+  color: var(--drift-color-ink-primary);
+  border-color: var(--drift-color-border-default);
 }
 
 .secondary:hover:not(:disabled) {
-  background: var(--haus-color-surface-subtle);
-  border-color: var(--haus-color-border-strong);
+  background: var(--drift-color-surface-subtle);
+  border-color: var(--drift-color-border-strong);
 }
 
 @media (prefers-reduced-motion: reduce) {

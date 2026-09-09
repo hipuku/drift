@@ -1,35 +1,35 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
 }
 
 .label {
-  color: var(--haus-color-ink-secondary);
+  color: var(--drift-color-ink-secondary);
 }
 
 .input {
   font-family: var(--font-sans);
-  font-size: var(--haus-type-body-size);
-  line-height: var(--haus-type-body-leading);
-  color: var(--haus-color-ink-primary);
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
-  border-radius: var(--haus-radius-surface);
-  padding: var(--haus-space-inset-sm) var(--haus-space-inset-md);
+  font-size: var(--drift-type-body-size);
+  line-height: var(--drift-type-body-leading);
+  color: var(--drift-color-ink-primary);
+  background: var(--drift-color-surface-default);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-default);
+  border-radius: var(--drift-radius-surface);
+  padding: var(--drift-space-inset-sm) var(--drift-space-inset-md);
   transition:
     border-color var(--motion-duration-micro) var(--motion-ease-standard),
     box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .input::placeholder {
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 .input:focus-visible {
   outline: none;
-  border-color: var(--haus-color-border-focus);
-  box-shadow: var(--haus-focus-ring);
+  border-color: var(--drift-color-border-focus);
+  box-shadow: var(--drift-focus-ring);
 }
 
 @media (prefers-reduced-motion: reduce) {

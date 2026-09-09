@@ -1,36 +1,36 @@
 .screen {
   display: flex;
   justify-content: center;
-  padding: var(--haus-space-inset-7xl) var(--haus-space-inset-xl);
+  padding: var(--drift-space-inset-7xl) var(--drift-space-inset-xl);
 }
 
 .card {
   width: 100%;
   max-width: 32rem;
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--drift-card-border);
+  background: var(--drift-color-surface-default);
+  border: var(--drift-border-width-default) solid var(--drift-card-border);
   border-radius: var(--radius-panel);
   box-shadow: var(--elevation-modal);
-  padding: var(--haus-space-inset-3xl);
+  padding: var(--drift-space-inset-3xl);
 }
 
 .intro {
-  color: var(--haus-color-ink-secondary);
-  margin-top: var(--haus-space-stack-sm);
+  color: var(--drift-color-ink-secondary);
+  margin-top: var(--drift-space-stack-sm);
 }
 
 .count {
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
   /* Weight only. The number is emphasised inside a line that keeps its own
      size and leading, and every role sets all four. Off-role: drift#1. */
-  font-weight: var(--haus-weight-strong);
+  font-weight: var(--drift-weight-strong);
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-lg);
-  margin-top: var(--haus-space-stack-2xl);
+  gap: var(--drift-space-gap-lg);
+  margin-top: var(--drift-space-stack-2xl);
 }
 
 
@@ -38,17 +38,17 @@
 .discovering {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-sm);
-  color: var(--haus-color-ink-secondary);
-  margin-top: var(--haus-space-stack-xl);
+  gap: var(--drift-space-gap-sm);
+  color: var(--drift-color-ink-secondary);
+  margin-top: var(--drift-space-stack-xl);
 }
 
 .spinner {
   width: 1.1rem;
   height: 1.1rem;
   border-radius: 50%;
-  border: var(--haus-border-width-thick) solid var(--haus-color-primary-subtle);
-  border-top-color: var(--haus-color-primary-default);
+  border: var(--drift-border-width-thick) solid var(--drift-color-primary-subtle);
+  border-top-color: var(--drift-color-primary-default);
   animation: spin 0.7s linear infinite;
 }
 
@@ -65,72 +65,72 @@
   border: none;
   padding: 0;
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-size);
-  color: var(--haus-color-ink-tertiary);
+  font-size: var(--drift-type-label-size);
+  color: var(--drift-color-ink-tertiary);
   cursor: pointer;
-  margin-bottom: var(--haus-space-stack-md);
+  margin-bottom: var(--drift-space-stack-md);
 }
 
 .back:hover {
-  color: var(--haus-color-ink-link);
+  color: var(--drift-color-ink-link);
 }
 
 .search {
   width: 100%;
-  margin-top: var(--haus-space-stack-lg);
-  padding: var(--haus-space-inset-sm) var(--haus-space-inset-md);
+  margin-top: var(--drift-space-stack-lg);
+  padding: var(--drift-space-inset-sm) var(--drift-space-inset-md);
   font-family: var(--font-sans);
-  font-size: var(--haus-type-body-size);
-  color: var(--haus-color-ink-primary);
-  background: var(--haus-color-surface-subtle);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
-  border-radius: var(--haus-radius-surface);
+  font-size: var(--drift-type-body-size);
+  color: var(--drift-color-ink-primary);
+  background: var(--drift-color-surface-subtle);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-default);
+  border-radius: var(--drift-radius-surface);
 }
 
 .search::placeholder {
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 .search:focus-visible {
   outline: none;
-  border-color: var(--haus-color-primary-default);
-  box-shadow: var(--haus-focus-ring);
+  border-color: var(--drift-color-primary-default);
+  box-shadow: var(--drift-focus-ring);
 }
 
 .empty {
-  padding: var(--haus-space-inset-xl);
+  padding: var(--drift-space-inset-xl);
   text-align: center;
 }
 
 .muted {
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 /* Manual "add a page" row, for pages discovery missed. */
 .addRow {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-xs);
-  margin-top: var(--haus-space-stack-md);
+  gap: var(--drift-space-gap-xs);
+  margin-top: var(--drift-space-stack-md);
 }
 
 .addInput {
   flex: 1;
   min-width: 0;
-  padding: var(--haus-space-inset-sm) var(--haus-space-inset-md);
+  padding: var(--drift-space-inset-sm) var(--drift-space-inset-md);
   font-family: var(--font-sans);
-  font-size: var(--haus-type-body-size);
-  color: var(--haus-color-ink-primary);
-  background: var(--haus-color-surface-subtle);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
-  border-radius: var(--haus-radius-surface);
+  font-size: var(--drift-type-body-size);
+  color: var(--drift-color-ink-primary);
+  background: var(--drift-color-surface-subtle);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-default);
+  border-radius: var(--drift-radius-surface);
 }
 
 .listActions {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-sm);
-  margin-top: var(--haus-space-stack-md);
+  gap: var(--drift-space-gap-sm);
+  margin-top: var(--drift-space-stack-md);
 }
 
 .textAction {
@@ -138,9 +138,9 @@
   border: none;
   padding: 0;
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-sm-size);
-  font-weight: var(--haus-type-label-sm-weight);
-  color: var(--haus-color-ink-link);
+  font-size: var(--drift-type-label-sm-size);
+  font-weight: var(--drift-type-label-sm-weight);
+  color: var(--drift-color-ink-link);
   cursor: pointer;
 }
 
@@ -149,33 +149,33 @@
 }
 
 .textAction:disabled {
-  color: var(--haus-color-ink-disabled);
+  color: var(--drift-color-ink-disabled);
   cursor: default;
 }
 
 .actionDivider {
   width: 1px;
   height: 0.9rem;
-  background: var(--haus-color-border-default);
+  background: var(--drift-color-border-default);
 }
 
 .list {
-  margin-top: var(--haus-space-stack-sm);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-  border-radius: var(--haus-radius-overlay);
+  margin-top: var(--drift-space-stack-sm);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
+  border-radius: var(--drift-radius-overlay);
   overflow: hidden;
 }
 
 .row {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-sm);
+  gap: var(--drift-space-gap-sm);
   width: 100%;
   text-align: left;
   background: transparent;
   border: none;
-  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-  padding: var(--haus-space-inset-sm) var(--haus-space-inset-md);
+  border-bottom: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
+  padding: var(--drift-space-inset-sm) var(--drift-space-inset-md);
   cursor: pointer;
   transition: background var(--motion-duration-micro) var(--motion-ease-standard);
 }
@@ -185,12 +185,12 @@
 }
 
 .row:hover:not(:disabled) {
-  background: var(--haus-color-surface-subtle);
+  background: var(--drift-color-surface-subtle);
 }
 
 .rowSelected,
 .rowSelected:hover:not(:disabled) {
-  background: var(--haus-color-surface-subtle);
+  background: var(--drift-color-surface-subtle);
 }
 
 .rowDisabled {
@@ -200,7 +200,7 @@
 
 .row:focus-visible {
   outline: none;
-  box-shadow: var(--haus-focus-ring);
+  box-shadow: var(--drift-focus-ring);
   position: relative;
   z-index: 1;
 }
@@ -208,12 +208,12 @@
 .check {
   width: 1.2rem;
   height: 1.2rem;
-  border-radius: var(--haus-radius-control);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-strong);
+  border-radius: var(--drift-radius-control);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-strong);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--haus-color-ink-on-primary);
+  color: var(--drift-color-ink-on-primary);
   flex-shrink: 0;
   transition:
     background var(--motion-duration-micro) var(--motion-ease-standard),
@@ -221,8 +221,8 @@
 }
 
 .checkOn {
-  background: var(--haus-color-primary-default);
-  border-color: var(--haus-color-primary-default);
+  background: var(--drift-color-primary-default);
+  border-color: var(--drift-color-primary-default);
 }
 
 .rowText {
@@ -234,44 +234,44 @@
 
 /* The one place mono earns its place: an actual URL path. */
 .path {
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 .showMore {
   display: block;
   width: 100%;
-  margin-top: var(--haus-space-stack-sm);
-  padding: var(--haus-space-inset-xs);
+  margin-top: var(--drift-space-stack-sm);
+  padding: var(--drift-space-inset-xs);
   background: none;
   border: none;
   font-family: var(--font-sans);
-  font-size: var(--haus-type-body-sm-size);
+  font-size: var(--drift-type-body-sm-size);
   /* body-sm's own weight is regular. This is the role's size at a heavier
      weight, which is the scale having no step for what the element wants
      rather than a bypass. Off-role: drift#1. */
-  font-weight: var(--haus-weight-emphasis);
-  color: var(--haus-color-ink-link);
+  font-weight: var(--drift-weight-emphasis);
+  color: var(--drift-color-ink-link);
   cursor: pointer;
-  border-radius: var(--haus-radius-surface);
+  border-radius: var(--drift-radius-surface);
 }
 
 .showMore:hover {
-  background: var(--haus-color-surface-subtle);
+  background: var(--drift-color-surface-subtle);
 }
 
 .footer {
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-sm);
-  margin-top: var(--haus-space-stack-xl);
+  gap: var(--drift-space-gap-sm);
+  margin-top: var(--drift-space-stack-xl);
 }
 
 .counter {
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 .limitNote {
-  color: var(--haus-color-primary-default);
+  color: var(--drift-color-primary-default);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -286,15 +286,15 @@
 
 /* Demo banner: the deployed build replays a captured audit, and says so. */
 .demoNote {
-  margin-top: var(--haus-space-stack-md);
-  padding: var(--haus-space-inset-sm) var(--haus-space-inset-md);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
-  border-radius: var(--haus-radius-surface);
-  background: var(--haus-color-surface-sunken);
-  color: var(--haus-color-ink-secondary);
+  margin-top: var(--drift-space-stack-md);
+  padding: var(--drift-space-inset-sm) var(--drift-space-inset-md);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-default);
+  border-radius: var(--drift-radius-surface);
+  background: var(--drift-color-surface-sunken);
+  color: var(--drift-color-ink-secondary);
   font-family: var(--font-sans);
-  font-size: var(--haus-type-body-size);
-  line-height: var(--haus-type-body-leading);
+  font-size: var(--drift-type-body-size);
+  line-height: var(--drift-type-body-leading);
 }
 
 /* Shown only in demo mode, where the capture fixes the page set. Sits between
@@ -302,5 +302,5 @@
    explains rather than after them. */
 .lockedNote {
   margin: 0;
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }

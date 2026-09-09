@@ -21,29 +21,29 @@
 .card {
   display: flex;
   flex-direction: column;
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--drift-card-border);
-  border-radius: var(--haus-radius-overlay);
+  background: var(--drift-color-surface-default);
+  border: var(--drift-border-width-default) solid var(--drift-card-border);
+  border-radius: var(--drift-radius-overlay);
   overflow: hidden;
   transition: transform var(--motion-duration-micro) var(--motion-ease-standard), box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--haus-elevation-overlay);
+  box-shadow: var(--drift-elevation-overlay);
 }
 
 .cardMeta {
-  padding: var(--haus-space-inset-sm) var(--haus-space-inset-md) var(--haus-space-inset-md);
+  padding: var(--drift-space-inset-sm) var(--drift-space-inset-md) var(--drift-space-inset-md);
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
   min-width: 0;
 }
 
 .cardValue {
-  color: var(--haus-color-ink-primary);
-  font-size: var(--haus-type-label-sm-size);
+  color: var(--drift-color-ink-primary);
+  font-size: var(--drift-type-label-sm-size);
 }
 
 /* Colour cards are buttons (click to expand). */
@@ -57,12 +57,12 @@
 
 .cardBtn:focus-visible {
   outline: none;
-  box-shadow: var(--haus-focus-ring);
+  box-shadow: var(--drift-focus-ring);
 }
 
 .cardOn {
-  border-color: var(--haus-color-primary-default);
-  box-shadow: 0 0 0 1px var(--haus-color-primary-default);
+  border-color: var(--drift-color-primary-default);
+  box-shadow: 0 0 0 1px var(--drift-color-primary-default);
 }
 
 /* Brief pulse when a card is scrolled to after picking it from the rail. */
@@ -73,7 +73,7 @@
 .swatchFill {
   height: 4.75rem;
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--drift-color-ink-primary) 10%, transparent);
 }
 
 /* ── Colour detail: the full-width strip that unfolds under a selected swatch */
@@ -81,7 +81,7 @@
 .drawerContent {
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-2xl);
+  gap: var(--drift-space-gap-2xl);
 }
 
 .detailSection {
@@ -91,57 +91,57 @@
 .drawerTitle {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-sm);
+  gap: var(--drift-space-gap-sm);
 }
 
 .drawerSwatch {
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: var(--haus-radius-surface);
+  border-radius: var(--drift-radius-surface);
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--drift-color-ink-primary) 12%, transparent);
   flex-shrink: 0;
 }
 
 .drawerHex {
   display: block;
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
 }
 
 /* The stack of related-colour call-outs (opacity variants + near-duplicates). */
 .relatedList {
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-sm);
+  gap: var(--drift-space-gap-sm);
 }
 
 /* Near-duplicate / nearest call-out. */
 .nearCallout {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-md);
+  gap: var(--drift-space-gap-md);
   width: 100%;
   text-align: left;
-  padding: var(--haus-space-inset-md);
-  border-radius: var(--haus-radius-overlay);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
-  background: var(--haus-color-surface-subtle);
+  padding: var(--drift-space-inset-md);
+  border-radius: var(--drift-radius-overlay);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-default);
+  background: var(--drift-color-surface-subtle);
   cursor: pointer;
   transition: border-color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .nearCallout:hover {
-  border-color: var(--haus-color-border-strong);
+  border-color: var(--drift-color-border-strong);
 }
 
 .nearCallout:focus-visible {
   outline: none;
-  box-shadow: var(--haus-focus-ring);
+  box-shadow: var(--drift-focus-ring);
 }
 
 .nearDup {
-  border-color: color-mix(in oklab, var(--haus-color-error-default) 40%, var(--drift-card-border));
-  background: color-mix(in oklab, var(--haus-color-error-default) 10%, var(--haus-color-surface-default));
+  border-color: color-mix(in oklab, var(--drift-color-error-default) 40%, var(--drift-card-border));
+  background: color-mix(in oklab, var(--drift-color-error-default) 10%, var(--drift-color-surface-default));
 }
 
 /* Checker underlay: invisible behind an opaque swatch, showing through a
@@ -151,13 +151,13 @@
   width: 2rem;
   height: 2rem;
   flex-shrink: 0;
-  border-radius: var(--haus-radius-surface);
+  border-radius: var(--drift-radius-surface);
   overflow: hidden;
   background-image:
-    linear-gradient(45deg, var(--haus-color-surface-sunken) 25%, transparent 25%),
-    linear-gradient(-45deg, var(--haus-color-surface-sunken) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, var(--haus-color-surface-sunken) 75%),
-    linear-gradient(-45deg, transparent 75%, var(--haus-color-surface-sunken) 75%);
+    linear-gradient(45deg, var(--drift-color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--drift-color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--drift-color-surface-sunken) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--drift-color-surface-sunken) 75%);
   background-size: 10px 10px;
   background-position: 0 0, 0 5px, 5px -5px, -5px 0;
 }
@@ -168,23 +168,23 @@
   height: 100%;
   border-radius: inherit;
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--haus-color-ink-primary) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--drift-color-ink-primary) 12%, transparent);
 }
 
 .nearText {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  color: var(--haus-color-ink-secondary);
+  color: var(--drift-color-ink-secondary);
 }
 
 .nearHex {
-  color: var(--haus-color-ink-primary);
+  color: var(--drift-color-ink-primary);
 }
 
 .nearDelta {
   margin-left: auto;
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 /* Section head with a trailing control (e.g. the elements group toggle). */
@@ -192,7 +192,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--haus-space-gap-sm);
+  gap: var(--drift-space-gap-sm);
 }
 
 .detailHead .detailLabel {
@@ -206,29 +206,29 @@
   width: 1.75rem;
   height: 1.75rem;
   flex-shrink: 0;
-  margin-bottom: var(--haus-space-stack-sm);
+  margin-bottom: var(--drift-space-stack-sm);
   border: none;
-  border-radius: var(--haus-radius-surface);
+  border-radius: var(--drift-radius-surface);
   background: none;
-  color: var(--haus-color-ink-tertiary);
-  font-size: var(--haus-type-label-sm-size);
+  color: var(--drift-color-ink-tertiary);
+  font-size: var(--drift-type-label-sm-size);
   cursor: pointer;
   transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .sortToggle:hover {
-  background: var(--haus-color-surface-sunken);
-  color: var(--haus-color-ink-primary);
+  background: var(--drift-color-surface-sunken);
+  color: var(--drift-color-ink-primary);
 }
 
 .sortToggleOn {
-  background: var(--haus-color-primary-subtle);
-  color: var(--haus-color-primary-on-subtle);
+  background: var(--drift-color-primary-subtle);
+  color: var(--drift-color-primary-on-subtle);
 }
 
 .sortToggle:focus-visible {
   outline: none;
-  box-shadow: var(--haus-focus-ring);
+  box-shadow: var(--drift-focus-ring);
 }
 
 /* Elements-that-use-it list. */
@@ -239,8 +239,8 @@
 
 /* Grouped-by-tag view: a tag header with its total, then indented role rows. */
 .elementGroup {
-  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-  padding-bottom: var(--haus-space-inset-xs);
+  border-bottom: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
+  padding-bottom: var(--drift-space-inset-xs);
 }
 
 .elementGroup:last-child {
@@ -249,14 +249,14 @@
 }
 
 .elementGroup + .elementGroup {
-  padding-top: var(--haus-space-inset-xs);
+  padding-top: var(--drift-space-inset-xs);
 }
 
 .elementGroupHead {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-sm);
-  padding: var(--haus-space-inset-xs) 0;
+  gap: var(--drift-space-gap-sm);
+  padding: var(--drift-space-inset-xs) 0;
 }
 
 .elementGroupHead .elementCount {
@@ -266,16 +266,16 @@
 .elementSubRow {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-sm);
-  padding: var(--space-inset-tight) 0 var(--space-inset-tight) var(--haus-space-inset-md);
+  gap: var(--drift-space-gap-sm);
+  padding: var(--space-inset-tight) 0 var(--space-inset-tight) var(--drift-space-inset-md);
 }
 
 .elementRow {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-sm);
-  padding: var(--haus-space-inset-xs) 0;
-  border-bottom: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  gap: var(--drift-space-gap-sm);
+  padding: var(--drift-space-inset-xs) 0;
+  border-bottom: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
 }
 
 .elementRow:last-child {
@@ -283,56 +283,56 @@
 }
 
 .elementTag {
-  color: var(--haus-color-ink-primary);
-  font-size: var(--haus-type-label-sm-size);
+  color: var(--drift-color-ink-primary);
+  font-size: var(--drift-type-label-sm-size);
 }
 
 .elementRole {
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-sm-size);
-  color: var(--haus-color-ink-tertiary);
+  font-size: var(--drift-type-label-sm-size);
+  color: var(--drift-color-ink-tertiary);
 }
 
 .elementCount {
   margin-left: auto;
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 .detailLabel {
   display: block;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--haus-color-ink-tertiary);
-  margin-bottom: var(--haus-space-stack-sm);
+  color: var(--drift-color-ink-tertiary);
+  margin-bottom: var(--drift-space-stack-sm);
 }
 
 .roleBars {
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
 }
 
 .roleRow {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-sm);
+  gap: var(--drift-space-gap-sm);
 }
 
 .roleName {
   width: 5.5rem;
   flex-shrink: 0;
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-sm-size);
-  color: var(--haus-color-ink-secondary);
+  font-size: var(--drift-type-label-sm-size);
+  color: var(--drift-color-ink-secondary);
 }
 
 .roleTrack {
   flex: 1;
   height: 0.5rem;
-  border-radius: var(--haus-radius-pill);
-  background: var(--haus-color-surface-sunken);
+  border-radius: var(--drift-radius-pill);
+  background: var(--drift-color-surface-sunken);
   overflow: hidden;
 }
 
@@ -340,7 +340,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: var(--haus-color-primary-default);
+  background: var(--drift-color-primary-default);
 }
 
 .rolePct {
@@ -349,33 +349,33 @@
   text-align: right;
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
 }
 
 .pageChips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
 }
 
 .pageChip {
-  padding: var(--space-inset-tight) var(--haus-space-inset-xs);
-  border-radius: var(--haus-radius-control);
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  padding: var(--space-inset-tight) var(--drift-space-inset-xs);
+  border-radius: var(--drift-radius-control);
+  background: var(--drift-color-surface-default);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
   font-family: var(--type-data-family);
   font-size: var(--type-data-size);
-  color: var(--haus-color-ink-secondary);
+  color: var(--drift-color-ink-secondary);
 }
 
 .pillDup {
-  background: color-mix(in oklab, var(--haus-color-error-default) 16%, transparent);
+  background: color-mix(in oklab, var(--drift-color-error-default) 16%, transparent);
   color: var(--drift-alert-ink);
 }
 
 @media (width <= 40rem) {
   .drawerContent {
-      gap: var(--haus-space-gap-lg);
+      gap: var(--drift-space-gap-lg);
     }
 }
 

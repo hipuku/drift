@@ -99,4 +99,4 @@ VITE_DEMO_MODE=true npm --prefix client run build  # build the replaying bundle
 ## Stack
 
 Node · Express · Playwright · BullMQ on Redis · WebSockets · React · TypeScript · Vite ·
-CSS Modules · `haus-colour-utils` · `haus-style-probe` · `haus-tokens`
+CSS Modules · `haus-colour-utils` · `haus-style-probe`

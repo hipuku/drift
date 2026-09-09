@@ -1,0 +1,239 @@
+/* drift/client/src/tokens/foundation.css
+   Drift's own token foundation. These values were haus-tokens' until
+   2026-09-09, when Drift was made independent: no package supplies them now.
+   Names are Drift's (--drift-*); the foundation.* layers sit below Drift's
+   base.* and drift.* layers, where the cool, dark, editorial theme overrides
+   surface, ink, border and primary. Generated as the closure of what Drift
+   reads, so unused ramps (ruby, paper, cobalt) and roles Drift overrides are
+   not carried. Generated once, from haus-tokens 3.2.0, by a migration script
+   that read the installed package; that package is gone, so this file is not
+   regenerable and is maintained by hand like any other source. tokens.test.ts
+   is what holds it: every property read here or above must be defined.
+
+   The brand layer is one :root block, not a default plus a [data-theme='drift']
+   override. It was two while Drift was a haus brand, because that is the shape
+   the brand mechanism required, and 18 of its 21 entries were byte-identical
+   across the two: only the three radius roles ever differed. Drift ships one
+   theme and owns this file now, so the second block was 18 restated values kept
+   in step by nothing, which is the defect Drift exists to detect. Collapsed, and
+   the data-theme attribute it needed is off index.html. The computed-styles e2e
+   confirms nothing resolved differently.
+   */
+
+@layer foundation.primitives {
+  :root {
+    --drift-damson-0: oklch(100% 0 0);
+    --drift-damson-950: oklch(11% 0.002 290);
+    --drift-elderberry-100: oklch(97% 0.020 265);
+    --drift-elderberry-200: oklch(93% 0.040 265);
+    --drift-elderberry-500: oklch(55% 0.200 265);
+    --drift-elderberry-700: oklch(42% 0.160 265);
+    --drift-greengage-100: oklch(97% 0.030 148);
+    --drift-greengage-200: oklch(93% 0.055 148);
+    --drift-greengage-500: oklch(58% 0.185 148);
+    --drift-greengage-700: oklch(45% 0.150 148);
+    --drift-mango-100: oklch(97% 0.025 65);
+    --drift-mango-200: oklch(93% 0.045 65);
+    --drift-mango-500: oklch(60% 0.175 65);
+    --drift-mango-700: oklch(47% 0.142 65);
+    --drift-cherry-100: oklch(97% 0.030 27);
+    --drift-cherry-200: oklch(93% 0.055 27);
+    --drift-cherry-500: oklch(58% 0.200 27);
+    --drift-cherry-700: oklch(44% 0.168 27);
+    --drift-text-11: 0.6875rem;
+    --drift-text-12: 0.75rem;
+    --drift-text-13: 0.8125rem;
+    --drift-text-14: 0.875rem;
+    --drift-text-16: 1rem;
+    --drift-text-20: 1.25rem;
+    --drift-text-24: 1.5rem;
+    --drift-text-30: 1.875rem;
+    --drift-weight-regular: 400;
+    --drift-weight-medium: 500;
+    --drift-weight-semibold: 600;
+    --drift-weight-bold: 700;
+    --drift-leading-tight: 1.15;
+    --drift-leading-tighter: 1.2;
+    --drift-leading-snug: 1.25;
+    --drift-leading-compact: 1.3;
+    --drift-leading-normal: 1.4;
+    --drift-leading-relaxed: 1.5;
+    --drift-leading-loose: 1.6;
+    --drift-tracking-tightest: -0.03em;
+    --drift-tracking-tighter: -0.02em;
+    --drift-tracking-tight: -0.01em;
+    --drift-tracking-normal: 0em;
+    --drift-tracking-wide: 0.02em;
+    --drift-tracking-widest: 0.08em;
+    --drift-space-1: 0.25rem;
+    --drift-space-2: 0.5rem;
+    --drift-space-3: 0.75rem;
+    --drift-space-4: 1rem;
+    --drift-space-5: 1.25rem;
+    --drift-space-6: 1.5rem;
+    --drift-space-7: 1.75rem;
+    --drift-space-8: 2rem;
+    --drift-space-10: 2.5rem;
+    --drift-space-12: 3rem;
+    --drift-space-16: 4rem;
+    --drift-space-20: 5rem;
+    --drift-radius-sm: 0.25rem;
+    --drift-radius-md: 0.5rem;
+    --drift-radius-lg: 0.75rem;
+    --drift-radius-xl: 1rem;
+    --drift-radius-full: 9999px;
+    --drift-z-200: 200;
+    --drift-z-300: 300;
+    --drift-z-400: 400;
+    --drift-border-width-1: 1px;
+    --drift-border-width-2: 2px;
+    --drift-opacity-40: 0.4;
+    --drift-opacity-60: 0.6;
+    --drift-icon-sm: 1rem;
+  }
+}
+
+@layer foundation.brand {
+  :root {
+    --drift-brand-ink-on-primary: var(--drift-damson-0);
+    --drift-brand-backdrop: oklch(from var(--drift-damson-950) l c h / var(--drift-opacity-60));
+    --drift-brand-info-subtle: var(--drift-elderberry-100);
+    --drift-brand-info-border: var(--drift-elderberry-200);
+    --drift-brand-info-default: var(--drift-elderberry-500);
+    --drift-brand-info-on-subtle: var(--drift-elderberry-700);
+    --drift-brand-success-subtle: var(--drift-greengage-100);
+    --drift-brand-success-border: var(--drift-greengage-200);
+    --drift-brand-success-default: var(--drift-greengage-500);
+    --drift-brand-success-on-subtle: var(--drift-greengage-700);
+    --drift-brand-warning-subtle: var(--drift-mango-100);
+    --drift-brand-warning-border: var(--drift-mango-200);
+    --drift-brand-warning-default: var(--drift-mango-500);
+    --drift-brand-warning-on-subtle: var(--drift-mango-700);
+    --drift-brand-error-subtle: var(--drift-cherry-100);
+    --drift-brand-error-border: var(--drift-cherry-200);
+    --drift-brand-error-default: var(--drift-cherry-500);
+    --drift-brand-error-on-subtle: var(--drift-cherry-700);
+    --drift-brand-radius-control: var(--drift-radius-sm);
+    --drift-brand-radius-surface: var(--drift-radius-md);
+    --drift-brand-radius-overlay: var(--drift-radius-lg);
+  }
+}
+
+@layer foundation.motion {
+  :root {
+    --drift-duration-fast: 100ms;
+    --drift-duration-normal: 200ms;
+    --drift-duration-moderate: 300ms;
+    --drift-ease-move: cubic-bezier(0.40, 0.00, 0.20, 1.00);
+  }
+}
+
+@layer foundation.semantics {
+  :root {
+    --drift-color-ink-on-primary: var(--drift-brand-ink-on-primary);
+    --drift-color-border-focus: var(--drift-color-primary-default);
+    --drift-color-info-subtle: var(--drift-brand-info-subtle);
+    --drift-color-info-border: var(--drift-brand-info-border);
+    --drift-color-info-default: var(--drift-brand-info-default);
+    --drift-color-info-on-subtle: var(--drift-brand-info-on-subtle);
+    --drift-color-success-subtle: var(--drift-brand-success-subtle);
+    --drift-color-success-border: var(--drift-brand-success-border);
+    --drift-color-success-default: var(--drift-brand-success-default);
+    --drift-color-success-on-subtle: var(--drift-brand-success-on-subtle);
+    --drift-color-warning-subtle: var(--drift-brand-warning-subtle);
+    --drift-color-warning-border: var(--drift-brand-warning-border);
+    --drift-color-warning-default: var(--drift-brand-warning-default);
+    --drift-color-warning-on-subtle: var(--drift-brand-warning-on-subtle);
+    --drift-color-error-subtle: var(--drift-brand-error-subtle);
+    --drift-color-error-border: var(--drift-brand-error-border);
+    --drift-color-error-default: var(--drift-brand-error-default);
+    --drift-color-error-on-subtle: var(--drift-brand-error-on-subtle);
+    --drift-color-backdrop: var(--drift-brand-backdrop);
+    --drift-focus-ring: 0 0 0 2px var(--drift-color-surface-default), 0 0 0 4px var(--drift-color-border-focus);
+    --drift-type-label-xs-size: var(--drift-text-11);
+    --drift-type-label-xs-weight: var(--drift-weight-medium);
+    --drift-type-label-xs-leading: var(--drift-leading-normal);
+    --drift-type-label-xs-tracking: var(--drift-tracking-widest);
+    --drift-type-label-sm-size: var(--drift-text-12);
+    --drift-type-label-sm-weight: var(--drift-weight-medium);
+    --drift-type-label-sm-leading: var(--drift-leading-normal);
+    --drift-type-label-sm-tracking: var(--drift-tracking-wide);
+    --drift-type-label-size: var(--drift-text-13);
+    --drift-type-label-weight: var(--drift-weight-medium);
+    --drift-type-label-leading: var(--drift-leading-normal);
+    --drift-type-label-tracking: var(--drift-tracking-normal);
+    --drift-type-body-sm-size: var(--drift-text-13);
+    --drift-type-body-sm-weight: var(--drift-weight-regular);
+    --drift-type-body-sm-leading: var(--drift-leading-relaxed);
+    --drift-type-body-sm-tracking: var(--drift-tracking-normal);
+    --drift-type-body-size: var(--drift-text-14);
+    --drift-type-body-weight: var(--drift-weight-regular);
+    --drift-type-body-leading: var(--drift-leading-relaxed);
+    --drift-type-body-tracking: var(--drift-tracking-normal);
+    --drift-type-body-lg-size: var(--drift-text-16);
+    --drift-type-body-lg-weight: var(--drift-weight-regular);
+    --drift-type-body-lg-leading: var(--drift-leading-loose);
+    --drift-type-body-lg-tracking: var(--drift-tracking-normal);
+    --drift-type-heading-sm-size: var(--drift-text-16);
+    --drift-type-heading-sm-weight: var(--drift-weight-semibold);
+    --drift-type-heading-sm-leading: var(--drift-leading-compact);
+    --drift-type-heading-sm-tracking: var(--drift-tracking-tight);
+    --drift-type-heading-size: var(--drift-text-20);
+    --drift-type-heading-weight: var(--drift-weight-semibold);
+    --drift-type-heading-leading: var(--drift-leading-snug);
+    --drift-type-heading-tracking: var(--drift-tracking-tight);
+    --drift-type-heading-lg-size: var(--drift-text-24);
+    --drift-type-heading-lg-weight: var(--drift-weight-semibold);
+    --drift-type-heading-lg-leading: var(--drift-leading-tighter);
+    --drift-type-heading-lg-tracking: var(--drift-tracking-tighter);
+    --drift-type-display-size: var(--drift-text-30);
+    --drift-type-display-weight: var(--drift-weight-bold);
+    --drift-type-display-leading: var(--drift-leading-tight);
+    --drift-type-display-tracking: var(--drift-tracking-tightest);
+    --drift-weight-emphasis: var(--drift-weight-medium);
+    --drift-weight-strong: var(--drift-weight-semibold);
+    --drift-type-mono-size: var(--drift-text-13);
+    --drift-type-mono-weight: var(--drift-weight-regular);
+    --drift-type-mono-leading: var(--drift-leading-loose);
+    --drift-type-mono-tracking: var(--drift-tracking-normal);
+    --drift-space-inset-2xs: var(--drift-space-1);
+    --drift-space-inset-xs: var(--drift-space-2);
+    --drift-space-inset-sm: var(--drift-space-3);
+    --drift-space-inset-md: var(--drift-space-4);
+    --drift-space-inset-lg: var(--drift-space-5);
+    --drift-space-inset-xl: var(--drift-space-6);
+    --drift-space-inset-2xl: var(--drift-space-7);
+    --drift-space-inset-3xl: var(--drift-space-8);
+    --drift-space-inset-5xl: var(--drift-space-12);
+    --drift-space-inset-6xl: var(--drift-space-16);
+    --drift-space-inset-7xl: var(--drift-space-20);
+    --drift-space-gap-2xs: var(--drift-space-1);
+    --drift-space-gap-xs: var(--drift-space-2);
+    --drift-space-gap-sm: var(--drift-space-3);
+    --drift-space-gap-md: var(--drift-space-4);
+    --drift-space-gap-lg: var(--drift-space-5);
+    --drift-space-gap-2xl: var(--drift-space-7);
+    --drift-space-gap-3xl: var(--drift-space-8);
+    --drift-space-stack-2xs: var(--drift-space-1);
+    --drift-space-stack-xs: var(--drift-space-2);
+    --drift-space-stack-sm: var(--drift-space-3);
+    --drift-space-stack-md: var(--drift-space-4);
+    --drift-space-stack-lg: var(--drift-space-5);
+    --drift-space-stack-xl: var(--drift-space-6);
+    --drift-space-stack-2xl: var(--drift-space-7);
+    --drift-space-stack-3xl: var(--drift-space-8);
+    --drift-space-stack-4xl: var(--drift-space-10);
+    --drift-space-stack-5xl: var(--drift-space-12);
+    --drift-radius-control: var(--drift-brand-radius-control);
+    --drift-radius-surface: var(--drift-brand-radius-surface);
+    --drift-radius-overlay: var(--drift-brand-radius-overlay);
+    --drift-radius-pill: var(--drift-radius-full);
+    --drift-z-sticky: var(--drift-z-200);
+    --drift-z-overlay: var(--drift-z-300);
+    --drift-z-modal: var(--drift-z-400);
+    --drift-border-width-default: var(--drift-border-width-1);
+    --drift-border-width-thick: var(--drift-border-width-2);
+    --drift-opacity-disabled: var(--drift-opacity-40);
+  }
+}
+

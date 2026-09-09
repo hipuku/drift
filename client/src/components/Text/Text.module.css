@@ -23,79 +23,79 @@
 .mono {
   font-family: var(--font-mono);
   margin: 0;
-  font-size: var(--haus-type-mono-size);
-  font-weight: var(--haus-type-mono-weight);
-  line-height: var(--haus-type-mono-leading);
-  letter-spacing: var(--haus-type-mono-tracking);
+  font-size: var(--drift-type-mono-size);
+  font-weight: var(--drift-type-mono-weight);
+  line-height: var(--drift-type-mono-leading);
+  letter-spacing: var(--drift-type-mono-tracking);
 }
 
 .display {
-  font-size: var(--haus-type-display-size);
-  font-weight: var(--haus-type-display-weight);
-  line-height: var(--haus-type-display-leading);
-  letter-spacing: var(--haus-type-display-tracking);
+  font-size: var(--drift-type-display-size);
+  font-weight: var(--drift-type-display-weight);
+  line-height: var(--drift-type-display-leading);
+  letter-spacing: var(--drift-type-display-tracking);
 }
 
 .headingLg {
-  font-size: var(--haus-type-heading-lg-size);
-  font-weight: var(--haus-type-heading-lg-weight);
-  line-height: var(--haus-type-heading-lg-leading);
-  letter-spacing: var(--haus-type-heading-lg-tracking);
+  font-size: var(--drift-type-heading-lg-size);
+  font-weight: var(--drift-type-heading-lg-weight);
+  line-height: var(--drift-type-heading-lg-leading);
+  letter-spacing: var(--drift-type-heading-lg-tracking);
 }
 
 .heading {
-  font-size: var(--haus-type-heading-size);
-  font-weight: var(--haus-type-heading-weight);
-  line-height: var(--haus-type-heading-leading);
-  letter-spacing: var(--haus-type-heading-tracking);
+  font-size: var(--drift-type-heading-size);
+  font-weight: var(--drift-type-heading-weight);
+  line-height: var(--drift-type-heading-leading);
+  letter-spacing: var(--drift-type-heading-tracking);
 }
 
 .headingSm {
-  font-size: var(--haus-type-heading-sm-size);
-  font-weight: var(--haus-type-heading-sm-weight);
-  line-height: var(--haus-type-heading-sm-leading);
-  letter-spacing: var(--haus-type-heading-sm-tracking);
+  font-size: var(--drift-type-heading-sm-size);
+  font-weight: var(--drift-type-heading-sm-weight);
+  line-height: var(--drift-type-heading-sm-leading);
+  letter-spacing: var(--drift-type-heading-sm-tracking);
 }
 
 .bodyLg {
-  font-size: var(--haus-type-body-lg-size);
-  font-weight: var(--haus-type-body-lg-weight);
-  line-height: var(--haus-type-body-lg-leading);
-  letter-spacing: var(--haus-type-body-lg-tracking);
+  font-size: var(--drift-type-body-lg-size);
+  font-weight: var(--drift-type-body-lg-weight);
+  line-height: var(--drift-type-body-lg-leading);
+  letter-spacing: var(--drift-type-body-lg-tracking);
 }
 
 .body {
-  font-size: var(--haus-type-body-size);
-  font-weight: var(--haus-type-body-weight);
-  line-height: var(--haus-type-body-leading);
-  letter-spacing: var(--haus-type-body-tracking);
+  font-size: var(--drift-type-body-size);
+  font-weight: var(--drift-type-body-weight);
+  line-height: var(--drift-type-body-leading);
+  letter-spacing: var(--drift-type-body-tracking);
 }
 
 .bodySm {
-  font-size: var(--haus-type-body-sm-size);
-  font-weight: var(--haus-type-body-sm-weight);
-  line-height: var(--haus-type-body-sm-leading);
-  letter-spacing: var(--haus-type-body-sm-tracking);
+  font-size: var(--drift-type-body-sm-size);
+  font-weight: var(--drift-type-body-sm-weight);
+  line-height: var(--drift-type-body-sm-leading);
+  letter-spacing: var(--drift-type-body-sm-tracking);
 }
 
 .label {
-  font-size: var(--haus-type-label-size);
-  font-weight: var(--haus-type-label-weight);
-  line-height: var(--haus-type-label-leading);
-  letter-spacing: var(--haus-type-label-tracking);
+  font-size: var(--drift-type-label-size);
+  font-weight: var(--drift-type-label-weight);
+  line-height: var(--drift-type-label-leading);
+  letter-spacing: var(--drift-type-label-tracking);
 }
 
 .labelSm {
-  font-size: var(--haus-type-label-sm-size);
-  font-weight: var(--haus-type-label-sm-weight);
-  line-height: var(--haus-type-label-sm-leading);
-  letter-spacing: var(--haus-type-label-sm-tracking);
+  font-size: var(--drift-type-label-sm-size);
+  font-weight: var(--drift-type-label-sm-weight);
+  line-height: var(--drift-type-label-sm-leading);
+  letter-spacing: var(--drift-type-label-sm-tracking);
 }
 
 .labelXs {
-  font-size: var(--haus-type-label-xs-size);
-  font-weight: var(--haus-type-label-xs-weight);
-  line-height: var(--haus-type-label-xs-leading);
-  letter-spacing: var(--haus-type-label-xs-tracking);
+  font-size: var(--drift-type-label-xs-size);
+  font-weight: var(--drift-type-label-xs-weight);
+  line-height: var(--drift-type-label-xs-leading);
+  letter-spacing: var(--drift-type-label-xs-tracking);
 }
 

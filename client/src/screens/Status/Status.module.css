@@ -1,32 +1,32 @@
 .screen {
   display: flex;
   justify-content: center;
-  padding: var(--haus-space-inset-7xl) var(--haus-space-inset-xl);
+  padding: var(--drift-space-inset-7xl) var(--drift-space-inset-xl);
 }
 
 .card {
   width: 100%;
   max-width: 32rem;
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  background: var(--drift-color-surface-default);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
   border-radius: var(--radius-panel);
-  box-shadow: var(--haus-elevation-overlay);
-  padding: var(--haus-space-inset-3xl);
+  box-shadow: var(--drift-elevation-overlay);
+  padding: var(--drift-space-inset-3xl);
 }
 
 .row {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-md);
+  gap: var(--drift-space-gap-md);
 }
 
 .detail {
-  color: var(--haus-color-ink-secondary);
-  margin-top: var(--haus-space-stack-md);
+  color: var(--drift-color-ink-secondary);
+  margin-top: var(--drift-space-stack-md);
 }
 
 .callout {
-  margin: var(--haus-space-stack-lg) 0 var(--haus-space-stack-xl);
+  margin: var(--drift-space-stack-lg) 0 var(--drift-space-stack-xl);
 }
 
 .spinner {
@@ -34,8 +34,8 @@
   height: 1.4rem;
   flex-shrink: 0;
   border-radius: 50%;
-  border: var(--haus-border-width-thick) solid var(--haus-color-primary-subtle);
-  border-top-color: var(--haus-color-primary-default);
+  border: var(--drift-border-width-thick) solid var(--drift-color-primary-subtle);
+  border-top-color: var(--drift-color-primary-default);
   animation: spin 0.7s linear infinite;
 }
 

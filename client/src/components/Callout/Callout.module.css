@@ -1,10 +1,10 @@
 .callout {
   display: flex;
   align-items: flex-start;
-  gap: var(--haus-space-gap-sm);
-  padding: var(--haus-space-inset-sm) var(--haus-space-inset-md);
-  border-radius: var(--haus-radius-surface);
-  border: var(--haus-border-width-default) solid;
+  gap: var(--drift-space-gap-sm);
+  padding: var(--drift-space-inset-sm) var(--drift-space-inset-md);
+  border-radius: var(--drift-radius-surface);
+  border: var(--drift-border-width-default) solid;
 }
 
 .icon {
@@ -18,41 +18,41 @@
 }
 
 .error {
-  background: var(--haus-color-error-subtle);
-  border-color: var(--haus-color-error-border);
-  color: var(--haus-color-error-on-subtle);
+  background: var(--drift-color-error-subtle);
+  border-color: var(--drift-color-error-border);
+  color: var(--drift-color-error-on-subtle);
 }
 
 .error .icon {
-  color: var(--haus-color-error-default);
+  color: var(--drift-color-error-default);
 }
 
 .warning {
-  background: var(--haus-color-warning-subtle);
-  border-color: var(--haus-color-warning-border);
-  color: var(--haus-color-warning-on-subtle);
+  background: var(--drift-color-warning-subtle);
+  border-color: var(--drift-color-warning-border);
+  color: var(--drift-color-warning-on-subtle);
 }
 
 .warning .icon {
-  color: var(--haus-color-warning-default);
+  color: var(--drift-color-warning-default);
 }
 
 .info {
-  background: var(--haus-color-info-subtle);
-  border-color: var(--haus-color-info-border);
-  color: var(--haus-color-info-on-subtle);
+  background: var(--drift-color-info-subtle);
+  border-color: var(--drift-color-info-border);
+  color: var(--drift-color-info-on-subtle);
 }
 
 .info .icon {
-  color: var(--haus-color-info-default);
+  color: var(--drift-color-info-default);
 }
 
 .success {
-  background: var(--haus-color-success-subtle);
-  border-color: var(--haus-color-success-border);
-  color: var(--haus-color-success-on-subtle);
+  background: var(--drift-color-success-subtle);
+  border-color: var(--drift-color-success-border);
+  color: var(--drift-color-success-on-subtle);
 }
 
 .success .icon {
-  color: var(--haus-color-success-default);
+  color: var(--drift-color-success-default);
 }

@@ -1,13 +1,13 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--haus-space-gap-2xs);
-  padding: var(--haus-space-inset-2xs) var(--haus-space-inset-xs);
-  border-radius: var(--haus-radius-pill);
+  gap: var(--drift-space-gap-2xs);
+  padding: var(--drift-space-inset-2xs) var(--drift-space-inset-xs);
+  border-radius: var(--drift-radius-pill);
   font-family: var(--font-sans);
-  font-size: var(--haus-type-label-sm-size);
-  font-weight: var(--haus-type-label-sm-weight);
-  line-height: var(--haus-type-label-sm-leading);
+  font-size: var(--drift-type-label-sm-size);
+  font-weight: var(--drift-type-label-sm-weight);
+  line-height: var(--drift-type-label-sm-leading);
   white-space: nowrap;
 }
 
@@ -17,24 +17,24 @@
 
 /* Neutral: a plain fact (usage count, attribute). Matches the audit token pill. */
 .neutral {
-  background: color-mix(in oklab, var(--haus-color-ink-primary) 8%, transparent);
-  color: var(--haus-color-ink-secondary);
+  background: color-mix(in oklab, var(--drift-color-ink-primary) 8%, transparent);
+  color: var(--drift-color-ink-secondary);
 }
 
 /* Info: a proposed change (consolidate 3 → 1, snaps-to). */
 .info {
-  background: var(--haus-color-primary-subtle);
-  color: var(--haus-color-primary-on-subtle);
+  background: var(--drift-color-primary-subtle);
+  color: var(--drift-color-primary-on-subtle);
 }
 
 /* Warning: drift that's off-structure (off-grid, off-scale, off-ramp). */
 .warning {
-  background: var(--haus-color-warning-subtle);
-  color: var(--haus-color-warning-on-subtle);
+  background: var(--drift-color-warning-subtle);
+  color: var(--drift-color-warning-on-subtle);
 }
 
 /* Danger: genuine redundancy (near-duplicate). */
 .danger {
-  background: color-mix(in oklab, var(--haus-color-error-default) 16%, transparent);
-  color: var(--haus-color-error-default);
+  background: color-mix(in oklab, var(--drift-color-error-default) 16%, transparent);
+  color: var(--drift-color-error-default);
 }

@@ -1,31 +1,31 @@
 /* ─── drift tokens · primitive overrides ──────────────────────────────────────
-   The primitive layer is `haus-tokens`. This file is only what Drift changes.
+   The primitive layer is tokens/foundation.css. This file is only what Drift
+   changes on top of it, in the layer above.
 
-   100 of the 103 custom properties that used to live here were haus-tokens'
-   values, restated by hand, kept in step by nothing. This is the same class of
-   problem Drift was built to detect, so it stopped being a copy.
+   103 custom properties used to live here, 100 of them a hand-typed copy of
+   the package Drift then depended on, kept in step by nothing. That is the
+   class of problem Drift was built to detect, so it stopped being a copy. The
+   package is gone now (see DESIGN.md) and the foundation is Drift's own, but
+   the split survives it for a different reason: what is here is what the theme
+   changes, and keeping that separate from the foundation is what makes the
+   change legible.
 
-   What is left is Drift's own: the two type families the package names, and
-   three steps it does not carry. The brand layer (styles/drift.css) sets Stack
-   Sans over these; these are the base the brand layer skins.
-
-   The semantic layer above (semantics.css) stays local, because it is a theme
-   rather than a duplicate: it shares 118 role names with haus's and resolves
-   five of them differently on purpose: three radius roles, the overlay
-   elevation, and the widest inset.
+   What is left is the three type families and two sub-steps below the
+   foundation's smallest. The type families here are the fallbacks;
+   styles/drift.css puts Stack Sans over the top.
    ─────────────────────────────────────────────────────────────────────────── */
 
 @layer base.primitives {
   :root {
     /* ── Typefaces ────────────────────────────────────────────────────────────
-       haus names Manrope and Fira Code. The base layer stays on system faces,
-       and drift.css puts Stack Sans over the top.                            */
+       The foundation names Manrope and Fira Code. The base layer stays on
+       system faces, and drift.css puts Stack Sans over the top.              */
     --font-sans: system-ui, -apple-system, sans-serif;
     --font-display: system-ui, -apple-system, sans-serif;
     --font-mono: ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
     /* ── Sub-step spacing ─────────────────────────────────────────────────────
-       Below the package's smallest step, for hairline rules and the gaps in
+       Below the foundation's smallest step, for hairline rules and the gaps in
        dense token tables where 4px is already too much.                      */
     --space-hairline: 0.0625rem; /* 1px */
     --space-tight: 0.125rem; /* 2px */

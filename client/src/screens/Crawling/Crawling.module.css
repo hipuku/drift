@@ -1,36 +1,36 @@
 .screen {
   display: flex;
   justify-content: center;
-  padding: var(--haus-space-inset-7xl) var(--haus-space-inset-xl);
+  padding: var(--drift-space-inset-7xl) var(--drift-space-inset-xl);
 }
 
 .card {
   width: 100%;
   max-width: 32rem;
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  background: var(--drift-color-surface-default);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
   border-radius: var(--radius-panel);
-  box-shadow: var(--haus-elevation-overlay);
-  padding: var(--haus-space-inset-3xl);
+  box-shadow: var(--drift-elevation-overlay);
+  padding: var(--drift-space-inset-3xl);
 }
 
 .intro {
-  color: var(--haus-color-ink-secondary);
-  margin-top: var(--haus-space-stack-sm);
+  color: var(--drift-color-ink-secondary);
+  margin-top: var(--drift-space-stack-sm);
 }
 
 .track {
-  margin-top: var(--haus-space-stack-2xl);
+  margin-top: var(--drift-space-stack-2xl);
   height: 0.5rem;
-  border-radius: var(--haus-radius-surface);
-  background: var(--haus-color-surface-sunken);
+  border-radius: var(--drift-radius-surface);
+  background: var(--drift-color-surface-sunken);
   overflow: hidden;
 }
 
 .fill {
   height: 100%;
   border-radius: inherit;
-  background: var(--haus-color-primary-default);
+  background: var(--drift-color-primary-default);
   transition: width var(--motion-duration-ui) var(--motion-ease-standard);
 }
 
@@ -38,28 +38,28 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--haus-space-gap-sm);
-  margin-top: var(--haus-space-stack-sm);
+  gap: var(--drift-space-gap-sm);
+  margin-top: var(--drift-space-stack-sm);
 }
 
 .count {
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
   flex-shrink: 0;
 }
 
 .elements {
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
   flex-shrink: 0;
 }
 
 /* ── Pages landing one by one ────────────────────────────────────────────── */
 .pageList {
   list-style: none;
-  margin: var(--haus-space-stack-xl) 0 0;
+  margin: var(--drift-space-stack-xl) 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-2xs);
+  gap: var(--drift-space-gap-2xs);
   max-height: 15rem;
   overflow: hidden;
   -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent);
@@ -69,8 +69,8 @@
 .pageRow {
   display: flex;
   align-items: center;
-  gap: var(--haus-space-gap-sm);
-  padding: var(--haus-space-inset-xs) 0;
+  gap: var(--drift-space-gap-sm);
+  padding: var(--drift-space-inset-xs) 0;
   animation: land var(--motion-duration-ui) var(--motion-ease-standard);
 }
 
@@ -88,13 +88,13 @@
 .dot {
   width: 0.4rem;
   height: 0.4rem;
-  border-radius: var(--haus-radius-pill);
-  background: var(--haus-color-primary-default);
+  border-radius: var(--drift-radius-pill);
+  background: var(--drift-color-primary-default);
   flex-shrink: 0;
 }
 
 .pagePath {
-  color: var(--haus-color-ink-secondary);
+  color: var(--drift-color-ink-secondary);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -102,7 +102,7 @@
 }
 
 .pageEls {
-  color: var(--haus-color-ink-tertiary);
+  color: var(--drift-color-ink-tertiary);
   margin-left: auto;
   flex-shrink: 0;
   font-family: var(--font-mono);

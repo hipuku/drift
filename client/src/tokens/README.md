@@ -1,104 +1,74 @@
 # drift design tokens
 
-The primitive, motion and semantic layers are
-[`haus-tokens`](https://www.npmjs.com/package/haus-tokens), imported in `main.tsx`.
-What remains here is Drift's:
+Drift defines every token it reads. Nothing here is supplied by a package.
 
 - `layers.css`: the cascade layer order, declared once before anything opens a layer
-- `primitives.css`: the five primitives Drift overrides (`base.primitives` layer)
-- `semantics.css`: intent aliases (`base.semantics` layer)
+- `foundation.css`: the primitives, brand inputs, motion values and semantic roles (`foundation.*` layers)
+- `primitives.css`: the five primitives Drift's theme overrides (`base.primitives`)
+- `semantics.css`: intent aliases the foundation has no name for (`base.semantics`)
 
-The brand skin that themes these for Drift's cool, editorial identity lives in
+The skin that themes these for Drift's cool, dark, editorial identity lives in
 `../styles/drift.css` (the `drift.*` layers, last in the order, so they win on
 overlap).
 
-## Why the semantic layer is still here
+## Independence, 2026-09-09
 
-`primitives.css` used to carry 103 custom properties, 100 of which were
-`haus-tokens`' values restated by hand with nothing keeping them in step. That
-was a copy and it is gone.
+**The foundation used to be [`haus-tokens`](https://www.npmjs.com/package/haus-tokens), and is
+Drift's own now.** The reasoning is in `DESIGN.md`; the short version is that a tool which audits
+design systems should not be wearing one it does not control. `foundation.css` is the closure of
+what Drift actually read from that package: **218 declarations**, renamed `--haus-*` to
+`--drift-*`, leaving out the ramps Drift never reached (ruby, paper, cobalt) and the roles its own
+theme overrides.
 
-**`semantics.css` was a copy, then a brand in the wrong layer, and is now neither.**
+**Nothing rendered differently.** The computed-styles e2e re-resolved 2,680 elements against a
+baseline; the 313 properties that moved all traced to two earlier intended changes, and none to the
+rename.
 
-**D1, 2026-09-08.** Of the 148 role names it shared with the `haus-tokens@1.0.0` it installed, **89
-were haus's own values restated**: 77 byte-identical, and 12 more that hardcoded the literal a haus
-primitive resolves to. All deleted, and every one re-resolved to exactly the value it had.
+`foundation.css` was generated once, against `haus-tokens@3.2.0`, by a script that read the
+installed package. **That package is gone, so the file is not regenerable** and is maintained by
+hand like any other source. `tokens.test.ts` is what holds it.
 
-**D2, the same day.** The 54 colour roles that remained were **a brand written as role overrides**.
-They are `haus-tokens/brands/drift.css` now, applied at `[data-haus-theme='drift']` on the document
-element, exactly as vault's is. **53 of the 54 values are byte-identical**; `backdrop` reads
-`--haus-opacity-60` where this file read the `--haus-opacity-overlay` role, because a brand supplies
-inputs and may not read the layer it feeds. Same value, correct layer.
+## Why the split survives the dependency
 
-That shape is what produced the defect this file already records: Badge and Input rendered in haus's
-aronia purple inside a cool blue product, because the two sides named different properties and the
-cascade order decided nothing. **Supplying inputs cannot fail that way.**
+Four files where one would do, now that Drift owns all of them. The split is not a leftover: the
+foundation is what Drift would ship to anyone, `primitives.css` and `semantics.css` are what *this
+product* changes, and `drift.css` is the identity. Collapsing them would make every theme decision
+indistinguishable from every foundational one, in the product whose entire subject is telling those
+two apart.
 
-**Two values did move, and they are the only two.** Every one of the 409 declared properties was
-re-resolved through both cascades and compared. `--haus-type-display-tracking` went `-0.01em` to
-`-0.03em` and `--haus-type-heading-lg-tracking` went `-0.01em` to `-0.02em`: `haus#37` retightened
-both after this file was written, and D1 deleted Drift's copies because against haus 1.0.0 they were
-restatements. Taking 2.3.1 therefore takes haus's newer values. **Accepted deliberately** rather
-than re-added as departures, on the user's call that text tightening is a change Drift can wear.
+`primitives.css` used to carry 103 custom properties, 100 of them the package's values restated by
+hand with nothing keeping them in step. **That was the same class of defect Drift was built to
+detect, in Drift.** It is gone, and the guard that replaced it is below.
 
-**D3, the same day.** The three `radius` roles moved into `brands/drift.css` as form-tier entries,
-with `radius-marker` stated at haus's own value because the group is all or nothing: a brand
-supplying half a group leaves the other half inheriting, which renders as two shapes with nothing
-reporting it. Nothing moved, checked across all 442 declared properties.
+## The guards
 
-**The two `elevation` roles stayed, and the reason is a limitation rather than an oversight.** They
-point at Drift's own `--shadow-*` ramp, one of the six names deliberately not renamed in the 1.0
-migration, and **a brand may only reference what haus ships.** `brand.test.ts` allows a brand its
-own ramp only in the shape `--haus-<name>-<digits>`, which `--shadow-sm` is not. So the form tier
-carries Drift's radius and cannot carry its shadows.
+`tokens.test.ts` reads every layer that will actually load, the foundation included:
 
-That is worth knowing before a fourth consumer arrives: **a brand file living inside the design
-system can only express the parts of a product's identity the system already has vocabulary for.**
+- **nothing reads an undefined property.** CSS drops an undefined `var()` silently and the property
+  inherits, with no warning at build or in review. That is how `--duration-default`, which never
+  existed, left five animations running instantly. This is also what made independence safe: a role
+  the generator dropped fails the build with its name.
+- **no component reaches past the semantic layer**, outside a named exception list that can only
+  shrink.
 
-**18 declarations remain**, all Drift's own bar those two, and `tokens.test.ts` now runs
-`findRestatedTokens` from `haus-tokens/guard` so none of this can come back. It is the package's
-check rather than a hand-written one, because vault wrote its own after `vault#25` and Drift never
-got a copy: **a guard living in one consumer is a habit, not a guard.**
+A third guard, against restating values the package already shipped, retired with the package.
 
-**Why no check caught any of this:** `vault` hit the same defect as `vault#25`,
-closed it, and wrote a guard that fails on any value restated locally that haus
-already ships. `tokens.test.ts` here has no duplication rule. The guard existed
-in the repository next door and was never ported. PORTFOLIO section 13 has the
-plan: the restatements are deleted, the 54 become `brands/drift.css`, the 19 move
-onto a mechanism haus grows for them, and the guard ships from `haus-tokens`.
+## What the history is worth keeping for
 
-## Why haus's semantic layer is loaded as well
+Three findings outlived the dependency, because none of them is really about haus.
 
-Drift is a haus brand and its own components read the shared roles, so the
-semantic layer has to be present for them to resolve. `brands/drift.css` supplies
-the inputs, haus's `semantics.css` computes the roles, and declaring those roles
-here instead would be the copy this directory exists to stop keeping. Drift takes
-the token layer and not the components: Drift and vault are the token consumers
-and core is the component one.
+**Two vocabularies that never meet fail silently.** Drift declared `--color-surface-default`;
+haus's components read `--haus-color-surface-default`. Two different properties, so the cascade
+order decided nothing, and Badge and Input drew in an aronia purple inside a cool blue product.
+Nothing caught it, because each name resolved fine on its own. **The failure was not an unresolved
+`var()`.** Prefixing every custom property is what fixed it, and is why everything here is
+`--drift-*` and not a bare `--color-*`.
 
-haus's layer sits below Drift's in the order declared by `layers.css`, so the
-**148 role names the two share resolve to Drift's values**.
+**A guard living in one consumer is a habit, not a guard.** vault hit this same defect as
+`vault#25`, closed it, and wrote a duplication check. Drift never got a copy, and hit it too.
 
-**They did not until haus 1.0, and this file said otherwise.** Drift declared
-`--color-surface-default`; haus-components read `--haus-color-surface-default`.
-Two different properties, so the cascade order this section describes decided
-nothing, and Badge and Input drew in haus's aronia purple inside a cool blue
-product. Nothing caught it because each name resolved fine on its own: the
-failure was not an unresolved `var()` but two vocabularies that never met. haus
-1.0 prefixed every custom property, the 148 shared roles here were renamed to
-match, and the override is now the thing this paragraph always claimed.
-
-Six names are deliberately **not** renamed, because Drift means something
-different by them: `--font-sans`, `--font-mono` and the four `--shadow-*` steps.
-Drift has its own faces and its own shadow ramp, and pointing those at haus's
-would have changed the product's look while every test stayed green.
-
-`brand.css` is loaded as well, and is not optional. It is the layer that says
-which primitive each role takes, haus's `semantics.css` reads 54
-`--haus-brand-*` entries from it, and the sixteen roles Drift does not override
-resolve through it.
-
-`tokens.test.ts` reads the two installed packages as well as this directory, so
-its three guards see what will actually load: nothing reads an undefined
-property, no component reaches past the semantic layer, and Drift restates no
-value haus already ships.
+**A brand file inside a design system can only express the parts of a product's identity the system
+has vocabulary for.** When Drift's colour roles lived in `haus-tokens/brands/drift.css`, its radius
+group could move there and its shadows could not: the brand schema allowed a brand its own ramp
+only as `--haus-<name>-<digits>`, and `--shadow-sm` is not that. Drift's theme now has no such
+ceiling, which is one of the things independence bought.

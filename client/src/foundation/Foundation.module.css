@@ -1,70 +1,70 @@
 .page {
   max-width: 60rem;
   margin: 0 auto;
-  padding: var(--haus-space-inset-6xl) var(--haus-space-inset-xl) var(--haus-space-inset-7xl);
+  padding: var(--drift-space-inset-6xl) var(--drift-space-inset-xl) var(--drift-space-inset-7xl);
 }
 
 .header {
-  margin-bottom: var(--haus-space-stack-5xl);
+  margin-bottom: var(--drift-space-stack-5xl);
 }
 
 /* These set only colour/layout; <Text> owns the type properties via roles. */
 .wordmark {
-  color: var(--haus-color-primary-default);
+  color: var(--drift-color-primary-default);
 }
 
 .subtitle {
-  color: var(--haus-color-ink-primary);
-  margin-top: var(--haus-space-stack-sm);
+  color: var(--drift-color-ink-primary);
+  margin-top: var(--drift-space-stack-sm);
 }
 
 .note {
-  color: var(--haus-color-ink-tertiary);
-  margin-top: var(--haus-space-stack-xs);
+  color: var(--drift-color-ink-tertiary);
+  margin-top: var(--drift-space-stack-xs);
 }
 
 .note strong {
-  color: var(--haus-color-ink-secondary);
+  color: var(--drift-color-ink-secondary);
   /* Weight only, on a <strong> inside body copy that keeps its parent's size
      and leading. Every role sets all four, so adopting one here would resize
      the emphasis. Off-role on purpose: drift#1. */
-  font-weight: var(--haus-weight-emphasis);
+  font-weight: var(--drift-weight-emphasis);
 }
 
 .section {
-  background: var(--haus-color-surface-default);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-  border-radius: var(--haus-radius-overlay);
-  padding: var(--haus-space-inset-xl);
-  margin-bottom: var(--haus-space-stack-lg);
-  box-shadow: var(--haus-elevation-raised);
+  background: var(--drift-color-surface-default);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
+  border-radius: var(--drift-radius-overlay);
+  padding: var(--drift-space-inset-xl);
+  margin-bottom: var(--drift-space-stack-lg);
+  box-shadow: var(--drift-elevation-raised);
 }
 
 .sectionLabel {
   text-transform: uppercase;
-  color: var(--haus-color-ink-tertiary);
-  margin-bottom: var(--haus-space-stack-lg);
+  color: var(--drift-color-ink-tertiary);
+  margin-bottom: var(--drift-space-stack-lg);
 }
 
 /* ── Ramps ────────────────────────────────────────────────────────────────── */
 .ramp {
   display: flex;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
   flex-wrap: wrap;
 }
 
 .chipWrap {
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-xs);
+  gap: var(--drift-space-gap-xs);
   align-items: center;
 }
 
 .chip {
   width: 3rem;
   height: 3rem;
-  border-radius: var(--haus-radius-surface);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
+  border-radius: var(--drift-radius-surface);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
 }
 
 .chipLabel {
@@ -74,46 +74,46 @@
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--haus-text-11);
-  color: var(--haus-color-ink-tertiary);
+  font-size: var(--drift-text-11);
+  color: var(--drift-color-ink-tertiary);
 }
 
 /* ── Feedback ─────────────────────────────────────────────────────────────── */
 .feedbackRow {
   display: flex;
-  gap: var(--haus-space-gap-sm);
+  gap: var(--drift-space-gap-sm);
   flex-wrap: wrap;
 }
 
 .feedbackChip {
   display: inline-flex;
   align-items: center;
-  gap: var(--haus-space-gap-xs);
-  padding: var(--haus-space-inset-xs) var(--haus-space-inset-sm);
-  border-radius: var(--haus-radius-pill);
-  border: var(--haus-border-width-default) solid;
-  font-size: var(--haus-type-label-size);
-  font-weight: var(--haus-type-label-weight);
+  gap: var(--drift-space-gap-xs);
+  padding: var(--drift-space-inset-xs) var(--drift-space-inset-sm);
+  border-radius: var(--drift-radius-pill);
+  border: var(--drift-border-width-default) solid;
+  font-size: var(--drift-type-label-size);
+  font-weight: var(--drift-type-label-weight);
 }
 
 .dot {
   width: 0.5rem;
   height: 0.5rem;
-  border-radius: var(--haus-radius-pill);
+  border-radius: var(--drift-radius-pill);
 }
 
 /* ── Surfaces ─────────────────────────────────────────────────────────────── */
 .surfaceRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--haus-space-gap-sm);
+  gap: var(--drift-space-gap-sm);
 }
 
 .surfaceCell {
   aspect-ratio: 3 / 2;
-  border-radius: var(--haus-radius-surface);
-  border: var(--haus-border-width-default) solid var(--haus-color-border-subtle);
-  padding: var(--haus-space-inset-sm);
+  border-radius: var(--drift-radius-surface);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
+  padding: var(--drift-space-inset-sm);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -126,13 +126,13 @@
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--haus-text-11);
+  font-size: var(--drift-text-11);
   opacity: 0.75;
 }
 
 .surfaceText {
-  font-size: var(--haus-type-heading-lg-size);
-  font-weight: var(--haus-type-heading-lg-weight);
+  font-size: var(--drift-type-heading-lg-size);
+  font-weight: var(--drift-type-heading-lg-weight);
 }
 
 /* ── Rows (type, space) ───────────────────────────────────────────────────── */
@@ -143,55 +143,55 @@
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--haus-text-11);
-  color: var(--haus-color-ink-tertiary);
+  font-size: var(--drift-text-11);
+  color: var(--drift-color-ink-tertiary);
 }
 
 .typeList {
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-lg);
+  gap: var(--drift-space-gap-lg);
 }
 
 .typeRow {
   display: grid;
   grid-template-columns: 5rem 1fr;
-  gap: var(--haus-space-gap-md);
+  gap: var(--drift-space-gap-md);
   align-items: baseline;
 }
 
 .spaceList {
   display: flex;
   flex-direction: column;
-  gap: var(--haus-space-gap-sm);
+  gap: var(--drift-space-gap-sm);
 }
 
 .spaceRow {
   display: grid;
   grid-template-columns: 5rem 1fr;
-  gap: var(--haus-space-gap-md);
+  gap: var(--drift-space-gap-md);
   align-items: center;
 }
 
 .spaceBar {
   height: 0.75rem;
-  background: var(--haus-color-primary-default);
-  border-radius: var(--haus-radius-control);
+  background: var(--drift-color-primary-default);
+  border-radius: var(--drift-radius-control);
   display: block;
 }
 
 /* ── Boxes (radius, shadow) ───────────────────────────────────────────────── */
 .boxRow {
   display: flex;
-  gap: var(--haus-space-gap-md);
+  gap: var(--drift-space-gap-md);
   flex-wrap: wrap;
 }
 
 .box {
   width: 4rem;
   height: 4rem;
-  background: var(--haus-color-primary-subtle);
-  border: var(--haus-border-width-default) solid var(--haus-color-primary-default);
+  background: var(--drift-color-primary-subtle);
+  border: var(--drift-border-width-default) solid var(--drift-color-primary-default);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -201,15 +201,15 @@
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--haus-text-11);
-  color: var(--haus-color-primary-on-subtle);
+  font-size: var(--drift-text-11);
+  color: var(--drift-color-primary-on-subtle);
 }
 
 .shadowBox {
   width: 4rem;
   height: 4rem;
-  background: var(--haus-color-surface-default);
-  border-radius: var(--haus-radius-surface);
+  background: var(--drift-color-surface-default);
+  border-radius: var(--drift-radius-surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -219,6 +219,6 @@
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--haus-text-11);
-  color: var(--haus-color-ink-tertiary);
+  font-size: var(--drift-text-11);
+  color: var(--drift-color-ink-tertiary);
 }

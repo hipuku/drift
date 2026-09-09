@@ -1,7 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { findRestatedTokens } from "haus-tokens/guard";
 
 /**
  * Every custom property a stylesheet reads must be defined somewhere.
@@ -16,23 +15,15 @@ import { findRestatedTokens } from "haus-tokens/guard";
  * A fallback, `var(--x, 0.2s)`, is a real value, so it is not a failure. It
  * is still usually a sign the token name is wrong, since a fallback that never
  * loses is just a hardcoded value wearing a token's clothes.
+ *
+ * Everything is read from `src` now. Until 2026-09-09 the foundation shipped in
+ * haus-tokens and these assertions read the installed package as well; Drift is
+ * independent and owns its tokens (tokens/foundation.css), so the source tree
+ * is the whole of what loads.
  */
 
 const SRC = resolve(process.cwd(), "src");
-
-/**
- * The primitive, motion and semantic layers ship in haus-tokens, so the
- * assertions below have to read the package as well as the source tree. Reading
- * the installed copy rather than a vendored one is the point: if the package
- * moves a value, this sees the value that will actually load.
- *
- * The two are kept apart because the tier rule further down needs to know which
- * of the package's names are primitives and which are roles.
- */
-const HAUS_TOKENS = resolve(process.cwd(), "node_modules/haus-tokens/dist");
-const HAUS_PRIMITIVES = ["primitives.css", "brand.css", "motion.css"].map((f) => join(HAUS_TOKENS, f));
-const HAUS_SEMANTICS = join(HAUS_TOKENS, "semantics.css");
-const HAUS_CSS = [...HAUS_PRIMITIVES, HAUS_SEMANTICS];
+const FOUNDATION = resolve(SRC, "tokens/foundation.css");
 
 function filesUnder(dir: string, extensions: string[]): string[] {
   return readdirSync(dir, { recursive: true, withFileTypes: true })
@@ -57,16 +48,17 @@ function countMatches(files: string[], pattern: RegExp): Map<string, number> {
 }
 
 describe("custom properties", () => {
-  it("finds the package it is meant to read", () => {
-    // A wrong path here would make both assertions below pass by finding
-    // nothing: every primitive would look undefined, and no component would
-    // look like it was reaching for one.
-    const defined = matches(HAUS_PRIMITIVES, /^\s*(--[a-z0-9-]+)\s*:/gm);
-    expect(defined.size, `no custom properties found under ${HAUS_TOKENS}`).toBeGreaterThan(100);
+  it("finds the foundation it is meant to read", () => {
+    // A wrong path here would make the assertions below pass by finding
+    // nothing: every read would look defined against an empty set, or every
+    // primitive would look absent. foundation.css is where the internalised
+    // tokens live, so it must be substantial.
+    const defined = matches([FOUNDATION], /^\s*(--[a-z0-9-]+)\s*:/gm);
+    expect(defined.size, `no custom properties found in ${FOUNDATION}`).toBeGreaterThan(100);
   });
 
   it("are all defined before they are read", () => {
-    const css = [...filesUnder(SRC, [".css"]), ...HAUS_CSS];
+    const css = filesUnder(SRC, [".css"]);
 
     // `var(--x)` only. `var(--x, fallback)` is excluded by the closing paren.
     const read = matches(css, /var\((--[a-z0-9-]+)\)/g);
@@ -84,7 +76,7 @@ describe("custom properties", () => {
   it("catches a property that is read but never defined", () => {
     // Proves the assertion above can fail, a guard whose matcher silently
     // stops matching passes forever and protects nothing.
-    const css = [...filesUnder(SRC, [".css"]), ...HAUS_CSS];
+    const css = filesUnder(SRC, [".css"]);
     const read = new Set([...matches(css, /var\((--[a-z0-9-]+)\)/g), "--not-a-token"]);
     const defined = matches(css, /^\s*(--[a-z0-9-]+)\s*:/gm);
 
@@ -97,55 +89,32 @@ describe("custom properties", () => {
  *
  * The rule was aspirational until the semantic tier covered spacing, radius,
  * elevation and motion; before that a component had nowhere else to go. Now it
- * does, so this holds the line: 196 spacing reads, 61 radius, 21 elevation and
- * 70 motion were migrated, and a new one should not appear without a decision.
+ * does, so this holds the line: a spacing, radius, elevation or motion read
+ * lands on a role, and a new primitive read should not appear without a
+ * decision.
  *
  * The exceptions are the type tier. They are counted rather than listed,
- * because a list of names ratchets on the wrong thing: every name below was
- * already on it when the total was 94 and when it was 89, so the debt changed
- * twice and nothing here could tell. A number per name is what makes it a
- * ratchet: adding a read fails, removing one fails until the number comes
- * down with it.
+ * because a list of names ratchets on the wrong thing: a number per name is
+ * what makes it a ratchet, so adding a read fails and removing one fails until
+ * the number comes down with it.
  *
- * The split matters more than the total, and the totals are the two figures
- * the docs quote:
+ * The split matters more than the total, and the totals are the two figures the
+ * docs quote:
  *
- * **30 are `font-family`.** Twenty are `--font-sans` on `<button>` and
- * `<input>`, which do not inherit a family from `body`, so the declaration is
- * required rather than lazy. That was true of 42 of them until drift#24, when
- * twelve `--font-mono` reads became `--type-data-family`.
+ * **33 are `font-family`.** `--font-sans` sits on `<button>` and `<input>`,
+ * which do not inherit a family from `body`, so the declaration is required
+ * rather than lazy. `--font-mono` carries the tabular-data face.
  *
- * Which corrects something this comment used to assert. *"No type role carries
- * a family"* was true when it was written and is not now: `--type-data-*` does,
- * because mono is not a decoration on tabular data, it is the decision.
+ * **9 are size, leading and tracking**, the specimen sheet's 11px labels, one
+ * non-tabular mono size, and three deliberate departures from a role an element
+ * is already on.
  *
- * **9 are size, leading and tracking**, from 43 (drift#1) through 28 (drift#26)
- * and 21 (drift#25) to 9 (drift#24), all on 2026-09-05.
- *
- * The four issues found one rule between them, and it is worth stating rather
- * than leaving in four commit messages: **a role carries the properties the
- * thing actually chooses.** Prose chooses all four, which is why the eleven
- * typeset roles bundle. Emphasis chooses weight alone, so `--haus-weight-emphasis`
- * and `--haus-weight-strong` carry nothing else. A data cell chooses the face and
- * the size and leaves leading to the row, so `--type-data-*` stops at two.
- * Roles that carry more than the decision force call sites to override them,
- * and every override is a primitive read waiting to happen.
- *
- * **What is left is nine, in three groups, and none of it is a backlog:**
- *
- * - **5 in `Foundation.module.css`**, which renders only under `DevHarness`. It
- *   is the token specimen sheet, not a product screen, and 11px mono is how it
- *   labels its own swatches. A role exists to be reused by the product; giving
- *   one to a development tool would put the tool inside the contract.
- * - **1 `--haus-text-14`**, `.unitVal`: the one mono size on the audit screen that is
- *   not tabular, sized to sit beside body text rather than inside a column. One
- *   occurrence is a departure, not a role.
- * - **3 departures** from a role the element is already on: `.pill` wants 1.5
- *   leading where label-sm carries 1.4, `.healthLine` 1.25 where heading-lg
- *   carries 1.2, `.healthKicker` 0.08em tracking because it is uppercase where
- *   label-sm carries 0.02em. Reading a primitive is what a departure *is*.
- *
- * Nothing here is waiting on a decision any more.
+ * The rule the type-tier work found is worth stating: **a role carries the
+ * properties the thing actually chooses.** Prose chooses all four, which is why
+ * the typeset roles bundle. Emphasis chooses weight alone, so
+ * `--drift-weight-emphasis` and `--drift-weight-strong` carry nothing else. A
+ * data cell chooses the face and the size and leaves leading to the row, so
+ * `--drift-type-data-*` stops at two.
  */
 const TYPE_TIER_DEBT = new Map([
   // Families, 33. --font-sans is on controls that do not inherit one.
@@ -153,36 +122,61 @@ const TYPE_TIER_DEBT = new Map([
   ['--font-mono', 10],
   ['--font-display', 1],
   // Sizes, 6. Five are the dev harness; one is a single unit label.
-  ['--haus-text-11', 5],
-  ['--haus-text-14', 1],
+  ['--drift-text-11', 5],
+  ['--drift-text-14', 1],
   // Departures from a role the element is already on, 3.
-  ['--haus-leading-relaxed', 1],
-  ['--haus-leading-snug', 1],
-  ['--haus-tracking-widest', 1],
+  ['--drift-leading-relaxed', 1],
+  ['--drift-leading-snug', 1],
+  ['--drift-tracking-widest', 1],
 ]);
 
 const FAMILIES = ["--font-sans", "--font-mono", "--font-display"];
 
 /**
- * What counts as a primitive here: haus-tokens' two layers plus Drift's
- * overrides, less anything Drift's own semantic layer declares.
- *
- * That subtraction is the interesting part. haus classes border width, opacity
- * and z-index as primitives; Drift declares them as roles in semantics.css.
- * Both are defensible, and the file that declares a name in this tree is the
- * one that decides what tier it is in. Without the subtraction, adopting the
- * package would make six roles Drift has always had look like reaches.
+ * One decorative primitive read the role layer has no name for: the "partial"
+ * hatch in the scalar sections alternates the primary role with a lighter
+ * accent step to read as a stripe. Recorded rather than dressed up as a role,
+ * and kept out of the type-tier ratchet because it is a colour, not a typeface.
  */
+const DECORATIVE = new Set(["--drift-accent-300"]);
+
+/**
+ * What counts as a primitive here: any name declared in a `*.primitives`,
+ * `*.brand` or `*.motion` cascade layer, less anything a `*.semantics` layer
+ * declares. The layer a name is declared in is what decides its tier, so a
+ * name Drift promotes to a role (border width, opacity, z-index) stops being a
+ * primitive even though its value is a raw literal. Read from the cascade
+ * layers directly, so the classification cannot drift from the CSS.
+ */
+function nameLayers(): Map<string, string[]> {
+  const out = new Map<string, string[]>();
+  let layer = "";
+  const files = [
+    FOUNDATION,
+    resolve(SRC, "tokens/primitives.css"),
+    resolve(SRC, "tokens/semantics.css"),
+    resolve(SRC, "styles/drift.css"),
+  ];
+  for (const file of files) {
+    for (const line of readFileSync(file, "utf8").split("\n")) {
+      const lm = line.match(/@layer\s+([a-z0-9.]+)\s*\{/);
+      if (lm) layer = lm[1]!;
+      const dm = line.match(/^\s*(--[a-z0-9-]+)\s*:/);
+      if (dm) out.set(dm[1]!, [...(out.get(dm[1]!) ?? []), layer]);
+    }
+  }
+  return out;
+}
+
 function primitiveNames(): Set<string> {
-  const all = matches(
-    [resolve(SRC, "tokens/primitives.css"), ...HAUS_PRIMITIVES],
-    /^\s*(--[a-z0-9-]+)\s*:/gm,
-  );
-  const roles = matches(
-    [resolve(SRC, "tokens/semantics.css"), HAUS_SEMANTICS],
-    /^\s*(--[a-z0-9-]+)\s*:/gm,
-  );
-  return new Set([...all].filter((name) => !roles.has(name)));
+  const layers = nameLayers();
+  const prims = new Set<string>();
+  for (const [name, ls] of layers) {
+    const role = ls.some((l) => l.endsWith("semantics"));
+    const prim = ls.some((l) => /(primitives|brand|motion)$/.test(l));
+    if (prim && !role) prims.add(name);
+  }
+  return prims;
 }
 
 describe("the two-tier rule", () => {
@@ -192,7 +186,7 @@ describe("the two-tier rule", () => {
   it("keeps components off the primitives", () => {
     const primitives = primitiveNames();
     const reaching = [...read().keys()]
-      .filter((n) => primitives.has(n) && !TYPE_TIER_DEBT.has(n))
+      .filter((n) => primitives.has(n) && !TYPE_TIER_DEBT.has(n) && !DECORATIVE.has(n))
       .sort();
 
     expect(reaching).toEqual([]);
@@ -212,11 +206,8 @@ describe("the two-tier rule", () => {
   });
 
   it("holds each exception at its recorded count", () => {
-    // The ratchet. Equality rather than an upper bound, in both directions: a
-    // read added fails, and a read removed fails until the number comes down
-    // with it. An upper bound would let the figures the docs quote go quietly
-    // stale, which is the failure this replaced: the total moved from 94 to 89
-    // with every name still on the list and nothing to notice.
+    // The ratchet. Equality in both directions: a read added fails, and a read
+    // removed fails until the number comes down with it.
     const counts = read();
     const actual = Object.fromEntries(
       [...TYPE_TIER_DEBT.keys()].sort().map((n) => [n, counts.get(n) ?? 0]),
@@ -229,8 +220,8 @@ describe("the two-tier rule", () => {
   });
 
   it("splits the total the way the docs quote it", () => {
-    // DESIGN.md and issue #1 both quote these two figures. Asserting them here
-    // is what stops a correction to one from leaving the other behind.
+    // DESIGN.md quotes these two figures. Asserting them here is what stops a
+    // correction to one from leaving the other behind.
     const sum = (names: string[]) =>
       names.reduce((n, name) => n + (TYPE_TIER_DEBT.get(name) ?? 0), 0);
     const families = sum(FAMILIES);
@@ -243,23 +234,3 @@ describe("the two-tier rule", () => {
     });
   });
 });
-
-describe("restatement", () => {
-  it("restates no value haus already ships", () => {
-    // D1 deleted 89 of these and D2 and D3 moved the rest into brands/drift.css,
-    // so this is the check that holds the result. It ships from the package
-    // (haus#53) rather than being written here, because vault had written its own
-    // by hand after vault#25 and drift never got one: a guard living in one
-    // consumer is a habit, not a guard.
-    //
-    // brand.css is deliberately not in `upstream`. Including it asks "does drift
-    // restate anything haus ships, our colour choices included", which is the
-    // right question for a consumer with no brand of its own. drift has one now,
-    // so the question is the other one: does it restate anything structural.
-    const copies = findRestatedTokens({
-      defines: [join(SRC, "tokens/semantics.css"), join(SRC, "tokens/primitives.css")].map((f) => readFileSync(f, "utf8")),
-      upstream: [...HAUS_PRIMITIVES.filter(f => !f.endsWith("brand.css")), HAUS_SEMANTICS].map((f) => readFileSync(f, "utf8")),
-    })
-    expect(copies.map(c => `${c.name} (${c.kind})`)).toEqual([])
-  })
-})

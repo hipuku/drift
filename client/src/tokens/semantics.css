@@ -25,7 +25,7 @@
        is read through, so the tiers stay comparable, the point of splitting
        them is that inset, gap and stack can later be retuned independently
        (denser forms without denser page rhythm) without hunting through
-       modules to work out which --haus-space-3 meant which. Only the steps in use
+       modules to work out which --drift-space-3 meant which. Only the steps in use
        are named; add one when a component needs it, rather than reaching past
        this layer for the primitive. */
 
@@ -43,14 +43,14 @@
     /* Named for what is being rounded. The scale steps are a vocabulary of
        sizes; these say which size a thing of each kind takes, so a control and
        a card cannot drift apart by one step without someone choosing to. */
-    --radius-panel:   var(--haus-radius-xl);    /* the largest containers */
+    --radius-panel:   var(--drift-radius-xl);    /* the largest containers */
 
     /* ── Elevation ────────────────────────────────────────────────────────── */
     /* Height above the page, not shadow size. A component asks to sit at a
        level; how that level is drawn is this layer's business, which is what
        lets the brand layer restyle every shadow at once. */
-    --haus-elevation-raised:  var(--shadow-sm);  /* lifted off the page: cards */
-    --haus-elevation-overlay: var(--shadow-md);  /* above content: dropdowns */
+    --drift-elevation-raised:  var(--shadow-sm);  /* lifted off the page: cards */
+    --drift-elevation-overlay: var(--shadow-md);  /* above content: dropdowns */
     --elevation-modal:   var(--shadow-lg);  /* above everything: dialogs */
     --elevation-popover: var(--shadow-xl);  /* the highest surfaces */
 
@@ -58,14 +58,14 @@
     /* Named for what is moving. The durations differ because the distances do:
        a chip's colour change should be over before it is noticed, a panel
        sliding in should be followed by the eye. */
-    --motion-duration-micro: var(--haus-duration-fast);      /* hover, focus, check */
-    --motion-duration-ui:    var(--haus-duration-normal);    /* reveals, tab changes */
-    --motion-duration-panel: var(--haus-duration-moderate);  /* drawers, modals */
-    --motion-ease-standard:  var(--haus-ease-move);          /* the default curve */
+    --motion-duration-micro: var(--drift-duration-fast);      /* hover, focus, check */
+    --motion-duration-ui:    var(--drift-duration-normal);    /* reveals, tab changes */
+    --motion-duration-panel: var(--drift-duration-moderate);  /* drawers, modals */
+    --motion-ease-standard:  var(--drift-ease-move);          /* the default curve */
 
     /* ── Sizing and state ─────────────────────────────────────────────────── */
-    --size-icon-inline:        var(--haus-icon-sm);          /* an icon set in text */
-    --opacity-control-disabled: var(--haus-opacity-disabled);
+    --size-icon-inline:        var(--drift-icon-sm);          /* an icon set in text */
+    --opacity-control-disabled: var(--drift-opacity-disabled);
 
     /* ── Typography, and the two weights that flowed back ──────────────────
        Nothing here any more, and that is the result.
@@ -76,17 +76,19 @@
        emphasising a word would resize it. So the weights got role names of
        their own and nothing else.
 
-       haus took the same two, --haus-weight-emphasis and --haus-weight-strong,
-       and drift kept declaring them at haus's values until haus#53 deleted the
-       copies. The eleven typeset roles went the same way. This is the consumer
-       teaching the system something and then, correctly, stopping saying it. */
+       Those two roles, --drift-weight-emphasis and --drift-weight-strong, and
+       the eleven typeset roles, are declared in the foundation now rather than
+       restated here. They reached the foundation by way of the design system
+       drift used to depend on, which took the argument from drift#25 and then
+       shipped the roles; independence kept the result and dropped the
+       dependency. */
 
     /* ── Data ──────────────────────────────────────────────────────────────
        Mono for data rather than for prose, and the second exception to the
        line above.
 
        drift#24. Twelve elements on the audit screen read --font-mono and
-       --haus-text-12 together and nothing else: property names, values, counts,
+       --drift-text-12 together and nothing else: property names, values, counts,
        page chips, table cells. That is one decision: "this is tabular data"        written twelve times as two primitive reads.
 
        --type-mono is the prose answer: 13px with leading-loose, for a token
@@ -95,13 +97,13 @@
        without scrolling, and 13px with 1.6 leading would not.
 
        It carries family and size and stops there, on the same principle as
-       --haus-weight-emphasis above: a role carries the properties the thing
+       --drift-weight-emphasis above: a role carries the properties the thing
        actually chooses. Prose chooses all four. Emphasis chooses weight.
        A data cell chooses the face and the size and leaves leading to the row
       , every one of the twelve is a single line, four of them nowrap, and not
        one of them sets a line-height today. */
     --type-data-family:         var(--font-mono);
-    --type-data-size:           var(--haus-text-12);
+    --type-data-size:           var(--drift-text-12);
 
   }
 }
