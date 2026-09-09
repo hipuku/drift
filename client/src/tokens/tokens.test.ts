@@ -234,3 +234,93 @@ describe("the two-tier rule", () => {
     });
   });
 });
+
+/**
+ * A CSS module's @keyframes must live in the file that names it.
+ *
+ * This is the custom-property failure one layer along, and it fails the same
+ * silent way. CSS Modules hashes @keyframes names exactly as it hashes class
+ * names, so `animation: slideTrack ...` in one module and `@keyframes
+ * slideTrack` in another compile to two different identifiers. The declaration
+ * parses, `animation-name` computes to precisely the string it was given, and
+ * nothing runs.
+ *
+ * It is worth its own test because the two guards that should have caught it
+ * could not. `tokens.test.ts` above reads custom properties, and a keyframes
+ * name is not one. The computed-styles e2e re-resolves 2,680 elements, and
+ * `animation-name` computes to the same string whether or not the keyframes
+ * exist, so the diff is empty: the harness that proved the stylesheet split
+ * safe was structurally blind to this.
+ *
+ * Found 2026-09-09, by looking at the screen. The stylesheet split moved
+ * `.motionDot`, `.easingDot` and the colour card's flash into their own files
+ * and left `slideTrack` and `cardFlash` behind in Audit.module.css. The motion
+ * tab's dots had been still ever since, on a tab whose entire subject is the
+ * durations a site animates with.
+ *
+ * That is three times a stylesheet-split defect has survived the checks:
+ * drift#2's first attempt passed a guard that counted a class as defined if
+ * `.name` appeared anywhere in the file, the revert was proved by unit tests
+ * that never rendered the Badge, and this. Each guard tested the thing it was
+ * built to test and the UI was broken anyway.
+ */
+describe("css module keyframes", () => {
+  const modules = filesUnder(SRC, [".module.css"]);
+
+  /** `animation: <name> ...` / `animation-name: <name>`, skipping the CSS-wide
+   *  keywords and the shorthand's own timing and fill words. */
+  const RESERVED = new Set([
+    "none", "inherit", "initial", "unset", "revert", "revert-layer",
+    "infinite", "alternate", "normal", "reverse", "forwards", "backwards",
+    "both", "running", "paused", "linear", "ease", "ease-in", "ease-out",
+    "ease-in-out", "step-start", "step-end",
+  ]);
+
+  function declaredIn(css: string): Set<string> {
+    return new Set([...css.matchAll(/@keyframes\s+([\w-]+)/g)].map((m) => m[1]!));
+  }
+
+  function namedIn(css: string): Set<string> {
+    const out = new Set<string>();
+    for (const m of css.matchAll(/\banimation(?:-name)?\s*:([^;]+);/g)) {
+      for (const word of m[1]!.split(/[\s,]+/)) {
+        // A bare identifier that is not a keyword, a time, a number, or a function.
+        if (/^[a-zA-Z][\w-]*$/.test(word) && !RESERVED.has(word)) out.add(word);
+      }
+    }
+    return out;
+  }
+
+  it.each(modules.map((f) => [f.slice(SRC.length + 1), f] as const))(
+    "%s names only keyframes it defines",
+    (_label, file) => {
+      const css = readFileSync(file, "utf8");
+      const declared = declaredIn(css);
+      const dangling = [...namedIn(css)].filter((n) => !declared.has(n));
+      expect(dangling, "keyframes named here but defined in another module").toEqual([]);
+    },
+  );
+
+  /** The same helpers the check above runs on, against the real defect and its
+   *  fix. A guard that has never been seen to fail is a guard on trust, and
+   *  this repository has now shipped three of those. */
+  const dangling = (css: string) => [...namedIn(css)].filter((n) => !declaredIn(css).has(n));
+
+  it("catches a name whose keyframes live in another module", () => {
+    const user = ".dot { animation: slideTrack 1s linear infinite alternate; }";
+    const owner = "@keyframes slideTrack { from { left: 0; } to { left: 100%; } }";
+
+    // Split across two modules, which is exactly what the stylesheet split did.
+    expect(dangling(user)).toEqual(["slideTrack"]);
+    // Together in one module, which is the fix.
+    expect(dangling(user + owner)).toEqual([]);
+  });
+
+  it("does not mistake the shorthand's own keywords for a name", () => {
+    const css = "@keyframes spin { to { rotate: 360deg; } }\n" +
+      ".s { animation: spin 0.7s linear infinite alternate both; }\n" +
+      ".t { animation: none; }\n" +
+      ".u { animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite; }";
+    expect(dangling(css)).toEqual([]);
+  });
+});

@@ -346,18 +346,6 @@
   text-overflow: ellipsis;
 }
 
-@keyframes cardFlash {
-  0%,
-        35% {
-          /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-          box-shadow: 0 0 0 3px var(--drift-color-primary-default);
-        }
-
-  100% {
-          /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-          box-shadow: 0 0 0 3px transparent;
-        }
-}
 .tabIntro {
   color: var(--drift-color-ink-secondary);
   max-width: 40rem;
@@ -523,11 +511,6 @@
   min-width: 4px;
 }
 
-@keyframes slideTrack {
-  from { left: 0; }
-
-  to { left: calc(100% - 0.7rem); }
-}
 
 /* ── Scale / grid ruler: the visual evidence behind the verdicts ─────────── */
 .ruler {

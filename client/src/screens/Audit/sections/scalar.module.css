@@ -211,3 +211,15 @@
   color: var(--drift-color-ink-tertiary);
 }
 
+/* CSS Modules scopes @keyframes names the same way it scopes class names, so a
+   rule and the keyframes it names must live in the same file. This one was in
+   Audit.module.css until 2026-09-09: the stylesheet split moved its only user
+   here and left the keyframes behind, and the reference has been dangling ever
+   since. An animation naming keyframes that do not exist is not an error. The
+   declaration parses, animation-name computes to exactly the string it was
+   given, and nothing runs. See tokens.test.ts, which now fails on it. */
+@keyframes slideTrack {
+  from { left: 0; }
+
+  to { left: calc(100% - 0.7rem); }
+}
