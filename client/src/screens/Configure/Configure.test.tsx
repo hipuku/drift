@@ -48,9 +48,15 @@ afterEach(() => {
 });
 
 describe("the url step", () => {
-  it("cannot be submitted empty", () => {
+  it("cannot be submitted empty, and says why rather than only dimming", async () => {
     render(<Configure />);
-    expect(screen.getByRole("button", { name: "Find pages" })).toBeDisabled();
+    /* The disabled state has to be legible without colour. A 40% opacity is all a
+       disabled button says on its own, and it reads as broken rather than waiting. */
+    expect(screen.getByRole("button", { name: "Enter a URL to start" })).toBeDisabled();
+    expect(screen.queryByRole("button", { name: "Find pages" })).toBeNull();
+
+    await userEvent.type(screen.getByLabelText("URL"), "x.test");
+    expect(screen.getByRole("button", { name: "Find pages" })).toBeEnabled();
   });
 
   it("discovers the typed site", async () => {

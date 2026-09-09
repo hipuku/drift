@@ -193,8 +193,15 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
               />
+              {/* The label carries the disabled reason, because dimming alone does not.
+                  Opacity is the whole of what a disabled control says by default, and
+                  at 40% the primary action reads as broken rather than as waiting for
+                  an input. WCAG exempts inactive controls so this was never a failure,
+                  which is exactly why it needed fixing here rather than in the token:
+                  drift is the tool that reports on opacity standing in for meaning. The
+                  page-count button below already does this, and this one did not. */}
               <Button variant="primary" fullWidth type="submit" disabled={url.trim() === ""}>
-                Find pages
+                {url.trim() === "" ? "Enter a URL to start" : "Find pages"}
               </Button>
               {error && <Callout variant="error">{error}</Callout>}
             </form>
