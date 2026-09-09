@@ -322,11 +322,15 @@ The layers below are the foundation; the brand layer is what ships.
 it reads as a statement rather than a consequence of import order in `main.tsx`.
 
 The semantic tier covers colour, type, spacing, radius, elevation and motion.
-Drift's layer names 157 roles, 118 of which share a name with haus's 123. Five
-of the shared names resolve differently on purpose: `--radius-control`,
-`--radius-surface` and `--radius-overlay` are one step tighter than haus's,
-`--elevation-overlay` sits one shadow step lower, and `--space-inset-2xl` is one
-space step smaller. Thirty-nine roles are Drift's alone.
+After the migration deleted the 89 roles Drift used to restate from haus and
+moved its 54 colour roles and its radius group into `brands/drift.css`,
+`tokens/semantics.css` names 15 roles. Two share a name with haus,
+`--haus-elevation-raised` and `--haus-elevation-overlay`, and resolve to Drift's
+own shadow ramp, because a haus brand may reference only what haus ships and a
+shadow ramp is not that. The other 13 are Drift's alone, for what haus has no
+role for: two extra elevation steps for the modal and the popover, three motion
+durations and an easing, a control-disabled opacity, a panel radius, an inline
+icon size, two sub-grid spacing insets, and the two-property tabular-data role.
 
 Spacing is aliased three ways, `inset` (padding), `gap` (between siblings) and
 `stack` (margin), over one ladder, so a
