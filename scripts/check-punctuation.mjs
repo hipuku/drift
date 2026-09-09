@@ -49,8 +49,21 @@ const SELF = 'scripts/check-punctuation.mjs'
  *  noise, and a lockfile is not somewhere a house style applies. */
 const SKIP = /(^|\/)(package-lock\.json|pnpm-lock\.yaml|.*\.(png|jpg|jpeg|gif|webp|svg|ico|woff2?|ttf|pdf|zip))$/i
 
+/* Tracked files *and* new ones git is not ignoring.
+   `--others --exclude-standard` is what makes a file visible before it is
+   committed. Without it a new document passes locally and fails in CI the
+   moment it is added, which is not hypothetical: the comment above records it
+   happening to this very file, and it happened again on 2026-09-09 to a new
+   decision record in haus. The lesson was written down and the gap was left
+   open, so a check that could not see new files went on not seeing them.
+   `--exclude-standard` keeps .gitignore honoured, so build output and
+   node_modules stay out. */
 function tracked() {
-  return execFileSync('git', ['ls-files', '-z'], { cwd: ROOT, maxBuffer: 32 * 1024 * 1024 })
+  return execFileSync(
+    'git',
+    ['ls-files', '-z', '--cached', '--others', '--exclude-standard'],
+    { cwd: ROOT, maxBuffer: 32 * 1024 * 1024 },
+  )
     .toString('utf8').split('\0').filter(Boolean).filter((f) => f !== SELF && !SKIP.test(f))
 }
 
