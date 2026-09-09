@@ -1,0 +1,39 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--haus-space-gap-xs);
+}
+
+.label {
+  color: var(--haus-color-ink-secondary);
+}
+
+.input {
+  font-family: var(--font-sans);
+  font-size: var(--haus-type-body-size);
+  line-height: var(--haus-type-body-leading);
+  color: var(--haus-color-ink-primary);
+  background: var(--haus-color-surface-default);
+  border: var(--haus-border-width-default) solid var(--haus-color-border-default);
+  border-radius: var(--haus-radius-surface);
+  padding: var(--haus-space-inset-sm) var(--haus-space-inset-md);
+  transition:
+    border-color var(--motion-duration-micro) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
+}
+
+.input::placeholder {
+  color: var(--haus-color-ink-tertiary);
+}
+
+.input:focus-visible {
+  outline: none;
+  border-color: var(--haus-color-border-focus);
+  box-shadow: var(--haus-focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input {
+    transition-duration: 1ms;
+  }
+}

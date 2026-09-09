@@ -29,10 +29,6 @@ import "haus-tokens/semantics.css";
 import "./tokens/primitives.css";
 import "./tokens/semantics.css";
 
-// haus-components' styles, which read the roles above. Unlayered, as the
-// package ships them, so they sit with Drift's own module CSS.
-import "haus-components/styles.css";
-
 // Drift's thin layer on top: accent, fonts, tool tokens.
 import "./styles/drift.css";
 import "./styles/base.css";

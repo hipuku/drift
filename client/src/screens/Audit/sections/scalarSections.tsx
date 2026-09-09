@@ -13,7 +13,6 @@
  * of ten.
  */
 
-import { Badge } from "haus-components";
 import type { SiteAudit } from "../../../lib/api.js";
 import {
   BORDER_NEAR_DUPLICATE_PX,
@@ -23,6 +22,7 @@ import {
   zIndexRanks,
   type DisplayUnit,
 } from "../auditModel.js";
+import { Badge } from "../../../components/Badge/Badge.js";
 import { LengthValue, Table, TagsCell, ZIndexLadder } from "../parts/tables.js";
 /* Two stylesheets, because this section reads from two. Its own classes live
    beside it; the ones below are the audit screen's, shared with other parts
@@ -145,7 +145,7 @@ export function ContrastSection({ contrast }: { contrast: NonNullable<SiteAudit[
           </td>
           <td className={shared.valueCell}>{c.ratio.toFixed(2)}:1</td>
           <td>
-            <Badge tone={c.passAA ? "neutral" : "error"}>
+            <Badge variant={c.passAA ? "neutral" : "danger"}>
               {c.passAAA ? "AAA" : c.passAA ? "AA" : c.passAALarge ? "AA large only" : "Fails AA"}
             </Badge>
           </td>

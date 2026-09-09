@@ -34,15 +34,6 @@ const HAUS_PRIMITIVES = ["primitives.css", "brand.css", "motion.css"].map((f) =>
 const HAUS_SEMANTICS = join(HAUS_TOKENS, "semantics.css");
 const HAUS_CSS = [...HAUS_PRIMITIVES, HAUS_SEMANTICS];
 
-/**
- * haus-components ships its stylesheet as a file rather than injecting it, so
- * the roles it reads can be checked the same way the source tree's are.
- */
-const HAUS_COMPONENTS_CSS = resolve(
-  process.cwd(),
-  "node_modules/haus-components/dist/styles.css",
-);
-
 function filesUnder(dir: string, extensions: string[]): string[] {
   return readdirSync(dir, { recursive: true, withFileTypes: true })
     .filter((e) => e.isFile() && extensions.some((x) => e.name.endsWith(x)))
@@ -157,9 +148,9 @@ describe("custom properties", () => {
  * Nothing here is waiting on a decision any more.
  */
 const TYPE_TIER_DEBT = new Map([
-  // Families, 30. --font-sans is on controls that do not inherit one.
-  ['--font-sans', 20],
-  ['--font-mono', 9],
+  // Families, 33. --font-sans is on controls that do not inherit one.
+  ['--font-sans', 22],
+  ['--font-mono', 10],
   ['--font-display', 1],
   // Sizes, 6. Five are the dev harness; one is a single unit label.
   ['--haus-text-11', 5],
@@ -246,62 +237,10 @@ describe("the two-tier rule", () => {
     const scale = sum([...TYPE_TIER_DEBT.keys()].filter((n) => !FAMILIES.includes(n)));
 
     expect({ families, scale, total: families + scale }).toEqual({
-      families: 30,
+      families: 33,
       scale: 9,
-      total: 39,
+      total: 42,
     });
-  });
-});
-
-/**
- * haus-components reads roles from haus-tokens' semantic layer, and Drift loads
- * that layer for it. This holds the two together.
- *
- * Without it the failure is silent and arrives later: a release of the package
- * reads a role Drift has never loaded, the declaration is dropped at computed
- * value time, and a focus ring or a shadow is simply absent. The version that
- * introduced it would pass every check Drift has.
- *
- * Five roles were undefined here before the semantic layer was imported:
- * --color-ink-on-aronia, --elevation-floating, --motion-duration-emphasis,
- * --radius-marker and --shadow-focus-error. Declaring five lines locally was
- * the alternative, and it is the same hand-copy this file already exists to
- * prevent.
- *
- * A reference with a fallback is excluded, as above. Avatar sets --avatar-bg
- * and --avatar-fg inline and reads them as `var(--avatar-bg, ...)`, which is a
- * real value whether or not the property is set.
- */
-describe("haus-components", () => {
-  it("finds the stylesheet it is meant to read", () => {
-    const source = readFileSync(HAUS_COMPONENTS_CSS, "utf8");
-    expect(source.length, `empty stylesheet at ${HAUS_COMPONENTS_CSS}`).toBeGreaterThan(1000);
-  });
-
-  it("reads no role Drift does not load", () => {
-    const loaded = [
-      ...HAUS_CSS,
-      resolve(SRC, "tokens/primitives.css"),
-      resolve(SRC, "tokens/semantics.css"),
-      ...filesUnder(resolve(SRC, "styles"), [".css"]),
-    ];
-    const defined = matches(loaded, /^\s*(--[a-z0-9-]+)\s*:/gm);
-
-    // A component's own internal properties are defined by the component, on
-    // its own class rather than at :root, and they are not roles Drift is being
-    // asked to supply. --haus-btn-solid is Button's remap of a tone; nothing
-    // outside Button should set it. So they are matched anywhere in the
-    // stylesheet, not only at the start of a line, and subtracted from what is
-    // read. Twenty-four of them arrived with the six overlay components in
-    // haus 1.0, which is why this list was empty until the upgrade.
-    const selfDefined = matches([HAUS_COMPONENTS_CSS], /(--[a-z0-9-]+)\s*:/g);
-    const read = matches([HAUS_COMPONENTS_CSS], /var\((--[a-z0-9-]+)\)/g);
-
-    const undefined_ = [...read]
-      .filter((name) => !defined.has(name) && !selfDefined.has(name))
-      .sort();
-
-    expect(undefined_).toEqual([]);
   });
 });
 

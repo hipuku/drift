@@ -69,9 +69,12 @@ onto a mechanism haus grows for them, and the guard ships from `haus-tokens`.
 
 ## Why haus's semantic layer is loaded as well
 
-[`haus-components`](https://www.npmjs.com/package/haus-components) supplies Badge
-and Input, and its stylesheet reads roles with no fallback. Declaring those
-locally would be the copy this directory exists to stop keeping.
+Drift is a haus brand and its own components read the shared roles, so the
+semantic layer has to be present for them to resolve. `brands/drift.css` supplies
+the inputs, haus's `semantics.css` computes the roles, and declaring those roles
+here instead would be the copy this directory exists to stop keeping. Drift takes
+the token layer and not the components: Drift and vault are the token consumers
+and core is the component one.
 
 haus's layer sits below Drift's in the order declared by `layers.css`, so the
 **148 role names the two share resolve to Drift's values**.
@@ -97,5 +100,5 @@ resolve through it.
 
 `tokens.test.ts` reads the two installed packages as well as this directory, so
 its three guards see what will actually load: nothing reads an undefined
-property, no component reaches past the semantic layer, and `haus-components`
-reads no role Drift does not load.
+property, no component reaches past the semantic layer, and Drift restates no
+value haus already ships.

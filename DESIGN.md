@@ -353,10 +353,11 @@ or in review. That is how `--duration-default`, which never existed, left five
 animations running instantly. And a CSS-module class that does not exist is a
 clean typecheck and an `undefined` at runtime. `client/src/tokens/tokens.test.ts`
 asserts that every custom property read is defined, that no component reads a
-primitive outside a named exception list that can only shrink, and that
-`haus-components` reads no role Drift does not load. The third reads the
-installed package's `styles.css` rather than a copy of it, so a release that
-introduces a role fails the build with its name instead of dropping a shadow.
+primitive outside a named exception list that can only shrink, and that Drift
+restates no value haus already ships. The last runs `haus-tokens`' own
+`findRestatedTokens` against the installed package rather than a copy of it, so a
+role that has quietly drifted back into a hand-typed restatement fails the build
+with its name instead of resolving on both sides and looking like a decision.
 
 # Decisions
 
@@ -410,26 +411,29 @@ the colour it is named after.
 *(Earlier this ran in the browser too: the cut colour proposal re-clustered live as the user moved a size slider, so the package was linked into the client the same way as the server, via a hand-written declaration shim, because it then shipped TypeScript source the client's stricter compiler rejected. With the proposal cut and the package now publishing built types, both the client link and the shim are gone; colour-utils is backend-only.)*
 
 
-### haus-tokens and haus-components: the layers below Drift's
+### haus-tokens: the layer below Drift's
 
-The client took `haus-tokens` for its primitive, motion and semantic layers, and
-`haus-components` for Badge and Input.
+The client takes `haus-tokens` for its primitive, motion and semantic layers, and
+takes no components from it. The token layer is the whole of what Drift consumes:
+Drift and vault take the tokens and core takes the components, so Drift's own
+components stay Drift's.
 
-The primitives were the clear case. `tokens/primitives.css` carried 103 custom
-properties, 100 of which existed in the package with identical values and nothing
-keeping them in step. They agreed by luck, which is the problem Drift was built to
-detect, in Drift. Five remain here as Drift's overrides.
+The primitives were the clear case at adoption. `tokens/primitives.css` carried
+103 custom properties, 100 of which existed in the package with identical values
+and nothing keeping them in step. They agreed by luck, which is the problem Drift
+was built to detect, in Drift.
 
-The semantic layer was the argument. Drift's own is a theme rather than a copy, so
-it stays; haus's is imported below it because `haus-components` reads roles from
-it. The package's stylesheet reads 113 roles with no fallback, and the five Drift
-did not define are exactly the five haus declares that Drift does not. Declaring
-those five here would have been a new copy of the kind the primitives had just
-stopped being.
+The semantic layer was the argument, and it settled by making Drift a haus brand
+rather than a theme overriding haus's roles from above. `brands/drift.css`
+supplies the colour inputs and a radius group, haus's `semantics.css` computes the
+roles from them, and Drift's own components read those roles. That is why haus's
+layer is imported, not because any haus component ships in the client.
 
-Button stays local. Its raised primary variant is Drift's identity and the package
-has no vocabulary for it, so the swap covers the two components that were haus's
-restated and leaves the one that is not.
+Every component is Drift's own. Button's raised primary variant is Drift's
+identity and haus has no vocabulary for it; Badge and Input were briefly taken
+from `haus-components` and returned to Drift's own when the rule settled that two
+shared components at one call site each was a dependency carrying about a tenth of
+the surface and not worth keeping.
 
 ---
 
