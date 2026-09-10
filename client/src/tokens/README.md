@@ -58,8 +58,13 @@ detect, in Drift.** It is gone, and the guard that replaced it is below.
   the generator dropped fails the build with its name.
 - **no component reaches past the semantic layer**, outside a named exception list that can only
   shrink.
+- **every `@keyframes` a module names is defined in that module.** CSS Modules hashes keyframes
+  names exactly as it hashes class names, so an animation whose keyframes live in another file
+  references a name that does not exist. It parses, `animation-name` computes to the string it was
+  given, and nothing moves. The stylesheet split did this to the motion tab and neither guard above
+  could see it, because a keyframes name is not a custom property.
 
-A third guard, against restating values the package already shipped, retired with the package.
+A fourth guard, against restating values the package already shipped, retired with the package.
 
 ## What the history is worth keeping for
 

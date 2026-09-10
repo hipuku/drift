@@ -27,8 +27,8 @@ Live at [drift.hipuku.dev](https://drift.hipuku.dev).
 - **The export.** The whole audit as one JSON artefact, leading with the diagnosis (`health`,
   `findings[]` with severity and evidence, `verdicts`, `rules`) and carrying the full inventory
   underneath. The shape is built for a machine to read: assert on it, diff two runs, or hand it
-  to a model. It is produced from the audit screen. No endpoint serves it yet, which is
-  [issue #3](../../issues/3).
+  to a model. It is produced from the audit screen. No endpoint serves it, and
+  [issue #3](../../issues/3) is parked with the rest of the public deployment.
 - **An API.** Every screen is built on the same endpoints a CI job would use.
 
 Nothing is invented and nothing is inferred by a model: the crawl, the aggregation and the
@@ -46,7 +46,7 @@ npx playwright install chromium
 
 ## Develop
 
-Node 20.19+ or 22.12+, as the `engines` field says; `.nvmrc` pins 22. Two processes: the
+Node 22.12+, as the `engines` field says; `.nvmrc` pins 22. Two processes: the
 backend owns the API, the WebSocket server and the crawl worker; the client proxies `/api`
 and `/ws` to it.
 

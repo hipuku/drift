@@ -698,14 +698,20 @@ off, with that reason in the config. The same run also left a duplicate
 nicety. An exception that stops being needed should fail, or the disable
 comments become a list nobody prunes.
 
-**The audit stylesheet is one 1542-line file** serving seven components. Splitting
-it was attempted and reverted. Rules that mention a class without defining it (a
-`prefers-reduced-motion` block, an adjacency selector) carried class names into
-the shared module while the declarations stayed behind, and components resolved
-to classes that existed but styled nothing. The lesson is recorded rather than the
-attempt: static analysis of CSS Modules was not sufficient evidence, twice. If it
-is retried, ownership must be assigned per class by where its declarations are,
-and verified by comparing computed styles. Reading the source is what failed.
+**The audit stylesheet was one 1542-line file** serving seven components, and is
+694 lines now. The first split was attempted and reverted. Rules that mention a
+class without defining it (a `prefers-reduced-motion` block, an adjacency
+selector) carried class names into the shared module while the declarations
+stayed behind, and components resolved to classes that existed but styled
+nothing. Static analysis of CSS Modules was not sufficient evidence, twice.
+
+The retry assigned ownership per class by where its declarations are, and was
+verified by comparing computed styles rather than by reading the source. The
+colour section moved beside `parts/colour.tsx`, then the overview, type and
+spacing tabs into `sections/overview`, then the scalar tabs into
+`sections/scalar`. What stays beside `Audit.tsx` is the screen's own, so
+issue #2 is parked rather than finished. The split still let one defect through,
+the motion keyframes above, which is why the third guard exists.
 
 **The bundled demo capture can go stale silently.** The deployed build replays a
 real audit, so the capture is the product's own output. It is not a fixture standing in for one. A fix to the analysis therefore makes the shipped demo wrong, and
