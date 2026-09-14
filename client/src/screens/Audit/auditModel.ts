@@ -169,9 +169,9 @@ export function sameBaseColour(a: string, b: string): boolean {
 
 /**
  * How a colour relates to its nearest neighbour. ΔE ignores alpha, so a colour
- * and its translucent self read as ΔE 0, that's an *opacity* variant, not a
- * perceptual duplicate. Only genuinely different hues under the threshold are
- * "duplicate"; everything else is just the nearest.
+ * and its translucent self read as ΔE 0, which is an opacity variant. A
+ * different hex under the threshold is a "duplicate"; anything else is the
+ * nearest colour.
  */
 export function nearKind(hex: string, near: { hex: string; deltaE: number }): NearKind {
   if (sameBaseColour(hex, near.hex) && alphaOf(hex) !== alphaOf(near.hex)) return "opacity";
@@ -286,8 +286,8 @@ export function offGrid(values: number[], base: number): Set<number> {
 
 /**
  * The grid to measure against when the reader has not chosen one. An 8px grid
- * is a subset of a 4px one, so "nothing misses 8" is the stronger statement and
- * the honest default when it holds. An empty set proves nothing, so it falls to 4.
+ * is a subset of a 4px one, so when no value misses 8, 8 is the default. An empty
+ * set falls to 4.
  */
 export function detectGridBase(values: number[]): 4 | 8 {
   return values.length > 0 && offGrid(values, 8).size === 0 ? 8 : 4;

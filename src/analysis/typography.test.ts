@@ -103,7 +103,7 @@ describe("collectTypography · folding and keying", () => {
     expect(sizes[0]!.count).toBe(3);
   });
 
-  it("keeps a genuinely different size apart", () => {
+  it("keeps a different size apart", () => {
     // 16 vs 16.5 is a real distinction at one decimal; folding it would hide a
     // half-pixel size that is worth reporting.
     expect(collectTypography(crawl([el({ fontSize: 16 }), el({ fontSize: 16.5 })])).sizes).toHaveLength(2);

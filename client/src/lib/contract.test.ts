@@ -14,9 +14,8 @@ import { INDISTINGUISHABLE_DELTA_E } from "../screens/Audit/auditModel.js";
  * notices, which is exactly what INDISTINGUISHABLE_DELTA_E was doing.
  *
  * So the service's source is read as text and its declared literal compared.
- * Reading rather than importing is the point: importing `analysis/colours.ts`
- * would pull haus-colour-utils into the client's build, which is the coupling
- * the mirror exists to avoid.
+ * The file is read, not imported: importing `analysis/colours.ts` would pull
+ * haus-colour-utils into the client's build, which the client copy avoids.
  *
  * If this fails, the two sides disagree. Change both, or neither.
  */

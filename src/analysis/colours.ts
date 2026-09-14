@@ -36,12 +36,10 @@ import type { CrawlResult } from "../crawler/types.js";
 export type ColourRole = "text" | "background" | "border";
 
 /**
- * CIEDE2000 ΔE below which two colours are *perceptually indistinguishable*,
- * genuine redundancy, not a deliberate variant. Sits at/under the ~2.3
- * just-noticeable-difference, so an intentional light/mid/dark ramp (steps
- * typically ΔE 8+) is never counted as duplication. Distinct from the looser
- * threshold used to *suggest consolidation* (Proposals), which may group
- * perceptibly-different shades on purpose.
+ * CIEDE2000 ΔE below which two colours count as near-duplicates. It sits under
+ * the just-noticeable difference of about 2.3, so the steps of a light, mid and
+ * dark ramp (typically ΔE 8 or more) are not counted. `clusterColours` defaults to
+ * ΔE 8 when called without a threshold.
  *
  * The client mirrors this value in `client/src/screens/Audit/auditModel.ts`,
  * because it is a separate package that does not import from here. The two are

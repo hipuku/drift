@@ -117,9 +117,9 @@
     /* The primary button's raised look, in three states.
        A role rather than four literals in Button.module.css, and it takes its
        hue from --drift-accent-h so it follows the theme playground: pinned at 200
-       under a 239 brand, the lift was the one thing on the page that did not
-       move when the accent did. Lightness and chroma stay put — a shadow is
-       deliberately less saturated than the colour casting it. */
+       under a 239 brand, the lift did not change when the accent did. Lightness
+       and chroma are fixed, so the shadow stays less saturated than the colour
+       casting it. */
     --drift-lift:
       0 1px 2px  oklch(40% 0.05  var(--drift-accent-h) / 0.20),
       0 4px 12px -4px oklch(50% 0.085 var(--drift-accent-h) / 0.45);

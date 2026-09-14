@@ -1,8 +1,7 @@
 /**
- * Badge: the one pill used across the app. Before this, the audit, hub, and
- * every proposal hand-rolled their own pills with drifting colours, radii, and
- * weights. This is the canonical shape (matching the audit's token pills):
- * pill-radius, 12px, with semantic variants for the meaning being conveyed.
+ * Badge: the pill used across the app, with a pill radius, 12px text and a
+ * variant per meaning. It replaced separate pills in the audit, the hub and the
+ * proposals screens, which had different colours, radii and weights.
  */
 
 import type { ReactNode } from "react";

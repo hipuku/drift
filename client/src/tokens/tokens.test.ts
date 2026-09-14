@@ -192,7 +192,7 @@ describe("the two-tier rule", () => {
     expect(reaching).toEqual([]);
   });
 
-  it("keeps the recorded exceptions honest", () => {
+  it("lists no exception that is unread or no longer a primitive", () => {
     // A name that is no longer read, or no longer a primitive, should leave the
     // list, otherwise the debt looks larger than it is and stops being read.
     const primitives = primitiveNames();

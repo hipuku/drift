@@ -33,7 +33,7 @@
   color: var(--drift-color-warning-on-subtle);
 }
 
-/* Danger: genuine redundancy (near-duplicate). */
+/* Danger: a near-duplicate value. */
 .danger {
   background: color-mix(in oklab, var(--drift-color-error-default) 16%, transparent);
   color: var(--drift-color-error-default);

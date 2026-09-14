@@ -149,7 +149,7 @@ export function createApp(deps: AppDeps): Express {
   );
 
   // The full deterministic audit: every colour/size/spacing/radius/shadow in
-  // use, grouped and summarised. The diagnosis shown before any proposal.
+  // use, grouped and summarised.
   app.get(
     "/crawl/:jobId/audit",
     wrap(async (req, res) => {

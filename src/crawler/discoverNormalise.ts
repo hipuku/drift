@@ -11,8 +11,8 @@
  *  - titles come from a query-less link's text, falling back to a humanised
  *    path (instance links like "2 hours ago" make poor titles).
  *
- * This is heuristic: a site that genuinely distinguishes pages by query string
- * will be over-collapsed. Acceptable for a representative-sample audit.
+ * A site that serves different pages by query string is collapsed to one entry
+ * per path. The audit samples pages, so that is accepted.
  */
 
 import type { DiscoveredPage, NavLink } from "./types.js";

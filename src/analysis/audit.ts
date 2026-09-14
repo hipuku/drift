@@ -4,8 +4,8 @@
  * Aggregates a crawl into an exhaustive inventory: every colour (grouped by
  * family so the near-blacks sit together), every type size/weight/line-height
  * plus the real role→size map read from element tags, and every spacing, radius
- * and shadow value. The summary counts the sprawl. No model: this is the honest
- * picture of what the site actually ships, before any proposal.
+ * and shadow value, with a summary of counts. Computed from the crawl, with no
+ * model.
  */
 
 import {
@@ -184,7 +184,7 @@ export interface AuditSummary {
   pages: number;
   distinctColours: number;
   colourFamilies: number;
-  /** Colours indistinguishable from another (ΔE < ~2): genuine redundancy. */
+  /** Colours less than ΔE 2 from another: near-duplicates. */
   colourNearDuplicates: number;
   fontFamilies: number;
   typeSizes: number;
@@ -415,7 +415,7 @@ const MIN_TOKEN_PX = 1;
  * value (e.g. `0.125rem`) resolves to sub-pixel-different pixels across contexts
  * (`1.96195` vs `1.96209`), which would otherwise surface as separate tokens.
  * Rounding to 2 dp merges those resolution artifacts without conflating values
- * that genuinely differ (real tokens differ by ≥1px). It does *not* clean up the
+ * that differ (distinct values in a system differ by 1px or more). It does *not* clean up the
  * fractional value itself, which needs the authored unit (read from the CSSOM).
  */
 function quantize(px: number): number {
@@ -692,7 +692,7 @@ function relatedColours(hex: string, all: string[]): ColourRelation[] {
   return rels;
 }
 
-// ── Redundancy signals: the honest basis for the health verdicts ─────────────
+// ── Redundancy counts behind the health verdicts ───────────────────────────
 
 const SPACING_GRID_PX = 4;
 

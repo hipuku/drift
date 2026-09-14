@@ -320,8 +320,8 @@ export function Audit({ audit, onBack }: Props) {
 
     const typeFit = detectClosestRatio(t.sizes.map((z) => z.px), typeBasePx);
 
-    // Only genuine problems become findings; `verdicts` below carries the full
-    // per-category picture, including the categories that are holding.
+    // Findings are only the categories with an issue. `verdicts` below lists
+    // every category.
     const findings: unknown[] = [];
     const failingAA = s.contrastFailingAA ?? 0;
     if (failingAA > 0) {

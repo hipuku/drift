@@ -68,8 +68,8 @@ const PROPERTIES = [
 type Snapshot = Record<string, Record<string, string>>;
 
 /** Stable path for an element: tag plus its index among siblings, root down.
- *  Class names are deliberately not part of the key, because the whole point is
- *  to notice when the styles behind a class change. */
+ *  Class names are not part of the key, so a change to the styles behind a class
+ *  shows as a change and not as a renamed element. */
 const collect = (properties: string[]): Snapshot => {
   const path = (el: Element): string => {
     const parts: string[] = [];

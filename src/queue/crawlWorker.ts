@@ -61,8 +61,8 @@ export function createCrawlWorker(
         });
 
         // Reaching no pages is a failed crawl, not an empty one. The site was
-        // unreachable, blocked us, or every selected page 404'd. Failing here
-        // keeps the job status honest for anything reading the API directly.
+        // unreachable, blocked the crawler, or every selected page 404'd. Failing
+        // here gives an API client a failed status instead of an empty audit.
         if (result.pages.length === 0) {
           throw new Error(
             "Couldn't read any pages. The site may be slow to load, blocking automated visits, or the selected pages may no longer exist.",

@@ -6,7 +6,7 @@
  * don't inflate the numbers. Produces the distinct font families and the size
  * ladder (each size with the weights and line-heights it appears at), plus the
  * detected base size, the most common text size and a reliable proxy for body,
- * which seeds the type-scale proposals.
+ * which is the base for fitting a type scale.
  */
 
 import type { CrawlResult } from "../crawler/types.js";
@@ -31,7 +31,7 @@ export interface FontSizeUsage {
 export interface TypographyInventory {
   families: FontFamilyUsage[]; // most-used first
   sizes: FontSizeUsage[]; // smallest first
-  /** Most common text size: the body base that seeds the scale proposals. */
+  /** Most common text size, the base for fitting a type scale. */
   baseSizePx: number | null;
   /** Most-used family. */
   primaryFamily: string | null;

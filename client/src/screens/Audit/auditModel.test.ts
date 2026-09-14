@@ -201,7 +201,7 @@ describe("nearKind", () => {
     expect(nearKind("#0d7a4f", { hex: "#0d7a4f80", deltaE: 0 })).toBe("opacity");
   });
 
-  it("calls a genuinely different colour under the threshold a duplicate", () => {
+  it("calls a different colour under the threshold a duplicate", () => {
     expect(nearKind("#0d7a4f", { hex: "#0d7a52", deltaE: 0.4 })).toBe("duplicate");
   });
 
