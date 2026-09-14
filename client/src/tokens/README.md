@@ -1,87 +1,82 @@
 # drift design tokens
 
-Drift defines every token it reads. Nothing here is supplied by a package.
+Every custom property Drift reads is defined in this directory, in `../styles/`, or inline by a
+component. No package supplies one.
 
-- `layers.css`: the cascade layer order, declared once before anything opens a layer
-- `foundation.css`: the primitives, brand inputs, motion values and semantic roles (`foundation.*` layers)
-- `primitives.css`: the five primitives Drift's theme overrides (`base.primitives`)
-- `semantics.css`: intent aliases the foundation has no name for (`base.semantics`)
+- `layers.css`: the cascade layer order, declared before any file opens a layer.
+- `foundation.css`: primitives, brand inputs, motion values and semantic roles, in the
+  `foundation.*` layers. 197 declarations, all `--drift-*`.
+- `primitives.css`: five primitives Drift sets for itself (`base.primitives`): three font stacks
+  and the 1px and 2px spacing steps.
+- `semantics.css`: 15 roles the foundation has no name for (`base.semantics`).
 
-The skin that themes these for Drift's cool, dark, editorial identity lives in
-`../styles/drift.css` (the `drift.*` layers, last in the order, so they win on
-overlap).
+`../styles/drift.css` is the theme, in the `drift.*` layers, which come last in the order.
 
-## Independence, 2026-09-09
+The names are not all prefixed. `foundation.css` is `--drift-*` throughout, and
+`primitives.css` and `semantics.css` still declare unprefixed names such as `--font-sans`,
+`--space-hairline`, `--radius-panel` and `--type-data-size`.
 
-**The foundation used to be [`haus-tokens`](https://www.npmjs.com/package/haus-tokens), and is
-Drift's own now.** The reasoning is in `DESIGN.md`; the short version is that a tool which audits
-design systems should not be wearing one it does not control. `foundation.css` is the closure of
-what Drift actually read from that package: **197 declarations**, renamed `--haus-*` to
-`--drift-*`, leaving out the ramps Drift never reached (ruby, paper, cobalt) and the roles its own
-theme overrides.
+## Where `foundation.css` came from
 
-**Nothing rendered differently.** The computed-styles e2e re-resolved 2,680 elements against a
-baseline; the 313 properties that moved all traced to two earlier intended changes, and none to the
-rename.
+Until 2026-09-09 the foundation was [`haus-tokens`](https://www.npmjs.com/package/haus-tokens),
+added on 2026-08-30. `DESIGN.md` records why it was removed. `foundation.css` was generated once,
+from the installed `haus-tokens@3.2.0`: every property Drift read, and the properties those read,
+renamed from `--haus-*` to `--drift-*`. The ruby, paper and cobalt ramps were left out because
+nothing read them, and so were the roles Drift's theme overrides. The package is no longer
+installed, so the file cannot be regenerated and is edited by hand.
 
-`foundation.css` was generated once, against `haus-tokens@3.2.0`, by a script that read the
-installed package. **That package is gone, so the file is not regenerable** and is maintained by
-hand like any other source. `tokens.test.ts` is what holds it.
+The generated file had 218 declarations. The brand layer arrived as a default block and a
+`[data-theme='drift']` override, which was the shape haus's brand mechanism required. 18 of the
+21 entries were identical in both blocks and only the three radius roles differed. Drift has one
+theme, so the two blocks were merged into one, which leaves 197. The `data-theme` attribute was
+removed from `index.html`.
 
-**The generated closure was 218 declarations and the file is 197**, because the brand layer
-collapsed on the way in. It arrived as a default block plus a `[data-theme='drift']` override,
-which is the shape haus's brand mechanism required, and **18 of its 21 entries were byte-identical
-across the two**: only the three radius roles ever differed. Drift ships one theme and owns the
-file, so the second block was 21 declarations restating 18 values with nothing keeping them in
-step. That is this repository's own subject, found in this repository, so it went. The
-`data-theme` attribute it needed is off `index.html`.
+The client's computed-styles e2e test (`client/e2e/computed-styles.spec.ts`) compared 2,680
+elements against a baseline across the change. 313 properties differed, and all 313 came from two
+earlier changes: the heading tracking in haus-tokens 3.2.0 and the Badge revert.
 
-## Why the split survives the dependency
+## Why there are four files
 
-Four files where one would do, now that Drift owns all of them. The split is not a leftover: the
-foundation is what Drift would ship to anyone, `primitives.css` and `semantics.css` are what *this
-product* changes, and `drift.css` is the identity. Collapsing them would make every theme decision
-indistinguishable from every foundational one, in the product whose entire subject is telling those
-two apart.
+`foundation.css` holds values Drift would keep under any theme. `primitives.css` and
+`semantics.css` hold what this product adds, and `drift.css` holds the theme. Merging them would
+put a theme change and a foundation change in the same file.
 
-`primitives.css` used to carry 103 custom properties, 100 of them the package's values restated by
-hand with nothing keeping them in step. **That was the same class of defect Drift was built to
-detect, in Drift.** It is gone, and the guard that replaced it is below.
+Before the adoption, `primitives.css` declared 103 custom properties. 100 of them had the same
+value as a property in `haus-tokens`, typed by hand, with nothing checking that they stayed equal.
+They were deleted when the package was adopted.
 
-## The guards
+## Tests
 
-`tokens.test.ts` reads every layer that will actually load, the foundation included:
+`tokens.test.ts` reads every stylesheet under `client/src` and checks three things.
 
-- **nothing reads an undefined property.** CSS drops an undefined `var()` silently and the property
-  inherits, with no warning at build or in review. That is how `--duration-default`, which never
-  existed, left five animations running instantly. This is also what made independence safe: a role
-  the generator dropped fails the build with its name.
-- **no component reaches past the semantic layer**, outside a named exception list that can only
-  shrink.
-- **every `@keyframes` a module names is defined in that module.** CSS Modules hashes keyframes
-  names exactly as it hashes class names, so an animation whose keyframes live in another file
-  references a name that does not exist. It parses, `animation-name` computes to the string it was
-  given, and nothing moves. The stylesheet split did this to the motion tab and neither guard above
-  could see it, because a keyframes name is not a custom property.
+- **Every `var(--x)` is defined.** A `var()` naming an undefined property is invalid at
+  computed-value time, the declaration is dropped and the property inherits, with no build error.
+  `--duration-default` never existed and was read by five animations, which ran with no duration.
+  Reads with a fallback, `var(--x, 0.2s)`, are not checked.
+- **CSS modules read no primitive** outside `TYPE_TIER_DEBT`, which records a count per name and
+  fails if a count goes up or down without the record changing, and one decorative accent read.
+- **Every `@keyframes` a module names is defined in that module.** CSS Modules hashes keyframes
+  names as it hashes class names, so a name defined in another module does not match. The
+  stylesheet split did this to the motion tab. `animation-name` still computed to the name, so
+  neither the first check nor the computed-styles e2e test reported it.
 
-A fourth guard, against restating values the package already shipped, retired with the package.
+A fourth test compared `primitives.css` with the values in `haus-tokens`. It was removed with the
+package.
 
-## What the history is worth keeping for
+A CSS-module class that does not exist is not checked. It typechecks and is `undefined` at
+runtime.
 
-Three findings outlived the dependency, because none of them is really about haus.
+## Defects found while haus was a dependency
 
-**Two vocabularies that never meet fail silently.** Drift declared `--color-surface-default`;
-haus's components read `--haus-color-surface-default`. Two different properties, so the cascade
-order decided nothing, and Badge and Input drew in an aronia purple inside a cool blue product.
-Nothing caught it, because each name resolved fine on its own. **The failure was not an unresolved
-`var()`.** Prefixing every custom property is what fixed it, and is why everything here is
-`--drift-*` and not a bare `--color-*`.
+**Two prefixes.** Drift declared `--color-surface-default` and haus's components read
+`--haus-color-surface-default`. They are different properties, so layer order had no effect, and
+Badge and Input rendered in haus's aronia purple inside Drift's blue theme. Both names resolved,
+so the undefined-property check passed. Prefixing the foundation fixed it.
 
-**A guard living in one consumer is a habit, not a guard.** vault hit this same defect as
-`vault#25`, closed it, and wrote a duplication check. Drift never got a copy, and hit it too.
+**A check in one repository.** vault hit the same defect as `vault#25` and added a duplication
+check. Drift had no copy of the check and hit it too.
 
-**A brand file inside a design system can only express the parts of a product's identity the system
-has vocabulary for.** When Drift's colour roles lived in `haus-tokens/brands/drift.css`, its radius
-group could move there and its shadows could not: the brand schema allowed a brand its own ramp
-only as `--haus-<name>-<digits>`, and `--shadow-sm` is not that. Drift's theme now has no such
-ceiling, which is one of the things independence bought.
+**The brand schema.** When Drift's colour roles lived in `haus-tokens/brands/drift.css`, its
+radius roles could move there and its shadows could not. The schema accepted a brand's own ramp
+only as `--haus-<name>-<digits>`, and `--shadow-sm` does not match that pattern. `drift.css` has
+no such restriction.

@@ -1,115 +1,103 @@
-# Drift: Features
+# Drift: features
 
-A visual tour of what Drift reports. Point it at a URL you don't control; it crawls the site
-and shows the design system that was **actually shipped**: the inventory, the drift, and the
-evidence for both.
-
-Every figure below is measured. Nothing is inferred by a model, and every claim names the
-reference it was measured against.
+The report tabs, with screenshots from the demo build. The demo replays an audit of
+picocss.com captured on 2026-08-30. Each figure below names the reference it was measured
+against.
 
 ---
 
-## The diagnosis
+## Overview
 
-The overview opens with one sentence saying where the system has drifted, then a card per
-category tinted by verdict: red where something needs review, green where it holds. The colour
-carries the finding, so the page reads before any number does.
+A health line, then one card per category, tinted by its verdict: good, watch or review. The
+card counts come from the audit's `summary`. Clicking a card opens that category's tab.
 
 ![Overview](screenshots/dashboard.png)
-
-Each card is a way in: click Colour and you land on the colours, already scrolled to what the
-card was counting. The counts come from the audit's own summary, so a card and the tab it
-opens can never disagree.
 
 ---
 
 ## Colour
 
-Every colour in use, grouped into hue families and ranked by how much of the site it carries.
-Each swatch shows where it is used (text, background, border) and on how many pages.
+Every colour in use, grouped into hue families and ranked by usage. Each swatch shows its roles
+(text, background, border) and the pages it appears on.
 
 ![Colour](screenshots/colour.png)
 
-Near-duplicates are the finding here. Two colours within CIEDE2000 ΔE 2 are perceptually
-indistinguishable: not a deliberate light/mid/dark step, which sits at ΔE 8 or more, but the
-same colour written twice. Selecting a swatch opens a rail showing what it relates to:
-opacity variants of the same base, and the near-duplicates it should probably merge with.
+Two colours less than CIEDE2000 ΔE 2 apart are counted as near-duplicates. Selecting a swatch
+opens a rail listing its opacity variants (the same hex base at a different alpha) and its
+near-duplicates. Choosing one scrolls to its card.
 
 ---
 
 ## Contrast
 
-Every text/background pair on the site, evaluated against WCAG 2.1, worst first.
+Every distinct text and background pair, with its WCAG 2.1 ratio and AA and AAA results, lowest
+ratio first.
 
 ![Contrast](screenshots/contrast.png)
 
-Contrast is measured against the background a reader sees: the nearest non-transparent
-ancestor, with alpha composited. The element's own declared background is usually
-`transparent`, so a check that used it would be measuring nothing. Muted text at 50% opacity on
-a tinted panel is judged as it renders. Evaluated as authored, 50% black on white measures
-18.9 and passes AAA; composited, it measures 3.5 and fails AA.
+An element's own `background-color` is usually `transparent`, so the pair uses the nearest
+ancestor background instead. Alpha is composited before the ratio is taken. `#111111` at 50%
+alpha on white measures 18.88 if the alpha is ignored and passes AAA. Composited it renders as
+`#888888`, measures 3.54, and fails AA. A translucent ancestor background is composited over
+white, not over whatever sits behind it.
 
 ---
 
 ## Type
 
-The families in use with their real usage counts, then the size ladder.
+Font families with usage counts, then the size ladder.
 
 ![Type](screenshots/type.png)
 
-Sizes are plotted on a log axis against a modular scale's steps, and the ones that miss a step
-sit between ticks in red. The scale is **selectable**: every named ratio is offered with its
-own off-count, so the strip answers "which scale is this system actually on?".
-The verdict stays pinned to the automatic best fit, so exploring a hypothesis never rewrites
-the diagnosis.
+Sizes are plotted on a log axis against the steps of a modular scale, and sizes more than 0.75px
+from a step are marked. Each named ratio in the selector shows how many sizes miss it. The
+automatic fit is the ratio that the fewest sizes miss, with mean relative error breaking a tie.
+The Overview verdict uses the automatic fit whichever ratio is selected on this tab.
 
-Each row carries the authored unit alongside the computed pixels, because a rem-authored
-scale and a px-authored one are different decisions and `getComputedStyle` discards the
-difference.
+Each row shows the authored unit beside the computed pixels. `getComputedStyle` returns pixels
+for a size authored in `rem` or `px` alike.
 
 ---
 
 ## Spacing
 
-Every spacing value, with a bar for scale and the element tags and CSS properties it appears
-on.
+Every padding, margin and gap value, with a bar for its size and the element tags and properties
+it appears on.
 
 ![Spacing](screenshots/spacing.png)
 
-Measured against a 4px or 8px grid, selectable the same way as the type ratio. An 8px grid is
-a subset of a 4px one, so "nothing misses 8" is the stronger statement and the default when it
-holds. Values that miss the grid are marked inline.
+Measured against a 4px or 8px grid, with 0.5px tolerance, selectable like the type ratio. The
+tab defaults to 8px when every value sits on it, and to 4px otherwise. The health line always
+counts against 4px.
 
 ---
 
 ## Radius, shadow and border
 
-The three that usually hold, reported so you can see that they do.
-
 ![Radius](screenshots/radius.png)
 ![Shadow](screenshots/shadow.png)
 
-Radii within 1px of each other are flagged as near-duplicates. 4px beside 4.9px is a value
-someone typed while meaning the one above it. Border widths use a finer 0.5px threshold,
-because 1px against 1.5px is a real duplicate at that scale.
+Radii within 1px of each other are counted as near-duplicates, such as 4px beside 4.9px. Border
+widths use 0.5px, so 1px beside 1.5px counts. Shadows are listed with usage and have no
+duplicate check.
 
 ![Border](screenshots/border.png)
 
 ---
 
-## The extended token set
-
-The categories most audits skip. Drift hides here, where nobody looks.
+## Opacity, z-index, blur and gradients
 
 ![Opacity](screenshots/opacity.png)
 ![Z-index](screenshots/z-index.png)
 
-Z-index is rendered as a stacking ladder, so an ad-hoc set is visible as a shape. A set larger
-than eight layers, or one containing a 9999, is called out on the health line. Both are the
-signature of a value picked to win an argument with another value.
+Z-index values are drawn as a stacking ladder. More than eight distinct values, or any value of
+9999 or above, adds z-index to the health line.
 
 ![Blur](screenshots/blur.png)
 ![Gradient](screenshots/gradient.png)
+
+picocss.com sets no `backdrop-filter`, so the demo has no blur tab. `blur.png` was captured from
+a different site and cannot be regenerated from the demo capture.
 
 ---
 
@@ -117,13 +105,12 @@ signature of a value picked to win an argument with another value.
 
 ![Breakpoints](screenshots/breakpoint.png)
 
-Breakpoints are read from the stylesheets' media queries, classified by device, and split by
-whether they are `min-width` or `max-width`. A system that mixes both is usually two systems.
+Breakpoints are read from the media queries in same-origin stylesheets, labelled by device class
+and counted separately as `min-width` and `max-width`.
 
 ![Motion](screenshots/motion.png)
 
-Durations and easings each animate their own specimen, because a cubic-bézier is not something
-you can read as a number.
+Each duration and easing animates a sample dot at that value.
 
 ---
 
@@ -131,19 +118,17 @@ you can read as a number.
 
 ![Authoring](screenshots/authoring.png)
 
-What the stylesheets actually say, per category, which the browser throws away. `1rem` and
-`16px` compute identically and mean different things; this is the only place the distinction
-survives the crawl.
+The units the stylesheets use, per category, read from the CSSOM. `1rem` and `16px` compute to
+the same pixels. Cross-origin stylesheets throw on `cssRules` and are skipped.
 
 ---
 
-## The export
+## Export
 
-The whole audit as one JSON artefact. It leads with the diagnosis (`health`, then `findings[]`
-with severity and evidence, then `verdicts`, then the `rules` each number was measured
-against) and carries the full inventory underneath.
+The audit as one JSON file: `health`, `findings[]` with severity and evidence, `verdicts`, and a
+`rules` block with the ΔE threshold, the detected ratio, the grid base and its tolerance, the
+radius tolerance and the WCAG AA thresholds. The summary and the full inventory follow.
 
-The shape is built for a machine to read: assert on it, diff two runs to see what moved, or
-hand it to a model and ask what to fix first. The rules block is what makes that possible,
-since a count means nothing without the reference it was counted against. The export is
-produced from the audit screen; no endpoint serves it yet, which is [issue #3](../../issues/3).
+Two exports can be diffed, and a CI job can assert on `findings`. The client builds the file from
+the `/audit` response. No endpoint serves it; [issue #3](../../issues/3) was closed while the
+public deployment stays a replay.
