@@ -37,6 +37,13 @@ describe("type scale", () => {
     expect(fit?.error).toBeLessThan(0.01);
   });
 
+  it("ranks by sizes off the scale before mean error", () => {
+    // Minor third: lowest mean error, two sizes off. Augmented fourth: one off.
+    const fit = detectClosestRatio([16, 22, 23, 25], 16);
+    expect(fit?.ratio.id).toBe("augmented-fourth");
+    expect(fit?.off).toBe(1);
+  });
+
   it("flags sizes that fall off a chosen scale", () => {
     const scale = buildScaleToCover(16, 1.25, 12, 40);
     const result = classifyAgainstScale([16, 20, 15, 25], scale);

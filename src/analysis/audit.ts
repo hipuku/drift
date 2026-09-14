@@ -18,7 +18,7 @@ import {
 import { deltaE, hueFamily, oklch } from "haus-colour-utils";
 import { summariseAuthored, type AuthoredSummary } from "./authored.js";
 import { collectContrastFindings, type ContrastFinding } from "./contrast.js";
-import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "./typeScale.js";
+import { detectClosestRatio } from "./typeScale.js";
 import type { CrawlResult } from "../crawler/types.js";
 
 // ── Colour ───────────────────────────────────────────────────────────────────
@@ -718,10 +718,7 @@ function countOffScale(typography: SiteAudit["typography"]): number {
   const sizes = typography.sizes.map((s) => s.px);
   if (sizes.length < 2) return 0;
   const base = typography.sizes.reduce((a, b) => (b.count > a.count ? b : a)).px;
-  const fit = detectClosestRatio(sizes, base);
-  if (!fit) return 0;
-  const scale = buildScaleToCover(base, fit.ratio.ratio, Math.min(...sizes), Math.max(...sizes));
-  return classifyAgainstScale(sizes, scale).filter((c) => !c.onScale).length;
+  return detectClosestRatio(sizes, base)?.off ?? 0;
 }
 
 // ── Compose ──────────────────────────────────────────────────────────────────

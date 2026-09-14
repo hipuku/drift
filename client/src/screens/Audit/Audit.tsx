@@ -32,7 +32,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Text } from "../../components/Text/Text.js";
 import type { AuditAuthored, SiteAudit } from "../../lib/api.js";
-import { RATIOS, buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
+import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
 import {
   INDISTINGUISHABLE_DELTA_E,
   RADIUS_NEAR_DUPLICATE_PX,
@@ -156,42 +156,11 @@ export function Audit({ audit, onBack }: Props) {
   const typeBasePx = t.sizes.length
     ? t.sizes.reduce((a, b) => (b.count > a.count ? b : a)).px
     : 16;
-  /**
-   * The closest scale is the one the fewest sizes miss, with mean relative error
-   * as the tie-break. Ranking purely by mean error (what detectClosestRatio
-   * returns) can crown a ratio that fits most sizes tightly but tips a couple
-   * over the tolerance, leaving the option marked "closest" showing a higher
-   * off-count than its neighbours, which reads as a bug.
-   */
-  const bestRatio = useMemo(() => {
-    const px = t.sizes.map((z) => z.px);
-    if (px.length < 2) return null;
-    const errorOf = (ratio: number) => {
-      const ln = Math.log(ratio);
-      const others = px.filter((v) => Math.abs(v - typeBasePx) > 0.01);
-      if (!others.length) return Number.POSITIVE_INFINITY;
-      let total = 0;
-      for (const v of others) {
-        const n = Math.round(Math.log(v / typeBasePx) / ln);
-        total += Math.abs(v - typeBasePx * ratio ** n) / v;
-      }
-      return total / others.length;
-    };
-    let best: { id: string; name: string; ratio: number } | null = null;
-    let bestOff = Number.POSITIVE_INFINITY;
-    let bestErr = Number.POSITIVE_INFINITY;
-    for (const r of RATIOS) {
-      const scale = buildScaleToCover(typeBasePx, r.ratio, Math.min(...px), Math.max(...px));
-      const off = classifyAgainstScale(px, scale).filter((m) => !m.onScale).length;
-      const err = errorOf(r.ratio);
-      if (off < bestOff || (off === bestOff && err < bestErr)) {
-        best = r;
-        bestOff = off;
-        bestErr = err;
-      }
-    }
-    return best;
-  }, [t.sizes, typeBasePx]);
+  /** The automatic fit, ranked the same way as the server's `typeOffScale`. */
+  const bestRatio = useMemo(
+    () => detectClosestRatio(t.sizes.map((z) => z.px), typeBasePx)?.ratio ?? null,
+    [t.sizes, typeBasePx],
+  );
 
   /** Sizes that miss a given ratio, the ruler's red dots and the table's. */
   const offScaleFor = useCallback(
@@ -348,10 +317,7 @@ export function Audit({ audit, onBack }: Props) {
     const host = hostOf(audit.rootUrl);
     const generatedAt = new Date();
 
-    const typeFit = detectClosestRatio(
-      t.sizes.map((z) => z.px),
-      t.sizes.length ? t.sizes.reduce((a, b) => (b.count > a.count ? b : a)).px : 16,
-    );
+    const typeFit = detectClosestRatio(t.sizes.map((z) => z.px), typeBasePx);
 
     // Only genuine problems become findings; `verdicts` below carries the full
     // per-category picture, including the categories that are holding.

@@ -12,6 +12,7 @@ import {
   toTailwind,
   type ScaleStep,
 } from "./typeScale";
+import { detectClosestRatio as serverDetectClosestRatio } from "../../../src/analysis/typeScale";
 
 /** A clean major-third ladder off a 16px base, as the analysis would emit it. */
 const scale = (): ScaleStep[] => buildScaleToCover(16, 1.25, 12, 40);
@@ -101,6 +102,25 @@ describe("detectClosestRatio", () => {
     const clean = detectClosestRatio([20, 25, 31.25], 16);
     const messy = detectClosestRatio([17, 23, 41], 16);
     expect(messy!.error).toBeGreaterThan(clean!.error);
+  });
+
+  it("ranks by sizes off the scale before mean error", () => {
+    // A minor third has the lowest mean error here and misses two sizes. An
+    // augmented fourth misses one.
+    const fit = detectClosestRatio([16, 22, 23, 25], 16);
+    expect(fit?.ratio.id).toBe("augmented-fourth");
+    expect(fit?.off).toBe(1);
+  });
+
+  it("agrees with the server's copy", () => {
+    const cases = [
+      [16, 22, 23, 25],
+      [13, 16, 30, 48],
+      [12, 14, 16, 17.5, 20, 25, 35, 40, 50],
+    ];
+    for (const sizes of cases) {
+      expect(detectClosestRatio(sizes, 16)).toEqual(serverDetectClosestRatio(sizes, 16));
+    }
   });
 
   it("always returns one of the named ratios", () => {

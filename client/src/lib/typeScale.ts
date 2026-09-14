@@ -77,12 +77,25 @@ export function buildScaleToCover(
 
 export interface ScaleFit {
   ratio: NamedRatio;
+  /** Sizes that miss this scale at classifyAgainstScale's default tolerance. */
+  off: number;
+  /** Mean relative error of the current sizes against this scale (0 = perfect). */
   error: number;
 }
 
+/**
+ * Which named ratio fits the current sizes. Ranked by how many sizes miss the
+ * scale, then by mean relative error. Error alone can pick a ratio that sits
+ * close to most sizes and misses more of them than another ratio does: 16, 22,
+ * 23 and 25px have the lowest mean error on a minor third, which misses two of
+ * them, and an augmented fourth misses one. Returns null if there is nothing to
+ * fit.
+ */
 export function detectClosestRatio(sizes: number[], basePx: number): ScaleFit | null {
   const others = sizes.filter((px) => Math.abs(px - basePx) > 0.01);
   if (others.length === 0 || basePx <= 0) return null;
+  const minPx = Math.min(...sizes);
+  const maxPx = Math.max(...sizes);
 
   let best: ScaleFit | null = null;
   for (const ratio of RATIOS) {
@@ -94,7 +107,11 @@ export function detectClosestRatio(sizes: number[], basePx: number): ScaleFit | 
       total += Math.abs(px - predicted) / px;
     }
     const error = total / others.length;
-    if (!best || error < best.error) best = { ratio, error };
+    const scale = buildScaleToCover(basePx, ratio.ratio, minPx, maxPx);
+    const off = classifyAgainstScale(sizes, scale).filter((c) => !c.onScale).length;
+    if (!best || off < best.off || (off === best.off && error < best.error)) {
+      best = { ratio, off, error };
+    }
   }
   return best;
 }
