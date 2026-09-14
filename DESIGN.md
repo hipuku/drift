@@ -62,12 +62,13 @@ as `vote` or `login`. The list is capped at 1,000 pages.
 | Cost | Cause | Current limit |
 |---|---|---|
 | Time | Each page is a headless navigation and a DOM walk | Worker concurrency 2, page cap |
-| Memory | Every element of every page is kept until the audit runs | Page cap only |
+| Memory | Every element of every page is kept until the audit runs | Page cap, and 12,000 elements per page |
 | Load on the site | Requests to a site the operator does not own | Same origin only, page cap |
 
 `MAX_CRAWL_PAGES` is 10, enforced by the server and mirrored in the page picker. A caller either
 names the pages or omits them and gets a breadth-first walk of same-origin links from the root.
-A URL counts as same origin when its parsed origin equals the root's. Each page gets 30 seconds
+A URL counts as same origin when its parsed origin equals the root's. `haus-style-probe` stops
+reading a page after 12,000 elements (`maxElements`, which drift leaves at its default). Each page gets 30 seconds
 to reach `domcontentloaded`, and a page that fails is logged and skipped.
 
 Most values come from shared stylesheets, so a few pages find most of a site's values. More
@@ -467,11 +468,14 @@ A crawl of a content site ran the backend out of memory, and BullMQ re-ran the j
 restart, which crashed it again. One animation-heavy page with tens of thousands of nodes was enough,
 because the pipeline keeps every element of every page until the audit.
 
-Shipped: the page cap went from 40 to 10, and the queue stopped retrying (`attempts: 1`,
-`maxStalledCount: 0`). Not built: incremental aggregation, which would fold each page into tallies
-and drop its elements, and a per-page element ceiling. An earlier version of this section said the
-ceiling had shipped; no such constant exists. The cap does the memory work until the aggregation
-changes.
+Shipped: a per-page limit of 12,000 elements (added to drift's extractor on 2026-07-19, now the
+`maxElements` default in `haus-style-probe`), the page cap cut from 40 to 10, and no retries in the
+queue (`attempts: 1`, `maxStalledCount: 0`). Not built: incremental aggregation, which would fold
+each page into tallies and drop its elements. Until then the two limits bound memory at about
+120,000 retained elements per crawl.
+
+*Corrected 2026-09-14: this section said twice that the element limit did not exist. It has existed
+since 2026-07-19; the check searched drift and not the package the extractor had moved to.*
 
 ### The reference is selectable, and the automatic fit is shared
 
@@ -615,7 +619,7 @@ an analysis change.
 
 - Crawling at more than one viewport width. Responsive values outside the crawl width are not seen.
 - Interactive states. `getComputedStyle` sees the resting state.
-- Incremental aggregation and a per-page element ceiling.
+- Incremental aggregation.
 - The export on the API (issue #3, closed while the deployment stays a replay).
 - Authentication and rate limiting (#5), and obeying `robots.txt` (#19): the crawler reads it only
   for `Sitemap:` lines. The replay deployment never reaches the crawler. All three are needed before
