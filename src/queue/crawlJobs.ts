@@ -14,6 +14,32 @@ export interface CrawlJobs {
   getResult(jobId: string): Promise<{ status: string; result?: CrawlResult; error?: string }>;
 }
 
+/** The four statuses `openapi.yaml` publishes, plus the 404 case. */
+export type JobStatus = "queued" | "active" | "completed" | "failed" | "not_found";
+
+/**
+ * BullMQ's job state, mapped onto the published contract. A job that has not
+ * started is `waiting`, `delayed`, `prioritized` or `waiting-children` in
+ * BullMQ, and `queued` in the contract. `unknown` means the job is in no list,
+ * which is the case after `removeOnComplete` or `removeOnFail` drops it, so it
+ * is reported as not found.
+ */
+export function contractStatus(state: string): JobStatus {
+  switch (state) {
+    case "active":
+    case "completed":
+    case "failed":
+      return state;
+    case "waiting":
+    case "delayed":
+    case "prioritized":
+    case "waiting-children":
+      return "queued";
+    default:
+      return "not_found";
+  }
+}
+
 export class BullCrawlJobs implements CrawlJobs {
   constructor(private readonly queue: Queue<CrawlJobData>) {}
 
@@ -26,7 +52,8 @@ export class BullCrawlJobs implements CrawlJobs {
   async getResult(jobId: string): Promise<{ status: string; result?: CrawlResult; error?: string }> {
     const job = await this.queue.getJob(jobId);
     if (!job) return { status: "not_found" };
-    const status = await job.getState();
+    const status = contractStatus(await job.getState());
+    if (status === "not_found") return { status };
     if (status === "completed") {
       return { status, result: job.returnvalue as CrawlResult };
     }
