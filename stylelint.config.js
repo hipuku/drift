@@ -1,39 +1,26 @@
 /**
- * The hardcoded-value gate.
+ * The hardcoded-value gate (#26, 2026-09-05). The first run found 44 problems,
+ * one of them a raw `font-weight: 600` between two tokenised declarations.
  *
- * drift audits other people's sites for raw values and, until 2026-09-05, ran
- * no such check on itself (#26). The first run found 44 problems, including a
- * raw `font-weight: 600` sitting between two tokenised declarations.
- *
- * Ported from haus's config rather than invented, because the two should agree
- * about what counts as a bypass: drift is haus's only real consumer, and a
- * rule that is stricter in the system than in the product teaches nobody
- * anything.
+ * The property list was ported from haus's config while drift consumed
+ * haus-tokens, so both repos counted the same declarations as bypasses.
  */
 
 /**
- * Values that are deliberately off the scale.
+ * Values with no token. Eight of the original 44 had an exact token and were
+ * fixed. Listing the rest by value keeps a new raw value failing; excluding
+ * the rule for a property would let new values through as well.
  *
- * This list is the point of the config. Eight of the original 44 had an exact
- * token and were fixed; these are the ones that genuinely have no token, and
- * enumerating them means a *new* raw value still fails while these stay
- * visible and reviewable in one place. A blanket rule exclusion would have hid
- * them instead.
+ * Composed shadows are not listed. Each carries an inline disable at the
+ * declaration, with its reason.
+ *
+ * `--report-needless-disables` does not check this list. A value that stops
+ * appearing in the stylesheets stays here until someone removes it. On
+ * 2026-09-14 all seven shadow entries were unused: six named `--color-*`
+ * properties that the `--drift-*` rename had removed, and the seventh matched
+ * a declaration that already carried an inline disable.
  */
 const OFF_SCALE = [
-  /* ── Composed shadows ──────────────────────────────────────────────────────
-     Every one already tokenises the half that carries meaning: the colour. The
-     geometry, a 3px ring, a 1px inset hairline, is the shape of the affordance
-     rather than a value off a scale, and `/color$/` cannot reach inside a
-     shorthand. A token per focus ring would be a token per call site. */
-  '0 0 0 3px var(--color-primary-default)',
-  '0 0 0 3px var(--color-surface-default)',
-  '0 0 0 3px transparent',
-  'inset 0 0.4rem 0 -0.3rem var(--color-border-default)',
-  'inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 10%, transparent)',
-  'inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 12%, transparent)',
-  'inset 0 0 0 1px color-mix(in oklab, var(--color-ink-primary) 14%, transparent)',
-
   /* ── Relative type ─────────────────────────────────────────────────────────
      `em` is a ratio to the parent, and no token can express that: a token would
      freeze the size the parent is trying to scale. Used where a unit or suffix
