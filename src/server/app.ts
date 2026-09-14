@@ -39,6 +39,25 @@ function friendlyDiscoverError(err: unknown): string {
   return "We couldn’t read that site. Check the URL and try again.";
 }
 
+/**
+ * Whether the caller's input can name a website. A bare host gets `https://`,
+ * the same guess the crawler and discovery make. An explicit scheme other than
+ * http(s) is refused as written: prefixing `ftp://example.com` with `https://`
+ * would parse, as a host called `ftp`.
+ */
+function isUsableSiteUrl(input: string): boolean {
+  const trimmed = input.trim();
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed) && !/^https?:\/\//i.test(trimmed)) return false;
+  try {
+    const parsed = new URL(/^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`);
+    return parsed.hostname.includes(".");
+  } catch {
+    return false;
+  }
+}
+
+const UNUSABLE_URL = "That doesn\u2019t look like a valid web address.";
+
 function clampPages(value: unknown): number {
   const n = typeof value === "number" ? value : Number.parseInt(String(value ?? ""), 10);
   if (!Number.isFinite(n)) return 1;
@@ -69,15 +88,10 @@ export function createApp(deps: AppDeps): Express {
         res.status(400).json({ error: "url is required" });
         return;
       }
-      // Reject an unusable URL here rather than queueing a job that can only
-      // fail: /discover already validates up front, and the two should agree.
-      try {
-        const parsed = new URL(/^https?:\/\//i.test(url.trim()) ? url.trim() : `https://${url.trim()}`);
-        if (!/^https?:$/.test(parsed.protocol) || !parsed.hostname.includes(".")) {
-          throw new Error("unsupported");
-        }
-      } catch {
-        res.status(422).json({ error: "That doesn\u2019t look like a valid web address." });
+      // A URL that cannot name a site is refused here, so no job is queued
+      // that can only fail. /discover applies the same check.
+      if (!isUsableSiteUrl(url)) {
+        res.status(422).json({ error: UNUSABLE_URL });
         return;
       }
       // Optional webhook target. Validated here, while the caller is still on
@@ -108,6 +122,10 @@ export function createApp(deps: AppDeps): Express {
       const url = req.body?.url;
       if (typeof url !== "string" || url.trim() === "") {
         res.status(400).json({ error: "url is required" });
+        return;
+      }
+      if (!isUsableSiteUrl(url)) {
+        res.status(422).json({ error: UNUSABLE_URL });
         return;
       }
       try {

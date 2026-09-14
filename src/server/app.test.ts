@@ -133,6 +133,34 @@ describe("HTTP API", () => {
     expect(received).toEqual({ url: "https://example.com", maxPages: 10 }); // MAX_CRAWL_PAGES
   });
 
+  it("refuses a non-http scheme on both routes without calling discovery or the queue", async () => {
+    let discovered = false;
+    let enqueued = false;
+    const base = await listen({
+      jobs: fakeJobs({
+        async enqueue() {
+          enqueued = true;
+          return "job_never";
+        },
+      }),
+      discover: async () => {
+        discovered = true;
+        return { rootUrl: "", host: "", pages: [] };
+      },
+    });
+
+    for (const path of ["/discover", "/crawl"]) {
+      const res = await fetch(`${base}${path}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ url: "ftp://example.com" }),
+      });
+      expect(res.status).toBe(422);
+    }
+    expect(discovered).toBe(false);
+    expect(enqueued).toBe(false);
+  });
+
   it("POST /crawl rejects a missing url", async () => {
     const base = await listen({ jobs: fakeJobs() });
     const res = await fetch(`${base}/crawl`, {
