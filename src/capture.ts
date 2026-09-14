@@ -3,21 +3,12 @@
  *
  *   npm run capture -- <url> [--pages N] [--out file.json]
  *
- * The deployed build ships a real audit captured from a real crawl and replays
- * it, so that capture *is* the product's output rather than a fixture standing
- * in for it. That makes it code, and stale code: the bundled one was taken on
- * 19 August, before the contrast fix that measures against the background a
- * reader actually sees and before the hue-family boundaries were corrected. Its
- * numbers are what those bugs produced, and the README quotes them.
+ * The public build replays this capture, so a change to the analysis leaves it
+ * showing the old analysis until someone recaptures. The capture's date is its
+ * `capturedAt` field. This script is the crawler and the analysis without the
+ * queue, Redis or the server.
  *
- * This exists so recapturing is one command rather than a remembered sequence.
- * It is the crawler and the analysis: no queue, no Redis, no
- * server. The capture should be the analysis applied to a crawl and
- * not a record of how the queue happened to route it that day.
- *
- * The default target is the site the bundled demo uses, at the page count it
- * was taken with, so `npm run capture` with no arguments reproduces the shipped
- * fixture rather than something subtly different.
+ * With no arguments it recaptures the demo's site at the demo's page count.
  */
 
 import { writeFile } from "node:fs/promises";

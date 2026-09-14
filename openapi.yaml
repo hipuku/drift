@@ -64,7 +64,10 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
         "422":
-          description: Invalid, unreachable, or non-http(s) URL, with a human-readable message.
+          description: >
+            A URL that cannot name a site (a scheme other than http or https, or a
+            host with no dot), or a site that could not be read. The message is
+            human-readable.
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
@@ -73,11 +76,11 @@ paths:
     post:
       summary: Enqueue a crawl
       description: >
-        Validates the URL at the edge (a bad URL is a 422, no job queued) and
-        enqueues a crawl. Poll `/crawl/{jobId}/result`, or pass a `callbackUrl`
-        to be notified. Page URLs must be absolute and same-origin; a relative or
-        absent `pages` list falls back to a breadth-first walk from the root
-        (capped at `MAX_CRAWL_PAGES = 10`).
+        Checks the URL before queueing: a URL that cannot name a site is a 422
+        and no job is created. Poll `/crawl/{jobId}/result`, or pass a
+        `callbackUrl`. Page URLs that are not absolute or not on the root's
+        origin are dropped. With no page left, or no `pages`, the crawler walks
+        same-origin links from the root. At most 10 pages (`MAX_CRAWL_PAGES`).
       operationId: enqueueCrawl
       requestBody:
         required: true
@@ -138,7 +141,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/JobResult" }
         "404":
-          description: No such job.
+          description: No such job, or a job the queue no longer holds.
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
@@ -157,7 +160,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/SiteAudit" }
         "404":
-          description: No such job.
+          description: No such job, or a job the queue no longer holds.
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
@@ -232,14 +235,16 @@ components:
           type: integer
           minimum: 1
           maximum: 10
-          description: Page ceiling for the BFS fallback. Clamped to [1, 10].
+          description: Page limit when `pages` is absent. Clamped to [1, 10].
         callbackUrl:
           type: string
           format: uri
           description: >
-            Public http(s) endpoint to POST the finished audit to. SSRF-guarded
-            (loopback/private/link-local refused unless allowlisted via
-            `DRIFT_WEBHOOK_ALLOWED_HOSTS`) and validated at enqueue time.
+            http(s) endpoint to POST the finished audit or failure to. Checked
+            at enqueue time: every address the host resolves to must be public
+            (loopback, private, carrier-grade NAT, link-local, unique-local,
+            multicast and IPv4-mapped forms of those are refused), unless the host
+            is listed in `DRIFT_WEBHOOK_ALLOWED_HOSTS`.
 
     JobResult:
       type: object
@@ -247,6 +252,9 @@ components:
         status:
           type: string
           enum: [queued, active, completed, failed]
+          description: >
+            BullMQ's waiting, delayed, prioritized and waiting-children states are
+            reported as `queued`.
         result:
           description: The raw crawl result once completed; null otherwise.
           oneOf:

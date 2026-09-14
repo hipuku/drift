@@ -84,12 +84,9 @@ function channels(hex: string): [number, number, number] | null {
 /**
  * `top` composited over `bottom`, as an opaque #rrggbb.
  *
- * WCAG ratios are defined between two opaque colours. A semi-transparent
- * foreground evaluated as though it were opaque reports the contrast of a colour
- * nobody sees: black at 50% on white measures 18.9 as authored and 3.5 as
- * rendered, which is the difference between passing AAA and failing AA. Muted
- * secondary text is usually written this way, so this is the common case rather
- * than the corner case.
+ * WCAG ratios are defined between two opaque colours. `#111111` at 50% alpha on
+ * white measures 18.88 with the alpha ignored and passes AAA; composited it is
+ * `#888888`, 3.54, and fails AA. Muted secondary text is often written this way.
  */
 function compositeOver(top: string, bottom: string): string | null {
   const t = channels(top);
