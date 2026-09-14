@@ -20,13 +20,13 @@ const SURFACES = [
 ] as const;
 
 const TYPE: { role: TypeRole; text: string }[] = [
-  { role: "display", text: "Design drifts." },
-  { role: "heading-lg", text: "Every colour, measured." },
+  { role: "display", text: "picocss.com" },
+  { role: "heading-lg", text: "Colour" },
   { role: "heading", text: "Clusters and contrast" },
-  { role: "heading-sm", text: "Consolidation opportunities" },
-  { role: "body-lg", text: "Paste a URL and Drift audits the visual state of the site." },
-  { role: "body", text: "Deduplicated, clustered, and mapped to the pages they appear on." },
-  { role: "body-sm", text: "Fourteen greys where the system defines four." },
+  { role: "heading-sm", text: "Near-duplicates" },
+  { role: "body-lg", text: "Drift lists a site's pages and audits the selected ones." },
+  { role: "body", text: "Grouped by CIEDE2000 distance and attributed to the pages they appear on." },
+  { role: "body-sm", text: "14 greys in use, 4 of them declared as tokens." },
   { role: "label", text: "Representative" },
   { role: "label-sm", text: "Total usage" },
   { role: "label-xs", text: "WCAG AA" },

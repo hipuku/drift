@@ -106,9 +106,9 @@ export function NearCallout({
 }) {
   const label =
     kind === "opacity"
-      ? "Same colour, different opacity"
+      ? "Same hex, different alpha"
       : kind === "duplicate"
-        ? "Indistinguishable from"
+        ? "Near-duplicate"
         : "Nearest colour";
   return (
     <button

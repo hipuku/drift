@@ -11,7 +11,7 @@
    the move: zero differences across 2680 elements, every tab.
    ──────────────────────────────────────────────────────────────────────── */
 
-/* ── Design Health ───────────────────────────────────────────────────────── */
+/* ── Health ──────────────────────────────────────────────────────────────── */
 .health {
   padding: var(--drift-space-inset-2xl) var(--drift-space-inset-3xl);
   margin-bottom: var(--drift-space-stack-xl);

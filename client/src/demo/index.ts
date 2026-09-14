@@ -1,15 +1,11 @@
 /**
  * Demo mode.
  *
- * Drift's engine is a Playwright crawler behind a Redis-backed queue, which is
- * not something to leave running on a public URL: it costs money to host, and
- * an open crawler pointed at arbitrary sites by strangers is a liability.
- *
- * So the deployed build ships a real audit captured from a real crawl and
- * replays it. Everything downstream of the crawl (the aggregation, the
- * verdicts, the export) is the genuine output, because it *is* the genuine
- * output; only the network round-trip is stubbed. The UI says so rather than
- * pretending to crawl on demand.
+ * The crawler is Playwright behind a Redis queue. Hosting it publicly costs
+ * money and would let anyone point it at any site, so the public build replays
+ * an audit captured from a real crawl. The aggregation, verdicts and export run
+ * on that capture; only the API calls are stubbed. The configure screen says
+ * this is a demo.
  *
  * Enabled at build time with VITE_DEMO_MODE=true; the dev build talks to the
  * real backend as usual.

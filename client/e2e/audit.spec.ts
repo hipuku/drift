@@ -13,7 +13,7 @@ import { expect, test } from "@playwright/test";
 test("audits a site and reports what it ships", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: "Diagnose a site" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Audit a site" })).toBeVisible();
 
   // Tab to the URL field rather than clicking it: the first interactive control
   // a keyboard user meets should be the one the page is for.
@@ -30,10 +30,10 @@ test("audits a site and reports what it ships", async ({ page }) => {
 
   // The crawl replays on a timer, so the report is the thing to wait for.
   await expect(page.getByRole("heading", { name: "picocss.com" })).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByText(/exactly as shipped/)).toBeVisible();
+  await expect(page.getByText(/Values in use across/)).toBeVisible();
 
   // The overview is the claim: an inventory with counts, not an empty shell.
-  await expect(page.getByText("Design Health")).toBeVisible();
+  await expect(page.getByText("Health", { exact: true })).toBeVisible();
   const colours = page.getByRole("tab", { name: /Colour/ });
   await expect(colours).toBeVisible();
 });
@@ -43,7 +43,7 @@ test("every tab reaches a populated panel", async ({ page }) => {
   await page.getByLabel("URL").fill("picocss.com");
   await page.getByRole("button", { name: "Find pages" }).click();
   await page.getByRole("button", { name: /^Run audit/ }).click();
-  await expect(page.getByText("Design Health")).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText("Health", { exact: true })).toBeVisible({ timeout: 30_000 });
 
   /* Walked by keyboard: a tab that only answers a click is a tablist in
      appearance only.
@@ -88,7 +88,7 @@ test("nothing is left invisible once it is on screen", async ({ page }) => {
   await page.getByLabel("URL").fill("picocss.com");
   await page.getByRole("button", { name: "Find pages" }).click();
   await page.getByRole("button", { name: /^Run audit/ }).click();
-  await expect(page.getByText("Design Health")).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText("Health", { exact: true })).toBeVisible({ timeout: 30_000 });
 
   // The hipuku-web defect in assertion form: tab through the report and require
   // that whatever holds focus is actually rendered. A reveal driven by scroll

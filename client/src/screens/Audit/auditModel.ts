@@ -85,10 +85,14 @@ export function capFirst(s: string): string {
 }
 
 /**
- * The diagnosis line, where the system is drifting, in plain terms. Names every
- * token category present: those with redundancy get a "N of M …" problem clause,
- * the rest are gathered as holding steady. Reads as prose, not a census.
+ * The health line. Categories with a problem get an "N of M …" clause, contrast
+ * first. Categories with a check that found nothing are listed after "No issues
+ * found in". Shadows have no duplicate check; more than SHADOW_WATCH_COUNT
+ * distinct shadows is the issue, the same threshold the Shadows card uses.
  */
+/** More distinct shadows than this marks the Shadows card "watch" and adds a health-line clause. */
+export const SHADOW_WATCH_COUNT = 6;
+
 export function healthLine(s: SiteAudit["summary"], extendedDrift: string[] = []): string {
   const problems: string[] = [];
   const clean: string[] = [];
@@ -111,10 +115,14 @@ export function healthLine(s: SiteAudit["summary"], extendedDrift: string[] = []
     if (radiusDup > 0) problems.push(`${radiusDup} of ${s.radii} radii nearly repeat`);
     else clean.push("radius");
   }
-  if (s.shadows > 0) clean.push("shadows"); // no redundancy signal, treated as holding
 
-  // Contrast is the one finding with a user-facing consequence, so it leads the
-  // problem list rather than joining the sprawl counts.
+  if (s.shadows > SHADOW_WATCH_COUNT) {
+    problems.push(`${s.shadows} distinct shadows, more than ${SHADOW_WATCH_COUNT}`);
+  } else if (s.shadows > 0) {
+    clean.push("shadows");
+  }
+
+  // A failing pair means text a reader may not be able to read, so it leads.
   const failingAA = s.contrastFailingAA ?? 0;
   if ((s.contrastPairs ?? 0) > 0) {
     if (failingAA > 0)
@@ -122,14 +130,13 @@ export function healthLine(s: SiteAudit["summary"], extendedDrift: string[] = []
     else clean.push("contrast");
   }
 
-  const tail = extendedDrift.length ? ` Also drifting: ${joinList(extendedDrift)}.` : "";
+  const tail = extendedDrift.length ? ` Also inconsistent: ${joinList(extendedDrift)}.` : "";
+  const cleanText = `No issues found in ${joinList(clean)}.`;
 
-  if (problems.length === 0) {
-    return `Nothing's drifting. ${capFirst(joinList(clean))} all hold to a system.${tail}`;
-  }
+  if (problems.length === 0) return `${cleanText}${tail}`;
   const problemText = `${capFirst(joinList(problems))}.`;
   if (clean.length === 0) return `${problemText}${tail}`;
-  return `${problemText} ${capFirst(joinList(clean))} ${plural(clean.length, "holds", "hold")} steady.${tail}`;
+  return `${problemText} ${cleanText}${tail}`;
 }
 
 // ── Colour ──────────────────────────────────────────────────────────────────

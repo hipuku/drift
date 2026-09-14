@@ -51,11 +51,9 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
   const [addUrl, setAddUrl] = useState("");
   const [addError, setAddError] = useState<string | null>(null);
 
-  // The demo has one captured audit and replays it whole: `startCrawl` drops the
-  // page list on the floor in demo mode, because there is no crawler behind it
-  // to configure. A picker that still took input would be a control that looks
-  // live and changes nothing, which is the one thing a tool about honest
-  // reporting cannot ship.
+  // The demo replays one captured audit whole, and `startCrawl` ignores the page
+  // list in demo mode. A picker that still took input would change nothing, so
+  // it is locked.
   const locked = DEMO_MODE;
 
   // Before discovery we only know the typed host; after, the server's resolved
@@ -159,20 +157,19 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
         {status === "idle" && (
           <>
             <Text role="heading-lg" as="h1">
-              Diagnose a site
+              Audit a site
             </Text>
             {DEMO_MODE && (
               <div className={styles.demoNote}>
-                <strong>Demo.</strong> The crawler is a headless browser behind a
-                job queue, so it isn&rsquo;t left running on a public URL. This
-                build replays a real audit of <strong>{DEMO_SITE}</strong>{" "}
-                captured in {DEMO_CAPTURED}. The inventory, verdicts and export
-                are the genuine output. Run it locally to audit any site.
+                <strong>Demo.</strong> This build replays an audit of{" "}
+                <strong>{DEMO_SITE}</strong> captured in {DEMO_CAPTURED}. It does not run
+                the crawler, which needs a headless browser and a job queue. To audit
+                another site, run Drift locally.
               </div>
             )}
             <Text role="body" as="p" className={styles.intro}>
-              Paste a URL. Drift finds the site’s pages, lets you pick which ones to audit, and
-              reports where the design system has drifted.
+              Drift lists a site’s pages, audits the selected ones, and reports repeated or
+              off-scale colour, type, spacing and other values.
             </Text>
             <form
               className={styles.form}
@@ -193,13 +190,11 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
               />
-              {/* The label carries the disabled reason, because dimming alone does not.
-                  Opacity is the whole of what a disabled control says by default, and
-                  at 40% the primary action reads as broken rather than as waiting for
-                  an input. WCAG exempts inactive controls so this was never a failure,
-                  which is exactly why it needed fixing here rather than in the token:
-                  drift is the tool that reports on opacity standing in for meaning. The
-                  page-count button below already does this, and this one did not. */}
+              {/* The label gives the reason the button is disabled. At 40% opacity alone
+                  the primary action looked broken. WCAG exempts inactive controls, so
+                  this is a legibility fix, made here and not in the opacity token so
+                  other disabled controls are unchanged. The page-count button below
+                  already worked this way. */}
               <Button variant="primary" fullWidth type="submit" disabled={url.trim() === ""}>
                 {url.trim() === "" ? "Enter a URL to start" : "Find pages"}
               </Button>
@@ -229,9 +224,9 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
               Pick pages to audit
             </Text>
             <Text role="body" as="p" className={styles.intro}>
-              <strong className={styles.count}>{pages.length} pages found</strong>. Audit one, a
-              few, or the whole site. The design language lives in the shared stylesheet, so a
-              handful captures most of it.
+              <strong className={styles.count}>{pages.length} pages found</strong>. Up to{" "}
+              {CRAWL_CEILING} can be audited at once. Most values come from shared stylesheets,
+              so a few pages cover most of a site.
             </Text>
 
             {showSearch && (
@@ -270,8 +265,8 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
 
             {locked && (
               <Text role="body-sm" as="p" className={styles.lockedNote}>
-                Every page in the capture is included. The audit below already ran, so there is
-                nothing left to choose.
+                The demo capture includes every page listed, so the selection cannot be
+                changed.
               </Text>
             )}
 
@@ -327,7 +322,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
               <input
                 type="text"
                 className={styles.addInput}
-                placeholder="Not listed? Add a page by /path…"
+                placeholder="Add a page by path, such as /pricing"
                 value={addUrl}
                 onChange={(e) => {
                   setAddUrl(e.target.value);

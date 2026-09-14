@@ -124,7 +124,7 @@ async function reachTheReport(page: import("@playwright/test").Page): Promise<vo
   await page.getByLabel("URL").fill("picocss.com");
   await page.getByRole("button", { name: "Find pages" }).click();
   await page.getByRole("button", { name: /^Run audit/ }).click();
-  await expect(page.getByText("Design Health")).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText("Health", { exact: true })).toBeVisible({ timeout: 30_000 });
 }
 
 /** Every panel, not just the one that opens. Most of the stylesheet is behind a

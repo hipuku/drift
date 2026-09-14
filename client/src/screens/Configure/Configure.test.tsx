@@ -325,7 +325,7 @@ describe("demo mode", () => {
 
   it("says why the picker is fixed", async () => {
     await reachDemoPicker(3);
-    expect(screen.getByText(/nothing left to choose/i)).toBeInTheDocument();
+    expect(screen.getByText(/selection cannot be changed/i)).toBeInTheDocument();
   });
 });
 

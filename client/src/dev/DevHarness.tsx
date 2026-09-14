@@ -258,15 +258,15 @@ const STATES: HarnessState[] = [
     label: "Reading",
     render: () => (
       <Thinking
-        title="Reading the design system"
-        detail="Aggregating every colour, size, and spacing value in use across the crawled pages."
+        title="Building the audit"
+        detail="Grouping the colour, type, spacing and other values from the crawled pages."
       />
     ),
   },
   {
     id: "error",
     label: "Error",
-    render: () => <Failed message="We couldn’t read that site. Check the URL and try again." onRetry={() => {}} />,
+    render: () => <Failed message="That site could not be read. Check the URL and try again." onRetry={() => {}} />,
   },
   { id: "foundation", label: "Foundation", render: () => <Foundation /> },
 ];

@@ -78,8 +78,8 @@ counts against 4px.
 ![Shadow](screenshots/shadow.png)
 
 Radii within 1px of each other are counted as near-duplicates, such as 4px beside 4.9px. Border
-widths use 0.5px, so 1px beside 1.5px counts. Shadows are listed with usage and have no
-duplicate check.
+widths use 0.5px, so 1px beside 1.5px counts. Shadows have no duplicate check; more than six
+distinct shadows marks the Shadows card "watch" and adds a clause to the health line.
 
 ![Border](screenshots/border.png)
 

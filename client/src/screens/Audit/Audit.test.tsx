@@ -44,7 +44,7 @@ describe("header", () => {
 
   it("says how many pages the numbers cover", () => {
     render(<Audit audit={audit} />);
-    expect(screen.getByText(/Everything in use across 2 pages, exactly as shipped\./)).toBeInTheDocument();
+    expect(screen.getByText(/Values in use across 2 pages\./)).toBeInTheDocument();
   });
 
   it("offers a way back only when there is somewhere to go", async () => {
@@ -202,9 +202,10 @@ describe("export", () => {
     // Leading with health and findings means the consumer does not have to
     // re-derive the judgement drift already made.
     const keys = Object.keys(payload);
-    // An envelope first ($schema, tool, version, site, generatedAt), then the
+    // An envelope first (tool, version, site, generatedAt), then the
     // judgement, and only then the raw material.
-    expect(keys.slice(5, 9)).toEqual(["health", "findings", "verdicts", "rules"]);
+    expect(keys.slice(4, 8)).toEqual(["health", "findings", "verdicts", "rules"]);
+    expect(keys).not.toContain("$schema");
     expect(keys.indexOf("health")).toBeLessThan(keys.indexOf("summary"));
     expect(keys.indexOf("rules")).toBeLessThan(keys.indexOf("inventory"));
   });
@@ -386,8 +387,8 @@ describe("resilience to a thinner payload", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("x.test");
     expect(screen.queryAllByText(/NaN/)).toHaveLength(0);
     expect(screen.queryAllByText(/undefined/)).toHaveLength(0);
-    // With no drift signal at all, the diagnosis says so rather than blanking.
-    expect(screen.getByText(/Nothing's drifting/)).toBeInTheDocument();
+    // With no issue found, the health line still renders.
+    expect(screen.getByText(/No issues found in/)).toBeInTheDocument();
   });
 });
 

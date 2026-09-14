@@ -83,26 +83,26 @@ describe("prose helpers", () => {
   });
 
   it("capitalises only the first character", () => {
-    expect(capFirst("colour holds steady")).toBe("Colour holds steady");
+    expect(capFirst("colour has no issues")).toBe("Colour has no issues");
     expect(capFirst("")).toBe("");
     expect(capFirst("ΔE is fine")).toBe("ΔE is fine");
   });
 });
 
 describe("healthLine", () => {
-  it("says nothing is drifting when every category holds", () => {
+  it("lists every category when none has an issue", () => {
     expect(healthLine(clean())).toBe(
-      "Nothing's drifting. Colour, type, spacing, radius, shadows, and contrast all hold to a system.",
+      "No issues found in colour, type, spacing, radius, shadows, and contrast.",
     );
   });
 
-  it("leads with contrast, because it is the one finding with a consequence", () => {
+  it("leads with contrast", () => {
     const line = healthLine(clean({ contrastFailingAA: 1, colourNearDuplicates: 4 }));
     expect(line.startsWith("1 of 30 text/background pairs fail WCAG AA")).toBe(true);
     expect(line).toContain("4 of 20 colours are near-duplicates");
   });
 
-  it("names each drifting category with its counts", () => {
+  it("names each category with an issue, with its counts", () => {
     const line = healthLine(
       clean({ colourNearDuplicates: 4, typeOffScale: 6, spacingOffGrid: 12, radiusNearDuplicates: 2 }),
     );
@@ -112,8 +112,7 @@ describe("healthLine", () => {
     expect(line).toContain("2 of 4 radii nearly repeat");
   });
 
-  it("agrees the verb with how many categories hold", () => {
-    // One clean category takes "holds"; several take "hold".
+  it("ends with the categories that have no issue, when there are any", () => {
     const one = healthLine(
       clean({
         colourNearDuplicates: 1,
@@ -129,11 +128,20 @@ describe("healthLine", () => {
     );
 
     const many = healthLine(clean({ colourNearDuplicates: 1 }));
-    expect(many).toContain("hold steady.");
+    expect(many).toBe(
+      "1 of 20 colours are near-duplicates. No issues found in type, spacing, radius, shadows, and contrast.",
+    );
+  });
+
+  it("reports shadows above the card's watch count as an issue", () => {
+    expect(healthLine(clean({ shadows: 6 }))).toContain("shadows, and contrast");
+    expect(healthLine(clean({ shadows: 7 }))).toBe(
+      "7 distinct shadows, more than 6. No issues found in colour, type, spacing, radius, and contrast.",
+    );
   });
 
   it("omits a category the site does not use", () => {
-    // No radii and no shadows means neither is claimed as holding steady.
+    // No radii and no shadows means neither is listed as having no issues.
     const line = healthLine(clean({ radii: 0, shadows: 0 }));
     expect(line).not.toContain("radius");
     expect(line).not.toContain("shadows");
@@ -151,17 +159,17 @@ describe("healthLine", () => {
     expect(line).not.toContain("undefined");
   });
 
-  it("appends extended drift as its own sentence", () => {
+  it("appends the extended categories with an issue as their own sentence", () => {
     expect(healthLine(clean(), ["opacity", "blur"])).toContain(
-      "Also drifting: opacity and blur.",
+      "Also inconsistent: opacity and blur.",
     );
     expect(healthLine(clean({ colourNearDuplicates: 3 }), ["blur"])).toContain(
-      "Also drifting: blur.",
+      "Also inconsistent: blur.",
     );
   });
 
-  it("adds no trailing sentence when nothing else is drifting", () => {
-    expect(healthLine(clean())).not.toContain("Also drifting");
+  it("adds no trailing sentence when no extended category has an issue", () => {
+    expect(healthLine(clean())).not.toContain("Also inconsistent");
   });
 });
 

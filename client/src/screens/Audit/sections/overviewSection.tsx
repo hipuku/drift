@@ -57,7 +57,7 @@ export function OverviewSection({
     <>
         <div className={styles.health}>
           <Text role="label-sm" className={styles.healthKicker}>
-            Design Health
+            Health
           </Text>
           <Text role="heading-lg" as="p" className={styles.healthLine}>
             {health}
@@ -112,8 +112,9 @@ export function OverviewSection({
 /**
  * How the site authors its tokens, read from the CSSOM, so it reflects intent
  * (`rem`, `%`, `clamp()`), not the resolved px the rest of the audit shows. The
- * accessibility flag fires when font-size is authored in px (won't respect zoom).
- * The declared custom properties are the site's own tokens, listed as shipped.
+ * accessibility flag fires when font-size is mostly px, which ignores the
+ * browser's font-size setting. The declared custom properties are listed with
+ * their values.
  */
 function AuthoringSummary({ authored }: { authored: AuditAuthored }) {
   const [open, setOpen] = useState(false);
@@ -137,8 +138,8 @@ function AuthoringSummary({ authored }: { authored: AuditAuthored }) {
       )}
       {authored.typeInPx && (
         <Callout variant="warning">
-          Font size is authored in <strong>px</strong>, it won&rsquo;t scale with the reader&rsquo;s
-          browser font size or zoom. Prefer <strong>rem</strong>.
+          Font size is mostly authored in <strong>px</strong>, so text ignores the reader&rsquo;s
+          browser font-size setting. Sizes in <strong>rem</strong> follow it.
         </Callout>
       )}
       {props.length > 0 && (
@@ -150,8 +151,8 @@ function AuthoringSummary({ authored }: { authored: AuditAuthored }) {
             onClick={() => setOpen((o) => !o)}
           >
             <span>
-              Declares <strong>{props.length}</strong> CSS custom{" "}
-              {plural(props.length, "property", "properties")}, the site&rsquo;s own tokens
+              <strong>{props.length}</strong> CSS custom{" "}
+              {plural(props.length, "property", "properties")} declared
             </span>
             <FontAwesomeIcon
               icon={open ? faChevronUp : faChevronDown}

@@ -17,7 +17,7 @@ Live at [drift.hipuku.dev](https://drift.hipuku.dev), replaying a captured audit
   `getComputedStyle` returns resolved pixels.
 - **Health line.** One sentence per audit. For the demo capture: *7 of 29 colours are
   near-duplicates, 6 of 9 type sizes fall off the scale, and 14 of 21 spacing values miss the
-  4px grid. Radius, shadows, and contrast hold steady.*
+  4px grid. No issues found in radius, shadows, and contrast.*
 - **Stated references.** Type is measured against a named modular ratio, spacing against a 4px
   or 8px grid, colour against CIEDE2000 ΔE and contrast against WCAG 2.1. The ratio and the grid
   can be changed on their tabs. The Overview stays on the automatic fit.

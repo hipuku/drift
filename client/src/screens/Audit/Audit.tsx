@@ -36,6 +36,7 @@ import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../
 import {
   INDISTINGUISHABLE_DELTA_E,
   RADIUS_NEAR_DUPLICATE_PX,
+  SHADOW_WATCH_COUNT,
   cardId,
   tabId,
   tabPanelId,
@@ -220,7 +221,7 @@ export function Audit({ audit, onBack }: Props) {
       chips: [
         `${s.colourFamilies} ${plural(s.colourFamilies, "family", "families")}`,
         s.colourNearDuplicates > 0
-          ? `${s.colourNearDuplicates} indistinguishable`
+          ? `${s.colourNearDuplicates} near-${plural(s.colourNearDuplicates, "duplicate")}`
           : "no near-duplicates",
       ],
     },
@@ -271,7 +272,7 @@ export function Audit({ audit, onBack }: Props) {
     {
       label: "Shadows",
       n: s.shadows,
-      verdict: s.shadows > 6 ? "watch" : "good",
+      verdict: s.shadows > SHADOW_WATCH_COUNT ? "watch" : "good",
       chips: [s.shadows === 0 ? "none in use" : `${s.shadows} ${plural(s.shadows, "value")}`],
     },
   ];
@@ -346,7 +347,7 @@ export function Audit({ audit, onBack }: Props) {
         id: "colour-near-duplicates",
         category: "colour",
         severity: redundancyVerdict(s.colourNearDuplicates),
-        title: `${s.colourNearDuplicates} of ${s.distinctColours} colours are indistinguishable from another`,
+        title: `${s.colourNearDuplicates} of ${s.distinctColours} colours are near-duplicates`,
         count: s.colourNearDuplicates,
         of: s.distinctColours,
         evidence: audit.colourFamilies
@@ -393,7 +394,6 @@ export function Audit({ audit, onBack }: Props) {
     }
 
     const payload = {
-      $schema: "https://drift.hipuku.dev/schema/audit-v1.json",
       tool: "drift",
       version: 1,
       site: { url: audit.rootUrl, host, pages: s.pages },
@@ -483,7 +483,7 @@ export function Audit({ audit, onBack }: Props) {
               {hostOf(audit.rootUrl)}
             </Text>
             <Text role="body-lg" as="p" className={styles.intro}>
-              Everything in use across {s.pages} {plural(s.pages, "page")}, exactly as shipped.
+              Values in use across {s.pages} {plural(s.pages, "page")}.
             </Text>
           </div>
           <div className={styles.actions}>

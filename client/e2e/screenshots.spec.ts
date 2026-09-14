@@ -63,7 +63,7 @@ test("captures every panel of the report", async ({ page }) => {
   await page.getByLabel("URL").fill("picocss.com");
   await page.getByRole("button", { name: "Find pages" }).click();
   await page.getByRole("button", { name: /^Run audit/ }).click();
-  await expect(page.getByText("Design Health")).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText("Health", { exact: true })).toBeVisible({ timeout: 30_000 });
 
   /* What the demo actually renders, which is not the whole list.
      picocss.com ships no backdrop-filter, so the fixture produces no blur tab

@@ -5,9 +5,8 @@
  *                    │          │
  *                    └──────────┴───────────────────────────────────────→ error
  *
- * Crawl completion (WebSocket + poll) triggers the audit fetch. The audit is
- * the destination, the honest "what the site actually ships", closed by the
- * token export.
+ * Crawl completion (WebSocket and poll) triggers the audit fetch. The audit
+ * screen is the last step, and the export starts from it.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -75,7 +74,7 @@ export function AuditFlow() {
         setAudit(await getAudit(id));
         go("audit");
       } catch (err) {
-        fail(err instanceof Error ? err.message : "Could not read the design system.");
+        fail(err instanceof Error ? err.message : "Could not load the audit.");
       }
     },
     [fail, go],
@@ -134,8 +133,8 @@ export function AuditFlow() {
     case "loading":
       return (
         <Thinking
-          title="Reading the design system"
-          detail="Aggregating every colour, size, and spacing value in use across the crawled pages."
+          title="Building the audit"
+          detail="Grouping the colour, type, spacing and other values from the crawled pages."
         />
       );
     case "audit":

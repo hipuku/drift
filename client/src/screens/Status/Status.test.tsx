@@ -7,12 +7,12 @@ import { axe } from "vitest-axe";
 
 describe("Thinking", () => {
   it("renders the title as the page heading, with its detail", () => {
-    render(<Thinking title="Reading the design system" detail="Aggregating every colour." />);
+    render(<Thinking title="Building the audit" detail="Grouping every colour." />);
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "Reading the design system" }),
+      screen.getByRole("heading", { level: 1, name: "Building the audit" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Aggregating every colour.")).toBeInTheDocument();
+    expect(screen.getByText("Grouping every colour.")).toBeInTheDocument();
   });
 
   it("hides the spinner from assistive technology", () => {
@@ -50,7 +50,7 @@ describe("Failed", () => {
  */
 describe("accessibility", () => {
   it("Thinking has no violations", async () => {
-    const { container } = render(<Thinking title="Working" detail="Aggregating every colour." />);
+    const { container } = render(<Thinking title="Working" detail="Grouping every colour." />);
     expect((await axe(container)).violations).toEqual([]);
   });
 
