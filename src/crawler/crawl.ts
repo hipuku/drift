@@ -54,6 +54,19 @@ function canonical(url: string): string | null {
   return null;
 }
 
+/**
+ * Whether `url` is on `origin`. Compared as parsed origins: a string prefix
+ * check accepts `https://picocss.com.example.net` and `https://picocss.com:8443`
+ * for the origin `https://picocss.com`.
+ */
+export function isSameOrigin(url: string, origin: string): boolean {
+  try {
+    return new URL(url).origin === origin;
+  } catch {
+    return false;
+  }
+}
+
 interface Visit {
   extraction: PageExtraction;
   hrefs: string[];
@@ -104,7 +117,7 @@ export async function crawl(rootUrl: string, options: CrawlOptions): Promise<Cra
     ...new Set(
       (options.pages ?? [])
         .map((u) => canonical(u))
-        .filter((u): u is string => u !== null && u.startsWith(origin)),
+        .filter((u): u is string => u !== null && isSameOrigin(u, origin)),
     ),
   ].slice(0, maxPages);
 
@@ -142,7 +155,7 @@ export async function crawl(rootUrl: string, options: CrawlOptions): Promise<Cra
         if (pages.length < maxPages) {
           for (const href of v.hrefs) {
             const c = canonical(href);
-            if (c && c.startsWith(origin) && !visited.has(c) && !queue.includes(c)) {
+            if (c && isSameOrigin(c, origin) && !visited.has(c) && !queue.includes(c)) {
               queue.push(c);
             }
           }
