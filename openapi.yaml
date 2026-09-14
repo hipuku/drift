@@ -3,15 +3,15 @@ info:
   title: Drift API
   version: 0.1.0
   description: >
-    Drift crawls a live website and reports the design system it actually ships.
-    A crawl runs for minutes as a BullMQ job on Redis, so the flow is: enqueue a
-    crawl, then either poll the result endpoint or pass a `callbackUrl` webhook.
-    Live progress is also streamed over a WebSocket at the server root (not
-    modelled here. Connect and receive JSON progress frames with `pagesCrawled`,
-    `maxPages`, `lastUrl`, `lastTitle`, `elementsTotal`; the `/crawl/{jobId}/result`
-    endpoint is the authority on completion).
+    Drift crawls a website and reports the design values it uses. A crawl runs
+    for minutes as a BullMQ job on Redis: enqueue it, then poll the result
+    endpoint or pass a `callbackUrl`. Progress is also sent over a WebSocket on
+    any path, not modelled here: send `{ "type": "subscribe", "jobId": "…" }`
+    and receive progress frames with `pagesCrawled`, `maxPages`, `lastUrl`,
+    `lastTitle`, `lastElements` and `elementsTotal`. Completion comes from
+    `/crawl/{jobId}/result`.
 
-    No API key, no per-run cost, no model: every response is computed.
+    Every response is computed. The API needs no key and calls no model.
   license:
     name: MIT
     url: https://github.com/hipuku/drift/blob/main/LICENSE
@@ -287,7 +287,7 @@ components:
         pages: { type: integer }
         distinctColours: { type: integer }
         colourFamilies: { type: integer }
-        colourNearDuplicates: { type: integer, description: Colours within ~2 ΔE of another (genuine redundancy). }
+        colourNearDuplicates: { type: integer, description: Colours less than ΔE 2 from another colour on the site. }
         fontFamilies: { type: integer }
         typeSizes: { type: integer }
         fontWeights: { type: integer }
