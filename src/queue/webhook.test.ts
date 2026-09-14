@@ -17,6 +17,11 @@ vi.mock("node:dns/promises", () => ({
       "192.168.1.10": [{ address: "192.168.1.10", family: 4 }],
       "172.16.0.5": [{ address: "172.16.0.5", family: 4 }],
       "169.254.169.254": [{ address: "169.254.169.254", family: 4 }],
+      "100.64.0.1": [{ address: "100.64.0.1", family: 4 }],
+      "::1": [{ address: "::1", family: 6 }],
+      "mapped-dotted.test": [{ address: "::ffff:127.0.0.1", family: 6 }],
+      "mapped-hex.test": [{ address: "::ffff:a00:1", family: 6 }],
+      "public-v6.test": [{ address: "2606:2800:220:1::1", family: 6 }],
     };
     const hit = table[hostname.toLowerCase()];
     if (!hit) throw Object.assign(new Error("ENOTFOUND"), { code: "ENOTFOUND" });
@@ -55,6 +60,27 @@ describe("assertDeliverable", () => {
     for (const host of ["10.0.0.1", "192.168.1.10", "172.16.0.5"]) {
       await expect(assertDeliverable(`http://${host}/hook`)).rejects.toThrow(/private or loopback/);
     }
+  });
+
+  it("rejects carrier-grade NAT", async () => {
+    await expect(assertDeliverable("http://100.64.0.1/hook")).rejects.toThrow(/private or loopback/);
+  });
+
+  it("rejects an IPv6 loopback literal", async () => {
+    await expect(assertDeliverable("http://[::1]:3001/hook")).rejects.toThrow(/private or loopback/);
+  });
+
+  it("rejects an IPv4-mapped IPv6 address as the IPv4 address it carries", async () => {
+    await expect(assertDeliverable("http://mapped-dotted.test/hook")).rejects.toThrow(
+      /private or loopback/,
+    );
+    await expect(assertDeliverable("http://mapped-hex.test/hook")).rejects.toThrow(
+      /private or loopback/,
+    );
+  });
+
+  it("accepts a public IPv6 address", async () => {
+    await expect(assertDeliverable("https://public-v6.test/hook")).resolves.toBeInstanceOf(URL);
   });
 
   it("rejects the cloud metadata address", async () => {

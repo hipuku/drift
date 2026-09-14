@@ -30,20 +30,41 @@ export type WebhookEvent =
   | { event: "crawl.completed"; jobId: string; site: string; audit: SiteAudit }
   | { event: "crawl.failed"; jobId: string; site: string; error: string };
 
-/** Private, loopback, link-local and unique-local ranges, never deliverable. */
+/**
+ * Addresses a callback must not reach: unspecified, loopback, private,
+ * carrier-grade NAT (100.64/10), link-local, unique-local and multicast. An
+ * IPv4-mapped IPv6 address (`::ffff:127.0.0.1`, `::ffff:7f00:1`) is checked as
+ * the IPv4 address it carries.
+ */
 function isPrivateAddress(address: string, family: number): boolean {
   if (family === 6) {
     const v6 = address.toLowerCase();
-    return v6 === "::1" || v6.startsWith("fc") || v6.startsWith("fd") || v6.startsWith("fe80");
+    const dotted = /^::ffff:(\d+\.\d+\.\d+\.\d+)$/.exec(v6);
+    if (dotted) return isPrivateAddress(dotted[1]!, 4);
+    const hex = /^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/.exec(v6);
+    if (hex) {
+      const high = Number.parseInt(hex[1]!, 16);
+      const low = Number.parseInt(hex[2]!, 16);
+      return isPrivateAddress(`${high >> 8}.${high & 255}.${low >> 8}.${low & 255}`, 4);
+    }
+    return (
+      v6 === "::" ||
+      v6 === "::1" ||
+      /^f[cd]/.test(v6) ||
+      /^fe[89ab]/.test(v6) ||
+      v6.startsWith("ff")
+    );
   }
   const [a = 0, b = 0] = address.split(".").map(Number);
   return (
     a === 0 ||
     a === 10 ||
+    (a === 100 && b >= 64 && b <= 127) ||
     a === 127 ||
     (a === 169 && b === 254) ||
     (a === 172 && b >= 16 && b <= 31) ||
-    (a === 192 && b === 168)
+    (a === 192 && b === 168) ||
+    a >= 224
   );
 }
 
@@ -78,7 +99,9 @@ export async function assertDeliverable(raw: string): Promise<URL> {
   if (url.protocol !== "http:" && url.protocol !== "https:") {
     throw new Error("callbackUrl must be http or https.");
   }
-  const resolved = await lookup(url.hostname, { all: true }).catch(() => []);
+  // URL keeps the brackets on an IPv6 literal, and the resolver does not accept them.
+  const host = url.hostname.replace(/^\[|\]$/g, "");
+  const resolved = await lookup(host, { all: true }).catch(() => []);
   if (resolved.length === 0) {
     throw new Error("callbackUrl host could not be resolved.");
   }
