@@ -1,9 +1,7 @@
 /**
- * Type-scale proposal math: the client-side mirror of src/analysis/typeScale.ts.
- *
- * Lives here so the Apply interaction (pick a ratio, re-render the ladder) is
- * instant with no round-trip. Pure arithmetic. Keep in sync with the
- * backend module if the canonical ratios or formatters change.
+ * The client copy of src/analysis/typeScale.ts, so the Type tab can redraw the
+ * ruler for a selected ratio without a request. `typeScale.test.ts` asserts that
+ * `detectClosestRatio` agrees with the server's copy.
  */
 
 export interface NamedRatio {
@@ -139,38 +137,4 @@ export function classifyAgainstScale(
     }
     return { px, onScale: bestDiff <= tolerancePx, nearestPx: nearest };
   });
-}
-
-// ── Exports ──────────────────────────────────────────────────────────────────
-
-export type ExportFormat = "css" | "tailwind" | "dtcg";
-
-export function toCssVariables(scale: ScaleStep[]): string {
-  const lines = scale
-    .slice()
-    .reverse()
-    .map((s) => `  --text-${s.name}: ${s.rem}rem;`);
-  return `:root {\n${lines.join("\n")}\n}`;
-}
-
-export function toTailwind(scale: ScaleStep[]): string {
-  const entries = scale
-    .slice()
-    .reverse()
-    .map((s) => `      "${s.name}": "${s.rem}rem"`);
-  return `export default {\n  theme: {\n    fontSize: {\n${entries.join(",\n")},\n    },\n  },\n};`;
-}
-
-export function toDtcg(scale: ScaleStep[]): string {
-  const tokens: Record<string, { $type: string; $value: string }> = {};
-  for (const s of scale.slice().reverse()) {
-    tokens[s.name] = { $type: "dimension", $value: `${s.rem}rem` };
-  }
-  return JSON.stringify({ fontSize: tokens }, null, 2);
-}
-
-export function exportScale(scale: ScaleStep[], format: ExportFormat): string {
-  if (format === "tailwind") return toTailwind(scale);
-  if (format === "dtcg") return toDtcg(scale);
-  return toCssVariables(scale);
 }

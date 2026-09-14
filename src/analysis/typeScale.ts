@@ -1,12 +1,8 @@
 /**
- * Type-scale proposals: the deterministic Layer-2 generator for type.
+ * Modular type scales: size = base · ratio^n.
  *
- * Given a base size (from the typography inventory), project it onto canonical
- * modular scales: size = base · ratio^n. The site's own sizes are the seed, so we
- * generate just enough steps to cover the range actually in use, detect which
- * named ratio the current sizes are *closest* to, and flag which current sizes
- * fall off a chosen scale. All arithmetic; no model. Export formatters render the
- * chosen scale to CSS / DTCG / Tailwind.
+ * Builds enough steps from a base size to cover the sizes in use, finds the
+ * named ratio that fits them best, and marks the sizes that fall off a scale.
  */
 
 export interface NamedRatio {
@@ -143,33 +139,4 @@ export function classifyAgainstScale(
     }
     return { px, onScale: bestDiff <= tolerancePx, nearestPx: nearest };
   });
-}
-
-// ── Exports ──────────────────────────────────────────────────────────────────
-
-/** CSS custom properties: `--text-<name>: <rem>rem;` */
-export function toCssVariables(scale: ScaleStep[]): string {
-  const lines = scale
-    .slice()
-    .reverse() // largest first reads better in a stylesheet
-    .map((s) => `  --text-${s.name}: ${s.rem}rem;`);
-  return `:root {\n${lines.join("\n")}\n}`;
-}
-
-/** Tailwind v4 `fontSize` config fragment. */
-export function toTailwind(scale: ScaleStep[]): string {
-  const entries = scale
-    .slice()
-    .reverse()
-    .map((s) => `      "${s.name}": "${s.rem}rem"`);
-  return `export default {\n  theme: {\n    fontSize: {\n${entries.join(",\n")},\n    },\n  },\n};`;
-}
-
-/** W3C Design Tokens (DTCG) dimension tokens. */
-export function toDtcg(scale: ScaleStep[]): string {
-  const tokens: Record<string, { $type: string; $value: string }> = {};
-  for (const s of scale.slice().reverse()) {
-    tokens[s.name] = { $type: "dimension", $value: `${s.rem}rem` };
-  }
-  return JSON.stringify({ fontSize: tokens }, null, 2);
 }

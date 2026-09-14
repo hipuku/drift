@@ -4,9 +4,6 @@ import {
   classifyAgainstScale,
   detectClosestRatio,
   nameForStep,
-  toCssVariables,
-  toDtcg,
-  toTailwind,
 } from "./typeScale.js";
 
 describe("type scale", () => {
@@ -53,12 +50,5 @@ describe("type scale", () => {
     expect(byPx.get(25)?.onScale).toBe(true);
     expect(byPx.get(15)?.onScale).toBe(false); // off-scale (nearest is 16)
     expect(byPx.get(15)?.nearestPx).toBe(16);
-  });
-
-  it("exports the scale to CSS, Tailwind, and DTCG", () => {
-    const scale = buildScaleToCover(16, 1.25, 16, 25);
-    expect(toCssVariables(scale)).toContain("--text-base: 1rem;");
-    expect(toTailwind(scale)).toContain('"base": "1rem"');
-    expect(JSON.parse(toDtcg(scale)).fontSize.base).toEqual({ $type: "dimension", $value: "1rem" });
   });
 });

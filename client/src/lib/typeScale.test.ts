@@ -5,11 +5,7 @@ import {
   buildScaleToCover,
   classifyAgainstScale,
   detectClosestRatio,
-  exportScale,
   nameForStep,
-  toCssVariables,
-  toDtcg,
-  toTailwind,
   type ScaleStep,
 } from "./typeScale";
 import { detectClosestRatio as serverDetectClosestRatio } from "../../../src/analysis/typeScale";
@@ -163,45 +159,5 @@ describe("classifyAgainstScale", () => {
     expect(classifyAgainstScale([18], [])).toEqual([
       { px: 18, onScale: true, nearestPx: 18 },
     ]);
-  });
-});
-
-describe("exports", () => {
-  it("emits CSS custom properties largest first", () => {
-    const css = toCssVariables(buildScaleToCover(16, 1.25, 16, 25));
-    expect(css).toBe(
-      [":root {", "  --text-xl: 1.563rem;", "  --text-lg: 1.25rem;", "  --text-base: 1rem;", "}"].join("\n"),
-    );
-  });
-
-  it("emits a Tailwind fontSize theme largest first", () => {
-    const tw = toTailwind(buildScaleToCover(16, 1.25, 16, 20));
-    expect(tw).toContain('"lg": "1.25rem"');
-    expect(tw).toContain('"base": "1rem"');
-    expect(tw.indexOf('"lg"')).toBeLessThan(tw.indexOf('"base"'));
-  });
-
-  it("emits DTCG tokens with a dimension type", () => {
-    const parsed = JSON.parse(toDtcg(buildScaleToCover(16, 1.25, 16, 20)));
-    expect(parsed.fontSize.base).toEqual({ $type: "dimension", $value: "1rem" });
-    expect(parsed.fontSize.lg).toEqual({ $type: "dimension", $value: "1.25rem" });
-  });
-
-  it("does not mutate the scale it is handed", () => {
-    // Every exporter reverses. Reversing in place would leave the ladder
-    // upside down for whichever exporter ran second.
-    const steps = scale();
-    const before = steps.map((s) => s.step);
-    toCssVariables(steps);
-    toTailwind(steps);
-    toDtcg(steps);
-    expect(steps.map((s) => s.step)).toEqual(before);
-  });
-
-  it("dispatches on format, defaulting to CSS", () => {
-    const steps = buildScaleToCover(16, 1.25, 16, 20);
-    expect(exportScale(steps, "css")).toBe(toCssVariables(steps));
-    expect(exportScale(steps, "tailwind")).toBe(toTailwind(steps));
-    expect(exportScale(steps, "dtcg")).toBe(toDtcg(steps));
   });
 });
