@@ -468,14 +468,14 @@ A crawl of a content site ran the backend out of memory, and BullMQ re-ran the j
 restart, which crashed it again. One animation-heavy page with tens of thousands of nodes was enough,
 because the pipeline keeps every element of every page until the audit.
 
-Shipped: a per-page limit of 12,000 elements (added to drift's extractor on 2026-07-19, now the
+Shipped: a per-page limit of 12,000 elements (added to drift's extractor on 2026-08-16, now the
 `maxElements` default in `haus-style-probe`), the page cap cut from 40 to 10, and no retries in the
 queue (`attempts: 1`, `maxStalledCount: 0`). Not built: incremental aggregation, which would fold
 each page into tallies and drop its elements. Until then the two limits bound memory at about
 120,000 retained elements per crawl.
 
 *Corrected 2026-09-14: this section said twice that the element limit did not exist. It has existed
-since 2026-07-19; the check searched drift and not the package the extractor had moved to.*
+since 2026-08-16; the check searched drift and not the package the extractor had moved to.*
 
 ### The reference is selectable, and the automatic fit is shared
 
