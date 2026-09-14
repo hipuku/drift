@@ -22,21 +22,21 @@ export interface AppDeps {
   discover: (url: string) => Promise<DiscoverResult>;
 }
 
-// Turn raw crawler/Playwright failures into a calm, user-facing message.
-// never leak "page.goto: net::ERR_… Call log:" to the client.
+// Map a crawler or Playwright failure to a message for the client, so the
+// client never shows "page.goto: net::ERR_… Call log:".
 function friendlyDiscoverError(err: unknown): string {
   const m = err instanceof Error ? err.message : String(err);
   if (/ERR_NAME_NOT_RESOLVED|ENOTFOUND|getaddrinfo/i.test(m))
-    return "We couldn’t find that site. Check the URL for typos.";
+    return "That site’s address could not be found. Check the URL for typos.";
   if (/timeout|ERR_TIMED_OUT|timed out/i.test(m))
     return "That site took too long to respond. Try again in a moment.";
   if (/ERR_CONNECTION|ECONNREFUSED|ECONNRESET/i.test(m))
-    return "We couldn’t connect to that site.";
+    return "Could not connect to that site.";
   if (/ERR_CERT|ERR_SSL|certificate/i.test(m))
-    return "That site has a security-certificate problem we couldn’t get past.";
+    return "That site’s security certificate could not be verified.";
   if (/Invalid or unsupported URL/i.test(m))
     return "That doesn’t look like a valid web address.";
-  return "We couldn’t read that site. Check the URL and try again.";
+  return "That site could not be read. Check the URL and try again.";
 }
 
 /**
@@ -166,7 +166,7 @@ export function createApp(deps: AppDeps): Express {
     }),
   );
 
-  // Any uncaught handler rejection becomes a calm 500.
+  // Any uncaught handler rejection becomes a 500 with the error message.
   app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
     const message = err instanceof Error ? err.message : "internal error";
     res.status(500).json({ error: message });
