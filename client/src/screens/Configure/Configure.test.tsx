@@ -301,7 +301,6 @@ describe("demo mode", () => {
     const { Configure: Demo } = await import("./Configure");
     discover.mockResolvedValue(discovery(count) as never);
     render(<Demo onSubmit={vi.fn()} />);
-    await userEvent.type(screen.getByLabelText("URL"), "x.test");
     await userEvent.click(screen.getByRole("button", { name: "Find pages" }));
     await screen.findByRole("group", { name: "Pages to audit" });
   }
@@ -321,6 +320,23 @@ describe("demo mode", () => {
 
     expect(screen.getByRole("button", { name: "Clear" })).toBeDisabled();
     expect(screen.getByRole("button", { name: /Select all/ })).toBeDisabled();
+  });
+
+  it("fixes the URL to the captured site, and says why", async () => {
+    const { Configure: Demo } = await import("./Configure");
+    render(<Demo onSubmit={vi.fn()} />);
+    const field = screen.getByLabelText("URL");
+    expect(field).toHaveValue("picocss.com");
+
+    await userEvent.type(field, "example.com");
+    expect(field).toHaveValue("picocss.com");
+
+    // The note is the field's description, so a screen reader hears the reason.
+    expect(field).toHaveAccessibleDescription(/replays an audit of picocss\.com/);
+    expect(screen.getByRole("link", { name: "run Drift locally" })).toHaveAttribute(
+      "href",
+      "https://github.com/hipuku/drift#install",
+    );
   });
 
   it("says why the picker is fixed", async () => {

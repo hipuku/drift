@@ -26,6 +26,13 @@
   color: var(--drift-color-ink-tertiary);
 }
 
+/* Read-only reads as fixed rather than broken: the sunken surface the demo
+   note uses, so the two sit together as one statement. */
+.input:read-only {
+  background: var(--drift-color-surface-sunken);
+  color: var(--drift-color-ink-secondary);
+}
+
 .input:focus-visible {
   outline: none;
   border-color: var(--drift-color-border-focus);

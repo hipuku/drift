@@ -121,7 +121,6 @@ async function settle(page: import("@playwright/test").Page): Promise<void> {
 
 async function reachTheReport(page: import("@playwright/test").Page): Promise<void> {
   await page.goto("/");
-  await page.getByLabel("URL").fill("picocss.com");
   await page.getByRole("button", { name: "Find pages" }).click();
   await page.getByRole("button", { name: /^Run audit/ }).click();
   await expect(page.getByText("Health", { exact: true })).toBeVisible({ timeout: 30_000 });

@@ -44,7 +44,10 @@ function Check() {
 export function Configure({ onSubmit }: ConfigureProps = {}) {
   const { status, error, pages, rootUrl: resolvedUrl, host: resolvedHost, discover: runDiscovery, addPage: addDiscoveredPage, reset } =
     useDiscovery();
-  const [url, setUrl] = useState("");
+  // The demo can only replay the one site it captured, so the field starts on
+  // that site and is read-only. A field that took any URL and answered with
+  // picocss.com would be the same defect the locked picker below fixed.
+  const [url, setUrl] = useState(DEMO_MODE ? DEMO_SITE : "");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showAll, setShowAll] = useState(false);
   const [query, setQuery] = useState("");
@@ -160,11 +163,12 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
               Audit a site
             </Text>
             {DEMO_MODE && (
-              <div className={styles.demoNote}>
+              <div id="demo-note" className={styles.demoNote}>
                 <strong>Demo.</strong> This build replays an audit of{" "}
                 <strong>{DEMO_SITE}</strong> captured in {DEMO_CAPTURED}. It does not run
                 the crawler, which needs a headless browser and a job queue. To audit
-                another site, run Drift locally.
+                another site,{" "}
+                <a href="https://github.com/hipuku/drift#install">run Drift locally</a>.
               </div>
             )}
             <Text role="body" as="p" className={styles.intro}>
@@ -189,6 +193,8 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
                 placeholder="picocss.com"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
+                readOnly={DEMO_MODE}
+                aria-describedby={DEMO_MODE ? "demo-note" : undefined}
               />
               {/* The label gives the reason the button is disabled. At 40% opacity alone
                   the primary action looked broken. WCAG exempts inactive controls, so
