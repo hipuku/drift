@@ -25,7 +25,7 @@ export const DEMO_SITE = discoveryFixture.host;
  * A hand-written date here would go stale silently on the next recapture.
  */
 export const DEMO_CAPTURED = new Date(`${auditFixture.capturedAt}T00:00:00Z`).toLocaleDateString(
-  "en-GB",
+  "en-AU",
   { month: "long", year: "numeric", timeZone: "UTC" },
 );
 
