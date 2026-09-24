@@ -1,23 +1,93 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Drift: design-system auditor</title>
-    <meta name="description" content="Drift crawls a website and reports its colour, type, spacing and other design values, grouped, counted and measured against stated references. The live demo replays a captured audit of picocss.com." />
-    <!-- Link previews read the static HTML without running scripts, so the image URL is absolute. -->
+    <meta name="description" content="Drift crawls a website and reports the colour, type and spacing it actually ships, grouped and measured. The live demo replays an audit of picocss.com." />
+    <link rel="canonical" href="https://drift.hipuku.dev/" />
+    <!-- Link previews read the static HTML without running scripts, so every URL is absolute. -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://drift.hipuku.dev/" />
+    <meta property="og:site_name" content="Drift" />
     <meta property="og:title" content="Drift: design-system auditor" />
-    <meta property="og:description" content="Drift crawls a website and reports its colour, type, spacing and other design values, grouped, counted and measured against stated references. The live demo replays a captured audit of picocss.com." />
+    <meta property="og:description" content="Drift crawls a website and reports the colour, type and spacing it actually ships, grouped and measured. The live demo replays an audit of picocss.com." />
+    <meta property="og:locale" content="en_GB" />
     <meta property="og:image" content="https://drift.hipuku.dev/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Drift, a design-system auditor" />
     <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://drift.hipuku.dev/#website",
+            "name": "Drift",
+            "url": "https://drift.hipuku.dev/",
+            "inLanguage": "en-GB",
+            "publisher": {
+              "@id": "https://hipuku.dev/#person"
+            }
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://drift.hipuku.dev/#app",
+            "name": "Drift",
+            "url": "https://drift.hipuku.dev/",
+            "description": "Drift crawls a website and reports the colour, type and spacing it actually ships, grouped and measured. The live demo replays an audit of picocss.com.",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires JavaScript. Designed for desktop browsers.",
+            "isAccessibleForFree": true,
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "inLanguage": "en-GB",
+            "license": "https://opensource.org/licenses/MIT",
+            "author": {
+              "@type": "Person",
+              "@id": "https://hipuku.dev/#person",
+              "name": "hipuku",
+              "url": "https://hipuku.dev"
+            },
+            "publisher": {
+              "@id": "https://hipuku.dev/#person"
+            },
+            "image": "https://drift.hipuku.dev/og.png",
+            "isBasedOn": {
+              "@id": "https://github.com/hipuku/drift"
+            }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "@id": "https://github.com/hipuku/drift",
+            "name": "drift",
+            "codeRepository": "https://github.com/hipuku/drift",
+            "programmingLanguage": "TypeScript",
+            "license": "https://opensource.org/licenses/MIT",
+            "author": {
+              "@id": "https://hipuku.dev/#person"
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <main>
+        <h1>Drift: design-system auditor</h1>
+        <p>Drift crawls a website and reports the colour, type, spacing and other design values it actually ships, grouped, counted and measured against stated references.</p>
+        <p>This live demo replays a captured audit of picocss.com and needs JavaScript. To audit another site, <a href="https://github.com/hipuku/drift#install">run Drift locally</a>. By <a href="https://hipuku.dev">hipuku</a>.</p>
+      </main>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,0 +1,7 @@
+# The pages.dev address serves the same build as the custom domain. Kept out of
+# search so the custom domain is the only copy indexed.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex
