@@ -6,9 +6,9 @@
  * of verdict cards tinted by severity. The colour is the finding, and each
  * card is a link into the tab that evidences it.
  *
- * The verdicts are built by the screen rather than here, because the export
- * ships the same list: one place decides what the verdicts are, and this
- * decides how they read.
+ * The verdicts are built in `diagnosis.ts` rather than here, because the
+ * export and the landing page ship the same list: one place decides what the
+ * verdicts are, and this decides how they read.
  */
 
 import { faChevronDown, faChevronUp, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
@@ -23,20 +23,13 @@ import {
   colourish,
   plural,
   unitLabel,
-  type Verdict,
 } from "../auditModel.js";
 /* Two stylesheets, because this section reads from two. Its own classes live
    beside it; the ones below are the audit screen's, shared with other parts
    of the report, and stay there. */
 import shared from "../Audit.module.css";
 import styles from "./overview.module.css";
-
-export interface VerdictCard {
-  label: string;
-  n: number;
-  chips: string[];
-  verdict: Verdict;
-}
+import type { VerdictCard } from "../diagnosis.js";
 
 export function OverviewSection({
   health,
