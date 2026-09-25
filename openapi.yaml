@@ -305,6 +305,12 @@ components:
       properties:
         foreground: { type: string }
         background: { type: string }
+        resolvedForeground:
+          type: string
+          description: The opaque foreground the ratio was measured with. Present only when compositing changed a colour.
+        resolvedBackground:
+          type: string
+          description: The opaque background the ratio was measured against. Present only when compositing changed a colour.
         ratio: { type: number }
         passAA: { type: boolean }
         passAAA: { type: boolean }
