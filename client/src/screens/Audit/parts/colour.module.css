@@ -305,7 +305,7 @@
 }
 
 .elementRole {
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-sm-size);
   color: var(--drift-color-ink-tertiary);
 }
@@ -340,7 +340,7 @@
 .roleName {
   width: 5.5rem;
   flex-shrink: 0;
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-sm-size);
   color: var(--drift-color-ink-secondary);
 }

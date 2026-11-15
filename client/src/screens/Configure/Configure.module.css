@@ -63,7 +63,7 @@
   background: none;
   border: none;
   padding: 0;
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-size);
   color: var(--drift-color-ink-tertiary);
   cursor: pointer;
@@ -78,7 +78,7 @@
   width: 100%;
   margin-top: var(--drift-space-stack-lg);
   padding: var(--drift-space-inset-sm) var(--drift-space-inset-md);
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-body-size);
   color: var(--drift-color-ink-primary);
   background: var(--drift-color-surface-subtle);
@@ -117,7 +117,7 @@
   flex: 1;
   min-width: 0;
   padding: var(--drift-space-inset-sm) var(--drift-space-inset-md);
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-body-size);
   color: var(--drift-color-ink-primary);
   background: var(--drift-color-surface-subtle);
@@ -136,7 +136,7 @@
   background: none;
   border: none;
   padding: 0;
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-sm-size);
   font-weight: var(--drift-type-label-sm-weight);
   color: var(--drift-color-ink-link);
@@ -243,7 +243,7 @@
   padding: var(--drift-space-inset-xs);
   background: none;
   border: none;
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-body-sm-size);
   /* body-sm's own weight is regular. This is the role's size at a heavier
      weight, which is the scale having no step for what the element wants
@@ -291,7 +291,7 @@
   border-radius: var(--drift-radius-surface);
   background: var(--drift-color-surface-sunken);
   color: var(--drift-color-ink-secondary);
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-body-size);
   line-height: var(--drift-type-body-leading);
 }

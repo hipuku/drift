@@ -1,12 +1,12 @@
 /* Type roles: each consumes the four-property role tokens together
    (size + weight + leading + tracking) and sets the family for its group:
-   display/heading → Drift's display face; body/label → house sans; mono → Fira. */
+   display/heading → the heading face; body/label → the UI face; mono → the code face. */
 
 .display,
 .headingLg,
 .heading,
 .headingSm {
-  font-family: var(--drift-type-family-display);
+  font-family: var(--drift-type-family-heading);
   margin: 0;
 }
 
@@ -16,12 +16,12 @@
 .label,
 .labelSm,
 .labelXs {
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   margin: 0;
 }
 
 .mono {
-  font-family: var(--drift-type-family-mono);
+  font-family: var(--drift-type-family-code);
   margin: 0;
   font-size: var(--drift-type-mono-size);
   font-weight: var(--drift-type-mono-weight);

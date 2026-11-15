@@ -152,7 +152,7 @@
   border: none;
   padding: 0;
   margin-bottom: var(--drift-space-stack-lg);
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-size);
   font-weight: var(--drift-type-label-weight);
   color: var(--drift-color-ink-tertiary);
@@ -192,7 +192,7 @@
   border: none;
   background: transparent;
   border-radius: var(--drift-radius-surface);
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-size);
   font-weight: var(--drift-type-label-weight);
   color: var(--drift-color-ink-secondary);
@@ -234,7 +234,7 @@
   border-bottom: var(--drift-border-width-thick) solid transparent;
   margin-bottom: -1px;
   white-space: nowrap;
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-size);
   font-weight: var(--drift-type-label-weight);
   color: var(--drift-color-ink-tertiary);
@@ -251,13 +251,11 @@
   border-bottom-color: var(--drift-color-primary-default);
 }
 
-/* The mono reads below are off-role, deliberately and drift#1 records it.
-   The only mono prose role is --drift-type-mono-*: 13px, weight 400, 1.6 leading. The
-   token tables here are 12px so a row of eighty properties fits without
-   scrolling, and adopting the role would change the size *and* the line height
-   of every table on the audit screen. That is a missing role rather than a
-   bypassed one, and inventing --drift-type-mono-sm to close a lint number would be
-   the tail wagging the dog. */
+/* The mono reads below take the data role, not the prose one (drift#1, #24).
+   --drift-type-mono-* is 13px with 1.6 leading, for a token name in a
+   sentence. The token tables here are 12px so a row of eighty properties fits
+   without scrolling, and --drift-type-data-* carries just that face and size,
+   leaving leading to the row. */
 .tabCount {
   font-family: var(--drift-type-data-family);
   font-size: var(--drift-type-data-size);
@@ -316,13 +314,12 @@
   border-radius: var(--drift-radius-pill);
   background: color-mix(in oklab, var(--drift-color-ink-primary) 8%, transparent);
   color: var(--drift-color-ink-secondary);
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-sm-size);
   /* label-sm's own leading is 1.4 and this pill wants 1.5, so the size comes
-     from the role and the leading does not. Recorded in TYPE_TIER_DEBT rather
-     than hidden: drift#25 is the question of whether the scale should carry
-     this pair. */
-  line-height: var(--drift-type-leading-150);
+     from label-sm and the leading from body. drift#25 is the question of
+     whether the scale should carry this pair. */
+  line-height: var(--drift-type-body-leading);
   white-space: nowrap;
 }
 .authoredNote {
@@ -392,7 +389,7 @@
 }
 .table th {
   text-align: left;
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-sm-size);
   font-weight: var(--drift-type-label-sm-weight);
   text-transform: uppercase;
@@ -565,7 +562,7 @@
   top: 0.6rem;
   left: 50%;
   transform: translateX(-50%);
-  font-family: var(--drift-type-family-mono);
+  font-family: var(--drift-type-data-family);
   font-size: 10px;
   color: var(--drift-color-ink-tertiary);
   white-space: nowrap;
@@ -608,7 +605,7 @@
   flex-shrink: 0;
 }
 .familyRowName {
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-body-size);
   color: var(--drift-color-ink-primary);
 }
@@ -672,7 +669,7 @@
   border-radius: var(--drift-radius-pill);
   background: transparent;
   color: var(--drift-color-ink-secondary);
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-sm-size);
   cursor: pointer;
   transition:
@@ -702,7 +699,7 @@
 /* The automatically-chosen option: "closest" ratio / "detected" grid. Named on
    the chip rather than in a separate title, so the strip is the whole story. */
 .scaleChipBest {
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-sm-size);
   color: var(--drift-color-primary-default);
 }

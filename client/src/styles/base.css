@@ -15,7 +15,7 @@ html {
 }
 
 body {
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-size-14);
   line-height: var(--drift-type-leading-140);
   letter-spacing: var(--drift-type-tracking-normal);
@@ -29,7 +29,7 @@ code,
 kbd,
 samp,
 .mono {
-  font-family: var(--drift-type-family-mono);
+  font-family: var(--drift-type-family-code);
   font-feature-settings: "liga" 0;
 }
 

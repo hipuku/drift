@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--drift-space-gap-xs);
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-size);
   font-weight: var(--drift-type-weight-strong);
   letter-spacing: var(--drift-type-label-tracking);

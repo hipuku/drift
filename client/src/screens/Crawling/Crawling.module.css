@@ -105,7 +105,7 @@
   color: var(--drift-color-ink-tertiary);
   margin-left: auto;
   flex-shrink: 0;
-  font-family: var(--drift-type-family-mono);
+  font-family: var(--drift-type-data-family);
 }
 
 @media (prefers-reduced-motion: reduce) {

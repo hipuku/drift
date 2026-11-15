@@ -60,8 +60,9 @@ They were deleted when the package was adopted.
   computed-value time, the declaration is dropped and the property inherits, with no build error.
   `--duration-default` never existed and was read by five animations, which ran with no duration.
   Reads with a fallback, `var(--x, 0.2s)`, are not checked.
-- **CSS modules read no primitive** outside `TYPE_TIER_DEBT`, which records a count per name and
-  fails if a count goes up or down without the record changing, and one decorative accent read.
+- **CSS modules read no primitive**, apart from one decorative accent read. The type tier was the
+  last exception, 42 reads held in a ratchet, until family roles by job (`--drift-type-family-ui`,
+  `-heading`, `-code`) and borrowed role reads cleared it on 2026-11-16.
 - **Every `@keyframes` a module names is defined in that module.** CSS Modules hashes keyframes
   names as it hashes class names, so a name defined in another module does not match. The
   stylesheet split did this to the motion tab. `animation-name` still computed to the name, so

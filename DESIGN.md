@@ -66,6 +66,11 @@ Fira Code for every measured value. All three are bundled with the client.
 **Decision.** A role carries only the properties its element sets. The eleven typeset roles set
 size, weight, leading and tracking; emphasis sets weight only; a table cell sets family and size
 and takes leading from the row.
+The faces are roles by job: `--drift-type-family-ui` for controls and interface text,
+`--drift-type-family-heading` and `--drift-type-family-code`. Controls set the UI face themselves,
+because `<button>` and `<input>` do not inherit a family from `body`. Where an element on one role
+needs a single property from another, it reads that role (`--drift-type-heading-leading`), not the
+primitive.
 
 **Reason.** A role that sets more than its element needs forces overrides, and every override is a
 primitive read.
@@ -205,10 +210,6 @@ full pattern after an audit found it was tabs in name only (#27, 2026-09-07).
 
 ## Known gaps
 
-- **Type-tier debt: 42 reads.** `TYPE_TIER_DEBT` in `tokens.test.ts` records them as a count per
-  name, and a count that moves in either direction fails until the record moves too. 33 are
-  `font-family` (no type role carries a family, and `<button>` and `<input>` do not inherit one);
-  9 are single-property reads on elements that already use a role.
 - **`Audit.module.css` is 694 lines** (#2, parked). The colour, overview, type, spacing and scalar
   sections have their own modules now. The first split was reverted, and the second broke two
   animations, which the keyframes test was then written to catch.
