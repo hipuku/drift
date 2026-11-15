@@ -178,9 +178,10 @@ no endpoint serves it.
 The client uses the same HTTP API a CI job would: list a site's pages, queue a crawl, follow its
 progress over a WebSocket, then read the result and the audit. A `callbackUrl` receives
 `crawl.completed` with the audit, or `crawl.failed` with an error, including for a crawl that read
-no page. Delivery is best effort: a `4xx` from the receiver ends it without a retry, and the crawl
-still succeeds. A CI job should set its own timeout and read the audit from the API when no
-callback arrives. The
+no page. Delivery is best effort: a `4xx` from the receiver ends it without a retry, and a failed
+delivery never changes the crawl's outcome. A CI job should set its own timeout, and when no
+callback arrives, read the job's status from `/crawl/{jobId}/result` before asking for the audit,
+since a failed crawl has none. The
 [API reference](https://drift.hipuku.dev/reference/) is generated from
 [`openapi.yaml`](./openapi.yaml).
 
