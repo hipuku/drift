@@ -29,7 +29,7 @@ reviews:
       instructions: >-
         Flag interactive elements with no accessible name, no keyboard handling, or a click
         handler on an element that cannot take focus.
-    - path: "src/{server,queue,crawler,net}/**"
+    - path: "src/**/*.ts"
       instructions: >-
         Drift fetches URLs a caller supplies. Flag any new outbound request that does not
         check the protocol is http or https and the private-address rule in
