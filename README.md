@@ -35,6 +35,7 @@ replays an audit of picocss.com, so nothing needs installing to see it.
 | [`FEATURE.md`](./FEATURE.md)                         | Every report tab, with screenshots                                            |
 | [`DESIGN.md`](./DESIGN.md)                           | Visual language, interaction and the token layer                              |
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md)               | Processes, data, security, the audit's mechanisms and testing                 |
+| [`WORKFLOW.md`](./WORKFLOW.md)                       | Branches, checks, review, dependencies, deployment and releases               |
 | [`openapi.yaml`](./openapi.yaml)                     | The API contract, as the [API reference](https://drift.hipuku.dev/reference/) |
 | [drift-tests](https://github.com/hipuku/drift-tests) | Acceptance tests that drive the API over HTTP                                 |
 
