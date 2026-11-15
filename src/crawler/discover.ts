@@ -16,6 +16,7 @@
 import { chromium, type Browser } from "playwright";
 import { normaliseDiscovered } from "./discoverNormalise.js";
 import { extractNavLinks } from "./extract.js";
+import { guardContext } from "./guard.js";
 import { discoverSitemapUrls, resolveReachableUrl, sitemapUrlsToPages } from "./sitemap.js";
 import type { DiscoverResult } from "./types.js";
 
@@ -43,7 +44,9 @@ async function discoverViaLinks(
   let browser: Browser | undefined;
   try {
     browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage();
+    const context = await browser.newContext();
+    await guardContext(context);
+    const page = await context.newPage();
     await page.goto(start, { waitUntil: "domcontentloaded", timeout: timeoutMs });
     const links = await page.evaluate(extractNavLinks);
     return normaliseDiscovered(start, links, maxPages);
