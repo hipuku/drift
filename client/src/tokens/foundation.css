@@ -10,14 +10,9 @@
    regenerable and is maintained by hand like any other source. tokens.test.ts
    is what holds it: every property read here or above must be defined.
 
-   The brand layer is one :root block, not a default plus a [data-theme='drift']
-   override. It was two while Drift was a haus brand, because that is the shape
-   the brand mechanism required, and 18 of its 21 entries were byte-identical
-   across the two: only the three radius roles ever differed. Drift ships one
-   theme and owns this file now, so the second block was 18 restated values kept
-   in step by nothing, which is the defect Drift exists to detect. Collapsed, and
-   the data-theme attribute it needed is off index.html. The computed-styles e2e
-   confirms nothing resolved differently.
+   There is no brand layer. It came from haus, where several brands share the
+   roles, and forwarded each role to a primitive through a --drift-brand-*
+   alias. Drift has one brand, so the roles alias the primitives directly.
    */
 
 @layer foundation.primitives {
@@ -93,32 +88,6 @@
   }
 }
 
-@layer foundation.brand {
-  :root {
-    --drift-brand-ink-on-primary: var(--drift-damson-0);
-    --drift-brand-backdrop: oklch(from var(--drift-damson-950) l c h / var(--drift-opacity-60));
-    --drift-brand-info-subtle: var(--drift-elderberry-100);
-    --drift-brand-info-border: var(--drift-elderberry-200);
-    --drift-brand-info-default: var(--drift-elderberry-500);
-    --drift-brand-info-on-subtle: var(--drift-elderberry-700);
-    --drift-brand-success-subtle: var(--drift-greengage-100);
-    --drift-brand-success-border: var(--drift-greengage-200);
-    --drift-brand-success-default: var(--drift-greengage-500);
-    --drift-brand-success-on-subtle: var(--drift-greengage-700);
-    --drift-brand-warning-subtle: var(--drift-mango-100);
-    --drift-brand-warning-border: var(--drift-mango-200);
-    --drift-brand-warning-default: var(--drift-mango-500);
-    --drift-brand-warning-on-subtle: var(--drift-mango-700);
-    --drift-brand-error-subtle: var(--drift-cherry-100);
-    --drift-brand-error-border: var(--drift-cherry-200);
-    --drift-brand-error-default: var(--drift-cherry-500);
-    --drift-brand-error-on-subtle: var(--drift-cherry-700);
-    --drift-brand-radius-control: var(--drift-radius-sm);
-    --drift-brand-radius-surface: var(--drift-radius-md);
-    --drift-brand-radius-overlay: var(--drift-radius-lg);
-  }
-}
-
 @layer foundation.motion {
   :root {
     --drift-duration-fast: 100ms;
@@ -130,25 +99,25 @@
 
 @layer foundation.semantics {
   :root {
-    --drift-color-ink-on-primary: var(--drift-brand-ink-on-primary);
+    --drift-color-ink-on-primary: var(--drift-damson-0);
     --drift-color-border-focus: var(--drift-color-primary-default);
-    --drift-color-info-subtle: var(--drift-brand-info-subtle);
-    --drift-color-info-border: var(--drift-brand-info-border);
-    --drift-color-info-default: var(--drift-brand-info-default);
-    --drift-color-info-on-subtle: var(--drift-brand-info-on-subtle);
-    --drift-color-success-subtle: var(--drift-brand-success-subtle);
-    --drift-color-success-border: var(--drift-brand-success-border);
-    --drift-color-success-default: var(--drift-brand-success-default);
-    --drift-color-success-on-subtle: var(--drift-brand-success-on-subtle);
-    --drift-color-warning-subtle: var(--drift-brand-warning-subtle);
-    --drift-color-warning-border: var(--drift-brand-warning-border);
-    --drift-color-warning-default: var(--drift-brand-warning-default);
-    --drift-color-warning-on-subtle: var(--drift-brand-warning-on-subtle);
-    --drift-color-error-subtle: var(--drift-brand-error-subtle);
-    --drift-color-error-border: var(--drift-brand-error-border);
-    --drift-color-error-default: var(--drift-brand-error-default);
-    --drift-color-error-on-subtle: var(--drift-brand-error-on-subtle);
-    --drift-color-backdrop: var(--drift-brand-backdrop);
+    --drift-color-info-subtle: var(--drift-elderberry-100);
+    --drift-color-info-border: var(--drift-elderberry-200);
+    --drift-color-info-default: var(--drift-elderberry-500);
+    --drift-color-info-on-subtle: var(--drift-elderberry-700);
+    --drift-color-success-subtle: var(--drift-greengage-100);
+    --drift-color-success-border: var(--drift-greengage-200);
+    --drift-color-success-default: var(--drift-greengage-500);
+    --drift-color-success-on-subtle: var(--drift-greengage-700);
+    --drift-color-warning-subtle: var(--drift-mango-100);
+    --drift-color-warning-border: var(--drift-mango-200);
+    --drift-color-warning-default: var(--drift-mango-500);
+    --drift-color-warning-on-subtle: var(--drift-mango-700);
+    --drift-color-error-subtle: var(--drift-cherry-100);
+    --drift-color-error-border: var(--drift-cherry-200);
+    --drift-color-error-default: var(--drift-cherry-500);
+    --drift-color-error-on-subtle: var(--drift-cherry-700);
+    --drift-color-backdrop: oklch(from var(--drift-damson-950) l c h / var(--drift-opacity-60));
     --drift-focus-ring:
       0 0 0 2px var(--drift-color-surface-default), 0 0 0 4px var(--drift-color-border-focus);
     --drift-type-label-xs-size: var(--drift-text-11);
@@ -225,9 +194,9 @@
     --drift-space-stack-3xl: var(--drift-space-8);
     --drift-space-stack-4xl: var(--drift-space-10);
     --drift-space-stack-5xl: var(--drift-space-12);
-    --drift-radius-control: var(--drift-brand-radius-control);
-    --drift-radius-surface: var(--drift-brand-radius-surface);
-    --drift-radius-overlay: var(--drift-brand-radius-overlay);
+    --drift-radius-control: var(--drift-radius-sm);
+    --drift-radius-surface: var(--drift-radius-md);
+    --drift-radius-overlay: var(--drift-radius-lg);
     --drift-radius-pill: var(--drift-radius-full);
     --drift-z-sticky: var(--drift-z-200);
     --drift-z-overlay: var(--drift-z-300);

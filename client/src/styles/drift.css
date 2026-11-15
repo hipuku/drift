@@ -114,10 +114,6 @@
     --drift-grid-line: oklch(85% 0.02 255 / 0.045);
 
     /* In the dark, shadows barely read, so lean on a visible hairline instead. */
-    --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.3);
-    --shadow-md: 0 2px 4px oklch(0% 0 0 / 0.3), 0 8px 20px -8px oklch(0% 0 0 / 0.45);
-    --shadow-lg: 0 2px 6px oklch(0% 0 0 / 0.35), 0 16px 34px -10px oklch(0% 0 0 / 0.55);
-    --shadow-xl: 0 3px 8px oklch(0% 0 0 / 0.4), 0 28px 56px -14px oklch(0% 0 0 / 0.6);
     --drift-card-border: oklch(from var(--drift-neutral-50) l c h / 0.1);
 
     /* The primary button's raised look, in three states.
@@ -134,33 +130,15 @@
       0 8px 20px -4px oklch(50% 0.085 var(--drift-accent-h) / 0.55);
     --drift-lift-pressed: 0 1px 2px oklch(40% 0.05 var(--drift-accent-h) / 0.25);
 
-    --drift-alert-surface: color-mix(
-      in oklab,
-      var(--drift-severity-high) 18%,
-      var(--drift-color-surface-default)
-    );
-    --drift-warn-surface: color-mix(
-      in oklab,
-      var(--drift-severity-medium) 20%,
-      var(--drift-color-surface-default)
-    );
-
-    /* Not theme-dependent: severity hues, mono ramp, grid metrics. */
+    /* Not theme-dependent: severity hues and grid metrics. */
     --drift-color-primary-disabled: var(--drift-neutral-200);
     --drift-grid-size: 32px;
-    --drift-mono: var(--font-mono);
-    --drift-data-size: var(--drift-text-12);
     --drift-severity-high: var(--drift-color-error-default);
     --drift-severity-medium: var(--drift-color-warning-default);
     --drift-severity-low: var(--drift-color-ink-tertiary);
     --drift-alert-ink: color-mix(
       in oklab,
       var(--drift-severity-high) 70%,
-      var(--drift-color-ink-primary)
-    );
-    --drift-warn-ink: color-mix(
-      in oklab,
-      var(--drift-severity-medium) 78%,
       var(--drift-color-ink-primary)
     );
   }

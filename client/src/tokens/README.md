@@ -4,8 +4,8 @@ Every custom property Drift reads is defined in this directory, in `../styles/`,
 component. No package supplies one.
 
 - `layers.css`: the cascade layer order, declared before any file opens a layer.
-- `foundation.css`: primitives, brand inputs, motion values and semantic roles, in the
-  `foundation.*` layers. 197 declarations, all `--drift-*`.
+- `foundation.css`: primitives, motion values and semantic roles, in the `foundation.*`
+  layers. 176 declarations, all `--drift-*`.
 - `primitives.css`: five primitives Drift sets for itself (`base.primitives`): three font stacks
   and the 1px and 2px spacing steps.
 - `semantics.css`: 15 roles the foundation has no name for (`base.semantics`).
@@ -28,7 +28,9 @@ installed, so the file cannot be regenerated and is edited by hand.
 The generated file had 218 declarations. The brand layer arrived as a default block and a
 `[data-theme='drift']` override, which was the shape haus's brand mechanism required. 18 of the
 21 entries were identical in both blocks and only the three radius roles differed. Drift has one
-theme, so the two blocks were merged into one, which leaves 197. The `data-theme` attribute was
+theme, so the two blocks were merged into one, which left 197. The brand layer itself was then
+inlined: its 21 entries only forwarded each role to a primitive, which a single brand does not
+need, so the roles alias the primitives directly and 176 remain. The `data-theme` attribute was
 removed from `index.html`.
 
 The client's computed-styles e2e test (`client/e2e/computed-styles.spec.ts`) compared 2,680
