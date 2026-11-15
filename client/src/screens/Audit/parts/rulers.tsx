@@ -95,6 +95,7 @@ export function ScaleOptions({
 
        Roving tabindex and arrows, as the pattern asks: the group is one tab
        stop and the arrows move within it. */
+    // eslint-disable-next-line jsx-a11y-x/interactive-supports-focus -- roving tabindex: focus sits on the radios, and their key events bubble to this handler
     <div
       className={styles.scaleOptions}
       role="radiogroup"
