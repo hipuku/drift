@@ -11,6 +11,7 @@ replays an audit of picocss.com, so nothing needs installing to see it.
 [![Case study on hipuku.dev](https://img.shields.io/badge/Case_study-hipuku.dev-0073C8?style=for-the-badge)](https://www.hipuku.dev/work/drift)
 [![Live demo](https://img.shields.io/badge/Live-drift.hipuku.dev-0073C8?style=for-the-badge)](https://drift.hipuku.dev)
 [![API reference](https://img.shields.io/badge/API-reference-0073C8?style=for-the-badge)](https://drift.hipuku.dev/reference/)
+[![Figma file](https://img.shields.io/badge/Figma-1_file-0073C8?logo=figma&logoColor=white&style=for-the-badge)](https://www.figma.com/design/cG4D315cHRDKDwMQovDu7R/drift)
 
 ## At a glance
 
