@@ -185,7 +185,8 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
               className={styles.form}
               onSubmit={(e) => {
                 e.preventDefault();
-                if (url.trim() !== "") discover();
+                // Discovery reports its own failure through the hook's state.
+                if (url.trim() !== "") void discover();
               }}
             >
               <TextField

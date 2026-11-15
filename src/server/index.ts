@@ -20,6 +20,9 @@ import { createApp } from "./app.js";
 
 const PORT = Number.parseInt(process.env.PORT ?? "3001", 10);
 
+/** How long a shutdown waits for the worker and the queue to close. */
+const SHUTDOWN_TIMEOUT_MS = 10_000;
+
 function main() {
   const queue = createCrawlQueue();
   const worker = createCrawlWorker();
@@ -45,14 +48,34 @@ function main() {
     }
   });
 
-  const shutdown = async () => {
-    await worker.close();
-    await queue.close();
-    server.close();
-    process.exit(0);
+  // Close the worker and the queue, then the server, and exit. With Redis
+  // unreachable, BullMQ's close never settles, so it gets SHUTDOWN_TIMEOUT_MS;
+  // past that, or on an error, the failure is reported and the process still
+  // stops with a failing code, rather than hanging on a signal.
+  const shutdown = async (signal: string) => {
+    let code = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(
+        () => reject(new Error(`no answer from Redis after ${SHUTDOWN_TIMEOUT_MS / 1000}s`)),
+        SHUTDOWN_TIMEOUT_MS,
+      );
+    });
+    try {
+      await Promise.race([Promise.all([worker.close(), queue.close()]), timeout]);
+    } catch (err) {
+      process.stderr.write(
+        `  ! ${signal}: the queue did not close cleanly: ${err instanceof Error ? err.message : String(err)}\n`,
+      );
+      code = 1;
+    } finally {
+      clearTimeout(timer);
+      server.close();
+      process.exit(code);
+    }
   };
-  process.on("SIGINT", shutdown);
-  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", () => void shutdown("SIGINT"));
+  process.on("SIGTERM", () => void shutdown("SIGTERM"));
 }
 
 main();
