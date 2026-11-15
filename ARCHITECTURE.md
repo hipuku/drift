@@ -339,11 +339,14 @@ dropped, SSE would be slightly simpler, and not worth the change.
 **Decision.** CIEDE2000 distance, WCAG contrast, OKLCH conversion and the hue-family boundaries
 come from `haus-colour-utils`.
 
-<!-- ASK: why the colour maths lives in a shared package rather than in drift -->
+**Reason.** One copy rather than three. vault had kept its own hue boundaries, read an HSL wheel
+as an OKLCH one and misnamed 17 of 27 reference colours, which is what a second copy of the
+decision costs. When the boundaries were refitted in 0.3.0, drift took the correction as a version
+bump with no code change (208efca). It is analysis code rather than a design system, so it stayed
+when [the haus token layer](./DESIGN.md#tokens) went.
 
-The hue boundaries were first worked out here, from the OKLCH hues of each family's namesake;
-vault's HSL boundaries had misnamed 17 of 27 reference colours. They moved into the package in
-0.2.1, and in 0.3.0 were refitted to 4,275 colours people named.
+The hue boundaries were first worked out here, from the OKLCH hues of each family's namesake. They
+moved into the package in 0.2.1, and in 0.3.0 were refitted to 4,275 colours people named.
 
 ---
 

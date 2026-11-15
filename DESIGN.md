@@ -2,9 +2,11 @@
 
 Why Drift looks and behaves the way it does, and the token layer underneath. It starts from one
 stance: the audit states measurements against a named reference and does not recommend changes.
-How it is built is in [ARCHITECTURE.md](./ARCHITECTURE.md). Figma: [hipuku](https://www.figma.com/@hipuku).
+How it is built is in [ARCHITECTURE.md](./ARCHITECTURE.md). The design file is
+[drift on Figma](https://www.figma.com/design/cG4D315cHRDKDwMQovDu7R/drift); more of the work is
+on the [hipuku Figma profile](https://www.figma.com/@hipuku).
 
-<!-- ASK: link drift's Figma file here, and per section below, once it exists -->
+<!-- Link the drift file's pages from Tokens, Components and Layout once they exist. -->
 
 ## Contents
 
