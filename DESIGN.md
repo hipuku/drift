@@ -154,7 +154,10 @@ by hand now; a computed-styles comparison of 2,680 elements found no difference 
 ### Components
 
 Five components in `client/src/components`: Badge, Button, Callout, Text and TextField. The four
-screens in `client/src/screens` (Configure, Crawling, Audit, Status) compose them. Badge and Input
+screens in `client/src/screens` (Configure, Crawling, Audit, Status) compose them. Layers import their own
+or a lower one: components import no other layer, `lib`, `demo` and `hooks` import no interface,
+and screens never reach up into the flow, the shell or the dev harness. ESLint fails the build
+otherwise (`no-restricted-imports` in `eslint.config.js`); tests are exempt. Badge and Input
 came from `haus-components` on 2026-08-30 and returned to Drift's own on 2026-09-09: two shared
 components used once each did not justify the dependency.
 

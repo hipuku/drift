@@ -10,6 +10,31 @@ import { defineConfig, globalIgnores } from "eslint/config";
  * both. Its extraction functions are authored against the DOM but shipped to
  * the page by Playwright from Node.
  */
+/** Each scope, and the layers it may not import. See the boundaries block below. */
+const LAYERS = [
+  {
+    files: ["client/src/components/**/*.{ts,tsx}"],
+    forbidden: ["screens", "flow", "shell", "dev", "lib", "demo", "hooks"],
+    message:
+      "Components are the lowest layer and take data as props: no screen or above, and no lib, demo or hooks.",
+  },
+  {
+    files: ["client/src/{lib,demo,hooks}/**/*.{ts,tsx}"],
+    forbidden: ["components", "screens", "flow", "shell", "dev"],
+    message: "lib, demo and hooks hold no interface, so they cannot import one.",
+  },
+  {
+    files: ["client/src/screens/**/*.{ts,tsx}"],
+    forbidden: ["flow", "shell", "dev"],
+    message: "Screens sit below the flow, the shell and the dev harness.",
+  },
+  {
+    files: ["src/**/*.ts"],
+    forbidden: ["client"],
+    message: "The service never imports the client; shared shapes live in openapi.yaml.",
+  },
+];
+
 export default defineConfig([
   globalIgnores(["dist", "client/dist", "node_modules", "appendonlydir", "**/*.rdb"]),
 
@@ -52,6 +77,34 @@ export default defineConfig([
       "react-hooks/exhaustive-deps": "error",
     },
   },
+
+  // Import boundaries, the client's layers as a failing build rather than a
+  // convention. Lowest first: components are the interface's primitives; lib,
+  // demo and hooks are data and behaviour with no interface; screens compose
+  // both; flow, shell and dev sit above the screens. A layer imports its own
+  // or a lower one, never a higher one. Tests are exempt: some compare the
+  // client with the service on purpose.
+  ...LAYERS.map(({ files, forbidden, message }) => ({
+    files,
+    ignores: ["**/*.test.{ts,tsx}"],
+    rules: {
+      // Static imports and re-exports, including a path that ends at the
+      // layer's folder (`../../demo` resolves to `demo/index.ts`).
+      "no-restricted-imports": [
+        "error",
+        { patterns: [{ group: forbidden.flatMap((d) => [`**/${d}`, `**/${d}/**`]), message }] },
+      ],
+      // Dynamic import() with a literal path, which no-restricted-imports
+      // does not see.
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: `ImportExpression[source.value=/(^|\\/)(${forbidden.join("|")})(\\/|$)/]`,
+          message,
+        },
+      ],
+    },
+  })),
 
   {
     files: ["**/*.test.{ts,tsx}"],
