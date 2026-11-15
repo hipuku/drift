@@ -42,8 +42,16 @@ function Check() {
 }
 
 export function Configure({ onSubmit }: ConfigureProps = {}) {
-  const { status, error, pages, rootUrl: resolvedUrl, host: resolvedHost, discover: runDiscovery, addPage: addDiscoveredPage, reset } =
-    useDiscovery();
+  const {
+    status,
+    error,
+    pages,
+    rootUrl: resolvedUrl,
+    host: resolvedHost,
+    discover: runDiscovery,
+    addPage: addDiscoveredPage,
+    reset,
+  } = useDiscovery();
   // The demo can only replay the one site it captured, so the field starts on
   // that site and is read-only. A field that took any URL and answered with
   // picocss.com would be the same defect the locked picker below fixed.
@@ -88,8 +96,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
     });
   };
 
-  const selectAll = () =>
-    setSelected(new Set(pages.slice(0, CRAWL_CEILING).map((p) => p.path)));
+  const selectAll = () => setSelected(new Set(pages.slice(0, CRAWL_CEILING).map((p) => p.path)));
   const clear = () => {
     if (locked) return;
     setSelected(new Set());
@@ -164,10 +171,9 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
             </Text>
             {DEMO_MODE && (
               <div id="demo-note" className={styles.demoNote}>
-                <strong>Demo.</strong> This build replays an audit of{" "}
-                <strong>{DEMO_SITE}</strong> captured in {DEMO_CAPTURED}. It does not run
-                the crawler, which needs a headless browser and a job queue. To audit
-                another site,{" "}
+                <strong>Demo.</strong> This build replays an audit of <strong>{DEMO_SITE}</strong>{" "}
+                captured in {DEMO_CAPTURED}. It does not run the crawler, which needs a headless
+                browser and a job queue. To audit another site,{" "}
                 <a href="https://github.com/hipuku/drift#install">run Drift locally</a>.
               </div>
             )}
@@ -231,8 +237,8 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
             </Text>
             <Text role="body" as="p" className={styles.intro}>
               <strong className={styles.count}>{pages.length} pages found</strong>. Up to{" "}
-              {CRAWL_CEILING} can be audited at once. Most values come from shared stylesheets,
-              so a few pages cover most of a site.
+              {CRAWL_CEILING} can be audited at once. Most values come from shared stylesheets, so a
+              few pages cover most of a site.
             </Text>
 
             {showSearch && (
@@ -271,8 +277,7 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
 
             {locked && (
               <Text role="body-sm" as="p" className={styles.lockedNote}>
-                The demo capture includes every page listed, so the selection cannot be
-                changed.
+                The demo capture includes every page listed, so the selection cannot be changed.
               </Text>
             )}
 
@@ -291,7 +296,11 @@ export function Configure({ onSubmit }: ConfigureProps = {}) {
                   <button
                     key={page.path}
                     type="button"
-                    className={[styles.row, isOn ? styles.rowSelected : "", disabled ? styles.rowDisabled : ""]
+                    className={[
+                      styles.row,
+                      isOn ? styles.rowSelected : "",
+                      disabled ? styles.rowDisabled : "",
+                    ]
                       .filter(Boolean)
                       .join(" ")}
                     aria-pressed={isOn}

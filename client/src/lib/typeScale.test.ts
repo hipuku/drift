@@ -156,8 +156,6 @@ describe("classifyAgainstScale", () => {
   });
 
   it("falls back to the size itself when the scale is empty", () => {
-    expect(classifyAgainstScale([18], [])).toEqual([
-      { px: 18, onScale: true, nearestPx: 18 },
-    ]);
+    expect(classifyAgainstScale([18], [])).toEqual([{ px: 18, onScale: true, nearestPx: 18 }]);
   });
 });

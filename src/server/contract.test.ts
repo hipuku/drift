@@ -62,9 +62,7 @@ function expectMatches(body: unknown, path: string, method: string, status: numb
   if (!valid) {
     throw new Error(
       `${method.toUpperCase()} ${path} → ${status} does not match openapi.yaml:\n` +
-        (validate.errors ?? [])
-          .map((e) => `  ${e.instancePath || "/"} ${e.message}`)
-          .join("\n") +
+        (validate.errors ?? []).map((e) => `  ${e.instancePath || "/"} ${e.message}`).join("\n") +
         `\n\nbody: ${JSON.stringify(body, null, 2).slice(0, 800)}`,
     );
   }
@@ -155,9 +153,7 @@ afterEach(() => {
   server = undefined;
 });
 
-async function listen(
-  deps: Partial<AppDeps> = {},
-): Promise<string> {
+async function listen(deps: Partial<AppDeps> = {}): Promise<string> {
   const app = createApp({
     jobs: fakeJobs(),
     discover: async () => ({
@@ -270,7 +266,11 @@ describe("GET /crawl/{jobId}/result", () => {
   it("200 matches JobResult while the crawl is still queued", async () => {
     // `result` is null until completion, and the schema allows that explicitly.
     const base = await listen({
-      jobs: fakeJobs({ async getResult() { return { status: "queued" }; } }),
+      jobs: fakeJobs({
+        async getResult() {
+          return { status: "queued" };
+        },
+      }),
     });
     const res = await fetch(`${base}/crawl/job_1/result`);
 
@@ -295,7 +295,11 @@ describe("GET /crawl/{jobId}/result", () => {
 
   it("404 matches Error for an unknown job", async () => {
     const base = await listen({
-      jobs: fakeJobs({ async getResult() { return { status: "not_found" }; } }),
+      jobs: fakeJobs({
+        async getResult() {
+          return { status: "not_found" };
+        },
+      }),
     });
     const res = await fetch(`${base}/crawl/nope/result`);
 
@@ -321,7 +325,11 @@ describe("the analysis routes", () => {
 
   it.each(routes)("%s 404 matches Error for an unknown job", async (route) => {
     const base = await listen({
-      jobs: fakeJobs({ async getResult() { return { status: "not_found" }; } }),
+      jobs: fakeJobs({
+        async getResult() {
+          return { status: "not_found" };
+        },
+      }),
     });
     const res = await fetch(`${base}/crawl/nope/${segment(route)}`);
 
@@ -331,7 +339,11 @@ describe("the analysis routes", () => {
 
   it.each(routes)("%s 409 matches Error before the crawl finishes", async (route) => {
     const base = await listen({
-      jobs: fakeJobs({ async getResult() { return { status: "active" }; } }),
+      jobs: fakeJobs({
+        async getResult() {
+          return { status: "active" };
+        },
+      }),
     });
     const res = await fetch(`${base}/crawl/job_1/${segment(route)}`);
 
@@ -351,9 +363,7 @@ describe("the gate itself", () => {
   });
 
   it("rejects a field of the wrong type", () => {
-    expect(() => expectMatches({ error: 42 }, "/discover", "post", 400)).toThrow(
-      /must be string/,
-    );
+    expect(() => expectMatches({ error: 42 }, "/discover", "post", 400)).toThrow(/must be string/);
   });
 
   it("names the offending field, so a failure is actionable", () => {

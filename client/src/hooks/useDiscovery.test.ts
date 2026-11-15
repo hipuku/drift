@@ -20,7 +20,12 @@ describe("useDiscovery", () => {
   it("reports the resolved site, not the one that was typed", async () => {
     // The server may add a scheme or a www; everything downstream should use
     // what it resolved rather than the raw input.
-    api.mockResolvedValue({ pages: [page("/")], rootUrl: "https://www.x.test/", host: "www.x.test", via: "sitemap" });
+    api.mockResolvedValue({
+      pages: [page("/")],
+      rootUrl: "https://www.x.test/",
+      host: "www.x.test",
+      via: "sitemap",
+    });
     const { result } = renderHook(() => useDiscovery());
 
     await act(async () => void (await result.current.discover("x.test")));
@@ -33,7 +38,12 @@ describe("useDiscovery", () => {
     // sitemap vs links is a finding about the site, not an implementation
     // detail: a site with no sitemap discovered by crawling anchors is a
     // different quality of result.
-    api.mockResolvedValue({ pages: [page("/")], rootUrl: "https://x.test/", host: "x.test", via: "links" });
+    api.mockResolvedValue({
+      pages: [page("/")],
+      rootUrl: "https://x.test/",
+      host: "x.test",
+      via: "links",
+    });
     const { result } = renderHook(() => useDiscovery());
 
     await act(async () => void (await result.current.discover("x.test")));
@@ -44,7 +54,9 @@ describe("useDiscovery", () => {
   it("returns null on failure, which pages.length cannot express", async () => {
     // A site with no pages and a site that could not be reached are different
     // screens, and both leave `pages` empty.
-    api.mockImplementation(async () => { throw new Error("nope"); });
+    api.mockImplementation(async () => {
+      throw new Error("nope");
+    });
     const { result } = renderHook(() => useDiscovery());
 
     let returned: unknown;
@@ -53,7 +65,12 @@ describe("useDiscovery", () => {
     });
     expect(returned).toBeNull();
 
-    api.mockResolvedValue({ pages: [], rootUrl: "https://x.test/", host: "x.test", via: "sitemap" });
+    api.mockResolvedValue({
+      pages: [],
+      rootUrl: "https://x.test/",
+      host: "x.test",
+      via: "sitemap",
+    });
     await act(async () => {
       returned = await result.current.discover("x.test");
     });
@@ -68,13 +85,20 @@ describe("useDiscovery", () => {
    * starts, or a reader retries successfully and still sees the old failure.
    */
   it("surfaces the API's message, then clears it when the next attempt starts", async () => {
-    api.mockImplementation(async () => { throw new Error("Couldn't resolve that host."); });
+    api.mockImplementation(async () => {
+      throw new Error("Couldn't resolve that host.");
+    });
     const { result } = renderHook(() => useDiscovery());
     await act(async () => void (await result.current.discover("x.test")));
     expect(result.current.error).toBe("Couldn't resolve that host.");
     expect(result.current.status).toBe("idle");
 
-    api.mockResolvedValue({ pages: [page("/")], rootUrl: "https://x.test/", host: "x.test", via: "sitemap" });
+    api.mockResolvedValue({
+      pages: [page("/")],
+      rootUrl: "https://x.test/",
+      host: "x.test",
+      via: "sitemap",
+    });
     await act(async () => void (await result.current.discover("x.test")));
 
     await waitFor(() => expect(result.current.error).toBeNull());
@@ -82,14 +106,23 @@ describe("useDiscovery", () => {
   });
 
   it("is discovering while the request is in flight", async () => {
-    type Response = { pages: ReturnType<typeof page>[]; rootUrl: string; host: string; via: string };
+    type Response = {
+      pages: ReturnType<typeof page>[];
+      rootUrl: string;
+      host: string;
+      via: string;
+    };
     let release!: (v: Response) => void;
-    const pending = new Promise<Response>((res) => { release = res; });
+    const pending = new Promise<Response>((res) => {
+      release = res;
+    });
     api.mockReturnValue(pending);
     const { result } = renderHook(() => useDiscovery());
 
     let settled: Promise<unknown>;
-    act(() => { settled = result.current.discover("x.test"); });
+    act(() => {
+      settled = result.current.discover("x.test");
+    });
     await waitFor(() => expect(result.current.status).toBe("discovering"));
 
     await act(async () => {
@@ -100,7 +133,12 @@ describe("useDiscovery", () => {
   });
 
   it("keeps a page added by hand alongside the discovered ones", async () => {
-    api.mockResolvedValue({ pages: [page("/")], rootUrl: "https://x.test/", host: "x.test", via: "sitemap" });
+    api.mockResolvedValue({
+      pages: [page("/")],
+      rootUrl: "https://x.test/",
+      host: "x.test",
+      via: "sitemap",
+    });
     const { result } = renderHook(() => useDiscovery());
     await act(async () => void (await result.current.discover("x.test")));
 
@@ -112,7 +150,12 @@ describe("useDiscovery", () => {
   it("resets to the start without discarding what was found", async () => {
     // "Change site" returns to the URL step; the pages stay until the next
     // discovery replaces them, so going back and forward does not re-fetch.
-    api.mockResolvedValue({ pages: [page("/")], rootUrl: "https://x.test/", host: "x.test", via: "sitemap" });
+    api.mockResolvedValue({
+      pages: [page("/")],
+      rootUrl: "https://x.test/",
+      host: "x.test",
+      via: "sitemap",
+    });
     const { result } = renderHook(() => useDiscovery());
     await act(async () => void (await result.current.discover("x.test")));
 

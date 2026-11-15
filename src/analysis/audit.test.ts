@@ -35,8 +35,30 @@ function crawl(elements: ExtractedElement[]): CrawlResult {
 describe("collectAudit", () => {
   const audit = collectAudit(
     crawl([
-      el({ color: "#111111", fontFamily: "Inter", fontSize: 32, fontWeight: 700, padding: [8, 0, 8, 0], borderRadius: [4], boxShadow: "0 1px 2px rgba(0,0,0,.1)" }, true, "h1"),
-      el({ color: "#1a1a1a", fontFamily: "Inter", fontSize: 16, fontWeight: 400, padding: [4, 0, 4, 0] }, true, "p"),
+      el(
+        {
+          color: "#111111",
+          fontFamily: "Inter",
+          fontSize: 32,
+          fontWeight: 700,
+          padding: [8, 0, 8, 0],
+          borderRadius: [4],
+          boxShadow: "0 1px 2px rgba(0,0,0,.1)",
+        },
+        true,
+        "h1",
+      ),
+      el(
+        {
+          color: "#1a1a1a",
+          fontFamily: "Inter",
+          fontSize: 16,
+          fontWeight: 400,
+          padding: [4, 0, 4, 0],
+        },
+        true,
+        "p",
+      ),
       el({ color: "#1b1b1b", fontFamily: "Inter", fontSize: 16, fontWeight: 400 }, true, "p"),
       el({ color: "#2563eb", fontFamily: "Inter", fontSize: 16, fontWeight: 500 }, true, "a"),
       el({ backgroundColor: "#ffffff" }, true, "div"),
@@ -116,10 +138,54 @@ describe("collectAudit ordering", () => {
 
   it("is unchanged when the elements on a page are reordered", () => {
     const elements = [
-      el({ color: "#111111", fontFamily: "Inter", fontSize: 16, fontWeight: 400, padding: [8, 0, 0, 0], borderRadius: [4], boxShadow: "0 1px 2px rgba(0,0,0,.1)" }, true, "p"),
-      el({ color: "#2563eb", fontFamily: "Roboto", fontSize: 18, fontWeight: 400, padding: [12, 0, 0, 0], borderRadius: [6], boxShadow: "0 2px 4px rgba(0,0,0,.1)" }, true, "p"),
-      el({ color: "#dc2626", fontFamily: "Inter", fontSize: 24, fontWeight: 700, effectiveBackgroundColor: "#ffffff" }, true, "h1"),
-      el({ color: "#16a34a", fontFamily: "Roboto", fontSize: 24, fontWeight: 700, effectiveBackgroundColor: "#ffffff" }, true, "h2"),
+      el(
+        {
+          color: "#111111",
+          fontFamily: "Inter",
+          fontSize: 16,
+          fontWeight: 400,
+          padding: [8, 0, 0, 0],
+          borderRadius: [4],
+          boxShadow: "0 1px 2px rgba(0,0,0,.1)",
+        },
+        true,
+        "p",
+      ),
+      el(
+        {
+          color: "#2563eb",
+          fontFamily: "Roboto",
+          fontSize: 18,
+          fontWeight: 400,
+          padding: [12, 0, 0, 0],
+          borderRadius: [6],
+          boxShadow: "0 2px 4px rgba(0,0,0,.1)",
+        },
+        true,
+        "p",
+      ),
+      el(
+        {
+          color: "#dc2626",
+          fontFamily: "Inter",
+          fontSize: 24,
+          fontWeight: 700,
+          effectiveBackgroundColor: "#ffffff",
+        },
+        true,
+        "h1",
+      ),
+      el(
+        {
+          color: "#16a34a",
+          fontFamily: "Roboto",
+          fontSize: 24,
+          fontWeight: 700,
+          effectiveBackgroundColor: "#ffffff",
+        },
+        true,
+        "h2",
+      ),
     ];
 
     expect(collectAudit(crawl([...elements].reverse()))).toEqual(collectAudit(crawl(elements)));
@@ -133,9 +199,15 @@ describe("collectAudit ordering", () => {
       elements,
     });
     const pages = [
-      page("https://example.com/a", [el({ color: "#111111", fontSize: 16, fontWeight: 400 }, true, "p")]),
-      page("https://example.com/b", [el({ color: "#2563eb", fontSize: 16, fontWeight: 400 }, true, "p")]),
-      page("https://example.com/c", [el({ color: "#dc2626", fontSize: 24, fontWeight: 700 }, true, "h1")]),
+      page("https://example.com/a", [
+        el({ color: "#111111", fontSize: 16, fontWeight: 400 }, true, "p"),
+      ]),
+      page("https://example.com/b", [
+        el({ color: "#2563eb", fontSize: 16, fontWeight: 400 }, true, "p"),
+      ]),
+      page("https://example.com/c", [
+        el({ color: "#dc2626", fontSize: 24, fontWeight: 700 }, true, "h1"),
+      ]),
     ];
     const site = (order: typeof pages): CrawlResult => ({
       rootUrl: "https://example.com",
@@ -150,8 +222,9 @@ describe("collectAudit ordering", () => {
 describe("colour families", () => {
   const familiesOf = (hexes: string[]) =>
     Object.fromEntries(
-      collectAudit(crawl(hexes.map((hex) => el({ color: hex }, true, "p"))))
-        .colourFamilies.flatMap((f) => f.swatches.map((s) => [s.hex, f.name] as const)),
+      collectAudit(crawl(hexes.map((hex) => el({ color: hex }, true, "p")))).colourFamilies.flatMap(
+        (f) => f.swatches.map((s) => [s.hex, f.name] as const),
+      ),
     );
 
   it("keeps tinted neutrals out of the hue families", () => {

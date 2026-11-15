@@ -25,7 +25,10 @@ const TYPE: { role: TypeRole; text: string }[] = [
   { role: "heading", text: "Clusters and contrast" },
   { role: "heading-sm", text: "Near-duplicates" },
   { role: "body-lg", text: "Drift lists a site's pages and audits the selected ones." },
-  { role: "body", text: "Grouped by CIEDE2000 distance and attributed to the pages they appear on." },
+  {
+    role: "body",
+    text: "Grouped by CIEDE2000 distance and attributed to the pages they appear on.",
+  },
   { role: "body-sm", text: "14 greys in use, 4 of them declared as tokens." },
   { role: "label", text: "Representative" },
   { role: "label-sm", text: "Total usage" },
@@ -93,7 +96,10 @@ export function Foundation() {
                 color: `var(--color-${f.key}-on-subtle)`,
               }}
             >
-              <span className={styles.dot} style={{ background: `var(--color-${f.key}-default)` }} />
+              <span
+                className={styles.dot}
+                style={{ background: `var(--color-${f.key}-default)` }}
+              />
               {f.label}
             </div>
           ))}

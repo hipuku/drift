@@ -24,21 +24,21 @@
   :root {
     --drift-damson-0: oklch(100% 0 0);
     --drift-damson-950: oklch(11% 0.002 290);
-    --drift-elderberry-100: oklch(97% 0.020 265);
-    --drift-elderberry-200: oklch(93% 0.040 265);
-    --drift-elderberry-500: oklch(55% 0.200 265);
-    --drift-elderberry-700: oklch(42% 0.160 265);
-    --drift-greengage-100: oklch(97% 0.030 148);
+    --drift-elderberry-100: oklch(97% 0.02 265);
+    --drift-elderberry-200: oklch(93% 0.04 265);
+    --drift-elderberry-500: oklch(55% 0.2 265);
+    --drift-elderberry-700: oklch(42% 0.16 265);
+    --drift-greengage-100: oklch(97% 0.03 148);
     --drift-greengage-200: oklch(93% 0.055 148);
     --drift-greengage-500: oklch(58% 0.185 148);
-    --drift-greengage-700: oklch(45% 0.150 148);
+    --drift-greengage-700: oklch(45% 0.15 148);
     --drift-mango-100: oklch(97% 0.025 65);
     --drift-mango-200: oklch(93% 0.045 65);
     --drift-mango-500: oklch(60% 0.175 65);
     --drift-mango-700: oklch(47% 0.142 65);
-    --drift-cherry-100: oklch(97% 0.030 27);
+    --drift-cherry-100: oklch(97% 0.03 27);
     --drift-cherry-200: oklch(93% 0.055 27);
-    --drift-cherry-500: oklch(58% 0.200 27);
+    --drift-cherry-500: oklch(58% 0.2 27);
     --drift-cherry-700: oklch(44% 0.168 27);
     --drift-text-11: 0.6875rem;
     --drift-text-12: 0.75rem;
@@ -124,7 +124,7 @@
     --drift-duration-fast: 100ms;
     --drift-duration-normal: 200ms;
     --drift-duration-moderate: 300ms;
-    --drift-ease-move: cubic-bezier(0.40, 0.00, 0.20, 1.00);
+    --drift-ease-move: cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -149,7 +149,8 @@
     --drift-color-error-default: var(--drift-brand-error-default);
     --drift-color-error-on-subtle: var(--drift-brand-error-on-subtle);
     --drift-color-backdrop: var(--drift-brand-backdrop);
-    --drift-focus-ring: 0 0 0 2px var(--drift-color-surface-default), 0 0 0 4px var(--drift-color-border-focus);
+    --drift-focus-ring:
+      0 0 0 2px var(--drift-color-surface-default), 0 0 0 4px var(--drift-color-border-focus);
     --drift-type-label-xs-size: var(--drift-text-11);
     --drift-type-label-xs-weight: var(--drift-weight-medium);
     --drift-type-label-xs-leading: var(--drift-leading-normal);
@@ -236,4 +237,3 @@
     --drift-opacity-disabled: var(--drift-opacity-40);
   }
 }
-

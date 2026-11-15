@@ -66,7 +66,9 @@
   color: var(--drift-color-ink-tertiary);
   font-size: var(--drift-type-body-size);
   cursor: pointer;
-  transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
+  transition:
+    background var(--motion-duration-micro) var(--motion-ease-standard),
+    color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 .railClose:hover {
   background: var(--drift-color-surface-sunken);
@@ -85,14 +87,14 @@
 
 @keyframes railIn {
   from {
-          opacity: 0;
-          transform: translateX(16px);
-        }
+    opacity: 0;
+    transform: translateX(16px);
+  }
 
   to {
-          opacity: 1;
-          transform: none;
-        }
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Cross-fade the detail content when the selected colour changes (keyed by hex),
@@ -103,42 +105,42 @@
 
 @keyframes railFade {
   from {
-          opacity: 0;
-          transform: translateY(6px);
-        }
+    opacity: 0;
+    transform: translateY(6px);
+  }
 
   to {
-          opacity: 1;
-          transform: none;
-        }
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Narrow screens: stack the rail below the content, full width, not sticky. */
 @media (width <= 60rem) {
   .layout,
-        .layoutOpen {
-          flex-direction: column;
-          max-width: 56rem;
-        }
+  .layoutOpen {
+    flex-direction: column;
+    max-width: 56rem;
+  }
 
   .main {
-          /* Stacked: the rail follows the content, so the breathing room goes back to
+    /* Stacked: the rail follows the content, so the breathing room goes back to
              the page bottom rather than between the content and the rail. */
-          padding-bottom: 0;
-        }
+    padding-bottom: 0;
+  }
 
   .page {
-          padding-bottom: var(--drift-space-inset-7xl);
-        }
+    padding-bottom: var(--drift-space-inset-7xl);
+  }
 
   .rail {
-          width: 100%;
-        }
+    width: 100%;
+  }
 
   .railInner {
-          position: static;
-          height: auto;
-        }
+    position: static;
+    height: auto;
+  }
 }
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
@@ -195,7 +197,9 @@
   font-weight: var(--drift-type-label-weight);
   color: var(--drift-color-ink-secondary);
   cursor: pointer;
-  transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
+  transition:
+    background var(--motion-duration-micro) var(--motion-ease-standard),
+    color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 .ghost:hover {
   background: var(--drift-color-surface-subtle);
@@ -235,7 +239,9 @@
   font-weight: var(--drift-type-label-weight);
   color: var(--drift-color-ink-tertiary);
   cursor: pointer;
-  transition: color var(--motion-duration-micro) var(--motion-ease-standard), border-color var(--motion-duration-micro) var(--motion-ease-standard);
+  transition:
+    color var(--motion-duration-micro) var(--motion-ease-standard),
+    border-color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 .tab:hover {
   color: var(--drift-color-ink-primary);
@@ -272,9 +278,15 @@
 }
 
 @keyframes fade {
-  from { opacity: 0; transform: translateY(4px); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
 
-  to { opacity: 1; transform: none; }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 .muted {
   color: var(--drift-color-ink-tertiary);
@@ -511,7 +523,6 @@
   min-width: 4px;
 }
 
-
 /* ── Scale / grid ruler: the visual evidence behind the verdicts ─────────── */
 .ruler {
   margin-bottom: var(--drift-space-stack-4xl);
@@ -626,14 +637,14 @@
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (width <= 40rem) {
   .titleRow {
-          flex-direction: column;
-        }
+    flex-direction: column;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .panel {
-          animation: none;
-        }
+    animation: none;
+  }
 }
 
 /* Reference-scale picker under a ruler. Each option carries its own off-count,
@@ -664,7 +675,10 @@
   font-family: var(--font-sans);
   font-size: var(--drift-type-label-sm-size);
   cursor: pointer;
-  transition: color 150ms, border-color 150ms, background 150ms;
+  transition:
+    color 150ms,
+    border-color 150ms,
+    background 150ms;
 }
 .scaleChip:hover {
   color: var(--drift-color-ink-primary);

@@ -30,8 +30,17 @@ import { LengthValue, Table, TagsCell, ZIndexLadder } from "../parts/tables.js";
 import shared from "../Audit.module.css";
 import styles from "./scalar.module.css";
 
-export function RadiusSection({ radius, unit }: { radius: SiteAudit["radius"]; unit: DisplayUnit }) {
-  const nearDup = nearDuplicates(radius.map((r) => r.value), RADIUS_NEAR_DUPLICATE_PX);
+export function RadiusSection({
+  radius,
+  unit,
+}: {
+  radius: SiteAudit["radius"];
+  unit: DisplayUnit;
+}) {
+  const nearDup = nearDuplicates(
+    radius.map((r) => r.value),
+    RADIUS_NEAR_DUPLICATE_PX,
+  );
   return (
     <Table head={["Preview", "Value", "Tags", "Uses"]}>
       {radius.map((v) => (
@@ -99,7 +108,10 @@ export function BorderSection({
   borders: NonNullable<SiteAudit["borders"]>;
   unit: DisplayUnit;
 }) {
-  const nearDup = nearDuplicates(borders.map((b) => b.value), BORDER_NEAR_DUPLICATE_PX);
+  const nearDup = nearDuplicates(
+    borders.map((b) => b.value),
+    BORDER_NEAR_DUPLICATE_PX,
+  );
   return (
     <Table head={["Preview", "Value", "Sides", "Tags", "Uses"]}>
       {borders.map((b) => (
@@ -203,7 +215,10 @@ export function BlurSection({ blur }: { blur: NonNullable<SiteAudit["blur"]> }) 
             <span className={styles.blurStage}>
               <span
                 className={styles.blurGlass}
-                style={{ backdropFilter: `blur(${b.value}px)`, WebkitBackdropFilter: `blur(${b.value}px)` }}
+                style={{
+                  backdropFilter: `blur(${b.value}px)`,
+                  WebkitBackdropFilter: `blur(${b.value}px)`,
+                }}
               />
             </span>
           </td>
@@ -227,7 +242,10 @@ export function BreakpointSection({
       {breakpoints.map((bp) => (
         <tr key={bp.value}>
           <td className={shared.spacingPreviewCell}>
-            <span className={styles.bpScreen} style={{ width: `${Math.max((bp.value / max) * 100, 10)}%` }} />
+            <span
+              className={styles.bpScreen}
+              style={{ width: `${Math.max((bp.value / max) * 100, 10)}%` }}
+            />
           </td>
           <td className={shared.valueCell}>{bp.value}px</td>
           <td className={shared.valueCell}>

@@ -81,7 +81,8 @@ test("captures every panel of the report", async ({ page }) => {
   expect(unexpected, "the report has a panel with no screenshot mapping").toEqual([]);
 
   const absent = TABS.filter(([id]) => !rendered.includes(id)).map(([, file]) => `${file}.png`);
-  if (absent.length) console.log(`Not regenerated, the demo audit has no such panel: ${absent.join(", ")}`);
+  if (absent.length)
+    console.log(`Not regenerated, the demo audit has no such panel: ${absent.join(", ")}`);
 
   for (const [id, file] of TABS) {
     if (!rendered.includes(id)) continue;

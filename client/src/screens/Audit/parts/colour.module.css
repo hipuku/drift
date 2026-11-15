@@ -25,7 +25,9 @@
   border: var(--drift-border-width-default) solid var(--drift-card-border);
   border-radius: var(--drift-radius-overlay);
   overflow: hidden;
-  transition: transform var(--motion-duration-micro) var(--motion-ease-standard), box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
+  transition:
+    transform var(--motion-duration-micro) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .card:hover {
@@ -141,7 +143,11 @@
 
 .nearDup {
   border-color: color-mix(in oklab, var(--drift-color-error-default) 40%, var(--drift-card-border));
-  background: color-mix(in oklab, var(--drift-color-error-default) 10%, var(--drift-color-surface-default));
+  background: color-mix(
+    in oklab,
+    var(--drift-color-error-default) 10%,
+    var(--drift-color-surface-default)
+  );
 }
 
 /* Checker underlay: invisible behind an opaque swatch, showing through a
@@ -159,7 +165,11 @@
     linear-gradient(45deg, transparent 75%, var(--drift-color-surface-sunken) 75%),
     linear-gradient(-45deg, transparent 75%, var(--drift-color-surface-sunken) 75%);
   background-size: 10px 10px;
-  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+  background-position:
+    0 0,
+    0 5px,
+    5px -5px,
+    -5px 0;
 }
 
 .nearSwatch {
@@ -213,7 +223,9 @@
   color: var(--drift-color-ink-tertiary);
   font-size: var(--drift-type-label-sm-size);
   cursor: pointer;
-  transition: background var(--motion-duration-micro) var(--motion-ease-standard), color var(--motion-duration-micro) var(--motion-ease-standard);
+  transition:
+    background var(--motion-duration-micro) var(--motion-ease-standard),
+    color var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .sortToggle:hover {
@@ -375,18 +387,18 @@
 
 @media (width <= 40rem) {
   .drawerContent {
-      gap: var(--drift-space-gap-lg);
-    }
+    gap: var(--drift-space-gap-lg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .card {
-      transition: none;
-    }
+    transition: none;
+  }
 
   .cardFlash {
-      animation: none;
-    }
+    animation: none;
+  }
 }
 
 /* CSS Modules scopes @keyframes names the same way it scopes class names, so a
@@ -398,13 +410,13 @@
    given, and nothing runs. See tokens.test.ts, which now fails on it. */
 @keyframes cardFlash {
   0%,
-        35% {
-          /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-          box-shadow: 0 0 0 3px var(--drift-color-primary-default);
-        }
+  35% {
+    /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+    box-shadow: 0 0 0 3px var(--drift-color-primary-default);
+  }
 
   100% {
-          /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
-          box-shadow: 0 0 0 3px transparent;
-        }
+    /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
+    box-shadow: 0 0 0 3px transparent;
+  }
 }

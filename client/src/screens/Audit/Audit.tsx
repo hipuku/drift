@@ -84,8 +84,6 @@ interface Props {
   onBack?: () => void;
 }
 
-
-
 export function Audit({ audit, onBack }: Props) {
   const s = audit.summary;
   const t = audit.typography;
@@ -104,14 +102,23 @@ export function Audit({ audit, onBack }: Props) {
     ];
     if (audit.radius.length) list.push({ id: "radius", label: "Radius", count: s.radii });
     if (audit.shadow.length) list.push({ id: "shadow", label: "Shadow", count: s.shadows });
-    if (audit.borders?.length) list.push({ id: "border", label: "Border", count: audit.borders.length });
-    if (audit.opacity?.length) list.push({ id: "opacity", label: "Opacity", count: audit.opacity.length });
-    if (audit.zIndex?.length) list.push({ id: "zindex", label: "Z-index", count: audit.zIndex.length });
+    if (audit.borders?.length)
+      list.push({ id: "border", label: "Border", count: audit.borders.length });
+    if (audit.opacity?.length)
+      list.push({ id: "opacity", label: "Opacity", count: audit.opacity.length });
+    if (audit.zIndex?.length)
+      list.push({ id: "zindex", label: "Z-index", count: audit.zIndex.length });
     if (audit.blur?.length) list.push({ id: "blur", label: "Blur", count: audit.blur.length });
-    if (audit.breakpoints?.length) list.push({ id: "breakpoint", label: "Breakpoints", count: audit.breakpoints.length });
-    if (audit.gradients?.length) list.push({ id: "gradient", label: "Gradient", count: audit.gradients.length });
+    if (audit.breakpoints?.length)
+      list.push({ id: "breakpoint", label: "Breakpoints", count: audit.breakpoints.length });
+    if (audit.gradients?.length)
+      list.push({ id: "gradient", label: "Gradient", count: audit.gradients.length });
     if (audit.motion && (audit.motion.durations.length || audit.motion.easings.length))
-      list.push({ id: "motion", label: "Motion", count: audit.motion.durations.length + audit.motion.easings.length });
+      list.push({
+        id: "motion",
+        label: "Motion",
+        count: audit.motion.durations.length + audit.motion.easings.length,
+      });
     return list;
   }, [s, audit]);
 
@@ -150,7 +157,11 @@ export function Audit({ audit, onBack }: Props) {
   const typeBasePx = typeBasePxOf(t.sizes);
   /** The automatic fit, ranked the same way as the server's `typeOffScale`. */
   const bestRatio = useMemo(
-    () => detectClosestRatio(t.sizes.map((z) => z.px), typeBasePx)?.ratio ?? null,
+    () =>
+      detectClosestRatio(
+        t.sizes.map((z) => z.px),
+        typeBasePx,
+      )?.ratio ?? null,
     [t.sizes, typeBasePx],
   );
 
@@ -205,29 +216,29 @@ export function Audit({ audit, onBack }: Props) {
     <div className={styles.page}>
       <div className={`${styles.layout}${selectedSwatch ? ` ${styles.layoutOpen}` : ""}`}>
         <div className={styles.main}>
-      <header>
-        {onBack && (
-          <button type="button" className={styles.back} onClick={onBack}>
-            <span aria-hidden="true">←</span> New audit
-          </button>
-        )}
-        <div className={styles.titleRow}>
-          <div>
-            <Text role="display" as="h1" className={styles.title}>
-              {hostOf(audit.rootUrl)}
-            </Text>
-            <Text role="body-lg" as="p" className={styles.intro}>
-              Values in use across {s.pages} {plural(s.pages, "page")}.
-            </Text>
-          </div>
-          <div className={styles.actions}>
-            <button type="button" className={styles.ghost} onClick={exportJson}>
-              Export
-            </button>
-          </div>
-        </div>
+          <header>
+            {onBack && (
+              <button type="button" className={styles.back} onClick={onBack}>
+                <span aria-hidden="true">←</span> New audit
+              </button>
+            )}
+            <div className={styles.titleRow}>
+              <div>
+                <Text role="display" as="h1" className={styles.title}>
+                  {hostOf(audit.rootUrl)}
+                </Text>
+                <Text role="body-lg" as="p" className={styles.intro}>
+                  Values in use across {s.pages} {plural(s.pages, "page")}.
+                </Text>
+              </div>
+              <div className={styles.actions}>
+                <button type="button" className={styles.ghost} onClick={exportJson}>
+                  Export
+                </button>
+              </div>
+            </div>
 
-        {/* ⛔ The whole tablist pattern, not half of it. This carried role="tab"
+            {/* ⛔ The whole tablist pattern, not half of it. This carried role="tab"
             and aria-selected and nothing else: no aria-controls, no tabpanel to
             point at, and no arrow keys. A tab that only answers a click is a
             tablist in appearance, which is what the end-to-end suite's comment
@@ -237,141 +248,143 @@ export function Audit({ audit, onBack }: Props) {
 
             Roving tabindex, so the tablist is one stop and the arrows move
             inside it rather than Tab landing on each of eight buttons. */}
-        <div
-          className={styles.tabs}
-          role="tablist"
-          aria-label="Audit sections"
-          onKeyDown={(e) => {
-            const keys = ["ArrowRight", "ArrowLeft", "Home", "End"];
-            if (!keys.includes(e.key)) return;
-            e.preventDefault();
-            const i = tabs.findIndex((t) => t.id === tab);
-            const next =
-              e.key === "Home"
-                ? 0
-                : e.key === "End"
-                  ? tabs.length - 1
-                  : (i + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
-            const id = tabs[next]!.id;
-            setTab(id);
-            /* Focus follows selection, which is what the pattern asks for and
+            <div
+              className={styles.tabs}
+              role="tablist"
+              aria-label="Audit sections"
+              onKeyDown={(e) => {
+                const keys = ["ArrowRight", "ArrowLeft", "Home", "End"];
+                if (!keys.includes(e.key)) return;
+                e.preventDefault();
+                const i = tabs.findIndex((t) => t.id === tab);
+                const next =
+                  e.key === "Home"
+                    ? 0
+                    : e.key === "End"
+                      ? tabs.length - 1
+                      : (i + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+                const id = tabs[next]!.id;
+                setTab(id);
+                /* Focus follows selection, which is what the pattern asks for and
                what makes the panel readable without a second keystroke. The
                button is already rendered, so it can be focused now. */
-            document.getElementById(tabId(id))?.focus();
-          }}
-        >
-          {tabs.map((tb) => (
-            <button
-              key={tb.id}
-              id={tabId(tb.id)}
-              type="button"
-              role="tab"
-              aria-selected={tab === tb.id}
-              aria-controls={tabPanelId(tb.id)}
-              tabIndex={tab === tb.id ? 0 : -1}
-              className={tab === tb.id ? `${styles.tab} ${styles.tabOn}` : styles.tab}
-              onClick={() => setTab(tb.id)}
+                document.getElementById(tabId(id))?.focus();
+              }}
             >
-              {TAB_ICON[tb.id] && <FontAwesomeIcon icon={TAB_ICON[tb.id]!} className={styles.tabIcon} />}
-              {tb.label}
-              {tb.count != null && <span className={styles.tabCount}>{tb.count}</span>}
-            </button>
-          ))}
-        </div>
-      </header>
+              {tabs.map((tb) => (
+                <button
+                  key={tb.id}
+                  id={tabId(tb.id)}
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === tb.id}
+                  aria-controls={tabPanelId(tb.id)}
+                  tabIndex={tab === tb.id ? 0 : -1}
+                  className={tab === tb.id ? `${styles.tab} ${styles.tabOn}` : styles.tab}
+                  onClick={() => setTab(tb.id)}
+                >
+                  {TAB_ICON[tb.id] && (
+                    <FontAwesomeIcon icon={TAB_ICON[tb.id]!} className={styles.tabIcon} />
+                  )}
+                  {tb.label}
+                  {tb.count != null && <span className={styles.tabCount}>{tb.count}</span>}
+                </button>
+              ))}
+            </div>
+          </header>
 
-      {/* The other half. tabIndex 0 because a panel whose content has no
+          {/* The other half. tabIndex 0 because a panel whose content has no
           focusable element still has to be reachable, or the tab selects
           something a keyboard cannot then read. */}
-      <div
-        className={styles.panel}
-        key={tab}
-        id={tabPanelId(tab)}
-        role="tabpanel"
-        aria-labelledby={tabId(tab)}
-        tabIndex={0}
-      >
-        {tab === "overview" && (
-          <OverviewSection
-            health={healthLine(s, extendedDrift)}
-            verdicts={verdicts}
-            authored={audit.authored}
-            tabIcon={TAB_ICON}
-            hasTab={(id) => tabs.some((tb) => tb.id === id)}
-            onGoToTab={setTab}
-          />
-        )}
+          <div
+            className={styles.panel}
+            key={tab}
+            id={tabPanelId(tab)}
+            role="tabpanel"
+            aria-labelledby={tabId(tab)}
+            tabIndex={0}
+          >
+            {tab === "overview" && (
+              <OverviewSection
+                health={healthLine(s, extendedDrift)}
+                verdicts={verdicts}
+                authored={audit.authored}
+                tabIcon={TAB_ICON}
+                hasTab={(id) => tabs.some((tb) => tb.id === id)}
+                onGoToTab={setTab}
+              />
+            )}
 
+            {tab === "colour" && (
+              <>
+                {audit.colourFamilies.map((fam) => (
+                  <div key={fam.name} className={styles.family}>
+                    <div className={styles.familyHead}>
+                      <Text role="heading-sm" as="h3">
+                        {fam.name}
+                      </Text>
+                      <Text role="label-sm" className={styles.muted}>
+                        {fam.swatches.length}
+                      </Text>
+                    </div>
+                    <div className={styles.grid}>
+                      {fam.swatches.map((sw) => (
+                        <ColourCard
+                          key={sw.hex}
+                          sw={sw}
+                          id={cardId(sw.hex)}
+                          selected={selectedHex === sw.hex}
+                          flash={flashHex === sw.hex}
+                          onSelect={() => setSelectedHex(sw.hex)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
 
-        {tab === "colour" && (
-          <>
-            {audit.colourFamilies.map((fam) => (
-              <div key={fam.name} className={styles.family}>
-                <div className={styles.familyHead}>
-                  <Text role="heading-sm" as="h3">
-                    {fam.name}
-                  </Text>
-                  <Text role="label-sm" className={styles.muted}>
-                    {fam.swatches.length}
-                  </Text>
-                </div>
-                <div className={styles.grid}>
-                  {fam.swatches.map((sw) => (
-                    <ColourCard
-                      key={sw.hex}
-                      sw={sw}
-                      id={cardId(sw.hex)}
-                      selected={selectedHex === sw.hex}
-                      flash={flashHex === sw.hex}
-                      onSelect={() => setSelectedHex(sw.hex)}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </>
-        )}
+            {tab === "type" && (
+              <TypeSection
+                typography={t}
+                pages={s.pages}
+                fontStack={fontStack}
+                unit={unitFor("type")}
+                bestRatio={bestRatio}
+                offScaleFor={offScaleFor}
+              />
+            )}
 
-        {tab === "type" && (
-          <TypeSection
-            typography={t}
-            pages={s.pages}
-            fontStack={fontStack}
-            unit={unitFor("type")}
-            bestRatio={bestRatio}
-            offScaleFor={offScaleFor}
-          />
-        )}
+            {tab === "spacing" && (
+              <SpacingSection spacing={audit.spacing} unit={unitFor("spacing")} />
+            )}
 
-        {tab === "spacing" && (
-          <SpacingSection spacing={audit.spacing} unit={unitFor("spacing")} />
-        )}
+            {tab === "radius" && <RadiusSection radius={audit.radius} unit={unitFor("radius")} />}
 
+            {tab === "shadow" && <ShadowSection shadow={audit.shadow} />}
 
-        {tab === "radius" && <RadiusSection radius={audit.radius} unit={unitFor("radius")} />}
+            {tab === "gradient" && audit.gradients && (
+              <GradientSection gradients={audit.gradients} />
+            )}
 
-        {tab === "shadow" && <ShadowSection shadow={audit.shadow} />}
+            {tab === "border" && audit.borders && (
+              <BorderSection borders={audit.borders} unit={unitFor("border")} />
+            )}
 
-        {tab === "gradient" && audit.gradients && <GradientSection gradients={audit.gradients} />}
+            {tab === "contrast" && audit.contrast && <ContrastSection contrast={audit.contrast} />}
 
-        {tab === "border" && audit.borders && (
-          <BorderSection borders={audit.borders} unit={unitFor("border")} />
-        )}
+            {tab === "opacity" && audit.opacity && <OpacitySection opacity={audit.opacity} />}
 
-        {tab === "contrast" && audit.contrast && <ContrastSection contrast={audit.contrast} />}
+            {tab === "zindex" && audit.zIndex && <ZIndexSection zIndex={audit.zIndex} />}
 
-        {tab === "opacity" && audit.opacity && <OpacitySection opacity={audit.opacity} />}
+            {tab === "blur" && audit.blur && <BlurSection blur={audit.blur} />}
 
-        {tab === "zindex" && audit.zIndex && <ZIndexSection zIndex={audit.zIndex} />}
+            {tab === "breakpoint" && audit.breakpoints && (
+              <BreakpointSection breakpoints={audit.breakpoints} />
+            )}
 
-        {tab === "blur" && audit.blur && <BlurSection blur={audit.blur} />}
-
-        {tab === "breakpoint" && audit.breakpoints && (
-          <BreakpointSection breakpoints={audit.breakpoints} />
-        )}
-
-        {tab === "motion" && audit.motion && <MotionSection motion={audit.motion} />}
-      </div>
+            {tab === "motion" && audit.motion && <MotionSection motion={audit.motion} />}
+          </div>
         </div>
 
         {selectedSwatch && (

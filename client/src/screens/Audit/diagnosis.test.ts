@@ -10,9 +10,17 @@ describe("diagnosis", () => {
   it("builds the verdicts the overview shows for the demo capture", () => {
     const byLabel = Object.fromEntries(buildVerdicts(audit).map((v) => [v.label, v]));
     expect(byLabel.Colours).toMatchObject({ n: 29, verdict: "review" });
-    expect(byLabel.Contrast).toMatchObject({ n: 21, verdict: "good", chips: ["all pairs pass AA"] });
+    expect(byLabel.Contrast).toMatchObject({
+      n: 21,
+      verdict: "good",
+      chips: ["all pairs pass AA"],
+    });
     expect(byLabel.Type).toMatchObject({ n: 9, verdict: "review" });
-    expect(byLabel.Spacing).toMatchObject({ n: 21, verdict: "review", chips: ["14 off a 4px grid"] });
+    expect(byLabel.Spacing).toMatchObject({
+      n: 21,
+      verdict: "review",
+      chips: ["14 off a 4px grid"],
+    });
     expect(byLabel.Radius?.verdict).toBe("good");
   });
 
@@ -21,7 +29,9 @@ describe("diagnosis", () => {
   it("exports evidence that agrees with the summary counts", () => {
     const out = buildExport(audit, new Date("2026-09-26T00:00:00Z"));
     const find = (id: string) =>
-      (out.findings as { id: string; count: number; evidence: unknown[] }[]).find((f) => f.id === id);
+      (out.findings as { id: string; count: number; evidence: unknown[] }[]).find(
+        (f) => f.id === id,
+      );
     expect(find("type-off-scale")?.evidence).toHaveLength(audit.summary.typeOffScale!);
     expect(find("spacing-off-grid")?.evidence).toHaveLength(audit.summary.spacingOffGrid!);
     expect(find("contrast-fails-aa")).toBeUndefined();

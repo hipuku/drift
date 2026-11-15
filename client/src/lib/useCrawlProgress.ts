@@ -89,7 +89,10 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
             // Append the page that just landed (dedupe on url).
             const crawledPages = s.crawledPages.some((p) => p.url === data.lastUrl)
               ? s.crawledPages
-              : [...s.crawledPages, { url: data.lastUrl, title: data.lastTitle, elements: data.lastElements }];
+              : [
+                  ...s.crawledPages,
+                  { url: data.lastUrl, title: data.lastTitle, elements: data.lastElements },
+                ];
             return { ...s, progress: data, crawledPages };
           });
         }

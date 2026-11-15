@@ -41,8 +41,7 @@ with elements times pages, and the page cap bounds it. See
 
 ### Processes
 
-One Node process runs the Express API, the WebSocket server and a BullMQ worker with concurrency
-2. Redis holds the queue. The React client is a separate Vite build.
+One Node process runs the Express API, the WebSocket server and a BullMQ worker with concurrency 2. Redis holds the queue. The React client is a separate Vite build.
 
 The queue runs each job once (`attempts: 1`) and fails a stalled job instead of retrying it
 (`maxStalledCount: 0`). Completed jobs are kept for an hour or the last 100, failed jobs for a
@@ -59,11 +58,11 @@ as `vote` or `login`. The list is capped at 1,000 pages.
 
 ### Crawl scope
 
-| Cost | Cause | Current limit |
-|---|---|---|
-| Time | Each page is a headless navigation and a DOM walk | Worker concurrency 2, page cap |
-| Memory | Every element of every page is kept until the audit runs | Page cap, and 12,000 elements per page |
-| Load on the site | Requests to a site the operator does not own | Same origin only, page cap |
+| Cost             | Cause                                                    | Current limit                          |
+| ---------------- | -------------------------------------------------------- | -------------------------------------- |
+| Time             | Each page is a headless navigation and a DOM walk        | Worker concurrency 2, page cap         |
+| Memory           | Every element of every page is kept until the audit runs | Page cap, and 12,000 elements per page |
+| Load on the site | Requests to a site the operator does not own             | Same origin only, page cap             |
 
 `MAX_CRAWL_PAGES` is 10, enforced by the server and mirrored in the page picker. A caller either
 names the pages or omits them and gets a breadth-first walk of same-origin links from the root.
@@ -82,15 +81,15 @@ A crawl produces a `CrawlResult`: the root URL, a timestamp, and per page the UR
 count, normalised elements, breakpoints and authored declarations. `collectAudit` turns it into a
 `SiteAudit`. Both are in `openapi.yaml`.
 
-| `SiteAudit` field | Contents |
-|---|---|
-| `summary` | Pages, distinct colours, colour families, near-duplicate colours, font families, type sizes, weights, sizes off the fitted scale, spacings, spacings off the 4px grid, radii, near-duplicate radii, shadows, contrast pairs, pairs failing AA |
-| `colourFamilies` | Swatches by hue family: hex, count, roles, elements, pages, OKLCH lightness, nearest other colour, related colours |
-| `typography` | Families, the size used by each element role, sizes with weights and tags, weights, line heights, letter spacings |
-| `spacing`, `radius`, `shadow`, `borders` | Distinct values with counts, and tags or properties |
-| `opacity`, `zIndex`, `blur`, `gradients`, `motion`, `breakpoints` | Present when the site uses them |
-| `authored` | Dominant unit for spacing, font size, radius and border width, the site's own custom properties, and whether font size is mostly `px` |
-| `contrast` | Distinct text and background pairs, with ratio, AA, AAA and large-text AA results, count, tags and pages, lowest ratio first |
+| `SiteAudit` field                                                 | Contents                                                                                                                                                                                                                                      |
+| ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `summary`                                                         | Pages, distinct colours, colour families, near-duplicate colours, font families, type sizes, weights, sizes off the fitted scale, spacings, spacings off the 4px grid, radii, near-duplicate radii, shadows, contrast pairs, pairs failing AA |
+| `colourFamilies`                                                  | Swatches by hue family: hex, count, roles, elements, pages, OKLCH lightness, nearest other colour, related colours                                                                                                                            |
+| `typography`                                                      | Families, the size used by each element role, sizes with weights and tags, weights, line heights, letter spacings                                                                                                                             |
+| `spacing`, `radius`, `shadow`, `borders`                          | Distinct values with counts, and tags or properties                                                                                                                                                                                           |
+| `opacity`, `zIndex`, `blur`, `gradients`, `motion`, `breakpoints` | Present when the site uses them                                                                                                                                                                                                               |
+| `authored`                                                        | Dominant unit for spacing, font size, radius and border width, the site's own custom properties, and whether font size is mostly `px`                                                                                                         |
+| `contrast`                                                        | Distinct text and background pairs, with ratio, AA, AAA and large-text AA results, count, tags and pages, lowest ratio first                                                                                                                  |
 
 Colour clustering and WCAG ratios come from `haus-colour-utils`: CIEDE2000 for distance and near
 duplicates at ΔE below 2, and OKLCH hue for families.
@@ -153,13 +152,13 @@ sequenceDiagram
 
 ### Endpoints
 
-| Method | Path | Purpose |
-|---|---|---|
-| `POST` | `/discover` | Resolve a URL and list candidate pages |
-| `POST` | `/crawl` | Enqueue a crawl. `202 { jobId }` |
-| `GET` | `/crawl/:jobId/result` | Job status, the crawl result once completed, the reason once failed |
-| `GET` | `/crawl/:jobId/audit` | The audit of a completed crawl |
-| `WS` | any path | Progress for the jobs a connection subscribes to |
+| Method | Path                   | Purpose                                                             |
+| ------ | ---------------------- | ------------------------------------------------------------------- |
+| `POST` | `/discover`            | Resolve a URL and list candidate pages                              |
+| `POST` | `/crawl`               | Enqueue a crawl. `202 { jobId }`                                    |
+| `GET`  | `/crawl/:jobId/result` | Job status, the crawl result once completed, the reason once failed |
+| `GET`  | `/crawl/:jobId/audit`  | The audit of a completed crawl                                      |
+| `WS`   | any path               | Progress for the jobs a connection subscribes to                    |
 
 The full contract, including the webhook callbacks, is [`openapi.yaml`](openapi.yaml) (OpenAPI
 3.1). `src/server/contract.test.ts` validates the app's responses against it.
@@ -215,7 +214,11 @@ GET /crawl/:jobId/result
 `404`. A crawl that read no page is `failed`:
 
 ```json
-{ "status": "failed", "result": null, "error": "Couldn't read any pages. The site may be slow to load, blocking automated visits, or the selected pages may no longer exist." }
+{
+  "status": "failed",
+  "result": null,
+  "error": "Couldn't read any pages. The site may be slow to load, blocking automated visits, or the selected pages may no longer exist."
+}
 ```
 
 `GET /crawl/:jobId/audit` is `409` until the job is `completed`.
@@ -474,8 +477,8 @@ queue (`attempts: 1`, `maxStalledCount: 0`). Not built: incremental aggregation,
 each page into tallies and drop its elements. Until then the two limits bound memory at about
 120,000 retained elements per crawl.
 
-*Corrected 2026-09-14: this section said twice that the element limit did not exist. It has existed
-since 2026-08-16; the check searched drift and not the package the extractor had moved to.*
+_Corrected 2026-09-14: this section said twice that the element limit did not exist. It has existed
+since 2026-08-16; the check searched drift and not the package the extractor had moved to._
 
 ### The reference is selectable, and the automatic fit is shared
 
@@ -575,8 +578,7 @@ How the count got here:
   `--font-mono` and `--text-12` together and no line height. `--type-mono` stayed 13px with loose
   leading, for token names in running text. The recorded split went from 42 families and 21 others
   to 30 and 9.
-- Badge and Input returned to Drift's own on 2026-09-09 and added three `font-family` reads: 33 and
-  9.
+- Badge and Input returned to Drift's own on 2026-09-09 and added three `font-family` reads: 33 and 9.
 
 Roles carry the properties the element sets. Prose sets size, weight, leading and tracking, so the
 eleven typeset roles set all four. Emphasis sets weight only. A table cell sets family and size and

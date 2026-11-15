@@ -11,13 +11,11 @@
    ─────────────────────────────────────────────────────────────────────────── */
 
 @layer base.semantics {
-
   :root {
     color-scheme: light;
   }
 
   :root {
-
     /* Opacity fractions here are interaction-layer values, not raw colours.  */
 
     /* ── Spacing ──────────────────────────────────────────────────────────── */
@@ -31,7 +29,7 @@
 
     /* Optical, below the 4px grid, see primitives.css. */
     --space-inset-hairline: var(--space-hairline);
-    --space-inset-tight:    var(--space-tight);
+    --space-inset-tight: var(--space-tight);
 
     /* Padding, space *inside* a component, between its edge and its content. */
 
@@ -43,28 +41,28 @@
     /* Named for what is being rounded. The scale steps are a vocabulary of
        sizes; these say which size a thing of each kind takes, so a control and
        a card cannot drift apart by one step without someone choosing to. */
-    --radius-panel:   var(--drift-radius-xl);    /* the largest containers */
+    --radius-panel: var(--drift-radius-xl); /* the largest containers */
 
     /* ── Elevation ────────────────────────────────────────────────────────── */
     /* Height above the page, not shadow size. A component asks to sit at a
        level; how that level is drawn is this layer's business, which is what
        lets the brand layer restyle every shadow at once. */
-    --drift-elevation-raised:  var(--shadow-sm);  /* lifted off the page: cards */
-    --drift-elevation-overlay: var(--shadow-md);  /* above content: dropdowns */
-    --elevation-modal:   var(--shadow-lg);  /* above everything: dialogs */
-    --elevation-popover: var(--shadow-xl);  /* the highest surfaces */
+    --drift-elevation-raised: var(--shadow-sm); /* lifted off the page: cards */
+    --drift-elevation-overlay: var(--shadow-md); /* above content: dropdowns */
+    --elevation-modal: var(--shadow-lg); /* above everything: dialogs */
+    --elevation-popover: var(--shadow-xl); /* the highest surfaces */
 
     /* ── Motion ───────────────────────────────────────────────────────────── */
     /* Named for what is moving. The durations differ because the distances do:
        a chip's colour change should be over before it is noticed, a panel
        sliding in should be followed by the eye. */
-    --motion-duration-micro: var(--drift-duration-fast);      /* hover, focus, check */
-    --motion-duration-ui:    var(--drift-duration-normal);    /* reveals, tab changes */
-    --motion-duration-panel: var(--drift-duration-moderate);  /* drawers, modals */
-    --motion-ease-standard:  var(--drift-ease-move);          /* the default curve */
+    --motion-duration-micro: var(--drift-duration-fast); /* hover, focus, check */
+    --motion-duration-ui: var(--drift-duration-normal); /* reveals, tab changes */
+    --motion-duration-panel: var(--drift-duration-moderate); /* drawers, modals */
+    --motion-ease-standard: var(--drift-ease-move); /* the default curve */
 
     /* ── Sizing and state ─────────────────────────────────────────────────── */
-    --size-icon-inline:        var(--drift-icon-sm);          /* an icon set in text */
+    --size-icon-inline: var(--drift-icon-sm); /* an icon set in text */
     --opacity-control-disabled: var(--drift-opacity-disabled);
 
     /* ── Typography, and the two weights that flowed back ──────────────────
@@ -102,8 +100,7 @@
        A data cell chooses the face and the size and leaves leading to the row
       , every one of the twelve is a single line, four of them nowrap, and not
        one of them sets a line-height today. */
-    --type-data-family:         var(--font-mono);
-    --type-data-size:           var(--drift-text-12);
-
+    --type-data-family: var(--font-mono);
+    --type-data-size: var(--drift-text-12);
   }
 }

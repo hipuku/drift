@@ -92,7 +92,10 @@ export function pathToTitle(path: string): string {
   } catch {
     // keep raw segment
   }
-  const base = seg.replace(/\.[a-z0-9]+$/i, "").replace(/[-_]+/g, " ").trim();
+  const base = seg
+    .replace(/\.[a-z0-9]+$/i, "")
+    .replace(/[-_]+/g, " ")
+    .trim();
   if (!base) return "Home";
   return base.replace(/\b\w/g, (c) => c.toUpperCase());
 }

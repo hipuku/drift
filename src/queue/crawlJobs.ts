@@ -49,7 +49,9 @@ export class BullCrawlJobs implements CrawlJobs {
     return job.id;
   }
 
-  async getResult(jobId: string): Promise<{ status: string; result?: CrawlResult; error?: string }> {
+  async getResult(
+    jobId: string,
+  ): Promise<{ status: string; result?: CrawlResult; error?: string }> {
     const job = await this.queue.getJob(jobId);
     if (!job) return { status: "not_found" };
     const status = contractStatus(await job.getState());

@@ -118,16 +118,16 @@ describe("custom properties", () => {
  */
 const TYPE_TIER_DEBT = new Map([
   // Families, 33. --font-sans is on controls that do not inherit one.
-  ['--font-sans', 22],
-  ['--font-mono', 10],
-  ['--font-display', 1],
+  ["--font-sans", 22],
+  ["--font-mono", 10],
+  ["--font-display", 1],
   // Sizes, 6. Five are the dev harness; one is a single unit label.
-  ['--drift-text-11', 5],
-  ['--drift-text-14', 1],
+  ["--drift-text-11", 5],
+  ["--drift-text-14", 1],
   // Departures from a role the element is already on, 3.
-  ['--drift-leading-relaxed', 1],
-  ['--drift-leading-snug', 1],
-  ['--drift-tracking-widest', 1],
+  ["--drift-leading-relaxed", 1],
+  ["--drift-leading-snug", 1],
+  ["--drift-tracking-widest", 1],
 ]);
 
 const FAMILIES = ["--font-sans", "--font-mono", "--font-display"];
@@ -180,8 +180,7 @@ function primitiveNames(): Set<string> {
 }
 
 describe("the two-tier rule", () => {
-  const read = () =>
-    countMatches(filesUnder(SRC, [".module.css"]), /var\((--[a-z0-9-]+)/g);
+  const read = () => countMatches(filesUnder(SRC, [".module.css"]), /var\((--[a-z0-9-]+)/g);
 
   it("keeps components off the primitives", () => {
     const primitives = primitiveNames();
@@ -270,10 +269,28 @@ describe("css module keyframes", () => {
   /** `animation: <name> ...` / `animation-name: <name>`, skipping the CSS-wide
    *  keywords and the shorthand's own timing and fill words. */
   const RESERVED = new Set([
-    "none", "inherit", "initial", "unset", "revert", "revert-layer",
-    "infinite", "alternate", "normal", "reverse", "forwards", "backwards",
-    "both", "running", "paused", "linear", "ease", "ease-in", "ease-out",
-    "ease-in-out", "step-start", "step-end",
+    "none",
+    "inherit",
+    "initial",
+    "unset",
+    "revert",
+    "revert-layer",
+    "infinite",
+    "alternate",
+    "normal",
+    "reverse",
+    "forwards",
+    "backwards",
+    "both",
+    "running",
+    "paused",
+    "linear",
+    "ease",
+    "ease-in",
+    "ease-out",
+    "ease-in-out",
+    "step-start",
+    "step-end",
   ]);
 
   function declaredIn(css: string): Set<string> {
@@ -317,7 +334,8 @@ describe("css module keyframes", () => {
   });
 
   it("does not mistake the shorthand's own keywords for a name", () => {
-    const css = "@keyframes spin { to { rotate: 360deg; } }\n" +
+    const css =
+      "@keyframes spin { to { rotate: 360deg; } }\n" +
       ".s { animation: spin 0.7s linear infinite alternate both; }\n" +
       ".t { animation: none; }\n" +
       ".u { animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite; }";

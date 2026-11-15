@@ -10,11 +10,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  getAudit,
-  startCrawl,
-  type SiteAudit,
-} from "../lib/api.js";
+import { getAudit, startCrawl, type SiteAudit } from "../lib/api.js";
 import { useCrawlProgress } from "../lib/useCrawlProgress.js";
 import { Audit } from "../screens/Audit/Audit.js";
 import { Configure } from "../screens/Configure/Configure.js";
@@ -91,7 +87,9 @@ export function AuditFlow() {
     if (crawl.phase === "completed" && !loadedRef.current) {
       loadedRef.current = true;
       if (crawl.result && crawl.result.pages.length === 0) {
-        fail("Couldn't read any pages. The site may be slow to load, or blocking automated visits. Try again, or pick fewer pages.");
+        fail(
+          "Couldn't read any pages. The site may be slow to load, or blocking automated visits. Try again, or pick fewer pages.",
+        );
       } else {
         void loadAudit(jobId);
       }

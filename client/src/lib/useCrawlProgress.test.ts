@@ -244,12 +244,10 @@ describe("completion", () => {
 
   it("keeps polling through a transient fetch error", async () => {
     vi.useFakeTimers();
-    status
-      .mockRejectedValueOnce(new Error("network down"))
-      .mockResolvedValue({
-        status: "completed",
-        result: { rootUrl: "https://x.test", crawledAt: "now", pages: [] },
-      });
+    status.mockRejectedValueOnce(new Error("network down")).mockResolvedValue({
+      status: "completed",
+      result: { rootUrl: "https://x.test", crawledAt: "now", pages: [] },
+    });
 
     const { result } = renderHook(() => useCrawlProgress("job-1"));
 
@@ -346,7 +344,9 @@ describe("job change", () => {
       resolveFirst = r;
     });
     status.mockImplementation(((jobId: string) =>
-      jobId === "job-1" ? firstPoll : Promise.resolve({ status: "active", result: null })) as never);
+      jobId === "job-1"
+        ? firstPoll
+        : Promise.resolve({ status: "active", result: null })) as never);
 
     const { result, rerender } = renderHook(({ id }) => useCrawlProgress(id), {
       initialProps: { id: "job-1" as string | null },

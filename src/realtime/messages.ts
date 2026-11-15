@@ -10,8 +10,7 @@ import type { CrawlProgress } from "../queue/crawlQueue.js";
 
 /** Client → server. */
 export type ClientMessage =
-  | { type: "subscribe"; jobId: string }
-  | { type: "unsubscribe"; jobId: string };
+  { type: "subscribe"; jobId: string } | { type: "unsubscribe"; jobId: string };
 
 /** Server → client. */
 export type ServerMessage =

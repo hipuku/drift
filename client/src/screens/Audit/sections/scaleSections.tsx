@@ -50,7 +50,10 @@ export function TypeSection({
       <div className={styles.familyList}>
         {typography.families.map((f) => (
           <div key={f.family} className={styles.familyRow}>
-            <span className={styles.familyRowGlyph} style={{ fontFamily: `'${f.family}', var(--font-sans)` }}>
+            <span
+              className={styles.familyRowGlyph}
+              style={{ fontFamily: `'${f.family}', var(--font-sans)` }}
+            >
               Ag
             </span>
             <span className={styles.familyRowName}>{f.family}</span>
@@ -73,7 +76,11 @@ export function TypeSection({
             <td className={styles.typeScaleCell}>
               <span
                 className={styles.typeSpecimen}
-                style={{ fontSize: `${Math.min(r.px, 32)}px`, fontWeight: r.weights[0], fontFamily: fontStack }}
+                style={{
+                  fontSize: `${Math.min(r.px, 32)}px`,
+                  fontWeight: r.weights[0],
+                  fontFamily: fontStack,
+                }}
               >
                 Ag
               </span>
@@ -124,7 +131,10 @@ export function SpacingSection({
         {spacing.map((v) => (
           <tr key={v.value}>
             <td className={styles.spacingPreviewCell}>
-              <span className={styles.bar} style={{ width: `${Math.max((v.value / max) * 100, 4)}%` }} />
+              <span
+                className={styles.bar}
+                style={{ width: `${Math.max((v.value / max) * 100, 4)}%` }}
+              />
             </td>
             <td className={styles.valueCell}>
               <LengthValue px={v.value} unit={unit}>
@@ -133,7 +143,9 @@ export function SpacingSection({
                 )}
               </LengthValue>
             </td>
-            <TagsCell tags={(v.properties ?? []).map((p) => ({ tag: p.property, count: p.count }))} />
+            <TagsCell
+              tags={(v.properties ?? []).map((p) => ({ tag: p.property, count: p.count }))}
+            />
             <TagsCell tags={v.tags} />
             <td className={styles.usageCell}>{v.count.toLocaleString()}×</td>
           </tr>

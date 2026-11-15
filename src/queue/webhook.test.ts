@@ -52,8 +52,12 @@ describe("assertDeliverable", () => {
   });
 
   it("rejects loopback", async () => {
-    await expect(assertDeliverable("http://127.0.0.1:3001/hook")).rejects.toThrow(/private or loopback/);
-    await expect(assertDeliverable("http://localhost:3001/hook")).rejects.toThrow(/private or loopback/);
+    await expect(assertDeliverable("http://127.0.0.1:3001/hook")).rejects.toThrow(
+      /private or loopback/,
+    );
+    await expect(assertDeliverable("http://localhost:3001/hook")).rejects.toThrow(
+      /private or loopback/,
+    );
   });
 
   it("rejects private ranges", async () => {
@@ -63,11 +67,15 @@ describe("assertDeliverable", () => {
   });
 
   it("rejects carrier-grade NAT", async () => {
-    await expect(assertDeliverable("http://100.64.0.1/hook")).rejects.toThrow(/private or loopback/);
+    await expect(assertDeliverable("http://100.64.0.1/hook")).rejects.toThrow(
+      /private or loopback/,
+    );
   });
 
   it("rejects an IPv6 loopback literal", async () => {
-    await expect(assertDeliverable("http://[::1]:3001/hook")).rejects.toThrow(/private or loopback/);
+    await expect(assertDeliverable("http://[::1]:3001/hook")).rejects.toThrow(
+      /private or loopback/,
+    );
   });
 
   it("rejects an IPv4-mapped IPv6 address as the IPv4 address it carries", async () => {

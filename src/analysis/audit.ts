@@ -298,7 +298,21 @@ function groupColoursByFamily(result: CrawlResult): ColourFamily[] {
 
 // ── Typography aggregation ───────────────────────────────────────────────────
 
-const ROLE_TAGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6", "p", "button", "a", "small", "label", "blockquote", "li"]);
+const ROLE_TAGS = new Set([
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "p",
+  "button",
+  "a",
+  "small",
+  "label",
+  "blockquote",
+  "li",
+]);
 
 /**
  * Total order on hex values, used as the last key in every sort below. A Map
@@ -356,7 +370,8 @@ function collectTypography(result: CrawlResult): SiteAudit["typography"] {
           sizes.set(px, sz);
         }
         sz.count += 1;
-        if (s.fontWeight != null) sz.weights.set(s.fontWeight, (sz.weights.get(s.fontWeight) ?? 0) + 1);
+        if (s.fontWeight != null)
+          sz.weights.set(s.fontWeight, (sz.weights.get(s.fontWeight) ?? 0) + 1);
         sz.tags.set(el.tag, (sz.tags.get(el.tag) ?? 0) + 1);
       }
       if (s.fontWeight != null) weights.add(s.fontWeight);
@@ -371,14 +386,20 @@ function collectTypography(result: CrawlResult): SiteAudit["typography"] {
         }
         const px = Math.round(s.fontSize * 10) / 10;
         tally.sizes.set(px, (tally.sizes.get(px) ?? 0) + 1);
-        if (s.fontWeight != null) tally.weights.set(s.fontWeight, (tally.weights.get(s.fontWeight) ?? 0) + 1);
+        if (s.fontWeight != null)
+          tally.weights.set(s.fontWeight, (tally.weights.get(s.fontWeight) ?? 0) + 1);
         tally.count += 1;
       }
     }
   }
 
   const roleList: TypeRoleUsage[] = [...roles.entries()]
-    .map(([tag, t]) => ({ tag, px: mode(t.sizes) ?? 0, weight: mode(t.weights) ?? null, count: t.count }))
+    .map(([tag, t]) => ({
+      tag,
+      px: mode(t.sizes) ?? 0,
+      weight: mode(t.weights) ?? null,
+      count: t.count,
+    }))
     .sort((a, b) => b.px - a.px || a.tag.localeCompare(b.tag));
 
   return {
@@ -390,7 +411,9 @@ function collectTypography(result: CrawlResult): SiteAudit["typography"] {
       .map(([px, s]) => ({
         px,
         count: s.count,
-        weights: [...s.weights.entries()].sort((a, b) => b[1] - a[1] || a[0] - b[0]).map(([w]) => w),
+        weights: [...s.weights.entries()]
+          .sort((a, b) => b[1] - a[1] || a[0] - b[0])
+          .map(([w]) => w),
         tags: [...s.tags.entries()]
           .map(([tag, count]) => ({ tag, count }))
           .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag)),
@@ -515,7 +538,10 @@ function collectShadow(result: CrawlResult): ShadowUsage[] {
 const BORDER_SIDES: BorderSide[] = ["top", "right", "bottom", "left"];
 
 function collectBorders(result: CrawlResult): BorderUsage[] {
-  const tally = new Map<number, { count: number; sides: Map<BorderSide, number>; tags: Map<string, number> }>();
+  const tally = new Map<
+    number,
+    { count: number; sides: Map<BorderSide, number>; tags: Map<string, number> }
+  >();
   for (const page of result.pages) {
     for (const el of page.elements) {
       const widths = el.styles.borderWidths;
@@ -571,10 +597,14 @@ function tallyTagged<K>(
   return tally;
 }
 
-const numberTagList = (tally: Map<number, { count: number; tags: Map<string, number> }>): NumberTagUsage[] =>
+const numberTagList = (
+  tally: Map<number, { count: number; tags: Map<string, number> }>,
+): NumberTagUsage[] =>
   [...tally.entries()].map(([value, t]) => ({ value, count: t.count, tags: tagList(t.tags) }));
 
-const stringTagList = (tally: Map<string, { count: number; tags: Map<string, number> }>): StringTagUsage[] =>
+const stringTagList = (
+  tally: Map<string, { count: number; tags: Map<string, number> }>,
+): StringTagUsage[] =>
   [...tally.entries()].map(([value, t]) => ({ value, count: t.count, tags: tagList(t.tags) }));
 
 function collectOpacity(result: CrawlResult): NumberTagUsage[] {
@@ -625,9 +655,9 @@ function collectBreakpoints(result: CrawlResult): BreakpointUsage[] {
 }
 
 function collectMotion(result: CrawlResult): MotionUsage {
-  const durations = numberTagList(tallyTagged(result, (el) => el.styles.motionDurations ?? [])).sort(
-    (a, b) => a.value - b.value,
-  );
+  const durations = numberTagList(
+    tallyTagged(result, (el) => el.styles.motionDurations ?? []),
+  ).sort((a, b) => a.value - b.value);
   const easings = stringTagList(tallyTagged(result, (el) => el.styles.motionEasings ?? [])).sort(
     (a, b) => b.count - a.count || a.value.localeCompare(b.value),
   );
@@ -783,8 +813,7 @@ export function collectAudit(result: CrawlResult): SiteAudit {
     gradients,
     motion,
     breakpoints,
-    authored:
-      authored.categories.length || authored.customProperties.length ? authored : undefined,
+    authored: authored.categories.length || authored.customProperties.length ? authored : undefined,
     contrast: contrast.length ? contrast : undefined,
   };
 }

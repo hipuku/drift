@@ -146,7 +146,9 @@ export function collectColourUsage(result: CrawlResult): ColourUsage[] {
           const [tag, role] = k.split("|");
           return { tag: tag!, role: role as ColourRole, count };
         })
-        .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag) || a.role.localeCompare(b.role)),
+        .sort(
+          (a, b) => b.count - a.count || a.tag.localeCompare(b.tag) || a.role.localeCompare(b.role),
+        ),
       pages: [...e.pages].sort(),
     }))
     .sort((a, b) => b.count - a.count || (a.hex < b.hex ? -1 : 1));

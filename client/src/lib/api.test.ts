@@ -1,12 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  discoverPages,
-  getAudit,
-  getCrawlStatus,
-  progressSocketUrl,
-  startCrawl,
-} from "./api";
+import { discoverPages, getAudit, getCrawlStatus, progressSocketUrl, startCrawl } from "./api";
 
 /**
  * These run with DEMO_MODE off (VITE_DEMO_MODE is unset under vitest), so every
