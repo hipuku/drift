@@ -4,7 +4,7 @@
   gap: var(--drift-space-gap-2xs);
   padding: var(--drift-space-inset-2xs) var(--drift-space-inset-xs);
   border-radius: var(--drift-radius-pill);
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-label-sm-size);
   font-weight: var(--drift-type-label-sm-weight);
   line-height: var(--drift-type-label-sm-leading);
@@ -12,7 +12,7 @@
 }
 
 .mono {
-  font-family: var(--drift-type-family-mono);
+  font-family: var(--drift-type-data-family);
 }
 
 /* Neutral: a plain fact (usage count, attribute). Matches the audit token pill. */

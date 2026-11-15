@@ -117,21 +117,13 @@ describe("custom properties", () => {
  * lands on a role, and a new primitive read should not appear without a
  * decision.
  *
- * The exceptions are the type tier. They are counted rather than listed,
- * because a list of names ratchets on the wrong thing: a number per name is
- * what makes it a ratchet, so adding a read fails and removing one fails until
- * the number comes down with it.
- *
- * The split matters more than the total, and the totals are the two figures the
- * docs quote:
- *
- * **33 are `font-family`.** `--drift-type-family-sans` sits on `<button>` and `<input>`,
- * which do not inherit a family from `body`, so the declaration is required
- * rather than lazy. `--drift-type-family-mono` carries the tabular-data face.
- *
- * **9 are size, leading and tracking**, the specimen sheet's 11px labels, one
- * non-tabular mono size, and three deliberate departures from a role an element
- * is already on.
+ * The type tier was the last exception, 42 reads counted per name in a
+ * ratchet: 33 font families, because <button> and <input> do not inherit one
+ * from body, and 9 sizes, leadings and trackings. Family roles by job
+ * (--drift-type-family-ui, -heading, -code) took the first group on
+ * 2026-11-16, and the rest now read the role they borrow from
+ * (--drift-type-heading-leading on a heading-lg line, say), so the ratchet
+ * came down to nothing and was removed. A new primitive read fails here.
  *
  * The rule the type-tier work found is worth stating: **a role carries the
  * properties the thing actually chooses.** Prose chooses all four, which is why
@@ -140,31 +132,12 @@ describe("custom properties", () => {
  * data cell chooses the face and the size and leaves leading to the row, so
  * `--drift-type-data-*` stops at two.
  */
-const TYPE_TIER_DEBT = new Map([
-  // Families, 33. --drift-type-family-sans is on controls that do not inherit one.
-  ["--drift-type-family-sans", 22],
-  ["--drift-type-family-mono", 10],
-  ["--drift-type-family-display", 1],
-  // Sizes, 6. Five are the dev harness; one is a single unit label.
-  ["--drift-type-size-11", 5],
-  ["--drift-type-size-14", 1],
-  // Departures from a role the element is already on, 3.
-  ["--drift-type-leading-150", 1],
-  ["--drift-type-leading-125", 1],
-  ["--drift-type-tracking-widest", 1],
-]);
-
-const FAMILIES = [
-  "--drift-type-family-sans",
-  "--drift-type-family-mono",
-  "--drift-type-family-display",
-];
 
 /**
  * One decorative primitive read the role layer has no name for: the "partial"
  * hatch in the scalar sections alternates the primary role with a lighter
  * accent step to read as a stripe. Recorded rather than dressed up as a role,
- * and kept out of the type-tier ratchet because it is a colour, not a typeface.
+ * and the one exception the rule below allows.
  */
 const DECORATIVE = new Set(["--drift-color-accent-300"]);
 
@@ -213,52 +186,21 @@ describe("the two-tier rule", () => {
   it("keeps components off the primitives", () => {
     const primitives = primitiveNames();
     const reaching = [...read().keys()]
-      .filter((n) => primitives.has(n) && !TYPE_TIER_DEBT.has(n) && !DECORATIVE.has(n))
+      .filter((n) => primitives.has(n) && !DECORATIVE.has(n))
       .sort();
 
     expect(reaching).toEqual([]);
   });
 
-  it("lists no exception that is unread or no longer a primitive", () => {
-    // A name that is no longer read, or no longer a primitive, should leave the
-    // list, otherwise the debt looks larger than it is and stops being read.
+  it("catches a component that reads a primitive", () => {
+    // Proves the rule above can fail: a primitive read added to the module
+    // reads is reported.
     const primitives = primitiveNames();
     const counts = read();
+    counts.set("--drift-type-family-sans", 1);
+    const reaching = [...counts.keys()].filter((n) => primitives.has(n) && !DECORATIVE.has(n));
 
-    const stale = [...TYPE_TIER_DEBT.keys()]
-      .filter((n) => !counts.has(n) || !primitives.has(n))
-      .sort();
-
-    expect(stale).toEqual([]);
-  });
-
-  it("holds each exception at its recorded count", () => {
-    // The ratchet. Equality in both directions: a read added fails, and a read
-    // removed fails until the number comes down with it.
-    const counts = read();
-    const actual = Object.fromEntries(
-      [...TYPE_TIER_DEBT.keys()].sort().map((n) => [n, counts.get(n) ?? 0]),
-    );
-    const recorded = Object.fromEntries(
-      [...TYPE_TIER_DEBT.entries()].sort(([a], [b]) => a.localeCompare(b)),
-    );
-
-    expect(actual).toEqual(recorded);
-  });
-
-  it("splits the total the way the docs quote it", () => {
-    // DESIGN.md quotes these two figures. Asserting them here is what stops a
-    // correction to one from leaving the other behind.
-    const sum = (names: string[]) =>
-      names.reduce((n, name) => n + (TYPE_TIER_DEBT.get(name) ?? 0), 0);
-    const families = sum(FAMILIES);
-    const scale = sum([...TYPE_TIER_DEBT.keys()].filter((n) => !FAMILIES.includes(n)));
-
-    expect({ families, scale, total: families + scale }).toEqual({
-      families: 33,
-      scale: 9,
-      total: 42,
-    });
+    expect(reaching).toContain("--drift-type-family-sans");
   });
 });
 

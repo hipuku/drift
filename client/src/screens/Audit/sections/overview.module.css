@@ -28,7 +28,7 @@
      12px needs more than that to stay readable, so this is a departure from the
      role rather than a bypass of the tier, and reading label-xs's tracking
      instead would be mixing two roles, which the header above forbids. */
-  letter-spacing: var(--drift-type-tracking-widest);
+  letter-spacing: var(--drift-type-label-xs-tracking);
   color: var(--drift-color-primary-on-subtle);
   margin-bottom: var(--drift-space-stack-sm);
 }
@@ -40,7 +40,7 @@
      primitive. Its letter-spacing used to sit here too and was --drift-type-tracking-tight,
      which is what heading-lg already carries: re-stating the role, doing
      nothing. */
-  line-height: var(--drift-type-leading-125);
+  line-height: var(--drift-type-heading-leading);
   text-wrap: pretty;
 }
 
@@ -75,11 +75,11 @@
 }
 
 .unitVal {
-  font-family: var(--drift-type-family-mono);
+  font-family: var(--drift-type-data-family);
   /* The one mono size on this screen that is not tabular: a unit next to a
      number, sized to sit beside body text rather than inside a column. One
      occurrence, so it is a departure rather than a role: drift#24. */
-  font-size: var(--drift-type-size-14);
+  font-size: var(--drift-type-body-size);
   color: var(--drift-color-ink-primary);
 }
 
@@ -97,7 +97,7 @@
   border: none;
   background: none;
   color: var(--drift-color-ink-secondary);
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-body-size);
   line-height: var(--drift-type-body-leading);
   text-align: left;

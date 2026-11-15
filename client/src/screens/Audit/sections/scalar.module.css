@@ -174,7 +174,8 @@
 }
 
 .motionDot {
-  animation: slideTrack var(--dur, 200ms) var(--drift-motion-ease-standard) infinite alternate;
+  animation: slideTrack var(--dur, var(--drift-motion-duration-ui))
+    var(--drift-motion-ease-standard) infinite alternate;
 }
 
 .easingDot {
@@ -206,7 +207,7 @@
   height: 28px;
   border-radius: var(--drift-radius-control);
   border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-body-size);
   font-weight: var(--drift-type-weight-strong);
 }

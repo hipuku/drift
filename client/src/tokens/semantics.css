@@ -98,5 +98,15 @@
        one of them sets a line-height today. */
     --drift-type-data-family: var(--drift-type-family-mono);
     --drift-type-data-size: var(--drift-type-size-12);
+
+    /* ── Families ──────────────────────────────────────────────────────────
+       The faces by job. <button> and <input> do not inherit a family from
+       body, so every control sets one, and before these roles each of those
+       declarations read a primitive: 33 of them, recorded as debt in
+       tokens.test.ts. The primitives name the face (sans, display, mono);
+       these name what it is for. Tabular data keeps --drift-type-data-family. */
+    --drift-type-family-ui: var(--drift-type-family-sans); /* controls and interface text */
+    --drift-type-family-heading: var(--drift-type-family-display); /* display and headings */
+    --drift-type-family-code: var(--drift-type-family-mono); /* code and token names */
   }
 }

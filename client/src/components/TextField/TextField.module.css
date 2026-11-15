@@ -9,7 +9,7 @@
 }
 
 .input {
-  font-family: var(--drift-type-family-sans);
+  font-family: var(--drift-type-family-ui);
   font-size: var(--drift-type-body-size);
   line-height: var(--drift-type-body-leading);
   color: var(--drift-color-ink-primary);
