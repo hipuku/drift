@@ -6,17 +6,19 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    // Proxy API calls to the backend (no CORS needed in dev).
+    // Proxy API calls to the backend (no CORS needed in dev). 127.0.0.1 rather
+    // than localhost: the backend listens on IPv4 loopback only, and localhost
+    // can resolve to ::1 first.
     proxy: {
       "/api": {
-        target: "http://localhost:3001",
+        target: "http://127.0.0.1:3001",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
       // The progress WebSocket shares the backend HTTP server; it accepts any
       // path, so we forward /ws straight through with upgrade support.
       "/ws": {
-        target: "ws://localhost:3001",
+        target: "ws://127.0.0.1:3001",
         ws: true,
       },
     },

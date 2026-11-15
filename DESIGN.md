@@ -47,6 +47,29 @@ The queue runs each job once (`attempts: 1`) and fails a stalled job instead of 
 (`maxStalledCount: 0`). Completed jobs are kept for an hour or the last 100, failed jobs for a
 day.
 
+### Access
+
+Every crawl drives a headless browser for up to a minute, so an open endpoint spends the host's
+machine. The server listens on `127.0.0.1` unless `HOST` is set, and warns at startup when it
+listens beyond loopback with no token. With `DRIFT_API_TOKEN` set, every route and the progress
+WebSocket need `Authorization: Bearer <token>`, compared in constant time; unset, the API is open,
+which is how the client and drift-tests use it. The WebSocket reads the token from the header only,
+so it never lands in a proxy's access log as part of a URL, and refuses with the same `401` and
+`WWW-Authenticate: Bearer` as the routes.
+
+The token is for API callers: a CI job, a script, drift-tests against a remote server. The client
+sends none, so the interface works against an open API only, on the machine it runs on. The backend
+serves plain HTTP, so an exposed server belongs behind a reverse proxy that terminates TLS;
+otherwise the token crosses the network in the clear.
+
+`POST /crawl` and `POST /discover` share a per-caller limit, `DRIFT_RATE_LIMIT_PER_MINUTE`: 20 a
+minute when the server listens beyond loopback, none on loopback, `0` for none. A caller is the
+socket's address, so behind a reverse proxy every request counts as one caller. A crawl is also
+refused while `DRIFT_MAX_QUEUED` (20) crawls wait or run, checked and enqueued one request at a
+time so two requests cannot both take the last slot. Both answer `429` with `Retry-After`. The
+counter lives in the process, which is how drift runs; several processes would need a shared store.
+The rules are in `src/server/access.ts`.
+
 ### Discovery
 
 `POST /discover` resolves the input to a reachable URL, trying the host with and without `www.`.

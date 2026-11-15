@@ -55,7 +55,10 @@ npm run dev:server
 npm --prefix client run dev
 ```
 
-The backend listens on :3001 and the client on :5173.
+The backend listens on `127.0.0.1:3001` and the client on :5173. To reach the API from another
+machine, set `HOST`, set `DRIFT_API_TOKEN`, and put it behind a reverse proxy that terminates TLS:
+the backend serves plain HTTP, so a token sent to it across a network can be read on the way. The
+token is for API callers such as a CI job; the client does not send one (`.env.example`).
 
 ## Scripts
 
