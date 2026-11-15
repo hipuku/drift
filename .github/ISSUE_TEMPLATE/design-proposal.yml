@@ -1,0 +1,40 @@
+name: Design proposal
+description: Something new exists in Figma that the app does not have yet.
+labels: [design-proposal]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a component, variant or token that exists in Figma with no counterpart in code.
+        Proposals that start in Figma are recorded here before any code is written.
+  - type: input
+    id: figma
+    attributes:
+      label: Figma link
+      description: The frame or component, not the file.
+    validations: { required: true }
+  - type: textarea
+    id: what
+    attributes:
+      label: What is new
+      description: The component, variant, state or token, and where it would be used.
+    validations: { required: true }
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Where it lives
+      options:
+        - Token
+        - Atom
+        - Molecule
+        - Organism
+        - Screen
+    validations: { required: true }
+  - type: dropdown
+    id: decision
+    attributes:
+      label: Does code need it?
+      options:
+        - Yes, build it
+        - Not yet, keep it as a proposal
+        - No, remove it from Figma

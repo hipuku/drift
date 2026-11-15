@@ -1,0 +1,35 @@
+name: Drift decision
+description: Figma and code disagree about something both already have.
+labels: [drift-decision]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a value that Figma changed and code also has. It is settled one of two ways,
+        answered in a comment: `/keep-code` (Figma changes to match the shipped value) or
+        `/take-figma` (code changes to the Figma value, in its own pull request).
+  - type: input
+    id: subject
+    attributes:
+      label: Token or component
+      placeholder: --haus-brand-primary-default, or Button / ghost / hover
+    validations: { required: true }
+  - type: input
+    id: code
+    attributes:
+      label: Value in code
+    validations: { required: true }
+  - type: input
+    id: figma
+    attributes:
+      label: Value in Figma
+    validations: { required: true }
+  - type: input
+    id: baseline
+    attributes:
+      label: Value at the last agreed baseline
+      description: What both sides matched before the change.
+  - type: input
+    id: link
+    attributes:
+      label: Figma link

@@ -1,0 +1,21 @@
+# Groups a release's generated notes by pull request label. The notes are a draft:
+# they are edited before a release is published.
+changelog:
+  exclude:
+    labels: [skip-changelog]
+    authors: ['dependabot[bot]']
+  categories:
+    - title: Breaking changes
+      labels: [breaking]
+    - title: Features
+      labels: [feature]
+    - title: Design
+      labels: [design]
+    - title: Accessibility
+      labels: [a11y]
+    - title: Fixes
+      labels: [fix]
+    - title: Documentation
+      labels: [docs]
+    - title: Other changes
+      labels: ['*']
