@@ -37,7 +37,8 @@ async function reachPicker(count = 3) {
   return onSubmit;
 }
 
-const rows = () => within(screen.getByRole("group", { name: "Pages to audit" })).getAllByRole("button");
+const rows = () =>
+  within(screen.getByRole("group", { name: "Pages to audit" })).getAllByRole("button");
 
 beforeEach(() => {
   discover.mockResolvedValue(discovery(3) as never);

@@ -16,11 +16,7 @@
 
 import { chromium, type BrowserContext, type Browser } from "playwright";
 import { extractRawElements, normaliseElement } from "haus-style-probe";
-import {
-  extractAuthoredDeclarations,
-  extractBreakpoints,
-  extractLinks,
-} from "./extract.js";
+import { extractAuthoredDeclarations, extractBreakpoints, extractLinks } from "./extract.js";
 import type { CrawlOptions, CrawlResult, PageExtraction } from "./types.js";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -95,7 +91,9 @@ async function visit(context: BrowserContext, url: string, timeout: number): Pro
     };
   } catch (err) {
     // A single failed page should not abort the crawl; skip and continue.
-    process.stderr.write(`  ! skipped ${url}: ${err instanceof Error ? err.message : String(err)}\n`);
+    process.stderr.write(
+      `  ! skipped ${url}: ${err instanceof Error ? err.message : String(err)}\n`,
+    );
     return null;
   } finally {
     await page.close();

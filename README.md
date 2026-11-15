@@ -15,9 +15,9 @@ Live at [drift.hipuku.dev](https://drift.hipuku.dev), replaying a captured audit
   gradients, motion and breakpoints, ranked by usage. Colours are grouped by CIEDE2000
   distance. The units authored in the stylesheets are read from the CSSOM, because
   `getComputedStyle` returns resolved pixels.
-- **Health line.** One sentence per audit. For the demo capture: *7 of 29 colours are
+- **Health line.** One sentence per audit. For the demo capture: _7 of 29 colours are
   near-duplicates, 6 of 9 type sizes fall off the scale, and 14 of 21 spacing values miss the
-  4px grid. No issues found in radius, shadows, and contrast.*
+  4px grid. No issues found in radius, shadows, and contrast._
 - **Stated references.** Type is measured against a named modular ratio, spacing against a 4px
   or 8px grid, colour against CIEDE2000 ΔE and contrast against WCAG 2.1. The ratio and the grid
   can be changed on their tabs. The Overview stays on the automatic fit.
@@ -59,18 +59,18 @@ The backend listens on :3001 and the client on :5173.
 
 ## Scripts
 
-| Command | Does |
-| --- | --- |
-| `npm run dev:server` | Backend: API, WebSocket progress, crawl worker |
-| `npm run crawl` | Crawl a URL to JSON, without the queue or the server |
-| `npm run capture` | Recapture the bundled demo audit and print the figures the docs quote |
-| `npm run discover` | Resolve a URL and list its candidate pages |
-| `npm test` | Vitest over the service |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run lint` | ESLint (typescript-eslint and react-hooks) over the service and the client |
-| `npm run lint:css` | Stylelint, including the hardcoded-value gate |
-| `npm run lint:prose` | Fails on a new em dash in any tracked file |
-| `npm run build` | `tsc` to `dist/` |
+| Command              | Does                                                                       |
+| -------------------- | -------------------------------------------------------------------------- |
+| `npm run dev:server` | Backend: API, WebSocket progress, crawl worker                             |
+| `npm run crawl`      | Crawl a URL to JSON, without the queue or the server                       |
+| `npm run capture`    | Recapture the bundled demo audit and print the figures the docs quote      |
+| `npm run discover`   | Resolve a URL and list its candidate pages                                 |
+| `npm test`           | Vitest over the service                                                    |
+| `npm run typecheck`  | `tsc --noEmit`                                                             |
+| `npm run lint`       | ESLint (typescript-eslint and react-hooks) over the service and the client |
+| `npm run lint:css`   | Stylelint, including the hardcoded-value gate                              |
+| `npm run lint:prose` | Fails on a new em dash in any tracked file                                 |
+| `npm run build`      | `tsc` to `dist/`                                                           |
 
 `client/` has its own `dev`, `build`, `build:demo`, `preview`, `test`, `typecheck`, `e2e` and
 `screenshots`.

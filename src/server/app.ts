@@ -30,12 +30,10 @@ function friendlyDiscoverError(err: unknown): string {
     return "That site’s address could not be found. Check the URL for typos.";
   if (/timeout|ERR_TIMED_OUT|timed out/i.test(m))
     return "That site took too long to respond. Try again in a moment.";
-  if (/ERR_CONNECTION|ECONNREFUSED|ECONNRESET/i.test(m))
-    return "Could not connect to that site.";
+  if (/ERR_CONNECTION|ECONNREFUSED|ECONNRESET/i.test(m)) return "Could not connect to that site.";
   if (/ERR_CERT|ERR_SSL|certificate/i.test(m))
     return "That site’s security certificate could not be verified.";
-  if (/Invalid or unsupported URL/i.test(m))
-    return "That doesn’t look like a valid web address.";
+  if (/Invalid or unsupported URL/i.test(m)) return "That doesn’t look like a valid web address.";
   return "That site could not be read. Check the URL and try again.";
 }
 
@@ -105,7 +103,9 @@ export function createApp(deps: AppDeps): Express {
         try {
           await assertDeliverable(callbackUrl);
         } catch (err) {
-          res.status(422).json({ error: err instanceof Error ? err.message : "Invalid callbackUrl." });
+          res
+            .status(422)
+            .json({ error: err instanceof Error ? err.message : "Invalid callbackUrl." });
           return;
         }
       }

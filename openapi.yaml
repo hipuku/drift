@@ -59,7 +59,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/DiscoverResult" }
         "400":
-          description: '`url` is missing.'
+          description: "`url` is missing."
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
@@ -98,7 +98,7 @@ paths:
                 properties:
                   jobId: { type: string, example: "24" }
         "400":
-          description: '`url` is missing.'
+          description: "`url` is missing."
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
@@ -210,7 +210,12 @@ components:
     DiscoverResult:
       type: object
       properties:
-        rootUrl: { type: string, format: uri, description: "The resolved origin. Follow this, not the input." }
+        rootUrl:
+          {
+            type: string,
+            format: uri,
+            description: "The resolved origin. Follow this, not the input.",
+          }
         host: { type: string }
         via:
           type: string
@@ -287,7 +292,8 @@ components:
         pages: { type: integer }
         distinctColours: { type: integer }
         colourFamilies: { type: integer }
-        colourNearDuplicates: { type: integer, description: Colours less than ΔE 2 from another colour on the site. }
+        colourNearDuplicates:
+          { type: integer, description: Colours less than ΔE 2 from another colour on the site. }
         fontFamilies: { type: integer }
         typeSizes: { type: integer }
         fontWeights: { type: integer }
@@ -328,8 +334,17 @@ components:
       properties:
         rootUrl: { type: string, format: uri }
         summary: { $ref: "#/components/schemas/AuditSummary" }
-        colourFamilies: { type: array, items: { type: object }, description: "Colour families with swatches, usage and near-duplicate relations." }
-        typography: { type: object, description: "Families, roles, sizes, weights, line-heights, letter-spacings." }
+        colourFamilies:
+          {
+            type: array,
+            items: { type: object },
+            description: "Colour families with swatches, usage and near-duplicate relations.",
+          }
+        typography:
+          {
+            type: object,
+            description: "Families, roles, sizes, weights, line-heights, letter-spacings.",
+          }
         spacing: { type: array, items: { type: object } }
         radius: { type: array, items: { type: object } }
         shadow: { type: array, items: { type: object } }
@@ -340,7 +355,11 @@ components:
         gradients: { type: array, items: { type: object } }
         motion: { type: object }
         breakpoints: { type: array, items: { type: object } }
-        authored: { type: object, description: "How the site authors its tokens: units and value strings per category, plus its own custom properties." }
+        authored:
+          {
+            type: object,
+            description: "How the site authors its tokens: units and value strings per category, plus its own custom properties.",
+          }
         contrast:
           type: array
           items: { $ref: "#/components/schemas/ContrastFinding" }

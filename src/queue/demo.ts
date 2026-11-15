@@ -35,7 +35,9 @@ const finished = new Promise<void>((resolve) => {
 });
 
 const job = await enqueueCrawl(queue, { url, maxPages });
-process.stdout.write(`enqueued job ${job.id}: ${url} (${maxPages} page${maxPages === 1 ? "" : "s"})\n`);
+process.stdout.write(
+  `enqueued job ${job.id}: ${url} (${maxPages} page${maxPages === 1 ? "" : "s"})\n`,
+);
 
 await finished;
 await worker.close();

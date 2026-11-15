@@ -17,13 +17,7 @@ import { useState } from "react";
 import { Callout } from "../../../components/Callout/Callout.js";
 import { Text } from "../../../components/Text/Text.js";
 import type { AuditAuthored } from "../../../lib/api.js";
-import {
-  CATEGORY_LABEL,
-  VERDICT_TAB,
-  colourish,
-  plural,
-  unitLabel,
-} from "../auditModel.js";
+import { CATEGORY_LABEL, VERDICT_TAB, colourish, plural, unitLabel } from "../auditModel.js";
 /* Two stylesheets, because this section reads from two. Its own classes live
    beside it; the ones below are the audit screen's, shared with other parts
    of the report, and stay there. */
@@ -48,55 +42,55 @@ export function OverviewSection({
 }) {
   return (
     <>
-        <div className={styles.health}>
-          <Text role="label-sm" className={styles.healthKicker}>
-            Health
-          </Text>
-          <Text role="heading-lg" as="p" className={styles.healthLine}>
-            {health}
-          </Text>
-        </div>
-        <div className={styles.verdictGrid}>
-          {verdicts.map((v) => {
-            const id = VERDICT_TAB[v.label];
-            const linked = id != null && hasTab(id);
-            const className = `${styles.verdict} ${styles[v.verdict] ?? ""}${
-              linked ? ` ${styles.verdictClickable}` : ""
-            }`;
-            const icon = id ? tabIcon[id] : undefined;
-            const body = (
-              <>
-                <span className={styles.verdictLabelRow}>
-                  {icon && (
-                    <FontAwesomeIcon icon={icon} className={styles.verdictIcon} aria-hidden="true" />
-                  )}
-                  <Text role="label" className={styles.verdictLabel}>
-                    {v.label}
-                  </Text>
-                </span>
-                <Text role="display" as="span" className={styles.verdictN}>
-                  {v.n}
+      <div className={styles.health}>
+        <Text role="label-sm" className={styles.healthKicker}>
+          Health
+        </Text>
+        <Text role="heading-lg" as="p" className={styles.healthLine}>
+          {health}
+        </Text>
+      </div>
+      <div className={styles.verdictGrid}>
+        {verdicts.map((v) => {
+          const id = VERDICT_TAB[v.label];
+          const linked = id != null && hasTab(id);
+          const className = `${styles.verdict} ${styles[v.verdict] ?? ""}${
+            linked ? ` ${styles.verdictClickable}` : ""
+          }`;
+          const icon = id ? tabIcon[id] : undefined;
+          const body = (
+            <>
+              <span className={styles.verdictLabelRow}>
+                {icon && (
+                  <FontAwesomeIcon icon={icon} className={styles.verdictIcon} aria-hidden="true" />
+                )}
+                <Text role="label" className={styles.verdictLabel}>
+                  {v.label}
                 </Text>
-                <div className={shared.pills}>
-                  {v.chips.map((c) => (
-                    <span key={c} className={shared.pill}>
-                      {c}
-                    </span>
-                  ))}
-                </div>
-              </>
-            );
-            return linked ? (
-              <button key={v.label} type="button" className={className} onClick={() => onGoToTab(id)}>
-                {body}
-              </button>
-            ) : (
-              <div key={v.label} className={className}>
-                {body}
+              </span>
+              <Text role="display" as="span" className={styles.verdictN}>
+                {v.n}
+              </Text>
+              <div className={shared.pills}>
+                {v.chips.map((c) => (
+                  <span key={c} className={shared.pill}>
+                    {c}
+                  </span>
+                ))}
               </div>
-            );
-          })}
-        </div>
+            </>
+          );
+          return linked ? (
+            <button key={v.label} type="button" className={className} onClick={() => onGoToTab(id)}>
+              {body}
+            </button>
+          ) : (
+            <div key={v.label} className={className}>
+              {body}
+            </div>
+          );
+        })}
+      </div>
       {authored && <AuthoringSummary authored={authored} />}
     </>
   );
@@ -157,7 +151,11 @@ function AuthoringSummary({ authored }: { authored: AuditAuthored }) {
               {props.map((p) => (
                 <li key={p.name} className={styles.propRow}>
                   {colourish(p.value) && (
-                    <span className={styles.propSwatch} style={{ background: p.value }} aria-hidden="true" />
+                    <span
+                      className={styles.propSwatch}
+                      style={{ background: p.value }}
+                      aria-hidden="true"
+                    />
                   )}
                   <code className={styles.propName}>{p.name}</code>
                   <span className={styles.propValue} title={p.value}>

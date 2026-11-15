@@ -141,7 +141,8 @@
   width: 1rem;
   height: 1rem;
   border-radius: var(--drift-radius-control);
-  border: var(--drift-border-width-default) solid color-mix(in oklab, var(--drift-color-ink-primary) 15%, transparent);
+  border: var(--drift-border-width-default) solid
+    color-mix(in oklab, var(--drift-color-ink-primary) 15%, transparent);
 }
 
 .propName {
@@ -182,7 +183,9 @@
   border: var(--drift-border-width-default) solid var(--drift-card-border);
   border-bottom-width: 3px;
   border-radius: var(--drift-radius-overlay);
-  transition: transform var(--motion-duration-micro) var(--motion-ease-standard), box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
+  transition:
+    transform var(--motion-duration-micro) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
 }
 
 .verdictClickable {
@@ -226,19 +229,39 @@
 }
 
 .good {
-  background: color-mix(in oklab, var(--drift-color-success-default) 12%, var(--drift-color-surface-default));
-  border-color: color-mix(in oklab, var(--drift-color-success-default) 26%, var(--drift-card-border));
+  background: color-mix(
+    in oklab,
+    var(--drift-color-success-default) 12%,
+    var(--drift-color-surface-default)
+  );
+  border-color: color-mix(
+    in oklab,
+    var(--drift-color-success-default) 26%,
+    var(--drift-card-border)
+  );
   border-bottom-color: var(--drift-color-success-default);
 }
 
 .watch {
-  background: color-mix(in oklab, var(--drift-color-warning-default) 14%, var(--drift-color-surface-default));
-  border-color: color-mix(in oklab, var(--drift-color-warning-default) 30%, var(--drift-card-border));
+  background: color-mix(
+    in oklab,
+    var(--drift-color-warning-default) 14%,
+    var(--drift-color-surface-default)
+  );
+  border-color: color-mix(
+    in oklab,
+    var(--drift-color-warning-default) 30%,
+    var(--drift-card-border)
+  );
   border-bottom-color: var(--drift-color-warning-default);
 }
 
 .review {
-  background: color-mix(in oklab, var(--drift-color-error-default) 13%, var(--drift-color-surface-default));
+  background: color-mix(
+    in oklab,
+    var(--drift-color-error-default) 13%,
+    var(--drift-color-surface-default)
+  );
   border-color: color-mix(in oklab, var(--drift-color-error-default) 28%, var(--drift-card-border));
   border-bottom-color: var(--drift-color-error-default);
 }
@@ -255,7 +278,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .verdict {
-          transition: none;
-        }
+    transition: none;
+  }
 }
-

@@ -73,10 +73,7 @@ describe("normaliseDiscovered", () => {
   });
 
   it("prefers a query-less link's text for the title", () => {
-    const pages = normaliseDiscovered(
-      root,
-      links(["/news?page=2", "page 2"], ["/news", "News"]),
-    );
+    const pages = normaliseDiscovered(root, links(["/news?page=2", "page 2"], ["/news", "News"]));
     expect(pages.find((p) => p.path === "/news")!.title).toBe("News");
   });
 

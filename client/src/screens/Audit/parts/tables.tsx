@@ -21,7 +21,15 @@ import styles from "../Audit.module.css";
  * form. `children` is the off-scale/off-grid dot, kept inside the primary span so
  * its positioning is unchanged.
  */
-export function LengthValue({ px, unit, children }: { px: number; unit: DisplayUnit; children?: ReactNode }) {
+export function LengthValue({
+  px,
+  unit,
+  children,
+}: {
+  px: number;
+  unit: DisplayUnit;
+  children?: ReactNode;
+}) {
   const primary = unit === "px" ? `${px}px` : toRem(px);
   const alt = unit === "px" ? toRem(px) : `${px}px`;
   return (
@@ -38,7 +46,15 @@ export function LengthValue({ px, unit, children }: { px: number; unit: DisplayU
  * a long shadow string, a site with many element tags, scrolls inside the
  * panel instead of stretching the page.
  */
-export function Table({ head, children, className }: { head: ReactNode[]; children: ReactNode; className?: string }) {
+export function Table({
+  head,
+  children,
+  className,
+}: {
+  head: ReactNode[];
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <div className={styles.tableWrap}>
       <table className={className ? `${styles.table} ${className}` : styles.table}>

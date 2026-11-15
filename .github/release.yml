@@ -3,7 +3,7 @@
 changelog:
   exclude:
     labels: [skip-changelog]
-    authors: ['dependabot[bot]']
+    authors: ["dependabot[bot]"]
   categories:
     - title: Breaking changes
       labels: [breaking]
@@ -18,4 +18,4 @@ changelog:
     - title: Documentation
       labels: [docs]
     - title: Other changes
-      labels: ['*']
+      labels: ["*"]

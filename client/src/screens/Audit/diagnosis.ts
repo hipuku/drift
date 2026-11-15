@@ -8,7 +8,11 @@
  */
 
 import type { SiteAudit } from "../../lib/api.js";
-import { buildScaleToCover, classifyAgainstScale, detectClosestRatio } from "../../lib/typeScale.js";
+import {
+  buildScaleToCover,
+  classifyAgainstScale,
+  detectClosestRatio,
+} from "../../lib/typeScale.js";
 import {
   INDISTINGUISHABLE_DELTA_E,
   RADIUS_NEAR_DUPLICATE_PX,
@@ -43,7 +47,11 @@ export function offScaleSet(sizes: Sizes, basePx: number, ratio: number): Set<nu
   const px = sizes.map((z) => z.px);
   if (px.length < 2) return new Set();
   const scale = buildScaleToCover(basePx, ratio, Math.min(...px), Math.max(...px));
-  return new Set(classifyAgainstScale(px, scale).filter((m) => !m.onScale).map((m) => m.px));
+  return new Set(
+    classifyAgainstScale(px, scale)
+      .filter((m) => !m.onScale)
+      .map((m) => m.px),
+  );
 }
 
 export function buildVerdicts(audit: SiteAudit): VerdictCard[] {
@@ -125,7 +133,12 @@ export function buildVerdicts(audit: SiteAudit): VerdictCard[] {
   // Extended tokens appear only when present, as neutral (informational) cards.
   const pushExtended = (label: string, list: { length: number } | undefined, unit: string) => {
     if (list && list.length) {
-      verdicts.push({ label, n: list.length, verdict: "neutral", chips: [`${list.length} ${plural(list.length, unit)}`] });
+      verdicts.push({
+        label,
+        n: list.length,
+        verdict: "neutral",
+        chips: [`${list.length} ${plural(list.length, unit)}`],
+      });
     }
   };
   pushExtended("Border", audit.borders, "width");
@@ -166,12 +179,20 @@ export function buildExport(audit: SiteAudit, generatedAt: Date) {
   const t = audit.typography;
   const host = hostOf(audit.rootUrl);
   const typeBasePx = typeBasePxOf(t.sizes);
-  const typeFit = detectClosestRatio(t.sizes.map((z) => z.px), typeBasePx);
+  const typeFit = detectClosestRatio(
+    t.sizes.map((z) => z.px),
+    typeBasePx,
+  );
 
-  const diagnosisOffScalePx = typeFit ? offScaleSet(t.sizes, typeBasePx, typeFit.ratio.ratio) : new Set<number>();
+  const diagnosisOffScalePx = typeFit
+    ? offScaleSet(t.sizes, typeBasePx, typeFit.ratio.ratio)
+    : new Set<number>();
   const spacingValues = audit.spacing.map((sp) => sp.value);
   const diagnosisOffGridSet = offGrid(spacingValues, detectGridBase(spacingValues));
-  const radiusNearDupSet = nearDuplicates(audit.radius.map((r) => r.value), RADIUS_NEAR_DUPLICATE_PX);
+  const radiusNearDupSet = nearDuplicates(
+    audit.radius.map((r) => r.value),
+    RADIUS_NEAR_DUPLICATE_PX,
+  );
 
   // Findings are only the categories with an issue. `verdicts` below lists
   // every category.
@@ -206,7 +227,11 @@ export function buildExport(audit: SiteAudit, generatedAt: Date) {
       evidence: audit.colourFamilies
         .flatMap((f) => f.swatches)
         .filter((w) => w.nearest && w.nearest.deltaE < INDISTINGUISHABLE_DELTA_E)
-        .map((w) => ({ hex: w.hex, nearest: w.nearest!.hex, deltaE: Number(w.nearest!.deltaE.toFixed(2)) })),
+        .map((w) => ({
+          hex: w.hex,
+          nearest: w.nearest!.hex,
+          deltaE: Number(w.nearest!.deltaE.toFixed(2)),
+        })),
     });
   }
   const offScaleCount = s.typeOffScale ?? 0;

@@ -1,11 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { PageExtraction } from "../crawler/types.js";
-import {
-  AUTHORED_VALUES_KEPT,
-  classifyUnit,
-  extractUnits,
-  summariseAuthored,
-} from "./authored.js";
+import { AUTHORED_VALUES_KEPT, classifyUnit, extractUnits, summariseAuthored } from "./authored.js";
 
 describe("extractUnits", () => {
   it("reads the unit of a simple value", () => {

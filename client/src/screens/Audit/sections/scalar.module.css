@@ -116,7 +116,11 @@
     linear-gradient(45deg, transparent 75%, #c3c8d0 75%),
     linear-gradient(-45deg, transparent 75%, #c3c8d0 75%);
   background-size: 12px 12px;
-  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+  background-position:
+    0 0,
+    0 6px,
+    6px -6px,
+    -6px 0;
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- the colour is tokenised; the geometry is the shape of the affordance, and the rule cannot see inside a shorthand */
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--drift-color-ink-primary) 14%, transparent);
 }
@@ -134,7 +138,11 @@
   height: 2.5rem;
   border-radius: var(--drift-radius-surface);
   overflow: hidden;
-  background: repeating-linear-gradient(45deg, var(--drift-color-primary-default) 0 8px, var(--drift-accent-300) 8px 16px);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--drift-color-primary-default) 0 8px,
+    var(--drift-accent-300) 8px 16px
+  );
   position: relative;
 }
 
@@ -165,23 +173,27 @@
   transform: translateY(-50%);
 }
 
-.motionDot { animation: slideTrack var(--dur, 200ms) var(--motion-ease-standard) infinite alternate; }
+.motionDot {
+  animation: slideTrack var(--dur, 200ms) var(--motion-ease-standard) infinite alternate;
+}
 
-.easingDot { animation: slideTrack 1.4s var(--ease, ease) infinite alternate; }
+.easingDot {
+  animation: slideTrack 1.4s var(--ease, ease) infinite alternate;
+}
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (width <= 40rem) {
   .specimenCell {
-        width: 30%;
-      }
+    width: 30%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .motionDot,
-      .easingDot {
-        animation: none;
-        left: calc(100% - 0.7rem);
-      }
+  .easingDot {
+    animation: none;
+    left: calc(100% - 0.7rem);
+  }
 }
 
 /* Contrast: a live specimen of the pair as the site actually renders it, so
@@ -219,7 +231,11 @@
    declaration parses, animation-name computes to exactly the string it was
    given, and nothing runs. See tokens.test.ts, which now fails on it. */
 @keyframes slideTrack {
-  from { left: 0; }
+  from {
+    left: 0;
+  }
 
-  to { left: calc(100% - 0.7rem); }
+  to {
+    left: calc(100% - 0.7rem);
+  }
 }

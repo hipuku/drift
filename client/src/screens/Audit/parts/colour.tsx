@@ -62,7 +62,9 @@ export function ColourCard({
         </Text>
         <span className={shared.pills}>
           <span className={shared.pill}>{sw.count.toLocaleString()}× used</span>
-          {isDup && <span className={`${shared.pill} ${styles.pillDup}`}>≈ ΔE {sw.nearest!.deltaE}</span>}
+          {isDup && (
+            <span className={`${shared.pill} ${styles.pillDup}`}>≈ ΔE {sw.nearest!.deltaE}</span>
+          )}
         </span>
       </span>
     </button>
@@ -76,7 +78,13 @@ const ROLE_ORDER = [
 ];
 
 /** The drawer header: the swatch, its hex, and headline usage. */
-export function ColourDrawerTitle({ sw, totalPages }: { sw: AuditColourSwatch; totalPages: number }) {
+export function ColourDrawerTitle({
+  sw,
+  totalPages,
+}: {
+  sw: AuditColourSwatch;
+  totalPages: number;
+}) {
   return (
     <div className={styles.drawerTitle}>
       <span className={styles.drawerSwatch} style={{ background: sw.hex }} />
@@ -113,7 +121,9 @@ export function NearCallout({
   return (
     <button
       type="button"
-      className={kind === "duplicate" ? `${styles.nearCallout} ${styles.nearDup}` : styles.nearCallout}
+      className={
+        kind === "duplicate" ? `${styles.nearCallout} ${styles.nearDup}` : styles.nearCallout
+      }
       onClick={() => onPick(hex)}
     >
       <span className={styles.nearSwatchWrap}>
@@ -142,7 +152,9 @@ export function ColourDetail({
   totalPages: number;
   onPick: (hex: string) => void;
 }) {
-  const roles = ROLE_ORDER.map((r) => ({ label: r.label, n: sw.roles[r.key] })).filter((r) => r.n > 0);
+  const roles = ROLE_ORDER.map((r) => ({ label: r.label, n: sw.roles[r.key] })).filter(
+    (r) => r.n > 0,
+  );
   const total = roles.reduce((n, r) => n + r.n, 0) || 1;
   const elements = sw.elements;
 
@@ -212,7 +224,9 @@ export function ColourDetail({
             {elementGroups.length < elements.length && (
               <button
                 type="button"
-                className={grouped ? `${styles.sortToggle} ${styles.sortToggleOn}` : styles.sortToggle}
+                className={
+                  grouped ? `${styles.sortToggle} ${styles.sortToggleOn}` : styles.sortToggle
+                }
                 aria-pressed={grouped}
                 title={grouped ? "Sort by frequency" : "Group by element"}
                 onClick={() => setGrouped((g) => !g)}

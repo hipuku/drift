@@ -31,9 +31,7 @@ function result(elements: ExtractedElement[]): CrawlResult {
   return {
     rootUrl: "https://example.test/",
     crawledAt: "2026-01-01T00:00:00.000Z",
-    pages: [
-      { url: "https://example.test/", title: "t", elementCount: elements.length, elements },
-    ],
+    pages: [{ url: "https://example.test/", title: "t", elementCount: elements.length, elements }],
   };
 }
 

@@ -104,7 +104,12 @@ describe("healthLine", () => {
 
   it("names each category with an issue, with its counts", () => {
     const line = healthLine(
-      clean({ colourNearDuplicates: 4, typeOffScale: 6, spacingOffGrid: 12, radiusNearDuplicates: 2 }),
+      clean({
+        colourNearDuplicates: 4,
+        typeOffScale: 6,
+        spacingOffGrid: 12,
+        radiusNearDuplicates: 2,
+      }),
     );
     expect(line).toContain("4 of 20 colours are near-duplicates");
     expect(line).toContain("6 of 8 type sizes fall off the scale");
@@ -154,7 +159,13 @@ describe("healthLine", () => {
 
   it("treats missing counts as zero rather than NaN", () => {
     // The summary is server data; an older payload may omit the newer fields.
-    const line = healthLine({ distinctColours: 5, typeSizes: 3, spacings: 4, radii: 0, shadows: 0 } as SiteAudit["summary"]);
+    const line = healthLine({
+      distinctColours: 5,
+      typeSizes: 3,
+      spacings: 4,
+      radii: 0,
+      shadows: 0,
+    } as SiteAudit["summary"]);
     expect(line).not.toContain("NaN");
     expect(line).not.toContain("undefined");
   });
@@ -213,9 +224,9 @@ describe("nearKind", () => {
     expect(nearKind("#0d7a4f", { hex: "#aa3333", deltaE: INDISTINGUISHABLE_DELTA_E })).toBe(
       "nearest",
     );
-    expect(
-      nearKind("#0d7a4f", { hex: "#aa3333", deltaE: INDISTINGUISHABLE_DELTA_E - 0.001 }),
-    ).toBe("duplicate");
+    expect(nearKind("#0d7a4f", { hex: "#aa3333", deltaE: INDISTINGUISHABLE_DELTA_E - 0.001 })).toBe(
+      "duplicate",
+    );
   });
 
   it("is not fooled by the same base at the same alpha", () => {
@@ -433,7 +444,9 @@ describe("extendedDriftAreas", () => {
   });
 
   it("says nothing when neither signal is present", () => {
-    expect(extendedDriftAreas([{ value: 1 }, { value: 4 }], [{ value: 1 }, { value: 10 }])).toEqual([]);
+    expect(extendedDriftAreas([{ value: 1 }, { value: 4 }], [{ value: 1 }, { value: 10 }])).toEqual(
+      [],
+    );
   });
 
   it("treats a missing category as no signal, not as a problem", () => {

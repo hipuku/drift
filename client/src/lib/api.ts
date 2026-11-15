@@ -297,8 +297,21 @@ export interface AuditContrastFinding {
 
 /** How the site authors its tokens, read from the CSSOM rather than computed px. */
 export type CssUnit =
-  | "px" | "rem" | "em" | "percent" | "vw" | "vh" | "vmin" | "vmax"
-  | "ch" | "ex" | "unitless" | "clamp" | "calc" | "zero" | "other";
+  | "px"
+  | "rem"
+  | "em"
+  | "percent"
+  | "vw"
+  | "vh"
+  | "vmin"
+  | "vmax"
+  | "ch"
+  | "ex"
+  | "unitless"
+  | "clamp"
+  | "calc"
+  | "zero"
+  | "other";
 
 export interface AuditAuthoredCategory {
   category: "spacing" | "type" | "radius" | "border";

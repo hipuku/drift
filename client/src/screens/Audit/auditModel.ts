@@ -246,7 +246,6 @@ export function deviceClass(px: number): string {
   return "desktop";
 }
 
-
 // ── Derived sets ────────────────────────────────────────────────────────────
 // Pure derivations over an audit. These lived inside the Audit component as
 // useMemo bodies, where they could not be tested without rendering a screen,

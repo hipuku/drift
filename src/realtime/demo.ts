@@ -24,7 +24,9 @@ const queue = createCrawlQueue();
 
 const job = await enqueueCrawl(queue, { url, maxPages });
 const jobId = job.id!;
-process.stdout.write(`enqueued job ${jobId}: ${url} (${maxPages} page${maxPages === 1 ? "" : "s"})\n`);
+process.stdout.write(
+  `enqueued job ${jobId}: ${url} (${maxPages} page${maxPages === 1 ? "" : "s"})\n`,
+);
 
 const client = new WebSocket(`ws://127.0.0.1:${PORT}`);
 
@@ -36,7 +38,9 @@ const finished = new Promise<void>((resolve) => {
     const m = JSON.parse(raw.toString()) as ServerMessage;
     if (m.type === "subscribed") process.stdout.write(`  ws <- subscribed ${m.jobId}\n`);
     else if (m.type === "progress")
-      process.stdout.write(`  ws <- progress ${m.data.pagesCrawled}/${m.data.maxPages} ${m.data.lastUrl}\n`);
+      process.stdout.write(
+        `  ws <- progress ${m.data.pagesCrawled}/${m.data.maxPages} ${m.data.lastUrl}\n`,
+      );
     else if (m.type === "completed") {
       process.stdout.write(`  ws <- completed ${m.jobId}\n`);
       resolve();

@@ -232,9 +232,9 @@ export function summariseAuthored(pages: PageExtraction[]): AuthoredSummary {
     if (c && hasFoldableUnit(value)) push(c, value);
   }
 
-  const categories = CATEGORY_ORDER.map((c) => categoryFrom(c, valuesByCategory.get(c) ?? [])).filter(
-    (c) => c.total > 0,
-  );
+  const categories = CATEGORY_ORDER.map((c) =>
+    categoryFrom(c, valuesByCategory.get(c) ?? []),
+  ).filter((c) => c.total > 0);
 
   const type = categories.find((c) => c.category === "type");
   const typeInPx = type?.dominant === "px";

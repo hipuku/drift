@@ -11,7 +11,12 @@
  * Node-side.
  */
 
-import type { MediaBreakpoint, RawAuthoredCss, RawAuthoredDeclaration, RawCustomProperty } from "./types.js";
+import type {
+  MediaBreakpoint,
+  RawAuthoredCss,
+  RawAuthoredDeclaration,
+  RawCustomProperty,
+} from "./types.js";
 
 /** Runs in the browser. Returns absolute href strings for every anchor. */
 export function extractLinks(): string[] {
@@ -43,7 +48,8 @@ export function extractBreakpoints(): MediaBreakpoint[] {
         while ((m = re.exec(cond)) !== null) {
           const raw = parseFloat(m[2]!);
           const px = m[3] === "px" ? raw : raw * 16;
-          if (Number.isFinite(px) && px > 0) out.push({ type: m[1] as "min" | "max", value: Math.round(px) });
+          if (Number.isFinite(px) && px > 0)
+            out.push({ type: m[1] as "min" | "max", value: Math.round(px) });
         }
       }
       const grouping = rule as CSSGroupingRule;

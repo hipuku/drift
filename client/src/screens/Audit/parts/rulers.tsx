@@ -123,7 +123,9 @@ export function ScaleOptions({
           role="radio"
           aria-checked={o.id === activeId}
           tabIndex={o.id === activeId ? 0 : -1}
-          className={o.id === activeId ? `${styles.scaleChip} ${styles.scaleChipOn}` : styles.scaleChip}
+          className={
+            o.id === activeId ? `${styles.scaleChip} ${styles.scaleChipOn}` : styles.scaleChip
+          }
           onClick={() => onSelect(o.id)}
         >
           <span>{o.label}</span>

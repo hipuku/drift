@@ -126,7 +126,12 @@ describe("resolveReachableUrl", () => {
   it("returns the first candidate that responds ok, following to its final url", async () => {
     const fetchImpl = (async (url: string) => {
       if (url === "https://studiooptics.com.au/") throw new Error("ENOTFOUND");
-      return { ok: true, status: 200, url: "https://www.studiooptics.com.au/", text: async () => "" };
+      return {
+        ok: true,
+        status: 200,
+        url: "https://www.studiooptics.com.au/",
+        text: async () => "",
+      };
     }) as unknown as typeof fetch;
     expect(await resolveReachableUrl("studiooptics.com.au", { fetchImpl })).toBe(
       "https://www.studiooptics.com.au/",
@@ -153,10 +158,8 @@ describe("discoverSitemapUrls", () => {
   it("follows robots → index → child sitemaps and collects pages", async () => {
     const fetchImpl = mockFetch({
       "https://ex.com/robots.txt": "Sitemap: https://ex.com/wp-sitemap.xml",
-      "https://ex.com/wp-sitemap.xml":
-        `<sitemapindex><sitemap><loc>https://ex.com/child-1.xml</loc></sitemap></sitemapindex>`,
-      "https://ex.com/child-1.xml":
-        `<urlset><url><loc>https://ex.com/</loc></url><url><loc>https://ex.com/eye-conditions/glaucoma/</loc></url></urlset>`,
+      "https://ex.com/wp-sitemap.xml": `<sitemapindex><sitemap><loc>https://ex.com/child-1.xml</loc></sitemap></sitemapindex>`,
+      "https://ex.com/child-1.xml": `<urlset><url><loc>https://ex.com/</loc></url><url><loc>https://ex.com/eye-conditions/glaucoma/</loc></url></urlset>`,
     });
     const urls = await discoverSitemapUrls("https://ex.com/", { fetchImpl });
     expect(urls).toContain("https://ex.com/eye-conditions/glaucoma/");

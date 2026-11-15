@@ -44,18 +44,18 @@ export function createCrawlWorker(
       let result: CrawlResult;
       try {
         result = await crawl(url, {
-        maxPages,
-        pages,
-        onPage: async (page, index) => {
-          elementsTotal += page.elementCount;
-          const progress: CrawlProgress = {
-            pagesCrawled: index + 1,
-            maxPages,
-            lastUrl: page.url,
-            lastTitle: page.title,
-            lastElements: page.elementCount,
-            elementsTotal,
-          };
+          maxPages,
+          pages,
+          onPage: async (page, index) => {
+            elementsTotal += page.elementCount;
+            const progress: CrawlProgress = {
+              pagesCrawled: index + 1,
+              maxPages,
+              lastUrl: page.url,
+              lastTitle: page.title,
+              lastElements: page.elementCount,
+              elementsTotal,
+            };
             await job.updateProgress(progress);
           },
         });

@@ -84,10 +84,7 @@ describe("tabs", () => {
       ["Blur", (audit.blur ?? []).length > 0],
       ["Breakpoints", (audit.breakpoints ?? []).length > 0],
       ["Gradient", (audit.gradients ?? []).length > 0],
-      [
-        "Motion",
-        (audit.motion?.durations.length ?? 0) + (audit.motion?.easings.length ?? 0) > 0,
-      ],
+      ["Motion", (audit.motion?.durations.length ?? 0) + (audit.motion?.easings.length ?? 0) > 0],
     ];
     const expected = [
       "Overview",
@@ -344,9 +341,7 @@ describe("the colour detail rail", () => {
 
     expect(screen.queryByRole("button", { name: "Close detail" })).not.toBeInTheDocument();
 
-    const swatches = screen
-      .getAllByRole("button")
-      .filter((b) => b.id.startsWith("swatch-"));
+    const swatches = screen.getAllByRole("button").filter((b) => b.id.startsWith("swatch-"));
     expect(swatches.length).toBeGreaterThan(0);
     await userEvent.click(swatches[0]!);
 
@@ -375,7 +370,14 @@ describe("resilience to a thinner payload", () => {
         radii: 0,
         shadows: 0,
       },
-      typography: { families: [], roles: [], sizes: [], weights: [], lineHeights: [], letterSpacings: [] },
+      typography: {
+        families: [],
+        roles: [],
+        sizes: [],
+        weights: [],
+        lineHeights: [],
+        letterSpacings: [],
+      },
       colourFamilies: [],
       spacing: [],
       radius: [],

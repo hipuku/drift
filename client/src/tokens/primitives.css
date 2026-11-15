@@ -22,7 +22,7 @@
        system faces, and drift.css puts Stack Sans over the top.              */
     --font-sans: system-ui, -apple-system, sans-serif;
     --font-display: system-ui, -apple-system, sans-serif;
-    --font-mono: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
 
     /* ── Sub-step spacing ─────────────────────────────────────────────────────
        Below the foundation's smallest step, for hairline rules and the gaps in
