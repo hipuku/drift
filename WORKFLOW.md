@@ -53,9 +53,9 @@ gives it this repo's rules by path:
 - **Component stylesheets:** role tokens only, no raw colour, length, radius, shadow, duration or
   font value, and no primitive where a role exists.
 - **Components and screens:** interactive elements have an accessible name and keyboard handling.
-- **The service:** every new outbound request checks its protocol and goes through the address
-  rule, callbacks through `assertDeliverable`, and a crawl stays on the root's origin and under
-  `MAX_CRAWL_PAGES`.
+- **The service:** every new outbound request checks its protocol and the private-address rule in
+  `src/net/publicUrl.ts`, a browser context is created guarded, callbacks go through
+  `assertDeliverable`, and a crawl stays on the root's origin and under `MAX_CRAWL_PAGES`.
 - **The contract:** a field the service sends or accepts is declared in `openapi.yaml` and
   `client/src/lib/api.ts` in the same change.
 - **Markdown:** Australian English, topic-label headings, and claims the code supports.
