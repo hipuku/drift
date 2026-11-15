@@ -281,8 +281,8 @@ successful audit of an unreachable site.
 drift-tests waits for the server by sending `POST /discover` with no `url` and expecting `400`,
 which involves no Redis, Playwright or network. Changing that status breaks its readiness probe.
 
-CI runs six jobs on every pull request, each required on `main`: `Lint` (ESLint, Stylelint, the
-prose check and `lint:api`), `Format`, `Typecheck`, `Test`, `Build` and `End to end`. CodeQL scans
+CI runs six jobs on every pull request, each required on `main`: `Lint` (ESLint with the import layers, JSX
+accessibility and type-checked promise rules, Stylelint, the prose check and `lint:api`), `Format`, `Typecheck`, `Test`, `Build` and `End to end`. CodeQL scans
 the code. CI does not crawl a real site; drift-tests crawls its own fixture.
 
 `package.json`, `openapi.yaml` and the release tag carry the same version. drift-tests records

@@ -124,6 +124,25 @@ export default defineConfig([
     },
   },
 
+  // Promises, with type information. A crawl, a queue call, a webhook and
+  // every API request are promises, so one nobody awaits is where a failure
+  // disappears. A deliberate fire-and-forget says so with `void`. An async
+  // handler passed to a JSX attribute is allowed: React ignores a handler's
+  // return value.
+  {
+    files: ["src/**/*.ts", "client/src/**/*.{ts,tsx}"],
+    languageOptions: {
+      parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
+    },
+    rules: {
+      "@typescript-eslint/no-floating-promises": "error",
+      "@typescript-eslint/no-misused-promises": [
+        "error",
+        { checksVoidReturn: { attributes: false } },
+      ],
+    },
+  },
+
   {
     files: ["**/*.test.{ts,tsx}"],
     languageOptions: { globals: { ...globals.node, ...globals.browser, ...globals.vitest } },

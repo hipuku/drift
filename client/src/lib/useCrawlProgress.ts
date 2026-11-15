@@ -132,7 +132,8 @@ export function useCrawlProgress(jobId: string | null): CrawlProgressState {
         // Transient fetch error: keep polling rather than failing the run.
         void err;
       }
-      timer = setTimeout(poll, POLL_INTERVAL_MS);
+      // poll catches its own errors, so the promise is deliberately not awaited.
+      timer = setTimeout(() => void poll(), POLL_INTERVAL_MS);
     };
     void poll();
 
