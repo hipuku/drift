@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Drift API
-  version: 0.1.0
+  version: 0.2.0
   description: >
     Drift crawls a website and reports the design values it uses. A crawl runs
     for minutes as a BullMQ job on Redis: enqueue it, then poll the result
