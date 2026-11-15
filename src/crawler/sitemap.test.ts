@@ -9,6 +9,9 @@ import {
   urlCandidates,
 } from "./sitemap.js";
 
+/** Every host passes: these tests are about parsing and fallbacks, not the guard. */
+const checkHost = async () => true;
+
 describe("parseRobotsSitemaps", () => {
   it("extracts Sitemap: directives, case-insensitively", () => {
     const robots = [
@@ -133,7 +136,7 @@ describe("resolveReachableUrl", () => {
         text: async () => "",
       };
     }) as unknown as typeof fetch;
-    expect(await resolveReachableUrl("studiooptics.com.au", { fetchImpl })).toBe(
+    expect(await resolveReachableUrl("studiooptics.com.au", { fetchImpl, checkHost })).toBe(
       "https://www.studiooptics.com.au/",
     );
   });
@@ -142,7 +145,7 @@ describe("resolveReachableUrl", () => {
     const fetchImpl = (async () => {
       throw new Error("ENOTFOUND");
     }) as unknown as typeof fetch;
-    expect(await resolveReachableUrl("nope.invalid", { fetchImpl })).toBeNull();
+    expect(await resolveReachableUrl("nope.invalid", { fetchImpl, checkHost })).toBeNull();
   });
 });
 
@@ -161,7 +164,7 @@ describe("discoverSitemapUrls", () => {
       "https://ex.com/wp-sitemap.xml": `<sitemapindex><sitemap><loc>https://ex.com/child-1.xml</loc></sitemap></sitemapindex>`,
       "https://ex.com/child-1.xml": `<urlset><url><loc>https://ex.com/</loc></url><url><loc>https://ex.com/eye-conditions/glaucoma/</loc></url></urlset>`,
     });
-    const urls = await discoverSitemapUrls("https://ex.com/", { fetchImpl });
+    const urls = await discoverSitemapUrls("https://ex.com/", { fetchImpl, checkHost });
     expect(urls).toContain("https://ex.com/eye-conditions/glaucoma/");
   });
 
@@ -170,12 +173,82 @@ describe("discoverSitemapUrls", () => {
       "https://ex.com/robots.txt": "User-agent: *",
       "https://ex.com/sitemap.xml": `<urlset><url><loc>https://ex.com/a/</loc></url></urlset>`,
     });
-    const urls = await discoverSitemapUrls("https://ex.com/", { fetchImpl });
+    const urls = await discoverSitemapUrls("https://ex.com/", { fetchImpl, checkHost });
     expect(urls).toEqual(["https://ex.com/a/"]);
   });
 
   it("returns null when no sitemap is reachable", async () => {
     const fetchImpl = mockFetch({ "https://ex.com/robots.txt": "User-agent: *" });
-    expect(await discoverSitemapUrls("https://ex.com/", { fetchImpl })).toBeNull();
+    expect(await discoverSitemapUrls("https://ex.com/", { fetchImpl, checkHost })).toBeNull();
+  });
+});
+
+describe("redirects and private hosts", () => {
+  type Reply = { status: number; location?: string; url?: string; body?: string };
+  /** A fetch that answers from a table and records what it was asked for. */
+  function routes(map: Record<string, Reply>) {
+    const asked: string[] = [];
+    // Behaves like fetch: follows a redirect itself unless told "manual".
+    const fetchImpl = (async (url: string, init?: RequestInit): Promise<unknown> => {
+      asked.push(String(url));
+      const r = map[String(url)];
+      if (!r) throw new Error("ENOTFOUND");
+      if (r.location && init?.redirect !== "manual") {
+        return fetchImpl(new URL(r.location, url).toString(), init);
+      }
+      return {
+        ok: r.status >= 200 && r.status < 300,
+        status: r.status,
+        url: r.url ?? "",
+        headers: new Headers(r.location ? { location: r.location } : {}),
+        text: async () => r.body ?? "",
+      };
+    }) as unknown as typeof fetch;
+    return { fetchImpl, asked };
+  }
+  const publicOnly = async (host: string) => !/^(10\.|169\.254\.|127\.)/.test(host);
+
+  it("follows a redirect to a public host by hand, re-checking it", async () => {
+    const { fetchImpl } = routes({
+      "https://site.example/": { status: 301, location: "https://www.site.example/" },
+      "https://www.site.example/": { status: 200 },
+    });
+    expect(await resolveReachableUrl("site.example", { fetchImpl, checkHost: publicOnly })).toBe(
+      "https://www.site.example/",
+    );
+  });
+
+  it("does not follow a redirect to a private address", async () => {
+    const { fetchImpl, asked } = routes({
+      "https://site.example/": { status: 302, location: "http://169.254.169.254/latest/" },
+      "https://www.site.example/": { status: 302, location: "http://10.0.0.5/" },
+    });
+    expect(
+      await resolveReachableUrl("site.example", { fetchImpl, checkHost: publicOnly }),
+    ).toBeNull();
+    expect(asked.some((u) => /169\.254|10\.0\.0\.5/.test(u))).toBe(false);
+  });
+
+  it("does not fetch a sitemap whose robots.txt redirects to a private address", async () => {
+    const { fetchImpl, asked } = routes({
+      "https://site.example/robots.txt": { status: 302, location: "http://127.0.0.1:6379/" },
+    });
+    expect(
+      await discoverSitemapUrls("https://site.example/", { fetchImpl, checkHost: publicOnly }),
+    ).toBeNull();
+    expect(asked.some((u) => u.includes("127.0.0.1"))).toBe(false);
+  });
+
+  it("gives up after five redirects", async () => {
+    const map: Record<string, Reply> = {};
+    for (let i = 0; i < 8; i++) {
+      map[`https://loop.example/${i}`] = { status: 302, location: `https://loop.example/${i + 1}` };
+    }
+    const { fetchImpl, asked } = routes(map);
+    expect(
+      await resolveReachableUrl("https://loop.example/0", { fetchImpl, checkHost: publicOnly }),
+    ).toBeNull();
+    // The first request and five redirects, then it stops.
+    expect(asked.filter((u) => u.startsWith("https://loop.example/")).length).toBe(6);
   });
 });

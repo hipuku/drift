@@ -13,7 +13,47 @@
  * requests.
  */
 
+import { isCrawlableHost } from "../net/publicUrl.js";
 import type { DiscoveredPage } from "./types.js";
+
+/** Whether a host may be fetched. Injectable so tests need no DNS. */
+export type HostCheck = (host: string) => Promise<boolean>;
+
+const defaultCheck: HostCheck = (host) => isCrawlableHost(host);
+
+/** Redirects followed per request before giving up. */
+const MAX_REDIRECTS = 5;
+
+/**
+ * Fetch with redirects followed by hand, checking each host before it is
+ * requested. `fetch` would follow a 302 itself, and a public robots.txt that
+ * redirects to `http://127.0.0.1:6379/` would have the server read its own
+ * Redis. Returns the response and the URL it came from, or null when a host is
+ * refused, the redirects run out, or the request fails.
+ */
+async function guardedFetch(
+  fetchImpl: typeof fetch,
+  url: string,
+  init: RequestInit,
+  checkHost: HostCheck,
+): Promise<{ res: Response; url: string } | null> {
+  let current = url;
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    let parsed: URL;
+    try {
+      parsed = new URL(current);
+    } catch {
+      return null;
+    }
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+    if (!(await checkHost(parsed.hostname))) return null;
+    const res = await fetchImpl(current, { ...init, redirect: "manual" });
+    const location = res.status >= 300 && res.status < 400 ? res.headers.get("location") : null;
+    if (!location) return { res, url: res.url || current };
+    current = new URL(location, current).toString();
+  }
+  return null;
+}
 
 const USER_AGENT = "Mozilla/5.0 (compatible; DriftBot/1.0; +https://hipuku.dev/drift)";
 
@@ -161,23 +201,25 @@ export function urlCandidates(input: string): string[] {
 
 /**
  * Resolve the user's input to a *reachable* URL, trying www/apex variants and
- * following redirects. Returns the final URL (post-redirect) of the first
+ * following redirects, each hop checked by `checkHost`. Returns the final URL (post-redirect) of the first
  * candidate that responds, or null when none do.
  */
 export async function resolveReachableUrl(
   input: string,
-  options: { fetchImpl?: typeof fetch; timeoutMs?: number } = {},
+  options: { fetchImpl?: typeof fetch; timeoutMs?: number; checkHost?: HostCheck } = {},
 ): Promise<string | null> {
   const fetchImpl = options.fetchImpl ?? fetch;
   const timeoutMs = options.timeoutMs ?? 10_000;
+  const checkHost = options.checkHost ?? defaultCheck;
   for (const candidate of urlCandidates(input)) {
     try {
-      const res = await fetchImpl(candidate, {
-        headers: { "user-agent": USER_AGENT },
-        redirect: "follow",
-        signal: AbortSignal.timeout(timeoutMs),
-      });
-      if (res.ok) return res.url || candidate;
+      const reply = await guardedFetch(
+        fetchImpl,
+        candidate,
+        { headers: { "user-agent": USER_AGENT }, signal: AbortSignal.timeout(timeoutMs) },
+        checkHost,
+      );
+      if (reply?.res.ok) return reply.url;
     } catch {
       // try next candidate
     }
@@ -194,21 +236,28 @@ export interface SitemapDiscoveryOptions {
   maxSitemaps?: number;
   /** Cap on how many page URLs to collect. */
   maxUrls?: number;
+  /** Whether a host may be fetched. Defaults to the crawl guard. */
+  checkHost?: HostCheck;
 }
 
 async function fetchText(
   fetchImpl: typeof fetch,
   url: string,
   timeoutMs: number,
+  checkHost: HostCheck,
 ): Promise<string | null> {
   try {
-    const res = await fetchImpl(url, {
-      headers: { "user-agent": USER_AGENT, accept: "application/xml,text/xml,text/plain,*/*" },
-      redirect: "follow",
-      signal: AbortSignal.timeout(timeoutMs),
-    });
-    if (!res.ok) return null;
-    return await res.text();
+    const reply = await guardedFetch(
+      fetchImpl,
+      url,
+      {
+        headers: { "user-agent": USER_AGENT, accept: "application/xml,text/xml,text/plain,*/*" },
+        signal: AbortSignal.timeout(timeoutMs),
+      },
+      checkHost,
+    );
+    if (!reply?.res.ok) return null;
+    return await reply.res.text();
   } catch {
     return null;
   }
@@ -226,6 +275,7 @@ export async function discoverSitemapUrls(
   const timeoutMs = options.timeoutMs ?? 12_000;
   const maxSitemaps = options.maxSitemaps ?? 15;
   const maxUrls = options.maxUrls ?? 500;
+  const checkHost = options.checkHost ?? defaultCheck;
 
   let origin: string;
   let rootKey: string;
@@ -248,7 +298,7 @@ export async function discoverSitemapUrls(
   };
 
   // Seed from robots.txt's Sitemap: directives, else the conventional locations.
-  const robots = await fetchText(fetchImpl, `${origin}/robots.txt`, timeoutMs);
+  const robots = await fetchText(fetchImpl, `${origin}/robots.txt`, timeoutMs, checkHost);
   let seeds = robots ? parseRobotsSitemaps(robots).filter(sameSite) : [];
   if (seeds.length === 0) seeds = DEFAULT_SITEMAP_PATHS.map((p) => `${origin}${p}`);
 
@@ -263,7 +313,7 @@ export async function discoverSitemapUrls(
     if (seen.has(next)) continue;
     seen.add(next);
 
-    const xml = await fetchText(fetchImpl, next, timeoutMs);
+    const xml = await fetchText(fetchImpl, next, timeoutMs, checkHost);
     fetched++;
     if (!xml) continue;
 

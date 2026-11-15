@@ -70,6 +70,15 @@ A URL counts as same origin when its parsed origin equals the root's. `haus-styl
 reading a page after 12,000 elements (`maxElements`, which drift leaves at its default). Each page gets 30 seconds
 to reach `domcontentloaded`, and a page that fails is logged and skipped.
 
+The site to crawl follows the same address rule as a callback (below): `POST /crawl` and
+`POST /discover` refuse, with a `422`, a site that resolves to a private or local address. The
+crawler then checks every request the browser makes, page, asset, redirect or WebSocket, and aborts
+any that reaches such an address, because a public page can redirect or link anywhere. Sitemap
+fetches follow redirects by hand, at most five, checking each hop. The rule lives in
+`src/net/publicUrl.ts`. A host listed in `DRIFT_CRAWL_ALLOWED_HOSTS` (comma-separated, empty by
+default) is exempt, so a fixture site on `127.0.0.1` can still be crawled in development and in
+drift-tests. The API refuses a host with no dot, such as `localhost`, before the allowlist is read.
+
 Most values come from shared stylesheets, so a few pages find most of a site's values. More
 pages add attribution, such as a red that appears only on `/careers`.
 
@@ -553,6 +562,13 @@ Decisions from that layer, recorded for a second version:
 ---
 
 # Known trade-offs / next
+
+**DNS rebinding.** The crawl guard resolves a host to check it, and the request then resolves it
+again. Node does both for the pages and assets the guard fetches; the browser does the second for
+WebSockets and for the redirect hops it follows once the guard has walked the chain. A name whose
+answer changes between the two can pass the check and connect to a private address. Closing it
+needs every connection made to the address that was checked, for example through an egress proxy
+that resolves once and refuses private ranges.
 
 **Type-tier debt: 42 reads.** `TYPE_TIER_DEBT` in `tokens.test.ts` records 33 `font-family` reads
 and 9 others, and a test asserts the two figures.

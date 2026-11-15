@@ -66,8 +66,8 @@ paths:
         "422":
           description: >
             A URL that cannot name a site (a scheme other than http or https, or a
-            host with no dot), or a site that could not be read. The message is
-            human-readable.
+            host with no dot), a site on a private or local network, or a site
+            that could not be read. The message is human-readable.
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
@@ -76,8 +76,10 @@ paths:
     post:
       summary: Enqueue a crawl
       description: >
-        Checks the URL before queueing: a URL that cannot name a site is a 422
-        and no job is created. Poll `/crawl/{jobId}/result`, or pass a
+        Checks the URL before queueing: a URL that cannot name a site, or one
+        that resolves to a private or local address, is a 422 and no job is
+        created. While crawling, any request a page makes to such an address,
+        a redirect included, is aborted. Poll `/crawl/{jobId}/result`, or pass a
         `callbackUrl`. Page URLs that are not absolute or not on the root's
         origin are dropped. With no page left, or no `pages`, the crawler walks
         same-origin links from the root. At most 10 pages (`MAX_CRAWL_PAGES`).
@@ -103,7 +105,9 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
         "422":
-          description: Unusable URL or invalid `callbackUrl` (validated at enqueue time).
+          description: >
+            Unusable URL, a site on a private or local network, or an invalid
+            `callbackUrl` (validated at enqueue time).
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }

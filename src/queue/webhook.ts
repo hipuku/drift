@@ -19,8 +19,8 @@
  */
 
 import { createHmac } from "node:crypto";
-import { lookup } from "node:dns/promises";
 import type { SiteAudit } from "../analysis/audit.js";
+import { allowedHosts, bareHost, classifyHost } from "../net/publicUrl.js";
 
 /** Give up on a single delivery attempt after this long. */
 const TIMEOUT_MS = 10_000;
@@ -29,60 +29,6 @@ const MAX_ATTEMPTS = 3;
 export type WebhookEvent =
   | { event: "crawl.completed"; jobId: string; site: string; audit: SiteAudit }
   | { event: "crawl.failed"; jobId: string; site: string; error: string };
-
-/**
- * Addresses a callback must not reach: unspecified, loopback, private,
- * carrier-grade NAT (100.64/10), link-local, unique-local and multicast. An
- * IPv4-mapped IPv6 address (`::ffff:127.0.0.1`, `::ffff:7f00:1`) is checked as
- * the IPv4 address it carries.
- */
-function isPrivateAddress(address: string, family: number): boolean {
-  if (family === 6) {
-    const v6 = address.toLowerCase();
-    const dotted = /^::ffff:(\d+\.\d+\.\d+\.\d+)$/.exec(v6);
-    if (dotted) return isPrivateAddress(dotted[1]!, 4);
-    const hex = /^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/.exec(v6);
-    if (hex) {
-      const high = Number.parseInt(hex[1]!, 16);
-      const low = Number.parseInt(hex[2]!, 16);
-      return isPrivateAddress(`${high >> 8}.${high & 255}.${low >> 8}.${low & 255}`, 4);
-    }
-    return (
-      v6 === "::" ||
-      v6 === "::1" ||
-      /^f[cd]/.test(v6) ||
-      /^fe[89ab]/.test(v6) ||
-      v6.startsWith("ff")
-    );
-  }
-  const [a = 0, b = 0] = address.split(".").map(Number);
-  return (
-    a === 0 ||
-    a === 10 ||
-    (a === 100 && b >= 64 && b <= 127) ||
-    a === 127 ||
-    (a === 169 && b === 254) ||
-    (a === 172 && b >= 16 && b <= 31) ||
-    (a === 192 && b === 168) ||
-    a >= 224
-  );
-}
-
-/**
- * Hosts the operator has explicitly allowlisted via `DRIFT_WEBHOOK_ALLOWED_HOSTS`
- * (comma-separated), exempt from the private-address refusal. Empty by default,
- * so the SSRF guard is fully on unless someone opts a trusted internal host in:
- * for example a receiver inside the same network, or a loopback receiver in a
- * test run. Read fresh each call so tests and config can set it at runtime.
- */
-function allowedHosts(): Set<string> {
-  return new Set(
-    (process.env.DRIFT_WEBHOOK_ALLOWED_HOSTS ?? "")
-      .split(",")
-      .map((h) => h.trim().toLowerCase())
-      .filter(Boolean),
-  );
-}
 
 /**
  * Throw unless the URL is a public http(s) endpoint. Resolves the host, because
@@ -99,14 +45,12 @@ export async function assertDeliverable(raw: string): Promise<URL> {
   if (url.protocol !== "http:" && url.protocol !== "https:") {
     throw new Error("callbackUrl must be http or https.");
   }
-  // URL keeps the brackets on an IPv6 literal, and the resolver does not accept them.
-  const host = url.hostname.replace(/^\[|\]$/g, "");
-  const resolved = await lookup(host, { all: true }).catch(() => []);
-  if (resolved.length === 0) {
+  const status = await classifyHost(url.hostname);
+  if (status === "unresolved") {
     throw new Error("callbackUrl host could not be resolved.");
   }
-  const allowlisted = allowedHosts().has(url.hostname.toLowerCase());
-  if (!allowlisted && resolved.some((r) => isPrivateAddress(r.address, r.family))) {
+  const allowlisted = allowedHosts("DRIFT_WEBHOOK_ALLOWED_HOSTS").has(bareHost(url.hostname));
+  if (!allowlisted && status === "private") {
     throw new Error("callbackUrl must not point at a private or loopback address.");
   }
   return url;

@@ -12,6 +12,7 @@
 
 import express, { type Express, type NextFunction, type Request, type Response } from "express";
 import { collectAudit } from "../analysis/audit.js";
+import { assertCrawlable } from "../net/publicUrl.js";
 import { assertDeliverable } from "../queue/webhook.js";
 import { MAX_CRAWL_PAGES } from "../crawler/crawl.js";
 import type { DiscoverResult } from "../crawler/types.js";
@@ -20,6 +21,8 @@ import type { CrawlJobs } from "../queue/crawlJobs.js";
 export interface AppDeps {
   jobs: CrawlJobs;
   discover: (url: string) => Promise<DiscoverResult>;
+  /** Throws when a site to crawl is on a private network. Defaults to `assertCrawlable`. */
+  checkCrawlTarget?: (url: string) => Promise<void>;
 }
 
 // Map a crawler or Playwright failure to a message for the client, so the
@@ -76,6 +79,23 @@ function wrap(handler: (req: Request, res: Response) => Promise<void>) {
 
 export function createApp(deps: AppDeps): Express {
   const app = express();
+  const checkCrawlTarget = deps.checkCrawlTarget ?? ((url: string) => assertCrawlable(url));
+
+  /**
+   * Answer 422 and return false when the site is on a private network. Checked
+   * here, before anything is queued or loaded, so the caller is told why while
+   * still on the line. The crawler checks every request again as it loads,
+   * because a public page can redirect or link anywhere.
+   */
+  async function refusePrivate(url: string, res: Response): Promise<boolean> {
+    try {
+      await checkCrawlTarget(url);
+      return true;
+    } catch (err) {
+      res.status(422).json({ error: err instanceof Error ? err.message : UNUSABLE_URL });
+      return false;
+    }
+  }
   app.use(express.json({ limit: "1mb" }));
 
   app.post(
@@ -92,6 +112,7 @@ export function createApp(deps: AppDeps): Express {
         res.status(422).json({ error: UNUSABLE_URL });
         return;
       }
+      if (!(await refusePrivate(url, res))) return;
       // Optional webhook target. Validated here, while the caller is still on
       // the line to be told why, rather than discovered at delivery time.
       const callbackUrl = req.body?.callbackUrl;
@@ -128,6 +149,7 @@ export function createApp(deps: AppDeps): Express {
         res.status(422).json({ error: UNUSABLE_URL });
         return;
       }
+      if (!(await refusePrivate(url, res))) return;
       try {
         res.json(await deps.discover(url));
       } catch (err) {

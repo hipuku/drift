@@ -17,6 +17,7 @@
 import { chromium, type BrowserContext, type Browser } from "playwright";
 import { extractRawElements, normaliseElement } from "haus-style-probe";
 import { extractAuthoredDeclarations, extractBreakpoints, extractLinks } from "./extract.js";
+import { GUARDED_CONTEXT_OPTIONS, guardContext } from "./guard.js";
 import type { CrawlOptions, CrawlResult, PageExtraction } from "./types.js";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -128,7 +129,10 @@ export async function crawl(rootUrl: string, options: CrawlOptions): Promise<Cra
   let browser: Browser | undefined;
   try {
     browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext();
+    const context = await browser.newContext(GUARDED_CONTEXT_OPTIONS);
+    // Every request the pages make is checked, not only the URLs queued here:
+    // a public page can redirect or link to a private address (guard.ts).
+    await guardContext(context);
 
     if (explicit.length > 0) {
       // Visit exactly the selected pages.

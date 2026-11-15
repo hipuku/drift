@@ -188,3 +188,63 @@ describe("HTTP API", () => {
     expect(Array.isArray(body.typography.roles)).toBe(true);
   });
 });
+
+describe("crawl targets on a private network", () => {
+  const post = (base: string, path: string, body: unknown) =>
+    fetch(`${base}${path}`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+  afterEach(() => {
+    delete process.env.DRIFT_CRAWL_ALLOWED_HOSTS;
+  });
+
+  it.each(["http://169.254.169.254/latest/meta-data/", "http://10.0.0.5/", "127.0.0.1"])(
+    "POST /crawl refuses %s without queueing it",
+    async (url) => {
+      let queued = false;
+      const base = await listen({
+        jobs: fakeJobs({
+          async enqueue() {
+            queued = true;
+            return "job_x";
+          },
+        }),
+      });
+      const res = await post(base, "/crawl", { url });
+      expect(res.status).toBe(422);
+      expect((await res.json()).error).toMatch(/private or local network/);
+      expect(queued).toBe(false);
+    },
+  );
+
+  it("POST /crawl refuses an IPv6 literal before it reaches the address check", async () => {
+    const base = await listen({ jobs: fakeJobs() });
+    const res = await post(base, "/crawl", { url: "http://[::ffff:127.0.0.1]/" });
+    expect(res.status).toBe(422);
+  });
+
+  it("POST /discover refuses a private address without reading it", async () => {
+    let read = false;
+    const base = await listen({
+      jobs: fakeJobs(),
+      discover: async () => {
+        read = true;
+        return { rootUrl: "", host: "", pages: [] };
+      },
+    });
+    const res = await post(base, "/discover", { url: "http://192.168.1.1/" });
+    expect(res.status).toBe(422);
+    expect((await res.json()).error).toMatch(/private or local network/);
+    expect(read).toBe(false);
+  });
+
+  it("POST /crawl takes a private host the operator allowlisted", async () => {
+    process.env.DRIFT_CRAWL_ALLOWED_HOSTS = "127.0.0.1";
+    const base = await listen({ jobs: fakeJobs() });
+    const res = await post(base, "/crawl", { url: "http://127.0.0.1:4000/" });
+    expect(res.status).toBe(202);
+  });
+});
