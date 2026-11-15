@@ -13,14 +13,51 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+# One job per check, named exactly as the main ruleset requires them, so a
+# failure says which check broke and each can be required on its own.
 jobs:
-  ci:
-    name: Lint, Typecheck, Test, Build
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
 
+      # One config at the root covers both halves: the service under src/ and
+      # the client under client/src/.
+      - run: npm run lint
+
+      # The hardcoded-value gate (#26). --report-needless-disables is part of
+      # the check rather than a nicety: an exception that stops being needed
+      # should fail, or the disable comments become a list nobody prunes.
+      - run: npm run lint:css
+
+      # House style does not use an em dash. Ratcheted against a baseline rather
+      # than absolute: a rule that could only pass after a mechanical rewrite of
+      # every file would have been turned off instead of adopted.
+      - run: npm run lint:prose
+
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -28,56 +65,80 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             client/package-lock.json
-
-      - name: Install backend
-        run: npm ci
-
-      # One config at the root covers both halves: the service under src/ and
-      # the client under client/src/.
-      - name: Lint
-        run: npm run lint
-
-      # The hardcoded-value gate (#26). --report-needless-disables is part of
-      # the check rather than a nicety: an exception that stops being needed
-      # should fail, or the disable comments become a list nobody prunes.
-      - name: Lint CSS
-        run: npm run lint:css
-
-      # House style does not use an em dash. Ratcheted against a baseline rather
-      # than absolute: a rule that could only pass after a mechanical rewrite of
-      # every file would have been turned off instead of adopted.
-      - name: Lint prose
-        run: npm run lint:prose
-
-      - name: Typecheck backend
+      - run: npm ci
+      - name: Service
+        run: npm run typecheck
+      - run: npm ci
+        working-directory: client
+      - name: Client
+        working-directory: client
         run: npm run typecheck
 
-      - name: Test backend
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+      - run: npm ci
+      - name: Service
+        run: npm test
+      - run: npm ci
+        working-directory: client
+      - name: Client
+        working-directory: client
         run: npm test
 
-      - name: Install client
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, format, typecheck, test]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+      - run: npm ci
+      - name: Service
+        run: npm run build
+      - run: npm ci
         working-directory: client
-        run: npm ci
-
-      - name: Test client
-        working-directory: client
-        run: npm test
-
-      - name: Build client
+      - name: Client
         working-directory: client
         run: npm run build
 
-      # End to end, against the built demo bundle. Every other test here stops
-      # at a component or an HTTP call: this is the only one that drives the
-      # product the way a reader will.
+  # End to end, against the built demo bundle. Every other test here stops
+  # at a component or an HTTP call: this is the only one that drives the
+  # product the way a reader will.
+  e2e:
+    name: End to end
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - run: npm ci
+        working-directory: client
       - name: Install Playwright
         working-directory: client
         run: npx playwright install chromium --with-deps
-
-      - name: End-to-end
+      - name: End to end
         working-directory: client
         run: npm run e2e
-
       - name: Keep the trace when it fails
         if: failure()
         uses: actions/upload-artifact@v7
