@@ -248,6 +248,7 @@ export function Audit({ audit, onBack }: Props) {
 
             Roving tabindex, so the tablist is one stop and the arrows move
             inside it rather than Tab landing on each of eight buttons. */}
+            {/* eslint-disable-next-line jsx-a11y-x/interactive-supports-focus -- roving tabindex: focus sits on the tabs, and their key events bubble to this handler */}
             <div
               className={styles.tabs}
               role="tablist"

@@ -1,4 +1,5 @@
 import js from "@eslint/js";
+import jsxA11y from "eslint-plugin-jsx-a11y-x";
 import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -105,6 +106,23 @@ export default defineConfig([
       ],
     },
   })),
+
+  // Accessibility in JSX, caught at the line rather than in an audit. The fork
+  // is used because eslint-plugin-jsx-a11y does not support ESLint 10, as in
+  // vault and haus. A deliberate exception is disabled at its site with its
+  // reason. Tests render fixtures, so they are out of scope.
+  {
+    files: ["client/src/**/*.tsx"],
+    ignores: ["**/*.test.tsx"],
+    ...jsxA11y.configs.recommended,
+    rules: {
+      ...jsxA11y.configs.recommended.rules,
+      // Text's `role` prop names a type role ("body-sm", "label"), not an ARIA
+      // one, and is never rendered: Text maps it to a class. DOM elements are
+      // still checked.
+      "jsx-a11y-x/aria-role": ["error", { ignoreNonDOM: true }],
+    },
+  },
 
   {
     files: ["**/*.test.{ts,tsx}"],

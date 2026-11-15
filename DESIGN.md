@@ -169,6 +169,10 @@ full pattern after an audit found it was tabs in name only (#27, 2026-09-07).
 
 ### Enforcement
 
+- **Accessibility in JSX.** `eslint-plugin-jsx-a11y-x`, the recommended set, over every client
+  component and screen: a missing `alt`, a click handler on an element that cannot take focus or an
+  invalid ARIA role fails the build. The two roving-tabindex containers, the audit tablist and the
+  scale radiogroup, are exempt at their sites, because focus sits on their items.
 - **Hardcoded values** (#26). Stylelint fails a component style that uses a raw colour, length,
   radius, shadow or font value. The first run found 44; 8 had an exact token, and the rest are
   recorded with a reason, as a grouped list in `stylelint.config.js` or an inline disable.
