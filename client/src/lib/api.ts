@@ -282,6 +282,9 @@ export interface SiteAudit {
 export interface AuditContrastFinding {
   foreground: string;
   background: string;
+  /** The opaque pair the ratio was measured between, present only when compositing changed a colour. */
+  resolvedForeground?: string;
+  resolvedBackground?: string;
   ratio: number;
   passAA: boolean;
   passAAA: boolean;
