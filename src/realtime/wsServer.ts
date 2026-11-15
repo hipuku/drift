@@ -40,8 +40,23 @@ export function upgradeAllowed(req: IncomingMessage, token: string | null | unde
   return !token || tokenMatches(req.headers.authorization, token);
 }
 
+/**
+ * The `verifyClient` for a server with this token. A refusal is a 401 with the
+ * same `WWW-Authenticate: Bearer` challenge the HTTP routes send. The
+ * two-argument form is the one `ws` lets set the status and headers.
+ */
+export function verifyUpgrade(token: string | null | undefined) {
+  return (
+    info: { req: IncomingMessage },
+    done: (ok: boolean, code?: number, message?: string, headers?: Record<string, string>) => void,
+  ): void => {
+    if (upgradeAllowed(info.req, token)) done(true);
+    else done(false, 401, "Unauthorized", { "WWW-Authenticate": "Bearer" });
+  };
+}
+
 export function createProgressServer(options: ProgressServerOptions): ProgressServer {
-  const verifyClient = ({ req }: { req: IncomingMessage }) => upgradeAllowed(req, options.token);
+  const verifyClient = verifyUpgrade(options.token);
   const wss =
     "server" in options
       ? new WebSocketServer({ server: options.server, verifyClient })

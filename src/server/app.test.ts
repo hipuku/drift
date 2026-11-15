@@ -1,3 +1,4 @@
+import { request } from "node:http";
 import type { AddressInfo } from "node:net";
 import type { Server } from "node:http";
 import { afterEach, describe, expect, it } from "vitest";
@@ -336,5 +337,47 @@ describe("rate limit and queue cap", () => {
     expect(res.headers.get("retry-after")).toBe("60");
     expect((await res.json()).error).toMatch(/queue is full/);
     expect(queued).toBe(false);
+  });
+});
+
+describe("queue cap under concurrent requests", () => {
+  it("gives the last slot to one request only", async () => {
+    let pending = 2;
+    const base = await listen({
+      jobs: fakeJobs({
+        async pending() {
+          // A real queue answers with the count when it was asked, after a
+          // round trip: the window in which two requests read the same count.
+          const counted = pending;
+          await new Promise((r) => setTimeout(r, 20));
+          return counted;
+        },
+        async enqueue() {
+          pending++;
+          return `job_${pending}`;
+        },
+      }),
+      maxQueued: 3,
+      // No DNS: a lookup's own delay would stagger the requests and hide the race.
+      checkCrawlTarget: async () => {},
+    });
+    // One connection each, so the three are in the server at the same time.
+    // fetch would reuse one keep-alive connection and send them in turn.
+    const post = () =>
+      new Promise<{ status: number }>((resolve, reject) => {
+        const req = request(
+          `${base}/crawl`,
+          { method: "POST", agent: false, headers: { "content-type": "application/json" } },
+          (res) => {
+            res.resume();
+            resolve({ status: res.statusCode ?? 0 });
+          },
+        );
+        req.on("error", reject);
+        req.end(JSON.stringify({ url: "https://example.com" }));
+      });
+    const statuses = (await Promise.all([post(), post(), post()])).map((r) => r.status).sort();
+    expect(statuses).toEqual([202, 429, 429]);
+    expect(pending).toBe(3);
   });
 });

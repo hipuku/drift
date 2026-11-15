@@ -118,6 +118,26 @@ export function createApp(deps: AppDeps): Express {
     });
   }
 
+  /**
+   * Count the queue and enqueue as one step, one request at a time. Read
+   * separately, two requests could both see the last free slot and both take
+   * it. A chain of promises is enough for the one process drift runs in; the
+   * cost is that admissions wait on each other's round trip to Redis.
+   * Resolves to the job id, or null when the queue is full.
+   */
+  let admissions: Promise<unknown> = Promise.resolve();
+  function admit(enqueue: () => Promise<string>): Promise<string | null> {
+    const run = admissions.then(async () => {
+      const { maxQueued } = deps;
+      if (maxQueued !== undefined && deps.jobs.pending) {
+        if ((await deps.jobs.pending()) >= maxQueued) return null;
+      }
+      return enqueue();
+    });
+    admissions = run.catch(() => undefined);
+    return run;
+  }
+
   const checkCrawlTarget = deps.checkCrawlTarget ?? ((url: string) => assertCrawlable(url));
 
   /**
@@ -169,15 +189,13 @@ export function createApp(deps: AppDeps): Express {
           return;
         }
       }
-      if (deps.maxQueued !== undefined && deps.jobs.pending) {
-        if ((await deps.jobs.pending()) >= deps.maxQueued) {
-          res.set("Retry-After", "60").status(429).json({ error: QUEUE_FULL });
-          return;
-        }
-      }
       const pages = readPages(req.body?.pages);
       const maxPages = clampPages(pages?.length ?? req.body?.maxPages);
-      const jobId = await deps.jobs.enqueue({ url, maxPages, pages, callbackUrl });
+      const jobId = await admit(() => deps.jobs.enqueue({ url, maxPages, pages, callbackUrl }));
+      if (jobId === null) {
+        res.set("Retry-After", "60").status(429).json({ error: QUEUE_FULL });
+        return;
+      }
       res.status(202).json({ jobId });
     }),
   );
