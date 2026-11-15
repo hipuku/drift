@@ -287,8 +287,7 @@ markdownlint and knip), `Links` (every relative link and heading anchor in the M
 `Format`, `Typecheck`, `Test`, `Build` and `End to end`. CodeQL scans
 the code. CI does not crawl a real site; drift-tests crawls its own fixture.
 
-`package.json`, `openapi.yaml` and the release tag carry the same version. drift-tests records
-`git describe --tags` of the checkout it tested, and tests `main` unless started with a tag.
+How changes reach `main`, and how a release is cut, is in [WORKFLOW.md](./WORKFLOW.md).
 
 ---
 
