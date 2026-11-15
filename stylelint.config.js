@@ -105,7 +105,6 @@ export default {
     'rule-empty-line-before': null,
     'custom-property-empty-line-before': null,
     'comment-empty-line-before': null,
-    'declaration-block-single-line-max-declarations': null,
     'keyframes-name-pattern': null,
     'hue-degree-notation': null,
     'value-keyword-case': null,
