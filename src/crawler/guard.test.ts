@@ -117,10 +117,28 @@ describe("redirectsStayPublic", () => {
     expect(asked).toEqual(["https://a.example/next"]);
   });
 
-  it("refuses a chain longer than five redirects", async () => {
+  /** A chain of `n` redirects from /0 that ends in a 200 at /n. */
+  function chain(n: number) {
     const map: Record<string, APIResponse> = {};
-    for (let i = 1; i <= 10; i++) map[`https://a.example/${i}`] = reply(302, `/${i + 1}`);
-    const { fake } = route(map);
+    for (let i = 1; i < n; i++) map[`https://a.example/${i}`] = reply(302, `/${i + 1}`);
+    return route(map);
+  }
+
+  it("accepts exactly five redirects", async () => {
+    const { fake } = chain(5);
+    expect(
+      await redirectsStayPublic(
+        "https://a.example/0",
+        reply(302, "/1"),
+        fake,
+        publicOnly,
+        new Map(),
+      ),
+    ).toBe(true);
+  });
+
+  it("refuses a sixth redirect", async () => {
+    const { fake } = chain(6);
     expect(
       await redirectsStayPublic(
         "https://a.example/0",
@@ -130,5 +148,21 @@ describe("redirectsStayPublic", () => {
         new Map(),
       ),
     ).toBe(false);
+  });
+
+  it("refuses a redirect to a scheme other than http or https, without fetching it", async () => {
+    const { fake, asked } = route({});
+    for (const target of ["data:text/html,hi", "blob:https://a.example/1", "file:///etc/passwd"]) {
+      expect(
+        await redirectsStayPublic(
+          "https://a.example/",
+          reply(302, target),
+          fake,
+          publicOnly,
+          new Map(),
+        ),
+      ).toBe(false);
+    }
+    expect(asked).toEqual([]);
   });
 });

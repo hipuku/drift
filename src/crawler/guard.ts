@@ -64,20 +64,36 @@ export async function redirectsStayPublic(
 ): Promise<boolean> {
   let current = url;
   let response = first;
-  for (let hop = 0; hop < MAX_REDIRECTS; hop++) {
+  // `hop` counts the redirects already followed. The response in hand is
+  // checked on every pass, so a chain of exactly MAX_REDIRECTS that ends in a
+  // page is accepted, the same limit the sitemap fetch applies.
+  for (let hop = 0; ; hop++) {
     const location =
       response.status() >= 300 && response.status() < 400
         ? response.headers()["location"]
         : undefined;
     if (!location) return true;
+    if (hop === MAX_REDIRECTS) return false;
     current = new URL(location, current).toString();
+    // Only http(s) is fetched. requestDecision lets data: and blob: through
+    // for the page's own use, which is not a place a redirect may lead.
+    if (!/^https?:$/.test(new URL(current).protocol)) return false;
     if ((await requestDecision(current, check, cache)) === "abort") return false;
     response = await route.fetch({ url: current, maxRedirects: 0 });
   }
-  return false;
 }
 
-/** Route every request and WebSocket a context makes through `requestDecision`. */
+/**
+ * Options every crawl context is created with. Service workers are blocked
+ * because `context.route` does not see the requests a service worker makes,
+ * so a crawled page could register one and reach a private address through it.
+ */
+export const GUARDED_CONTEXT_OPTIONS = { serviceWorkers: "block" } as const;
+
+/**
+ * Route every request and WebSocket a context makes through `requestDecision`.
+ * The context must be created with `GUARDED_CONTEXT_OPTIONS`.
+ */
 export async function guardContext(
   context: BrowserContext,
   check: HostCheck = (host) => isCrawlableHost(host),
