@@ -84,11 +84,6 @@ export interface SizeUsage {
 
 // ── Spacing / radius / shadow ────────────────────────────────────────────────
 
-export interface ValueUsage {
-  value: number;
-  count: number;
-}
-
 export type SpacingProperty = "padding" | "margin" | "gap";
 
 export interface SpacingPropertyUsage {

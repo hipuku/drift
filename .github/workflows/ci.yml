@@ -50,6 +50,12 @@ jobs:
       # with either are off (.markdownlint-cli2.jsonc).
       - run: npm run lint:md
 
+      # Unused files, exports and dependencies, in the service and the client.
+      # The client is its own package, so its dependencies are installed too.
+      - run: npm ci
+        working-directory: client
+      - run: npm run knip
+
   # Every relative link and heading anchor in the markdown resolves. Offline,
   # so the check never fails because an outside site is slow. Its own job on
   # Linux, because the action only downloads a Linux build of lychee.

@@ -19,19 +19,6 @@ export const RATIOS: NamedRatio[] = [
   { id: "golden", name: "Golden ratio", ratio: 1.618 },
 ];
 
-/** Distinct font size in use, with how often it appears. */
-export interface SizeUsage {
-  px: number;
-  count: number;
-}
-
-/** The slice of the typography inventory the proposal needs. */
-export interface TypeInventory {
-  baseSizePx: number | null;
-  primaryFamily: string | null;
-  sizes: SizeUsage[];
-}
-
 export interface ScaleStep {
   step: number;
   name: string;
