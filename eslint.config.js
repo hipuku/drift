@@ -53,6 +53,91 @@ export default defineConfig([
     },
   },
 
+  // Import boundaries, the client's layers as a failing build rather than a
+  // convention. Lowest first: components are the interface's primitives; lib,
+  // demo and hooks are data and behaviour with no interface; screens compose
+  // both; flow, shell and dev sit above the screens. A layer imports its own
+  // or a lower one, never a higher one. Tests are exempt: some compare the
+  // client with the service on purpose.
+  {
+    files: ["client/src/components/**/*.{ts,tsx}"],
+    ignores: ["**/*.test.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["**/screens/**", "**/flow/**", "**/shell/**", "**/dev/**"],
+              message: "Components are the lowest layer: they cannot import a screen or above.",
+            },
+            {
+              group: ["**/lib/**", "**/demo/**", "**/hooks/**"],
+              message: "Components take data as props; they do not read lib, demo or hooks.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["client/src/{lib,demo,hooks}/**/*.{ts,tsx}"],
+    ignores: ["**/*.test.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: [
+                "**/components/**",
+                "**/screens/**",
+                "**/flow/**",
+                "**/shell/**",
+                "**/dev/**",
+              ],
+              message: "lib, demo and hooks hold no interface, so they cannot import one.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["client/src/screens/**/*.{ts,tsx}"],
+    ignores: ["**/*.test.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["**/flow/**", "**/shell/**", "**/dev/**"],
+              message: "Screens sit below the flow, the shell and the dev harness.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["src/**/*.ts"],
+    ignores: ["**/*.test.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["**/client/**"],
+              message: "The service never imports the client; shared shapes live in openapi.yaml.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+
   {
     files: ["**/*.test.{ts,tsx}"],
     languageOptions: { globals: { ...globals.node, ...globals.browser, ...globals.vitest } },
