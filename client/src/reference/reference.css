@@ -1,0 +1,26 @@
+/* Scalar's theme variables, set from Drift's role tokens so the reference
+   reads as part of the product: the same charcoal surfaces, ink, borders,
+   accent and type. Scalar's own theme is off (`theme: "none"`), so these are
+   the only colours on the page. */
+
+.dark-mode {
+  --scalar-font: var(--font-sans);
+  --scalar-font-code: var(--font-mono);
+
+  --scalar-background-1: var(--drift-color-surface-subtle);
+  --scalar-background-2: var(--drift-color-surface-default);
+  --scalar-background-3: var(--drift-color-surface-raised);
+  --scalar-background-accent: var(--drift-color-primary-subtle);
+
+  --scalar-color-1: var(--drift-color-ink-primary);
+  --scalar-color-2: var(--drift-color-ink-secondary);
+  --scalar-color-3: var(--drift-color-ink-tertiary);
+  --scalar-color-accent: var(--drift-color-ink-link);
+
+  --scalar-border-color: var(--drift-color-border-subtle);
+}
+
+body {
+  margin: 0;
+  background: var(--drift-color-surface-subtle);
+}

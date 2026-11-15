@@ -41,6 +41,10 @@ jobs:
       # every file would have been turned off instead of adopted.
       - run: npm run lint:prose
 
+      # The contract is valid OpenAPI. The API reference and drift-tests' types
+      # are both generated from it, so a broken one breaks both.
+      - run: npm run lint:api
+
   format:
     name: Format
     runs-on: ubuntu-latest
