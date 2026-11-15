@@ -1,8 +1,23 @@
 # Drift: features
 
-The report tabs, with screenshots from the demo build. The demo replays an audit of
-picocss.com captured on 2026-08-30. Each figure below names the reference it was measured
-against.
+The report tabs, in the app's order, with screenshots from the demo build. The demo replays an
+audit of picocss.com captured on 2026-08-30. Each figure below names the reference it was
+measured against.
+
+## Contents
+
+- [Overview](#overview)
+- [Colour](#colour)
+- [Contrast](#contrast)
+- [Type](#type)
+- [Spacing](#spacing)
+- [Radius, shadow and border](#radius-shadow-and-border)
+- [Opacity, z-index, blur and gradients](#opacity-z-index-blur-and-gradients)
+- [Breakpoints and motion](#breakpoints-and-motion)
+- [Authored units](#authored-units)
+- [Export](#export)
+- [API](#api)
+- [Not built](#not-built)
 
 ---
 
@@ -12,6 +27,13 @@ A health line, then one card per category, tinted by its verdict: good, watch or
 card counts come from the audit's `summary`. Clicking a card opens that category's tab.
 
 ![Overview](screenshots/dashboard.png)
+
+For the demo capture the health line reads: _7 of 29 colours are near-duplicates, 6 of 9 type
+sizes fall off the scale, and 14 of 21 spacing values miss the 4px grid. No issues found in
+radius, shadows, and contrast._
+
+> [!NOTE]
+> **How it works:** [Verdicts](./DESIGN.md#verdicts), [Data model](./ARCHITECTURE.md#data-model)
 
 ---
 
@@ -26,6 +48,9 @@ Two colours less than CIEDE2000 ΔE 2 apart are counted as near-duplicates. Sele
 opens a rail listing its opacity variants (the same hex base at a different alpha) and its
 near-duplicates. Choosing one scrolls to its card.
 
+> [!NOTE]
+> **How it works:** [Colour science](./ARCHITECTURE.md#colour-science)
+
 ---
 
 ## Contrast
@@ -35,11 +60,11 @@ ratio first.
 
 ![Contrast](screenshots/contrast.png)
 
-An element's own `background-color` is usually `transparent`, so the pair uses the nearest
-ancestor background instead. Alpha is composited before the ratio is taken. `#111111` at 50%
-alpha on white measures 18.88 if the alpha is ignored and passes AAA. Composited it renders as
-`#888888`, measures 3.54, and fails AA. A translucent ancestor background is composited over
-white, not over whatever sits behind it.
+Each pair uses the nearest ancestor background, and alpha is composited before the ratio is
+taken, so text is measured as it renders.
+
+> [!NOTE]
+> **How it works:** [Contrast measurement](./ARCHITECTURE.md#contrast-measurement)
 
 ---
 
@@ -54,8 +79,10 @@ from a step are marked. Each named ratio in the selector shows how many sizes mi
 automatic fit is the ratio that the fewest sizes miss, with mean relative error breaking a tie.
 The Overview verdict uses the automatic fit whichever ratio is selected on this tab.
 
-Each row shows the authored unit beside the computed pixels. `getComputedStyle` returns pixels
-for a size authored in `rem` or `px` alike.
+Each row shows the authored unit beside the computed pixels.
+
+> [!NOTE]
+> **How it works:** [Selectable references](./DESIGN.md#selectable-references), [Reference scales](./ARCHITECTURE.md#reference-scales)
 
 ---
 
@@ -69,6 +96,9 @@ it appears on.
 Measured against a 4px or 8px grid, with 0.5px tolerance, selectable like the type ratio. The
 tab defaults to 8px when every value sits on it, and to 4px otherwise. The health line always
 counts against 4px.
+
+> [!NOTE]
+> **How it works:** [Selectable references](./DESIGN.md#selectable-references)
 
 ---
 
@@ -118,8 +148,12 @@ Each duration and easing animates a sample dot at that value.
 
 ![Authoring](screenshots/authoring.png)
 
-The units the stylesheets use, per category, read from the CSSOM. `1rem` and `16px` compute to
-the same pixels. Cross-origin stylesheets throw on `cssRules` and are skipped.
+The units the stylesheets use, per category, read from the CSSOM, along with the site's own
+custom properties. `1rem` and `16px` compute to the same pixels, so this is the only place the
+difference shows.
+
+> [!NOTE]
+> **How it works:** [Authored and computed values](./ARCHITECTURE.md#authored-and-computed-values)
 
 ---
 
@@ -129,6 +163,32 @@ The audit as one JSON file: `health`, `findings[]` with severity and evidence, `
 `rules` block with the ΔE threshold, the detected ratio, the grid base and its tolerance, the
 radius tolerance and the WCAG AA thresholds. The summary and the full inventory follow.
 
-Two exports can be diffed, and a CI job can assert on `findings`. The client builds the file from
-the `/audit` response. No endpoint serves it; [issue #3](../../issues/3) was closed while the
-public deployment stays a replay.
+Two exports can be diffed, and a CI job can assert on `findings`. The client builds the file;
+no endpoint serves it.
+
+> [!NOTE]
+> **How it works:** [Export shape](./ARCHITECTURE.md#export-shape)
+
+---
+
+## API
+
+The client uses the same HTTP API a CI job would: list a site's pages, queue a crawl, follow its
+progress over a WebSocket, then read the result and the audit. A `callbackUrl` receives the audit
+when the crawl ends, so a CI job can fail a build on a threshold without polling. The
+[API reference](https://drift.hipuku.dev/reference/) is generated from
+[`openapi.yaml`](./openapi.yaml).
+
+> [!NOTE]
+> **How it works:** [Boundaries and security](./ARCHITECTURE.md#boundaries-and-security)
+
+---
+
+## Not built
+
+- Crawling at more than one viewport width. Responsive values outside the crawl width are not
+  seen.
+- Interactive states. `getComputedStyle` sees the resting state.
+- Obeying `robots.txt` (#19). It is read for `Sitemap:` lines only.
+- Proposals: a cleaned-up palette, scale or grid. See
+  [Measurements, not proposals](./DESIGN.md#measurements-not-proposals).
