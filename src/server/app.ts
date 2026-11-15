@@ -13,6 +13,7 @@
 import express, { type Express, type NextFunction, type Request, type Response } from "express";
 import { collectAudit } from "../analysis/audit.js";
 import { assertCrawlable } from "../net/publicUrl.js";
+import { tokenMatches, type RateLimiter } from "./access.js";
 import { assertDeliverable } from "../queue/webhook.js";
 import { MAX_CRAWL_PAGES } from "../crawler/crawl.js";
 import type { DiscoverResult } from "../crawler/types.js";
@@ -23,7 +24,15 @@ export interface AppDeps {
   discover: (url: string) => Promise<DiscoverResult>;
   /** Throws when a site to crawl is on a private network. Defaults to `assertCrawlable`. */
   checkCrawlTarget?: (url: string) => Promise<void>;
+  /** When set, every route needs `Authorization: Bearer <token>` (access.ts). */
+  token?: string | null;
+  /** Limits `POST /crawl` and `POST /discover` per caller. None means no limit. */
+  rateLimiter?: RateLimiter | null;
+  /** Refuse a new crawl while this many wait or run. None means no cap. */
+  maxQueued?: number;
 }
+
+const QUEUE_FULL = "The crawl queue is full. Try again in a minute.";
 
 // Map a crawler or Playwright failure to a message for the client, so the
 // client never shows "page.goto: net::ERR_… Call log:".
@@ -79,6 +88,36 @@ function wrap(handler: (req: Request, res: Response) => Promise<void>) {
 
 export function createApp(deps: AppDeps): Express {
   const app = express();
+
+  // The token comes first, so an unauthorised caller learns nothing else about
+  // the API, not even whether a job id exists.
+  if (deps.token) {
+    const token = deps.token;
+    app.use((req, res, next) => {
+      if (tokenMatches(req.get("authorization"), token)) return next();
+      res
+        .set("WWW-Authenticate", "Bearer")
+        .status(401)
+        .json({ error: "A valid API token is required." });
+    });
+  }
+
+  // Each call to either route can start a headless browser, so both count
+  // against one limit per caller. The caller is the socket's address: behind a
+  // reverse proxy every request shares one, which ARCHITECTURE notes.
+  if (deps.rateLimiter) {
+    const limiter = deps.rateLimiter;
+    app.use(["/crawl", "/discover"], (req, res, next) => {
+      if (req.method !== "POST" || (req.path !== "/" && req.path !== "")) return next();
+      const verdict = limiter.take(req.socket.remoteAddress ?? "unknown");
+      if (verdict.ok) return next();
+      res
+        .set("Retry-After", String(verdict.retryAfterSeconds))
+        .status(429)
+        .json({ error: "Too many requests. Try again shortly." });
+    });
+  }
+
   const checkCrawlTarget = deps.checkCrawlTarget ?? ((url: string) => assertCrawlable(url));
 
   /**
@@ -127,6 +166,12 @@ export function createApp(deps: AppDeps): Express {
           res
             .status(422)
             .json({ error: err instanceof Error ? err.message : "Invalid callbackUrl." });
+          return;
+        }
+      }
+      if (deps.maxQueued !== undefined && deps.jobs.pending) {
+        if ((await deps.jobs.pending()) >= deps.maxQueued) {
+          res.set("Retry-After", "60").status(429).json({ error: QUEUE_FULL });
           return;
         }
       }

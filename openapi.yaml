@@ -11,7 +11,11 @@ info:
     `lastTitle`, `lastElements` and `elementsTotal`. Completion comes from
     `/crawl/{jobId}/result`.
 
-    Every response is computed. The API needs no key and calls no model.
+    Every response is computed, and the API calls no model. With
+    `DRIFT_API_TOKEN` set on the server, every route and the WebSocket need
+    `Authorization: Bearer <token>`; unset, the API is open. `POST /crawl` and
+    `POST /discover` can answer 429 when a caller passes the rate limit or the
+    crawl queue is full.
   license:
     name: MIT
     url: https://github.com/hipuku/drift/blob/main/LICENSE
@@ -20,16 +24,19 @@ info:
     url: https://github.com/hipuku/drift
 
 servers:
-  - url: http://localhost:3001
+  - url: http://127.0.0.1:3001
     description: >
       Local backend (`npm run dev:server`, needs Redis + Playwright Chromium).
+      It listens on 127.0.0.1 unless `HOST` is set.
       The deployed site at drift.hipuku.dev is a static fixture-replay demo and
       does not expose a live API; run it locally to hit these endpoints.
 
-# The API is intentionally unauthenticated: every response is deterministic and
-# computed, there are no keys, and no per-run cost. An empty security requirement
-# documents that no credentials are needed.
-security: []
+# The token is optional: an empty requirement alongside the bearer one says a
+# request may carry no credentials, which is the default, or the token, which a
+# server started with DRIFT_API_TOKEN requires.
+security:
+  - {}
+  - bearerToken: []
 
 paths:
   /discover:
@@ -71,6 +78,8 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
 
   /crawl:
     post:
@@ -111,6 +120,8 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
       callbacks:
         crawlFinished:
           "{$request.body#/callbackUrl}":
@@ -149,6 +160,7 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
 
   /crawl/{jobId}/audit:
     get:
@@ -173,6 +185,7 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
 
 webhooks:
   crawlFinished:
@@ -188,6 +201,32 @@ webhooks:
         "2XX": { description: Acknowledged. }
 
 components:
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+      description: The value of `DRIFT_API_TOKEN` on the server. Needed only when it is set.
+
+  responses:
+    Unauthorized:
+      description: The server has a token set, and the request did not carry it.
+      headers:
+        WWW-Authenticate:
+          schema: { type: string, const: Bearer }
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    TooManyRequests:
+      description: >
+        The caller passed the rate limit, or the crawl queue is full. Retry
+        after the number of seconds in `Retry-After`.
+      headers:
+        Retry-After:
+          schema: { type: integer, minimum: 1 }
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
   parameters:
     JobId:
       name: jobId

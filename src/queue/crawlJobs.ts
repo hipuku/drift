@@ -12,6 +12,8 @@ import { enqueueCrawl, type CrawlJobData } from "./crawlQueue.js";
 export interface CrawlJobs {
   enqueue(data: CrawlJobData): Promise<string>;
   getResult(jobId: string): Promise<{ status: string; result?: CrawlResult; error?: string }>;
+  /** Crawls waiting or running now. Optional, so a test double can leave it out. */
+  pending?(): Promise<number>;
 }
 
 /** The four statuses `openapi.yaml` publishes, plus the 404 case. */
@@ -47,6 +49,11 @@ export class BullCrawlJobs implements CrawlJobs {
     const job = await enqueueCrawl(this.queue, data);
     if (!job.id) throw new Error("queue did not assign a job id");
     return job.id;
+  }
+
+  async pending(): Promise<number> {
+    const counts = await this.queue.getJobCounts("waiting", "active", "delayed", "prioritized");
+    return Object.values(counts).reduce((sum, n) => sum + n, 0);
   }
 
   async getResult(

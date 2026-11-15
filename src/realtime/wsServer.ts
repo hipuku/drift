@@ -12,11 +12,12 @@
  * to an existing HTTP server (the future Express app).
  */
 
-import type { Server } from "node:http";
+import type { IncomingMessage, Server } from "node:http";
 import { QueueEvents } from "bullmq";
 import { WebSocketServer, type WebSocket } from "ws";
 import { CRAWL_QUEUE_NAME, type CrawlProgress } from "../queue/crawlQueue.js";
 import { redisConnection } from "../queue/connection.js";
+import { tokenMatches } from "../server/access.js";
 import type { ClientMessage, ServerMessage } from "./messages.js";
 import { SubscriptionRegistry } from "./subscriptions.js";
 
@@ -24,13 +25,27 @@ export interface ProgressServer {
   close(): Promise<void>;
 }
 
-export type ProgressServerOptions = { port: number } | { server: Server };
+export type ProgressServerOptions = ({ port: number } | { server: Server }) & {
+  /** When set, a connection needs `Authorization: Bearer <token>`, as the API does. */
+  token?: string | null;
+};
+
+/**
+ * Whether a WebSocket upgrade may go ahead. Progress names job ids and sites,
+ * so with a token set the socket is closed to the same callers the API is.
+ * The header is the only place it is read: a token in the query string would
+ * land in every proxy and access log.
+ */
+export function upgradeAllowed(req: IncomingMessage, token: string | null | undefined): boolean {
+  return !token || tokenMatches(req.headers.authorization, token);
+}
 
 export function createProgressServer(options: ProgressServerOptions): ProgressServer {
+  const verifyClient = ({ req }: { req: IncomingMessage }) => upgradeAllowed(req, options.token);
   const wss =
     "server" in options
-      ? new WebSocketServer({ server: options.server })
-      : new WebSocketServer({ port: options.port });
+      ? new WebSocketServer({ server: options.server, verifyClient })
+      : new WebSocketServer({ port: options.port, verifyClient });
 
   const registry = new SubscriptionRegistry<WebSocket>();
   const queueEvents = new QueueEvents(CRAWL_QUEUE_NAME, { connection: redisConnection() });

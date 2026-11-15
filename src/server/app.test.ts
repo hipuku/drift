@@ -3,6 +3,7 @@ import type { Server } from "node:http";
 import { afterEach, describe, expect, it } from "vitest";
 import type { CrawlJobs } from "../queue/crawlJobs.js";
 import type { CrawlResult, ElementStyle } from "../crawler/types.js";
+import { RateLimiter } from "./access.js";
 import { createApp, type AppDeps } from "./app.js";
 
 // --- fakes ----------------------------------------------------------------
@@ -246,5 +247,94 @@ describe("crawl targets on a private network", () => {
     const base = await listen({ jobs: fakeJobs() });
     const res = await post(base, "/crawl", { url: "http://127.0.0.1:4000/" });
     expect(res.status).toBe(202);
+  });
+});
+
+describe("API token", () => {
+  const routes: Array<[string, string, unknown?]> = [
+    ["POST", "/crawl", { url: "https://example.com" }],
+    ["POST", "/discover", { url: "https://example.com" }],
+    ["GET", "/crawl/job_1/result"],
+    ["GET", "/crawl/job_1/audit"],
+  ];
+  const call = (base: string, [method, path, body]: [string, string, unknown?], auth?: string) =>
+    fetch(`${base}${path}`, {
+      method,
+      headers: {
+        ...(body ? { "content-type": "application/json" } : {}),
+        ...(auth ? { authorization: auth } : {}),
+      },
+      ...(body ? { body: JSON.stringify(body) } : {}),
+    });
+
+  it.each(routes)("%s %s answers 401 without the token", async (...route) => {
+    const base = await listen({ jobs: fakeJobs(), token: "s3cret" });
+    const res = await call(base, route);
+    expect(res.status).toBe(401);
+    expect(res.headers.get("www-authenticate")).toBe("Bearer");
+  });
+
+  it.each(routes)("%s %s answers as before with the token", async (...route) => {
+    const base = await listen({
+      jobs: fakeJobs({
+        async getResult() {
+          return { status: "completed", result: fakeResult() };
+        },
+      }),
+      token: "s3cret",
+    });
+    const res = await call(base, route, "Bearer s3cret");
+    expect(res.status).not.toBe(401);
+    expect(res.status).toBeLessThan(400);
+  });
+});
+
+describe("rate limit and queue cap", () => {
+  const crawl = (base: string) =>
+    fetch(`${base}/crawl`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ url: "https://example.com" }),
+    });
+
+  it("answers 429 with Retry-After once a caller passes the limit", async () => {
+    const base = await listen({ jobs: fakeJobs(), rateLimiter: new RateLimiter(2, 60_000) });
+    expect((await crawl(base)).status).toBe(202);
+    expect((await crawl(base)).status).toBe(202);
+    const res = await crawl(base);
+    expect(res.status).toBe(429);
+    expect(Number(res.headers.get("retry-after"))).toBeGreaterThan(0);
+  });
+
+  it("counts /discover against the same limit", async () => {
+    const base = await listen({ jobs: fakeJobs(), rateLimiter: new RateLimiter(1, 60_000) });
+    expect((await crawl(base)).status).toBe(202);
+    const res = await fetch(`${base}/discover`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ url: "https://example.com" }),
+    });
+    expect(res.status).toBe(429);
+  });
+
+  it("answers 429 without queueing when the queue is full", async () => {
+    let queued = false;
+    const base = await listen({
+      jobs: fakeJobs({
+        async pending() {
+          return 3;
+        },
+        async enqueue() {
+          queued = true;
+          return "job_x";
+        },
+      }),
+      maxQueued: 3,
+    });
+    const res = await crawl(base);
+    expect(res.status).toBe(429);
+    expect(res.headers.get("retry-after")).toBe("60");
+    expect((await res.json()).error).toMatch(/queue is full/);
+    expect(queued).toBe(false);
   });
 });

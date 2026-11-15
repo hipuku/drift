@@ -55,7 +55,8 @@ npm run dev:server
 npm --prefix client run dev
 ```
 
-The backend listens on :3001 and the client on :5173.
+The backend listens on `127.0.0.1:3001` and the client on :5173. Set `HOST` to listen beyond
+loopback, and `DRIFT_API_TOKEN` when you do (`.env.example`).
 
 ## Scripts
 
