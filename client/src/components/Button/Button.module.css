@@ -3,9 +3,9 @@
   align-items: center;
   justify-content: center;
   gap: var(--drift-space-gap-xs);
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-label-size);
-  font-weight: var(--drift-weight-strong);
+  font-weight: var(--drift-type-weight-strong);
   letter-spacing: var(--drift-type-label-tracking);
   line-height: 1;
   padding: var(--drift-space-inset-sm) var(--drift-space-inset-lg);
@@ -13,11 +13,11 @@
   border: var(--drift-border-width-default) solid transparent;
   cursor: pointer;
   transition:
-    background var(--motion-duration-micro) var(--motion-ease-standard),
-    border-color var(--motion-duration-micro) var(--motion-ease-standard),
-    box-shadow var(--motion-duration-micro) var(--motion-ease-standard),
-    transform var(--motion-duration-micro) var(--motion-ease-standard),
-    color var(--motion-duration-micro) var(--motion-ease-standard);
+    background var(--drift-motion-duration-micro) var(--drift-motion-ease-standard),
+    border-color var(--drift-motion-duration-micro) var(--drift-motion-ease-standard),
+    box-shadow var(--drift-motion-duration-micro) var(--drift-motion-ease-standard),
+    transform var(--drift-motion-duration-micro) var(--drift-motion-ease-standard),
+    color var(--drift-motion-duration-micro) var(--drift-motion-ease-standard);
 }
 
 .button:focus-visible {
@@ -27,7 +27,7 @@
 
 .button:disabled {
   cursor: not-allowed;
-  opacity: var(--opacity-control-disabled);
+  opacity: var(--drift-opacity-control-disabled);
   box-shadow: none;
   transform: none;
 }
@@ -43,18 +43,18 @@
      The value is a Drift role: the lift is this product's identity and haus's
      Button has no vocabulary for it, so it stays here rather than moving to
      haus-components, but it stays as a named role, not as literals. */
-  box-shadow: var(--drift-lift);
+  box-shadow: var(--drift-elevation-lift);
 }
 
 .primary:hover:not(:disabled) {
   background: var(--drift-color-primary-hover);
-  box-shadow: var(--drift-lift-hover);
+  box-shadow: var(--drift-elevation-lift-hover);
   transform: translateY(-1px);
 }
 
 .primary:active:not(:disabled) {
   background: var(--drift-color-primary-pressed);
-  box-shadow: var(--drift-lift-pressed);
+  box-shadow: var(--drift-elevation-lift-pressed);
   transform: translateY(0);
 }
 

@@ -22,12 +22,12 @@
   display: flex;
   flex-direction: column;
   background: var(--drift-color-surface-default);
-  border: var(--drift-border-width-default) solid var(--drift-card-border);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-card);
   border-radius: var(--drift-radius-overlay);
   overflow: hidden;
   transition:
-    transform var(--motion-duration-micro) var(--motion-ease-standard),
-    box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
+    transform var(--drift-motion-duration-micro) var(--drift-motion-ease-standard),
+    box-shadow var(--drift-motion-duration-micro) var(--drift-motion-ease-standard);
 }
 
 .card:hover {
@@ -69,7 +69,7 @@
 
 /* Brief pulse when a card is scrolled to after picking it from the rail. */
 .cardFlash {
-  animation: cardFlash 1.1s var(--motion-ease-standard);
+  animation: cardFlash 1.1s var(--drift-motion-ease-standard);
 }
 
 .swatchFill {
@@ -129,7 +129,7 @@
   border: var(--drift-border-width-default) solid var(--drift-color-border-default);
   background: var(--drift-color-surface-subtle);
   cursor: pointer;
-  transition: border-color var(--motion-duration-micro) var(--motion-ease-standard);
+  transition: border-color var(--drift-motion-duration-micro) var(--drift-motion-ease-standard);
 }
 
 .nearCallout:hover {
@@ -142,7 +142,11 @@
 }
 
 .nearDup {
-  border-color: color-mix(in oklab, var(--drift-color-error-default) 40%, var(--drift-card-border));
+  border-color: color-mix(
+    in oklab,
+    var(--drift-color-error-default) 40%,
+    var(--drift-color-border-card)
+  );
   background: color-mix(
     in oklab,
     var(--drift-color-error-default) 10%,
@@ -224,8 +228,8 @@
   font-size: var(--drift-type-label-sm-size);
   cursor: pointer;
   transition:
-    background var(--motion-duration-micro) var(--motion-ease-standard),
-    color var(--motion-duration-micro) var(--motion-ease-standard);
+    background var(--drift-motion-duration-micro) var(--drift-motion-ease-standard),
+    color var(--drift-motion-duration-micro) var(--drift-motion-ease-standard);
 }
 
 .sortToggle:hover {
@@ -279,7 +283,8 @@
   display: flex;
   align-items: center;
   gap: var(--drift-space-gap-sm);
-  padding: var(--space-inset-tight) 0 var(--space-inset-tight) var(--drift-space-inset-md);
+  padding: var(--drift-space-inset-tight) 0 var(--drift-space-inset-tight)
+    var(--drift-space-inset-md);
 }
 
 .elementRow {
@@ -300,15 +305,15 @@
 }
 
 .elementRole {
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-label-sm-size);
   color: var(--drift-color-ink-tertiary);
 }
 
 .elementCount {
   margin-left: auto;
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
+  font-family: var(--drift-type-data-family);
+  font-size: var(--drift-type-data-size);
   color: var(--drift-color-ink-tertiary);
 }
 
@@ -335,7 +340,7 @@
 .roleName {
   width: 5.5rem;
   flex-shrink: 0;
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-label-sm-size);
   color: var(--drift-color-ink-secondary);
 }
@@ -359,8 +364,8 @@
   width: 2.5rem;
   flex-shrink: 0;
   text-align: right;
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
+  font-family: var(--drift-type-data-family);
+  font-size: var(--drift-type-data-size);
   color: var(--drift-color-ink-tertiary);
 }
 
@@ -371,18 +376,18 @@
 }
 
 .pageChip {
-  padding: var(--space-inset-tight) var(--drift-space-inset-xs);
+  padding: var(--drift-space-inset-tight) var(--drift-space-inset-xs);
   border-radius: var(--drift-radius-control);
   background: var(--drift-color-surface-default);
   border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
+  font-family: var(--drift-type-data-family);
+  font-size: var(--drift-type-data-size);
   color: var(--drift-color-ink-secondary);
 }
 
 .pillDup {
   background: color-mix(in oklab, var(--drift-color-error-default) 16%, transparent);
-  color: var(--drift-alert-ink);
+  color: var(--drift-color-error-ink);
 }
 
 @media (width <= 40rem) {

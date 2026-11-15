@@ -6,7 +6,7 @@
 .headingLg,
 .heading,
 .headingSm {
-  font-family: var(--font-display);
+  font-family: var(--drift-type-family-display);
   margin: 0;
 }
 
@@ -16,12 +16,12 @@
 .label,
 .labelSm,
 .labelXs {
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   margin: 0;
 }
 
 .mono {
-  font-family: var(--font-mono);
+  font-family: var(--drift-type-family-mono);
   margin: 0;
   font-size: var(--drift-type-mono-size);
   font-weight: var(--drift-type-mono-weight);

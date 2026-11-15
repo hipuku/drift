@@ -8,7 +8,7 @@
 }
 
 .icon {
-  font-size: var(--size-icon-inline);
+  font-size: var(--drift-size-icon-inline);
   margin-top: 0.1em;
   flex-shrink: 0;
 }

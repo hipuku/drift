@@ -125,9 +125,9 @@ describe("custom properties", () => {
  * The split matters more than the total, and the totals are the two figures the
  * docs quote:
  *
- * **33 are `font-family`.** `--font-sans` sits on `<button>` and `<input>`,
+ * **33 are `font-family`.** `--drift-type-family-sans` sits on `<button>` and `<input>`,
  * which do not inherit a family from `body`, so the declaration is required
- * rather than lazy. `--font-mono` carries the tabular-data face.
+ * rather than lazy. `--drift-type-family-mono` carries the tabular-data face.
  *
  * **9 are size, leading and tracking**, the specimen sheet's 11px labels, one
  * non-tabular mono size, and three deliberate departures from a role an element
@@ -136,25 +136,29 @@ describe("custom properties", () => {
  * The rule the type-tier work found is worth stating: **a role carries the
  * properties the thing actually chooses.** Prose chooses all four, which is why
  * the typeset roles bundle. Emphasis chooses weight alone, so
- * `--drift-weight-emphasis` and `--drift-weight-strong` carry nothing else. A
+ * `--drift-type-weight-emphasis` and `--drift-type-weight-strong` carry nothing else. A
  * data cell chooses the face and the size and leaves leading to the row, so
  * `--drift-type-data-*` stops at two.
  */
 const TYPE_TIER_DEBT = new Map([
-  // Families, 33. --font-sans is on controls that do not inherit one.
-  ["--font-sans", 22],
-  ["--font-mono", 10],
-  ["--font-display", 1],
+  // Families, 33. --drift-type-family-sans is on controls that do not inherit one.
+  ["--drift-type-family-sans", 22],
+  ["--drift-type-family-mono", 10],
+  ["--drift-type-family-display", 1],
   // Sizes, 6. Five are the dev harness; one is a single unit label.
-  ["--drift-text-11", 5],
-  ["--drift-text-14", 1],
+  ["--drift-type-size-11", 5],
+  ["--drift-type-size-14", 1],
   // Departures from a role the element is already on, 3.
-  ["--drift-leading-relaxed", 1],
-  ["--drift-leading-snug", 1],
-  ["--drift-tracking-widest", 1],
+  ["--drift-type-leading-relaxed", 1],
+  ["--drift-type-leading-snug", 1],
+  ["--drift-type-tracking-widest", 1],
 ]);
 
-const FAMILIES = ["--font-sans", "--font-mono", "--font-display"];
+const FAMILIES = [
+  "--drift-type-family-sans",
+  "--drift-type-family-mono",
+  "--drift-type-family-display",
+];
 
 /**
  * One decorative primitive read the role layer has no name for: the "partial"
@@ -162,7 +166,7 @@ const FAMILIES = ["--font-sans", "--font-mono", "--font-display"];
  * accent step to read as a stripe. Recorded rather than dressed up as a role,
  * and kept out of the type-tier ratchet because it is a colour, not a typeface.
  */
-const DECORATIVE = new Set(["--drift-accent-300"]);
+const DECORATIVE = new Set(["--drift-color-accent-300"]);
 
 /**
  * What counts as a primitive here: any name declared in a `*.primitives`,

@@ -9,7 +9,7 @@
   max-width: 32rem;
   background: var(--drift-color-surface-default);
   border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
-  border-radius: var(--radius-panel);
+  border-radius: var(--drift-radius-panel);
   box-shadow: var(--drift-elevation-overlay);
   padding: var(--drift-space-inset-3xl);
 }

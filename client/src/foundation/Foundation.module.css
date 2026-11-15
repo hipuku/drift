@@ -28,7 +28,7 @@
   /* Weight only, on a <strong> inside body copy that keeps its parent's size
      and leading. Every role sets all four, so adopting one here would resize
      the emphasis. Off-role on purpose: drift#1. */
-  font-weight: var(--drift-weight-emphasis);
+  font-weight: var(--drift-type-weight-emphasis);
 }
 
 .section {
@@ -68,13 +68,13 @@
 }
 
 .chipLabel {
-  font-family: var(--font-mono);
+  font-family: var(--drift-type-family-mono);
   /* Off the scale on purpose, and drift#24 settled why: this file renders only
      under DevHarness. It is the token specimen sheet, not a product screen, and
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--drift-text-11);
+  font-size: var(--drift-type-size-11);
   color: var(--drift-color-ink-tertiary);
 }
 
@@ -120,13 +120,13 @@
 }
 
 .surfaceName {
-  font-family: var(--font-mono);
+  font-family: var(--drift-type-family-mono);
   /* Off the scale on purpose, and drift#24 settled why: this file renders only
      under DevHarness. It is the token specimen sheet, not a product screen, and
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--drift-text-11);
+  font-size: var(--drift-type-size-11);
   opacity: 0.75;
 }
 
@@ -137,13 +137,13 @@
 
 /* ── Rows (type, space) ───────────────────────────────────────────────────── */
 .rowLabel {
-  font-family: var(--font-mono);
+  font-family: var(--drift-type-family-mono);
   /* Off the scale on purpose, and drift#24 settled why: this file renders only
      under DevHarness. It is the token specimen sheet, not a product screen, and
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--drift-text-11);
+  font-size: var(--drift-type-size-11);
   color: var(--drift-color-ink-tertiary);
 }
 
@@ -195,13 +195,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-mono);
+  font-family: var(--drift-type-family-mono);
   /* Off the scale on purpose, and drift#24 settled why: this file renders only
      under DevHarness. It is the token specimen sheet, not a product screen, and
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--drift-text-11);
+  font-size: var(--drift-type-size-11);
   color: var(--drift-color-primary-on-subtle);
 }
 
@@ -213,12 +213,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-mono);
+  font-family: var(--drift-type-family-mono);
   /* Off the scale on purpose, and drift#24 settled why: this file renders only
      under DevHarness. It is the token specimen sheet, not a product screen, and
      11px mono is how it labels its own swatches. A role exists to be reused by
      the product; giving one to a development tool would put the tool inside the
      contract. */
-  font-size: var(--drift-text-11);
+  font-size: var(--drift-type-size-11);
   color: var(--drift-color-ink-tertiary);
 }

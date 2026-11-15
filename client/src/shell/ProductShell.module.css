@@ -16,9 +16,9 @@
   z-index: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(to right, var(--drift-grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--drift-grid-line) 1px, transparent 1px);
-  background-size: var(--drift-grid-size) var(--drift-grid-size);
+    linear-gradient(to right, var(--drift-color-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--drift-color-grid-line) 1px, transparent 1px);
+  background-size: var(--drift-size-grid) var(--drift-size-grid);
   -webkit-mask-image: radial-gradient(120% 90% at 50% 0%, black 0%, transparent 75%);
   mask-image: radial-gradient(120% 90% at 50% 0%, black 0%, transparent 75%);
 }
@@ -34,7 +34,7 @@
   background: oklch(from var(--drift-color-surface-default) l c h / 0.72);
   backdrop-filter: saturate(1.4) blur(12px);
   -webkit-backdrop-filter: saturate(1.4) blur(12px);
-  border-bottom: var(--drift-border-width-default) solid var(--drift-card-border);
+  border-bottom: var(--drift-border-width-default) solid var(--drift-color-border-card);
 }
 
 .brand {
@@ -53,7 +53,7 @@
   height: 1.5rem;
   width: auto;
   opacity: 0.92;
-  transition: opacity var(--motion-duration-micro) var(--motion-ease-standard);
+  transition: opacity var(--drift-motion-duration-micro) var(--drift-motion-ease-standard);
 }
 
 .brand:hover .logo {
@@ -75,11 +75,11 @@
 .iconLink {
   display: inline-flex;
   align-items: center;
-  font-size: var(--size-icon-inline);
+  font-size: var(--drift-size-icon-inline);
   color: var(--drift-color-ink-tertiary);
   text-decoration: none;
   cursor: pointer;
-  transition: color var(--motion-duration-micro) var(--motion-ease-standard);
+  transition: color var(--drift-motion-duration-micro) var(--drift-motion-ease-standard);
 }
 
 .iconLink:hover {

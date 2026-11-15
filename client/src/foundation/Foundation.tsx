@@ -3,30 +3,30 @@ import { Text, type TypeRole } from "../components/Text/Text.js";
 import styles from "./Foundation.module.css";
 
 const ACCENT = [
-  ["50", "var(--drift-accent-50)"],
-  ["100", "var(--drift-accent-100)"],
-  ["200", "var(--drift-accent-200)"],
-  ["300", "var(--drift-accent-300)"],
-  ["400", "var(--drift-accent-400)"],
-  ["500", "var(--drift-accent-500)"],
-  ["600", "var(--drift-accent-600)"],
-  ["700", "var(--drift-accent-700)"],
-  ["800", "var(--drift-accent-800)"],
-  ["900", "var(--drift-accent-900)"],
+  ["50", "var(--drift-color-accent-50)"],
+  ["100", "var(--drift-color-accent-100)"],
+  ["200", "var(--drift-color-accent-200)"],
+  ["300", "var(--drift-color-accent-300)"],
+  ["400", "var(--drift-color-accent-400)"],
+  ["500", "var(--drift-color-accent-500)"],
+  ["600", "var(--drift-color-accent-600)"],
+  ["700", "var(--drift-color-accent-700)"],
+  ["800", "var(--drift-color-accent-800)"],
+  ["900", "var(--drift-color-accent-900)"],
 ] as const;
 const NEUTRAL = [
-  ["0", "var(--drift-neutral-0)"],
-  ["50", "var(--drift-neutral-50)"],
-  ["100", "var(--drift-neutral-100)"],
-  ["200", "var(--drift-neutral-200)"],
-  ["300", "var(--drift-neutral-300)"],
-  ["400", "var(--drift-neutral-400)"],
-  ["500", "var(--drift-neutral-500)"],
-  ["600", "var(--drift-neutral-600)"],
-  ["700", "var(--drift-neutral-700)"],
-  ["800", "var(--drift-neutral-800)"],
-  ["900", "var(--drift-neutral-900)"],
-  ["950", "var(--drift-neutral-950)"],
+  ["0", "var(--drift-color-neutral-0)"],
+  ["50", "var(--drift-color-neutral-50)"],
+  ["100", "var(--drift-color-neutral-100)"],
+  ["200", "var(--drift-color-neutral-200)"],
+  ["300", "var(--drift-color-neutral-300)"],
+  ["400", "var(--drift-color-neutral-400)"],
+  ["500", "var(--drift-color-neutral-500)"],
+  ["600", "var(--drift-color-neutral-600)"],
+  ["700", "var(--drift-color-neutral-700)"],
+  ["800", "var(--drift-color-neutral-800)"],
+  ["900", "var(--drift-color-neutral-900)"],
+  ["950", "var(--drift-color-neutral-950)"],
 ] as const;
 
 // Each token is written in full, never assembled from parts, so the token tests can check
@@ -127,8 +127,8 @@ const RADII = [
 const SHADOWS = [
   ["raised", "var(--drift-elevation-raised)"],
   ["overlay", "var(--drift-elevation-overlay)"],
-  ["modal", "var(--elevation-modal)"],
-  ["popover", "var(--elevation-popover)"],
+  ["modal", "var(--drift-elevation-modal)"],
+  ["popover", "var(--drift-elevation-popover)"],
 ] as const;
 
 function Section({ label, children }: { label: string; children: ReactNode }) {

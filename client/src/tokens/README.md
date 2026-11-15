@@ -12,9 +12,11 @@ component. No package supplies one.
 
 `../styles/drift.css` is the theme, in the `drift.*` layers, which come last in the order.
 
-The names are not all prefixed. `foundation.css` is `--drift-*` throughout, and
-`primitives.css` and `semantics.css` still declare unprefixed names such as `--font-sans`,
-`--space-hairline`, `--radius-panel` and `--type-data-size`.
+Every name is `--drift-{category}-{name}`, across all three files: `color`, `type`, `space`,
+`radius`, `motion`, `elevation`, `size`, `opacity`, `border-width` and `z`. Until 2026-11-16
+`primitives.css` and `semantics.css` declared unprefixed names (`--font-sans`, `--radius-panel`,
+`--type-data-size`) and the status ramps carried haus's fruit names (cherry, mango, greengage,
+elderberry, damson); they were renamed in one pass, checked by the computed-styles e2e.
 
 ## Where `foundation.css` came from
 

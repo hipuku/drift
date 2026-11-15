@@ -9,7 +9,7 @@
 }
 
 .input {
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-body-size);
   line-height: var(--drift-type-body-leading);
   color: var(--drift-color-ink-primary);
@@ -18,8 +18,8 @@
   border-radius: var(--drift-radius-surface);
   padding: var(--drift-space-inset-sm) var(--drift-space-inset-md);
   transition:
-    border-color var(--motion-duration-micro) var(--motion-ease-standard),
-    box-shadow var(--motion-duration-micro) var(--motion-ease-standard);
+    border-color var(--drift-motion-duration-micro) var(--drift-motion-ease-standard),
+    box-shadow var(--drift-motion-duration-micro) var(--drift-motion-ease-standard);
 }
 
 .input::placeholder {
