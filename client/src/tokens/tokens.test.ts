@@ -59,9 +59,13 @@ describe("custom properties", () => {
 
   it("are all defined before they are read", () => {
     const css = filesUnder(SRC, [".css"]);
+    // Inline styles read tokens too (style={{ background: "var(--x)" }}), so
+    // components count as readers, not only stylesheets. Tests are left out:
+    // they name tokens to assert on them.
+    const tsx = filesUnder(SRC, [".tsx", ".ts"]).filter((f) => !/\.test\.tsx?$/.test(f));
 
     // `var(--x)` only. `var(--x, fallback)` is excluded by the closing paren.
-    const read = matches(css, /var\((--[a-z0-9-]+)\)/g);
+    const read = matches([...css, ...tsx], /var\((--[a-z0-9-]+)\)/g);
     const definedInCss = matches(css, /^\s*(--[a-z0-9-]+)\s*:/gm);
     // Components set some properties inline, e.g. style={{ "--dur": "200ms" }}.
     const definedInTsx = matches(filesUnder(SRC, [".tsx", ".ts"]), /"(--[a-z0-9-]+)":/g);
@@ -71,6 +75,19 @@ describe("custom properties", () => {
       .sort();
 
     expect(undefined_).toEqual([]);
+  });
+
+  it("are named in full wherever code reads one", () => {
+    // A name assembled at runtime, var(--space-${n}), is one no test can check:
+    // the specimen page read four families of tokens that way, three of which
+    // never existed, and nothing failed.
+    const tsx = filesUnder(SRC, [".tsx", ".ts"]).filter((f) => !/\.test\.tsx?$/.test(f));
+    const assembled = tsx.flatMap((f) =>
+      [...readFileSync(f, "utf8").matchAll(/var\(--[a-z0-9-]*\$\{/g)].map(() =>
+        f.replace(SRC, "src"),
+      ),
+    );
+    expect(assembled).toEqual([]);
   });
 
   it("catches a property that is read but never defined", () => {
