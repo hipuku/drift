@@ -3,7 +3,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--drift-app-bg);
+  background: var(--drift-gradient-app);
   background-attachment: fixed;
 }
 

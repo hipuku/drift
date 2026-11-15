@@ -1,6 +1,6 @@
-/* ─── drift / brand layer ─────────────────────────────────────────────────────
+/* ─── drift / theme layer ─────────────────────────────────────────────────────
    The base token layer (tokens/*.css) defines drift's foundation; this layer
-   re-skins it for a *cool, editorial* identity, in both light and dark.
+   re-skins it for a *cool, editorial* identity, dark only.
 
    The base primitives start from a warm-ish purple near-black. This layer remaps
    the semantic surface / ink / border tokens onto a cool neutral ramp (a
@@ -8,7 +8,7 @@
    the `drift.*` cascade layers are declared after the `base.*` layers (see import
    order in main.tsx), these definitions win where they overlap.
 
-   Both ramps are theme-agnostic in name (--drift-neutral-*, --drift-accent-*) so switching
+   Both ramps are theme-agnostic in name (--drift-color-neutral-*, --drift-color-accent-*) so switching
    the whole palette warm↔cool is only ever a values edit. The accent is
    generated as an OKLCH tonal ramp from two custom properties (--drift-color-accent-h,
    --drift-color-accent-c), so the live theme playground retunes the entire brand by changing
@@ -18,8 +18,6 @@
 
 @layer drift.primitives {
   :root {
-    color-scheme: light;
-
     /* ── Accent seed ── Drift's brand blue (H≈239°, high chroma) ────────────
        The entire accent ramp, every button, link, focus ring and the
        background glow, is generated from these two values. */
@@ -60,8 +58,8 @@
       30% calc(var(--drift-color-accent-c) * 0.52) var(--drift-color-accent-h)
     );
 
-    /* Neutral: cool blue-slate ramp (H≈255, very low chroma). Replaces Damson
-       as the basis for every surface, ink, and border. Reads like cool paper /
+    /* Neutral: cool blue-slate ramp (H≈255, very low chroma). The basis
+       for every surface, ink, and border. Reads like cool paper /
        cool charcoal, not a warm template grey. */
     --drift-color-neutral-0: oklch(99.3% 0.003 250);
     --drift-color-neutral-50: oklch(98% 0.004 250);
@@ -96,22 +94,17 @@
     --drift-color-surface-default: var(--drift-color-neutral-900); /* cards */
     --drift-color-surface-subtle: var(--drift-color-neutral-950); /* page bg, darker than cards */
     --drift-color-surface-raised: var(--drift-color-neutral-800);
-    --drift-color-surface-overlay: var(--drift-color-neutral-800);
     --drift-color-surface-sunken: oklch(12% 0.012 266);
-    --drift-color-surface-inverse: var(--drift-color-neutral-50);
-    --drift-color-surface-disabled: var(--drift-color-neutral-800);
 
     --drift-color-ink-primary: var(--drift-color-neutral-50);
     --drift-color-ink-secondary: var(--drift-color-neutral-300);
     --drift-color-ink-tertiary: var(--drift-color-neutral-400);
     --drift-color-ink-disabled: var(--drift-color-neutral-600);
-    --drift-color-ink-inverse: var(--drift-color-neutral-900);
     --drift-color-ink-link: var(--drift-color-accent-400);
 
     --drift-color-border-subtle: var(--drift-color-neutral-800);
     --drift-color-border-default: var(--drift-color-neutral-700);
     --drift-color-border-strong: var(--drift-color-neutral-600);
-    --drift-color-border-disabled: var(--drift-color-neutral-800);
 
     /* Same accessible anchor as light (white text clears AA); it already pops
        against the charcoal page. Subtle/link tokens lift lighter for dark. */
@@ -121,7 +114,7 @@
     --drift-color-primary-subtle: oklch(from var(--drift-color-accent-600) l c h / 0.2);
     --drift-color-primary-on-subtle: var(--drift-color-accent-300);
 
-    --drift-app-bg:
+    --drift-gradient-app:
       radial-gradient(
         120% 85% at 50% -15%,
         oklch(from var(--drift-color-accent-600) l c h / 0.16) 0%,
@@ -148,15 +141,11 @@
       0 8px 20px -4px oklch(50% 0.085 var(--drift-color-accent-h) / 0.55);
     --drift-elevation-lift-pressed: 0 1px 2px oklch(40% 0.05 var(--drift-color-accent-h) / 0.25);
 
-    /* Not theme-dependent: severity hues and grid metrics. */
-    --drift-color-primary-disabled: var(--drift-color-neutral-200);
+    /* Not theme-dependent: grid metrics and the error text colour. */
     --drift-size-grid: 32px;
-    --drift-color-severity-high: var(--drift-color-error-default);
-    --drift-color-severity-medium: var(--drift-color-warning-default);
-    --drift-color-severity-low: var(--drift-color-ink-tertiary);
     --drift-color-error-ink: color-mix(
       in oklab,
-      var(--drift-color-severity-high) 70%,
+      var(--drift-color-error-default) 70%,
       var(--drift-color-ink-primary)
     );
   }

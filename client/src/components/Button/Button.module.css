@@ -27,7 +27,7 @@
 
 .button:disabled {
   cursor: not-allowed;
-  opacity: var(--drift-opacity-control-disabled);
+  opacity: var(--drift-opacity-disabled);
   box-shadow: none;
   transform: none;
 }

@@ -18,8 +18,8 @@
 @layer base.primitives {
   :root {
     /* ── Typefaces ────────────────────────────────────────────────────────────
-       The foundation names Manrope and Fira Code. The base layer stays on
-       system faces, and drift.css puts Stack Sans over the top.              */
+       The base layer stays on system faces, and drift.css puts Stack Sans
+       and Fira Code over the top. */
     --drift-type-family-sans: system-ui, -apple-system, sans-serif;
     --drift-type-family-display: system-ui, -apple-system, sans-serif;
     --drift-type-family-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -27,7 +27,7 @@
     /* ── Sub-step spacing ─────────────────────────────────────────────────────
        Below the foundation's smallest step, for hairline rules and the gaps in
        dense token tables where 4px is already too much.                      */
-    --drift-space-hairline: 0.0625rem; /* 1px */
-    --drift-space-tight: 0.125rem; /* 2px */
+    --drift-space-0-25: 0.0625rem; /* 1px */
+    --drift-space-0-5: 0.125rem; /* 2px */
   }
 }

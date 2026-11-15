@@ -82,11 +82,6 @@ const SURFACES = [
     bg: "var(--drift-color-surface-sunken)",
     ink: "var(--drift-color-ink-secondary)",
   },
-  {
-    label: "inverse",
-    bg: "var(--drift-color-surface-inverse)",
-    ink: "var(--drift-color-ink-inverse)",
-  },
 ] as const;
 
 const TYPE: { role: TypeRole; text: string }[] = [

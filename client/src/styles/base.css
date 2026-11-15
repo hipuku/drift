@@ -17,7 +17,7 @@ html {
 body {
   font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-size-14);
-  line-height: var(--drift-type-leading-normal);
+  line-height: var(--drift-type-leading-140);
   letter-spacing: var(--drift-type-tracking-normal);
   color: var(--drift-color-ink-primary);
   background: var(--drift-color-surface-subtle);

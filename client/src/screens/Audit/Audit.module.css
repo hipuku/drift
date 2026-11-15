@@ -322,7 +322,7 @@
      from the role and the leading does not. Recorded in TYPE_TIER_DEBT rather
      than hidden: drift#25 is the question of whether the scale should carry
      this pair. */
-  line-height: var(--drift-type-leading-relaxed);
+  line-height: var(--drift-type-leading-150);
   white-space: nowrap;
 }
 .authoredNote {

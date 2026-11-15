@@ -193,7 +193,7 @@
 }
 
 .rowDisabled {
-  opacity: var(--drift-opacity-control-disabled);
+  opacity: var(--drift-opacity-disabled);
   cursor: not-allowed;
 }
 

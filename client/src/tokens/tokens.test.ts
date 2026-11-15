@@ -149,8 +149,8 @@ const TYPE_TIER_DEBT = new Map([
   ["--drift-type-size-11", 5],
   ["--drift-type-size-14", 1],
   // Departures from a role the element is already on, 3.
-  ["--drift-type-leading-relaxed", 1],
-  ["--drift-type-leading-snug", 1],
+  ["--drift-type-leading-150", 1],
+  ["--drift-type-leading-125", 1],
   ["--drift-type-tracking-widest", 1],
 ]);
 

@@ -1,23 +1,16 @@
 /* ─── drift tokens · semantics ────────────────────────────────────────────────
-   Intent aliases. Light mode only.
-   No component references a primitive directly.
-   No raw values live in this file.
+   Roles Drift adds on top of the foundation's: spacing tiers, radius, elevation,
+   motion and the data type role. No component reads a primitive directly, and
+   the elevations are the only raw values here.
 
-   Naming rules:
-   · Brand colour uses a role name at this layer: primary (aronia).
-     Palette names only appear in primitives.css.
-   · Every surface token has a paired on-* text token.
-   · Every interactive scale has a disabled state.
+   Naming: --drift-{category}-{name}. Primitives are named by their value
+   (--drift-space-4, --drift-motion-duration-200) and roles by their job
+   (--drift-space-inset-md, --drift-motion-duration-ui), so in any group the
+   two can be told apart at a glance.
    ─────────────────────────────────────────────────────────────────────────── */
 
 @layer base.semantics {
   :root {
-    color-scheme: light;
-  }
-
-  :root {
-    /* Opacity fractions here are interaction-layer values, not raw colours.  */
-
     /* ── Spacing ──────────────────────────────────────────────────────────── */
     /* Three roles, one ladder. A step means the same size whichever role it
        is read through, so the tiers stay comparable, the point of splitting
@@ -28,8 +21,8 @@
        this layer for the primitive. */
 
     /* Optical, below the 4px grid, see primitives.css. */
-    --drift-space-inset-hairline: var(--drift-space-hairline);
-    --drift-space-inset-tight: var(--drift-space-tight);
+    --drift-space-inset-hairline: var(--drift-space-0-25);
+    --drift-space-inset-tight: var(--drift-space-0-5);
 
     /* Padding, space *inside* a component, between its edge and its content. */
 
@@ -46,7 +39,7 @@
     /* ── Elevation ────────────────────────────────────────────────────────── */
     /* Height above the page, not shadow size. A component asks to sit at a
        level; how that level is drawn is this layer's business, which is what
-       lets the brand layer restyle every shadow at once. */
+       lets the theme restyle every shadow at once. */
     --drift-elevation-raised: 0 1px 2px oklch(0% 0 0 / 0.3); /* lifted off the page: cards */
     --drift-elevation-overlay:
       0 2px 4px oklch(0% 0 0 / 0.3), 0 8px 20px -8px oklch(0% 0 0 / 0.45); /* above content: dropdowns */
@@ -59,14 +52,13 @@
     /* Named for what is moving. The durations differ because the distances do:
        a chip's colour change should be over before it is noticed, a panel
        sliding in should be followed by the eye. */
-    --drift-motion-duration-micro: var(--drift-motion-duration-fast); /* hover, focus, check */
-    --drift-motion-duration-ui: var(--drift-motion-duration-normal); /* reveals, tab changes */
-    --drift-motion-duration-panel: var(--drift-motion-duration-moderate); /* drawers, modals */
-    --drift-motion-ease-standard: var(--drift-motion-ease-move); /* the default curve */
+    --drift-motion-duration-micro: var(--drift-motion-duration-100); /* hover, focus, check */
+    --drift-motion-duration-ui: var(--drift-motion-duration-200); /* reveals, tab changes */
+    --drift-motion-duration-panel: var(--drift-motion-duration-300); /* drawers, modals */
+    --drift-motion-ease-standard: var(--drift-motion-ease-in-out); /* the default curve */
 
-    /* ── Sizing and state ─────────────────────────────────────────────────── */
-    --drift-size-icon-inline: var(--drift-size-icon-sm); /* an icon set in text */
-    --drift-opacity-control-disabled: var(--drift-opacity-disabled);
+    /* ── Sizing ───────────────────────────────────────────────────────────── */
+    --drift-size-icon-inline: var(--drift-size-icon-16); /* an icon set in text */
 
     /* ── Typography, and the two weights that flowed back ──────────────────
        Nothing here any more, and that is the result.
@@ -92,7 +84,7 @@
        --drift-type-size-12 together and nothing else: property names, values, counts,
        page chips, table cells. That is one decision: "this is tabular data"        written twelve times as two primitive reads.
 
-       --type-mono is the prose answer: 13px with leading-loose, for a token
+       --drift-type-mono-* is the prose answer: 13px with leading-loose, for a token
        name inside a sentence. A table cell is a different job. Its size is
        chosen against column width and row count, so that eighty properties fit
        without scrolling, and 13px with 1.6 leading would not.

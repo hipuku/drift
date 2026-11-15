@@ -40,7 +40,7 @@
      primitive. Its letter-spacing used to sit here too and was --drift-type-tracking-tight,
      which is what heading-lg already carries: re-stating the role, doing
      nothing. */
-  line-height: var(--drift-type-leading-snug);
+  line-height: var(--drift-type-leading-125);
   text-wrap: pretty;
 }
 

@@ -140,8 +140,11 @@ lowest first:
 
 Every name follows `--drift-{category}-{name}`: `color` (`--drift-color-neutral-500`,
 `--drift-color-surface-default`), `type` (`--drift-type-size-14`, `--drift-type-body-size`),
-`space`, `radius`, `motion`, `elevation`, `size`, `opacity`, `border-width` and `z`. Primitives and
-roles share the categories, so a role sits beside the scale it draws from.
+`space`, `radius`, `motion`, `elevation`, `size`, `opacity`, `border-width` and `z`, plus `focus`
+and `gradient` for the focus ring and the page background. Primitives and roles share the
+categories, so a role sits beside the scale it draws from. Primitives are named by their value
+(`--drift-type-leading-140`, `--drift-motion-duration-200`) and roles by their job
+(`--drift-type-body-leading`, `--drift-motion-duration-ui`), so the two read apart within a group.
 
 `tokens/layers.css` declares the order before any file opens a layer, so import order cannot
 change it. Components read roles, not primitives. Spacing roles come in three kinds over one ladder:
@@ -153,7 +156,11 @@ releases: the heading tracking change in `haus#37` reached Drift through a versi
 
 **Alternatives.** `haus-tokens`, adopted on 2026-08-30 and removed on 2026-09-09. Names from
 three schemes (haus's foundation, unprefixed additions in `base.*`, haus's fruit-named status
-ramps) and a forwarding brand layer were consolidated into the one pattern on 2026-11-16.
+ramps) and a forwarding brand layer were consolidated into the one pattern on 2026-11-16. The same
+day, adjective names for leading, weight and duration gave way to values (`tight` was 1.15 and
+`tighter` 1.2), and ten roles nothing read were dropped: the disabled surface, border and primary,
+the overlay and inverse surfaces, inverse ink, the three severity colours and a second disabled
+opacity.
 `foundation.css` was generated once from `haus-tokens@3.2.0`, renamed to `--drift-*`, and is edited
 by hand now; a computed-styles comparison of 2,680 elements found no difference from the rename.
 `haus-colour-utils` and `haus-style-probe` stay: they are analysis code, not a design system.
