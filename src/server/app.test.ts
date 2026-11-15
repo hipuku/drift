@@ -1,9 +1,10 @@
 import { request } from "node:http";
-import type { AddressInfo } from "node:net";
+import { isIP, type AddressInfo } from "node:net";
 import type { Server } from "node:http";
 import { afterEach, describe, expect, it } from "vitest";
 import type { CrawlJobs } from "../queue/crawlJobs.js";
 import type { CrawlResult, ElementStyle } from "../crawler/types.js";
+import { assertCrawlable, type Resolve } from "../net/publicUrl.js";
 import { RateLimiter } from "./access.js";
 import { createApp, type AppDeps } from "./app.js";
 
@@ -71,6 +72,20 @@ function fakeResult(): CrawlResult {
   };
 }
 
+/**
+ * Names resolve without the network. The crawl check is real, so the private
+ * address tests still exercise it, but a lookup of example.com no longer
+ * waits on DNS: a slow resolver made a test time out once. An IP literal
+ * resolves to itself, localhost to loopback, and any other name to a
+ * documentation address (RFC 5737), which the check counts as public.
+ */
+const offlineResolve: Resolve = async (host) => {
+  const family = isIP(host);
+  if (family) return [{ address: host, family }];
+  if (host === "localhost") return [{ address: "127.0.0.1", family: 4 }];
+  return [{ address: "203.0.113.10", family: 4 }];
+};
+
 let server: Server;
 
 afterEach(async () => {
@@ -82,6 +97,7 @@ async function listen(
 ): Promise<string> {
   const app = createApp({
     discover: async () => ({ rootUrl: "", host: "", pages: [] }),
+    checkCrawlTarget: (url) => assertCrawlable(url, { resolve: offlineResolve }),
     ...deps,
   });
   server = app.listen(0);
