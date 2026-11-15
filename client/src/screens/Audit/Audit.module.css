@@ -252,11 +252,11 @@
 }
 
 /* The mono reads below are off-role, deliberately and drift#1 records it.
-   The only mono role is --type-mono: 13px, weight regular, leading-loose. The
+   The only mono prose role is --drift-type-mono-*: 13px, weight 400, 1.6 leading. The
    token tables here are 12px so a row of eighty properties fits without
    scrolling, and adopting the role would change the size *and* the line height
    of every table on the audit screen. That is a missing role rather than a
-   bypassed one, and inventing --type-mono-sm to close a lint number would be
+   bypassed one, and inventing --drift-type-mono-sm to close a lint number would be
    the tail wagging the dog. */
 .tabCount {
   font-family: var(--drift-type-data-family);

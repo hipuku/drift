@@ -14,8 +14,9 @@ component. No package supplies one.
 
 Every name is `--drift-{category}-{name}`, across all three files: `color`, `type`, `space`,
 `radius`, `motion`, `elevation`, `size`, `opacity`, `border-width` and `z`, plus `focus` and
-`gradient`. Primitives are named by their value (`--drift-space-4`, `--drift-type-weight-600`),
-roles by their job (`--drift-space-inset-md`, `--drift-type-weight-strong`). Until 2026-11-16
+`gradient`. Primitives are named by their value (`--drift-space-4`, `--drift-type-weight-600`) or,
+for radius and tracking, a scale step (`--drift-radius-sm`); roles by their job
+(`--drift-space-inset-md`, `--drift-type-weight-strong`). Until 2026-11-16
 `primitives.css` and `semantics.css` declared unprefixed names (`--font-sans`, `--radius-panel`,
 `--type-data-size`) and the status ramps carried haus's fruit names (cherry, mango, greengage,
 elderberry, damson); they were renamed in one pass, checked by the computed-styles e2e.

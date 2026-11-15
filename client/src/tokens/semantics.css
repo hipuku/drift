@@ -4,9 +4,10 @@
    the elevations are the only raw values here.
 
    Naming: --drift-{category}-{name}. Primitives are named by their value
-   (--drift-space-4, --drift-motion-duration-200) and roles by their job
-   (--drift-space-inset-md, --drift-motion-duration-ui), so in any group the
-   two can be told apart at a glance.
+   (--drift-space-4, --drift-motion-duration-200) or, for radius and tracking,
+   a scale step (--drift-radius-sm). Roles are named by their job
+   (--drift-space-inset-md, --drift-radius-control), so in any group the two
+   can be told apart at a glance.
    ─────────────────────────────────────────────────────────────────────────── */
 
 @layer base.semantics {
@@ -82,9 +83,9 @@
 
        drift#24. Twelve elements on the audit screen read --drift-type-family-mono and
        --drift-type-size-12 together and nothing else: property names, values, counts,
-       page chips, table cells. That is one decision: "this is tabular data"        written twelve times as two primitive reads.
+       page chips, table cells. That is one decision: "this is tabular data", written twelve times as two primitive reads.
 
-       --drift-type-mono-* is the prose answer: 13px with leading-loose, for a token
+       --drift-type-mono-* is the prose answer: 13px with 1.6 leading, for a token
        name inside a sentence. A table cell is a different job. Its size is
        chosen against column width and row count, so that eighty properties fit
        without scrolling, and 13px with 1.6 leading would not.

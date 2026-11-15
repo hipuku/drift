@@ -143,8 +143,9 @@ Every name follows `--drift-{category}-{name}`: `color` (`--drift-color-neutral-
 `space`, `radius`, `motion`, `elevation`, `size`, `opacity`, `border-width` and `z`, plus `focus`
 and `gradient` for the focus ring and the page background. Primitives and roles share the
 categories, so a role sits beside the scale it draws from. Primitives are named by their value
-(`--drift-type-leading-140`, `--drift-motion-duration-200`) and roles by their job
-(`--drift-type-body-leading`, `--drift-motion-duration-ui`), so the two read apart within a group.
+(`--drift-type-leading-140`, `--drift-motion-duration-200`) or, for radius and tracking, by a scale
+step (`--drift-radius-sm`, `--drift-type-tracking-tight`). Roles are named by their job
+(`--drift-type-body-leading`, `--drift-radius-control`), so the two read apart within a group.
 
 `tokens/layers.css` declares the order before any file opens a layer, so import order cannot
 change it. Components read roles, not primitives. Spacing roles come in three kinds over one ladder:
