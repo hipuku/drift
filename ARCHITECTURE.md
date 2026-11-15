@@ -32,8 +32,8 @@ flowchart LR
 ## Overview
 
 Drift crawls a website and reports the design values it ships. Every colour, typeface, size,
-radius, shadow, border and spacing value in use is deduplicated, grouped perceptually and
-attributed to the pages it appears on. Everything is computed: Drift calls no model API and gives
+radius, shadow, border and spacing value in use is deduplicated, grouped and counted, with the
+element tags it appears on. Colours also list the pages they appear on. Everything is computed: Drift calls no model API and gives
 the same audit for the same pages.
 
 One Node process runs the Express API, the WebSocket progress server and a BullMQ worker with
@@ -64,8 +64,10 @@ The queue runs each job once (`attempts: 1`) and fails a stalled job instead of 
 
 A crawl produces a `CrawlResult`: the root URL, a timestamp, and per page the URL, title, element
 count, normalised elements, breakpoints and authored declarations. `collectAudit` turns it into a
-`SiteAudit`. Both are in [`openapi.yaml`](./openapi.yaml), rendered as the
-[API reference](https://drift.hipuku.dev/reference/).
+`SiteAudit`. `SiteAudit` is in [`openapi.yaml`](./openapi.yaml), rendered as the
+[API reference](https://drift.hipuku.dev/reference/). The contract describes each page of a
+`CrawlResult` by its URL, title and element count only; the elements, breakpoints and authored
+declarations are typed in `src/crawler/types.ts`.
 
 | `SiteAudit` field                                                 | Contents                                                                                                                                                              |
 | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -116,8 +118,8 @@ it. Completion comes from `/result`, not the socket, so a dropped socket does no
 
 ### Access
 
-Every crawl drives a headless browser for up to a minute, so an open endpoint spends the host's
-machine. The rules are in `src/server/access.ts`.
+Every crawl drives a headless browser through up to ten pages, each allowed 30 seconds to load,
+so an open endpoint spends the host's machine. The rules are in `src/server/access.ts`.
 
 - **Where it listens.** `127.0.0.1` unless `HOST` is set. The server warns at startup when it
   listens beyond loopback with no token.
@@ -132,7 +134,7 @@ machine. The rules are in `src/server/access.ts`.
 - **Transport.** The backend serves plain HTTP. An exposed server belongs behind a reverse proxy
   that terminates TLS.
 
-### Addresses Drift will not reach
+### Private addresses
 
 Every URL Drift fetches comes from a caller, so each is an SSRF vector. `src/net/publicUrl.ts`
 holds one rule: a host passes when every address it resolves to is public. Refused: `0.0.0.0/8`,
@@ -144,11 +146,13 @@ holds one rule: a host passes when every address it resolves to is public. Refus
   redirect, embed or load from anywhere. Requests are fetched with redirects off and each hop is
   checked, at most five. Service workers are blocked, because their requests bypass routing.
 - **Sitemap fetches** follow redirects by hand with the same check on each hop.
-- **Callbacks** are checked at enqueue and are never redirected.
+- **Callbacks** are checked at enqueue and again when the result is delivered, and are never
+  redirected.
 
 `DRIFT_CRAWL_ALLOWED_HOSTS` and `DRIFT_WEBHOOK_ALLOWED_HOSTS` exempt named hosts, which is how
-drift-tests crawls and receives on `127.0.0.1`. The API refuses a host with no dot, such as
-`localhost`, before either is read.
+drift-tests crawls and receives on `127.0.0.1`. A site to crawl must also have a dot in its host,
+so `localhost` is refused before the crawl allowlist is read; a callback has no such check, so an
+allowlisted `localhost` callback works.
 
 ### Outbound requests
 
@@ -179,10 +183,12 @@ lists same-origin links, without action endpoints such as `vote` or `login`. The
 | ---------------- | -------------------------------------------------------- | -------------------------------------- |
 | Time             | Each page is a headless navigation and a DOM walk        | Worker concurrency 2, page cap         |
 | Memory           | Every element of every page is kept until the audit runs | Page cap, and 12,000 elements per page |
-| Load on the site | Requests to a site the operator does not own             | Same origin only, page cap             |
+| Load on the site | Requests to a site the operator does not own             | Same-origin pages only, page cap       |
 
 A caller either names the pages or gets a breadth-first walk of same-origin links from the root. A
-URL is same origin when its parsed origin equals the root's. Each page gets 30 seconds to reach
+URL is same origin when its parsed origin equals the root's. Only pages are limited to the root's
+origin: a page can still load stylesheets, fonts and other assets from public third-party hosts,
+which the browser guard checks like any other request. Each page gets 30 seconds to reach
 `domcontentloaded`; a page that fails is logged and skipped.
 
 ### Page cap
@@ -269,7 +275,7 @@ successful audit of an unreachable site.
 | ---------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | Service    | `src/**/*.test.ts`                                   | 234 tests in 19 files: the analysis, the API against `openapi.yaml`, the address and access rules, the queue adapter |
 | Client     | `client/src/**/*.test.ts(x)`                         | 235 tests in 13 files: screens with axe, the token tests, the audit model                                            |
-| End to end | `client/e2e`                                         | Against the demo build: the audit flow by keyboard, every tab, focus visibility, computed styles, the API reference  |
+| End to end | `client/e2e`                                         | Against the demo build: the audit flow by keyboard, every tab, focus visibility, the API reference                   |
 | Acceptance | [drift-tests](https://github.com/hipuku/drift-tests) | BDD scenarios over HTTP against a real server, Redis and a fixture site                                              |
 
 drift-tests waits for the server by sending `POST /discover` with no `url` and expecting `400`,
@@ -343,11 +349,11 @@ vault's HSL boundaries had misnamed 17 of 27 reference colours. They moved into 
 
 ## Known trade-offs
 
-- **DNS rebinding** (#85). The crawl guard resolves a host to check it, and the request resolves it
-  again: Node for fetched pages and assets, the browser for WebSockets and the redirect hops it
-  follows once the guard has walked the chain. A name whose answer changes in between can reach a
-  private address. Closing it needs every connection made to the checked address, through an
-  egress proxy.
+- **DNS rebinding** (#85). Every check resolves a host, and the request then resolves it again:
+  Node for fetched pages, assets and webhook deliveries, the browser for WebSockets and the
+  redirect hops it follows once the guard has walked the chain. Neither the crawl nor the webhook
+  pins the checked address, so a name whose answer changes in between can reach a private
+  address. Closing it needs every connection made to the checked address, through an egress proxy.
 - **One process.** The rate limiter's counters live in memory, and behind a reverse proxy every
   request shares one caller address. Several processes would need a shared store.
 - **The demo capture can go stale.** The public build replays a capture from 2026-08-30. An analysis

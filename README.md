@@ -1,8 +1,8 @@
 # drift
 
 Drift crawls a website and reports the design system it actually ships: every colour, typeface,
-size, radius, shadow, border and spacing value in use, grouped perceptually, ranked by usage,
-attributed to the pages it appears on, and measured against a stated reference. A Node backend
+size, radius, shadow, border and spacing value in use, grouped perceptually, ranked by usage and
+measured against a stated reference. A Node backend
 crawls with Playwright behind a Redis queue, and a React client reads the result. The public demo
 replays an audit of picocss.com, so nothing needs installing to see it.
 
@@ -16,12 +16,12 @@ replays an audit of picocss.com, so nothing needs installing to see it.
 
 - **Measurements, not proposals.** Every value is reported against a named reference, never
   "fixed". [DESIGN § Measurements, not proposals](./DESIGN.md#measurements-not-proposals)
-- **Contrast as it renders.** Text is composited over its ancestor background before the WCAG
-  ratio is taken. [ARCHITECTURE § Contrast measurement](./ARCHITECTURE.md#contrast-measurement)
+- **Composited contrast.** Text alpha and the nearest ancestor background are composited, over
+  white, before the WCAG ratio is taken. [ARCHITECTURE § Contrast measurement](./ARCHITECTURE.md#contrast-measurement)
 - **Authored units.** The CSSOM is read beside computed styles, so `rem` and custom properties
   survive. [ARCHITECTURE § Authored and computed values](./ARCHITECTURE.md#authored-and-computed-values)
 - **A guarded crawler.** Every request the browser makes is checked against private addresses.
-  [ARCHITECTURE § Addresses Drift will not reach](./ARCHITECTURE.md#addresses-drift-will-not-reach)
+  [ARCHITECTURE § Private addresses](./ARCHITECTURE.md#private-addresses)
 - **Its own token layer, enforced.** Lint and tests fail a raw value or an undefined property.
   [DESIGN § Enforcement](./DESIGN.md#enforcement)
 - **Built for CI.** One HTTP API, with webhooks, for the client and a build alike.

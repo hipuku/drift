@@ -172,9 +172,10 @@ full pattern after an audit found it was tabs in name only (#27, 2026-09-07).
   property; CSS modules read no primitive outside the recorded debt; and every `@keyframes` name a
   module uses is defined in that module. An undefined `--duration-default` once left five animations
   with no duration, and a stylesheet split once left two animations without their keyframes.
-- **Computed styles** (`e2e/computed-styles.spec.ts`). The audit report's computed styles are
-  compared against a recorded baseline in a real browser, so a refactor that changes what renders
-  fails.
+- **Computed styles** (`e2e/computed-styles.spec.ts`). A before-and-after check for refactors,
+  run locally: record a baseline of the audit report's computed styles, make the change, and the
+  diff shows what rendering moved. The baseline carries one machine's font metrics, so it is
+  skipped in CI, and a missing baseline is recorded and passes.
 
 ---
 

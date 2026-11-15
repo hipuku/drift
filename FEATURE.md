@@ -61,7 +61,8 @@ ratio first.
 ![Contrast](screenshots/contrast.png)
 
 Each pair uses the nearest ancestor background, and alpha is composited before the ratio is
-taken, so text is measured as it renders.
+taken. A translucent background is composited over white, not over whatever sits behind it, so a
+translucent panel over a dark area is measured as if the page were white.
 
 > [!NOTE]
 > **How it works:** [Contrast measurement](./ARCHITECTURE.md#contrast-measurement)
@@ -79,7 +80,8 @@ from a step are marked. Each named ratio in the selector shows how many sizes mi
 automatic fit is the ratio that the fewest sizes miss, with mean relative error breaking a tie.
 The Overview verdict uses the automatic fit whichever ratio is selected on this tab.
 
-Each row shows the authored unit beside the computed pixels.
+Each size shows in pixels and in `rem`, converted at 16px. Whichever unit the site mostly
+authors type in leads, so a `rem`-authored scale reads in `rem`.
 
 > [!NOTE]
 > **How it works:** [Selectable references](./DESIGN.md#selectable-references), [Reference scales](./ARCHITECTURE.md#reference-scales)
@@ -174,8 +176,11 @@ no endpoint serves it.
 ## API
 
 The client uses the same HTTP API a CI job would: list a site's pages, queue a crawl, follow its
-progress over a WebSocket, then read the result and the audit. A `callbackUrl` receives the audit
-when the crawl ends, so a CI job can fail a build on a threshold without polling. The
+progress over a WebSocket, then read the result and the audit. A `callbackUrl` receives
+`crawl.completed` with the audit, or `crawl.failed` with an error, including for a crawl that read
+no page. Delivery is best effort: a `4xx` from the receiver ends it without a retry, and the crawl
+still succeeds. A CI job should set its own timeout and read the audit from the API when no
+callback arrives. The
 [API reference](https://drift.hipuku.dev/reference/) is generated from
 [`openapi.yaml`](./openapi.yaml).
 
