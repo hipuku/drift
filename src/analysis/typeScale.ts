@@ -11,7 +11,7 @@ export interface NamedRatio {
   ratio: number;
 }
 
-/** The canonical scales, matching DESIGN.md. */
+/** The named scales the type tab offers. */
 export const RATIOS: NamedRatio[] = [
   { id: "minor-third", name: "Minor third", ratio: 1.2 },
   { id: "major-third", name: "Major third", ratio: 1.25 },

@@ -61,7 +61,7 @@ async function main() {
   const captured = new Date().toISOString().slice(0, 10);
   await writeFile(out, `${JSON.stringify({ ...audit, capturedAt: captured }, null, 2)}\n`, "utf8");
 
-  // The figures the README and DESIGN.md quote, printed so the docs can be
+  // The figures FEATURE.md quotes, printed so the docs can be
   // reconciled against this run rather than against memory of the last one.
   const s = audit.summary;
   process.stderr.write(
