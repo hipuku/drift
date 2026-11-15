@@ -8,11 +8,14 @@ import { expect, test } from "@playwright/test";
  * is off.
  */
 
-test("renders every endpoint from the contract, and sends nothing", async ({ page }) => {
+test("renders every endpoint from the contract, and sends nothing", async ({ page, baseURL }) => {
+  // Anything but the preview server itself counts, the backend's
+  // 127.0.0.1:3001 included: a hostname check would let that through.
+  const own = new URL(baseURL!).origin;
   const outbound: string[] = [];
   page.on("request", (request) => {
     const url = new URL(request.url());
-    if (url.hostname !== "localhost" && url.hostname !== "127.0.0.1") outbound.push(request.url());
+    if (/^https?:$/.test(url.protocol) && url.origin !== own) outbound.push(request.url());
   });
 
   await page.goto("/reference/");
