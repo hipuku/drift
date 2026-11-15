@@ -4,8 +4,8 @@
    the only colours on the page. */
 
 .dark-mode {
-  --scalar-font: var(--font-sans);
-  --scalar-font-code: var(--font-mono);
+  --scalar-font: var(--drift-type-family-sans);
+  --scalar-font-code: var(--drift-type-family-mono);
 
   --scalar-background-1: var(--drift-color-surface-subtle);
   --scalar-background-2: var(--drift-color-surface-default);

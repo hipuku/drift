@@ -88,7 +88,9 @@ export function Audit({ audit, onBack }: Props) {
   const s = audit.summary;
   const t = audit.typography;
   const family = t.families[0]?.family ?? null;
-  const fontStack = family ? `'${family}', var(--font-sans)` : "var(--font-sans)";
+  const fontStack = family
+    ? `'${family}', var(--drift-type-family-sans)`
+    : "var(--drift-type-family-sans)";
 
   const tabs = useMemo(() => {
     const list = [

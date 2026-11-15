@@ -15,7 +15,7 @@
   width: 100%;
   max-width: 56rem;
   margin: 0 auto;
-  transition: max-width var(--motion-duration-ui) var(--motion-ease-standard);
+  transition: max-width var(--drift-motion-duration-ui) var(--drift-motion-ease-standard);
 }
 .layoutOpen {
   max-width: 82rem;
@@ -28,7 +28,7 @@
 .rail {
   flex-shrink: 0;
   width: 22rem;
-  animation: railIn var(--motion-duration-ui) var(--motion-ease-standard);
+  animation: railIn var(--drift-motion-duration-ui) var(--drift-motion-ease-standard);
 }
 .railInner {
   position: sticky;
@@ -41,8 +41,8 @@
   height: calc(100vh - 6.5rem);
   background: var(--drift-color-surface-default);
   border: var(--drift-border-width-default) solid var(--drift-color-border-default);
-  border-radius: var(--radius-panel);
-  box-shadow: var(--elevation-modal);
+  border-radius: var(--drift-radius-panel);
+  box-shadow: var(--drift-elevation-modal);
   overflow: hidden;
 }
 .railHeader {
@@ -67,8 +67,8 @@
   font-size: var(--drift-type-body-size);
   cursor: pointer;
   transition:
-    background var(--motion-duration-micro) var(--motion-ease-standard),
-    color var(--motion-duration-micro) var(--motion-ease-standard);
+    background var(--drift-motion-duration-micro) var(--drift-motion-ease-standard),
+    color var(--drift-motion-duration-micro) var(--drift-motion-ease-standard);
 }
 .railClose:hover {
   background: var(--drift-color-surface-sunken);
@@ -100,7 +100,7 @@
 /* Cross-fade the detail content when the selected colour changes (keyed by hex),
    so picking a neighbour glides rather than snaps. */
 .railFade {
-  animation: railFade var(--motion-duration-ui) var(--motion-ease-standard);
+  animation: railFade var(--drift-motion-duration-ui) var(--drift-motion-ease-standard);
 }
 
 @keyframes railFade {
@@ -152,12 +152,12 @@
   border: none;
   padding: 0;
   margin-bottom: var(--drift-space-stack-lg);
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-label-size);
   font-weight: var(--drift-type-label-weight);
   color: var(--drift-color-ink-tertiary);
   cursor: pointer;
-  transition: color var(--motion-duration-micro) var(--motion-ease-standard);
+  transition: color var(--drift-motion-duration-micro) var(--drift-motion-ease-standard);
 }
 .back:hover {
   color: var(--drift-color-ink-link);
@@ -171,7 +171,7 @@
 .title {
   /* Display type, tuned by eye against one string: 1.02 is below the leading
      scale's tightest step, so it stays a number. The letter-spacing that used
-     to sit here was --drift-tracking-tight, which is exactly what --type-display
+     to sit here was --drift-type-tracking-tight, which is exactly what --type-display
      already carries: this element renders as <Text role="display">, so the
      declaration was re-stating the role's own value and did nothing. */
   line-height: 1.02;
@@ -192,14 +192,14 @@
   border: none;
   background: transparent;
   border-radius: var(--drift-radius-surface);
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-label-size);
   font-weight: var(--drift-type-label-weight);
   color: var(--drift-color-ink-secondary);
   cursor: pointer;
   transition:
-    background var(--motion-duration-micro) var(--motion-ease-standard),
-    color var(--motion-duration-micro) var(--motion-ease-standard);
+    background var(--drift-motion-duration-micro) var(--drift-motion-ease-standard),
+    color var(--drift-motion-duration-micro) var(--drift-motion-ease-standard);
 }
 .ghost:hover {
   background: var(--drift-color-surface-subtle);
@@ -234,14 +234,14 @@
   border-bottom: var(--drift-border-width-thick) solid transparent;
   margin-bottom: -1px;
   white-space: nowrap;
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-label-size);
   font-weight: var(--drift-type-label-weight);
   color: var(--drift-color-ink-tertiary);
   cursor: pointer;
   transition:
-    color var(--motion-duration-micro) var(--motion-ease-standard),
-    border-color var(--motion-duration-micro) var(--motion-ease-standard);
+    color var(--drift-motion-duration-micro) var(--drift-motion-ease-standard),
+    border-color var(--drift-motion-duration-micro) var(--drift-motion-ease-standard);
 }
 .tab:hover {
   color: var(--drift-color-ink-primary);
@@ -252,19 +252,19 @@
 }
 
 /* The mono reads below are off-role, deliberately and drift#1 records it.
-   The only mono role is --type-mono: 13px, weight regular, leading-loose. The
+   The only mono prose role is --drift-type-mono-*: 13px, weight 400, 1.6 leading. The
    token tables here are 12px so a row of eighty properties fits without
    scrolling, and adopting the role would change the size *and* the line height
    of every table on the audit screen. That is a missing role rather than a
-   bypassed one, and inventing --type-mono-sm to close a lint number would be
+   bypassed one, and inventing --drift-type-mono-sm to close a lint number would be
    the tail wagging the dog. */
 .tabCount {
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
+  font-family: var(--drift-type-data-family);
+  font-size: var(--drift-type-data-size);
   color: var(--drift-color-ink-tertiary);
   background: var(--drift-color-surface-subtle);
   border-radius: var(--drift-radius-pill);
-  padding: var(--space-inset-hairline) var(--drift-space-inset-xs);
+  padding: var(--drift-space-inset-hairline) var(--drift-space-inset-xs);
 }
 .tabOn .tabCount {
   color: var(--drift-color-primary-on-subtle);
@@ -274,7 +274,7 @@
 /* ── Panel ───────────────────────────────────────────────────────────────── */
 .panel {
   margin-top: var(--drift-space-stack-3xl);
-  animation: fade var(--motion-duration-ui) var(--motion-ease-standard);
+  animation: fade var(--drift-motion-duration-ui) var(--drift-motion-ease-standard);
 }
 
 @keyframes fade {
@@ -312,17 +312,17 @@
 .pill {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-inset-tight) var(--drift-space-inset-xs);
+  padding: var(--drift-space-inset-tight) var(--drift-space-inset-xs);
   border-radius: var(--drift-radius-pill);
   background: color-mix(in oklab, var(--drift-color-ink-primary) 8%, transparent);
   color: var(--drift-color-ink-secondary);
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-label-sm-size);
   /* label-sm's own leading is 1.4 and this pill wants 1.5, so the size comes
      from the role and the leading does not. Recorded in TYPE_TIER_DEBT rather
      than hidden: drift#25 is the question of whether the scale should carry
      this pair. */
-  line-height: var(--drift-leading-relaxed);
+  line-height: var(--drift-type-leading-150);
   white-space: nowrap;
 }
 .authoredNote {
@@ -333,8 +333,8 @@
 /* ── px / rem unit toggle + secondary-unit annotation ────────────────────── */
 .valueAlt {
   margin-left: var(--drift-space-stack-xs);
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
+  font-family: var(--drift-type-data-family);
+  font-size: var(--drift-type-data-size);
   color: var(--drift-color-ink-tertiary);
 }
 
@@ -371,7 +371,7 @@
 .gradientBox {
   width: 100%;
   height: 4.75rem;
-  border-bottom: var(--drift-border-width-default) solid var(--drift-card-border);
+  border-bottom: var(--drift-border-width-default) solid var(--drift-color-border-card);
 }
 
 /* ── Tables (scalar tokens) ──────────────────────────────────────────────── */
@@ -392,7 +392,7 @@
 }
 .table th {
   text-align: left;
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-label-sm-size);
   font-weight: var(--drift-type-label-sm-weight);
   text-transform: uppercase;
@@ -445,8 +445,8 @@
   border-color: var(--drift-color-primary-default);
 }
 .valueCell {
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
+  font-family: var(--drift-type-data-family);
+  font-size: var(--drift-type-data-size);
   color: var(--drift-color-ink-primary);
   white-space: nowrap;
 }
@@ -457,8 +457,8 @@
 }
 .usageCell {
   text-align: right;
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
+  font-family: var(--drift-type-data-family);
+  font-size: var(--drift-type-data-size);
   color: var(--drift-color-ink-tertiary);
   white-space: nowrap;
 }
@@ -494,11 +494,11 @@
   row-gap: var(--drift-space-gap-2xs);
 }
 .tagChip {
-  padding: var(--space-inset-hairline) var(--drift-space-inset-xs);
+  padding: var(--drift-space-inset-hairline) var(--drift-space-inset-xs);
   border-radius: var(--drift-radius-control);
   background: color-mix(in oklab, var(--drift-color-ink-primary) 8%, transparent);
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
+  font-family: var(--drift-type-data-family);
+  font-size: var(--drift-type-data-size);
   color: var(--drift-color-ink-secondary);
   white-space: nowrap;
 }
@@ -565,7 +565,7 @@
   top: 0.6rem;
   left: 50%;
   transform: translateX(-50%);
-  font-family: var(--font-mono);
+  font-family: var(--drift-type-family-mono);
   font-size: 10px;
   color: var(--drift-color-ink-tertiary);
   white-space: nowrap;
@@ -598,7 +598,7 @@
   gap: var(--drift-space-gap-md);
   padding: var(--drift-space-inset-md) var(--drift-space-inset-lg);
   background: var(--drift-color-surface-default);
-  border: var(--drift-border-width-default) solid var(--drift-card-border);
+  border: var(--drift-border-width-default) solid var(--drift-color-border-card);
   border-radius: var(--drift-radius-overlay);
 }
 .familyRowGlyph {
@@ -608,7 +608,7 @@
   flex-shrink: 0;
 }
 .familyRowName {
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-body-size);
   color: var(--drift-color-ink-primary);
 }
@@ -672,7 +672,7 @@
   border-radius: var(--drift-radius-pill);
   background: transparent;
   color: var(--drift-color-ink-secondary);
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-label-sm-size);
   cursor: pointer;
   transition:
@@ -694,15 +694,15 @@
   color: var(--drift-color-ink-primary);
 }
 .scaleChipCount {
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
+  font-family: var(--drift-type-data-family);
+  font-size: var(--drift-type-data-size);
   color: var(--drift-color-ink-tertiary);
 }
 
 /* The automatically-chosen option: "closest" ratio / "detected" grid. Named on
    the chip rather than in a separate title, so the strip is the whole story. */
 .scaleChipBest {
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-label-sm-size);
   color: var(--drift-color-primary-default);
 }

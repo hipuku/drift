@@ -141,7 +141,7 @@
   background: repeating-linear-gradient(
     45deg,
     var(--drift-color-primary-default) 0 8px,
-    var(--drift-accent-300) 8px 16px
+    var(--drift-color-accent-300) 8px 16px
   );
   position: relative;
 }
@@ -174,7 +174,7 @@
 }
 
 .motionDot {
-  animation: slideTrack var(--dur, 200ms) var(--motion-ease-standard) infinite alternate;
+  animation: slideTrack var(--dur, 200ms) var(--drift-motion-ease-standard) infinite alternate;
 }
 
 .easingDot {
@@ -206,17 +206,17 @@
   height: 28px;
   border-radius: var(--drift-radius-control);
   border: var(--drift-border-width-default) solid var(--drift-color-border-subtle);
-  font-family: var(--font-sans);
+  font-family: var(--drift-type-family-sans);
   font-size: var(--drift-type-body-size);
-  font-weight: var(--drift-weight-strong);
+  font-weight: var(--drift-type-weight-strong);
 }
 
 .contrastPair {
   display: inline-flex;
   align-items: baseline;
   gap: var(--drift-space-gap-xs);
-  font-family: var(--type-data-family);
-  font-size: var(--type-data-size);
+  font-family: var(--drift-type-data-family);
+  font-size: var(--drift-type-data-size);
 }
 
 .contrastOn {

@@ -30,7 +30,7 @@ test and keep honest, for no product gain (a97c8f7).
 ### Accent
 
 **Decision.** One blue accent, generated as an OKLCH tonal ramp from two values,
-`--drift-accent-h` (239) and `--drift-accent-c` (0.19). Lightness is fixed per step, so white text
+`--drift-color-accent-h` (239) and `--drift-color-accent-c` (0.19). Lightness is fixed per step, so white text
 on the 600 anchor clears AA whatever the hue.
 
 **Reason.** The theme playground retunes the whole brand by changing a hue and a chroma, the same
@@ -138,6 +138,15 @@ lowest first:
 - **`drift.*`** (`styles/drift.css`): the theme, mapping surface, ink, border and primary onto the
   blue-slate and accent ramps.
 
+Every name follows `--drift-{category}-{name}`: `color` (`--drift-color-neutral-500`,
+`--drift-color-surface-default`), `type` (`--drift-type-size-14`, `--drift-type-body-size`),
+`space`, `radius`, `motion`, `elevation`, `size`, `opacity`, `border-width` and `z`, plus `focus`
+and `gradient` for the focus ring and the page background. Primitives and roles share the
+categories, so a role sits beside the scale it draws from. Primitives are named by their value
+(`--drift-type-leading-140`, `--drift-motion-duration-200`) or, for radius and tracking, by a scale
+step (`--drift-radius-sm`, `--drift-type-tracking-tight`). Roles are named by their job
+(`--drift-type-body-leading`, `--drift-radius-control`), so the two read apart within a group.
+
 `tokens/layers.css` declares the order before any file opens a layer, so import order cannot
 change it. Components read roles, not primitives. Spacing roles come in three kinds over one ladder:
 `inset` for padding, `gap` between siblings and `stack` for margin in flow.
@@ -146,7 +155,13 @@ change it. Components read roles, not primitives. Spacing roles come in three ki
 same portfolio, its own UI would be an instance of what it audits, and its look would follow haus
 releases: the heading tracking change in `haus#37` reached Drift through a version bump.
 
-**Alternatives.** `haus-tokens`, adopted on 2026-08-30 and removed on 2026-09-09.
+**Alternatives.** `haus-tokens`, adopted on 2026-08-30 and removed on 2026-09-09. Names from
+three schemes (haus's foundation, unprefixed additions in `base.*`, haus's fruit-named status
+ramps) and a forwarding brand layer were consolidated into the one pattern on 2026-11-16. The same
+day, adjective names for leading, weight and duration gave way to values (`tight` was 1.15 and
+`tighter` 1.2), and ten roles nothing read were dropped: the disabled surface, border and primary,
+the overlay and inverse surfaces, inverse ink, the three severity colours and a second disabled
+opacity.
 `foundation.css` was generated once from `haus-tokens@3.2.0`, renamed to `--drift-*`, and is edited
 by hand now; a computed-styles comparison of 2,680 elements found no difference from the rename.
 `haus-colour-utils` and `haus-style-probe` stay: they are analysis code, not a design system.
@@ -197,7 +212,5 @@ full pattern after an audit found it was tabs in name only (#27, 2026-09-07).
 - **`Audit.module.css` is 694 lines** (#2, parked). The colour, overview, type, spacing and scalar
   sections have their own modules now. The first split was reverted, and the second broke two
   animations, which the keyframes test was then written to catch.
-- **Not every name is prefixed.** `primitives.css` and `semantics.css` declare `--font-sans`,
-  `--space-hairline`, `--radius-panel` and others without `--drift-`.
 - **A class used in a component and missing from its CSS module** is not caught. It typechecks and
   is `undefined` at runtime.

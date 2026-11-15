@@ -15,10 +15,10 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
-  font-size: var(--drift-text-14);
-  line-height: var(--drift-leading-normal);
-  letter-spacing: var(--drift-tracking-normal);
+  font-family: var(--drift-type-family-sans);
+  font-size: var(--drift-type-size-14);
+  line-height: var(--drift-type-leading-140);
+  letter-spacing: var(--drift-type-tracking-normal);
   color: var(--drift-color-ink-primary);
   background: var(--drift-color-surface-subtle);
   -webkit-font-smoothing: antialiased;
@@ -29,7 +29,7 @@ code,
 kbd,
 samp,
 .mono {
-  font-family: var(--font-mono);
+  font-family: var(--drift-type-family-mono);
   font-feature-settings: "liga" 0;
 }
 

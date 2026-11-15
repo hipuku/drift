@@ -52,7 +52,7 @@ export function TypeSection({
           <div key={f.family} className={styles.familyRow}>
             <span
               className={styles.familyRowGlyph}
-              style={{ fontFamily: `'${f.family}', var(--font-sans)` }}
+              style={{ fontFamily: `'${f.family}', var(--drift-type-family-sans)` }}
             >
               Ag
             </span>
