@@ -98,7 +98,7 @@ npm --prefix client run build:demo
 - [`DESIGN.md`](./DESIGN.md): architecture, the service contract, the token layer, decisions
   and known gaps.
 - [`openapi.yaml`](./openapi.yaml): the API contract, including the webhook callbacks
-  (OpenAPI 3.1).
+  (OpenAPI 3.1), rendered as the [API reference](https://drift.hipuku.dev/reference/).
 - [drift-tests](https://github.com/hipuku/drift-tests): acceptance tests that drive these
   endpoints over HTTP.
 
