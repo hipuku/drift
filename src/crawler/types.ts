@@ -1,7 +1,7 @@
 /**
  * The crawl contract.
  *
- * The per-element shapes (RawElement, ElementStyle, ExtractedElement) now
+ * The per-element shapes (ElementStyle, ExtractedElement) now
  * live in `haus-style-probe`, the shared measuring tool. They are re-exported
  * here so the rest of drift keeps importing its contract from one place, and
  * so the seam is visible: everything below this re-export is crawl-specific
@@ -11,7 +11,7 @@
  * "what did we find across a site?".
  */
 
-export type { RawElement, ElementStyle, ExtractedElement } from "haus-style-probe";
+export type { ElementStyle, ExtractedElement } from "haus-style-probe";
 
 import type { ExtractedElement } from "haus-style-probe";
 
