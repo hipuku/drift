@@ -4,7 +4,7 @@
    main.tsx.
 
    `foundation.*` is Drift's own token foundation (tokens/foundation.css). It was
-   haus-tokens' primitive, brand, motion and semantic layers until 2026-09-09;
+   haus-tokens' primitive, brand, motion and semantic layers (the brand layer is gone: Drift has one brand) until 2026-09-09;
    Drift is independent now and owns them, under --drift-*. It is the base, and
    the layers above it are the theme: a theme that loses to the thing it themes
    is not a theme.
@@ -16,5 +16,5 @@
    where it overlaps.
    ─────────────────────────────────────────────────────────────────────────── */
 
-@layer foundation.primitives, foundation.brand, foundation.motion, foundation.semantics,
+@layer foundation.primitives, foundation.motion, foundation.semantics,
   base.primitives, base.semantics, drift.primitives, drift.semantics;

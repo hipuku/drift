@@ -24,6 +24,8 @@ import { describe, expect, it } from "vitest";
 
 const SRC = resolve(process.cwd(), "src");
 const FOUNDATION = resolve(SRC, "tokens/foundation.css");
+// A token read whose name is built at runtime: var(--x-${n}) or var(${name}).
+const ASSEMBLED = /var\((?:--[a-z0-9-]*)?\$\{/g;
 
 function filesUnder(dir: string, extensions: string[]): string[] {
   return readdirSync(dir, { recursive: true, withFileTypes: true })
@@ -59,9 +61,13 @@ describe("custom properties", () => {
 
   it("are all defined before they are read", () => {
     const css = filesUnder(SRC, [".css"]);
+    // Inline styles read tokens too (style={{ background: "var(--x)" }}), so
+    // components count as readers, not only stylesheets. Tests are left out:
+    // they name tokens to assert on them.
+    const tsx = filesUnder(SRC, [".tsx", ".ts"]).filter((f) => !/\.test\.tsx?$/.test(f));
 
     // `var(--x)` only. `var(--x, fallback)` is excluded by the closing paren.
-    const read = matches(css, /var\((--[a-z0-9-]+)\)/g);
+    const read = matches([...css, ...tsx], /var\((--[a-z0-9-]+)\)/g);
     const definedInCss = matches(css, /^\s*(--[a-z0-9-]+)\s*:/gm);
     // Components set some properties inline, e.g. style={{ "--dur": "200ms" }}.
     const definedInTsx = matches(filesUnder(SRC, [".tsx", ".ts"]), /"(--[a-z0-9-]+)":/g);
@@ -71,6 +77,24 @@ describe("custom properties", () => {
       .sort();
 
     expect(undefined_).toEqual([]);
+  });
+
+  it("are named in full wherever code reads one", () => {
+    // A name assembled at runtime, var(--space-${n}), is one no test can check:
+    // the specimen page read four families of tokens that way, three of which
+    // never existed, and nothing failed. A whole name held in a variable,
+    // var(${token}), hides from the check above the same way.
+    const tsx = filesUnder(SRC, [".tsx", ".ts"]).filter((f) => !/\.test\.tsx?$/.test(f));
+    const assembled = tsx.flatMap((f) =>
+      [...readFileSync(f, "utf8").matchAll(ASSEMBLED)].map(() => f.replace(SRC, "src")),
+    );
+    expect(assembled).toEqual([]);
+  });
+
+  it("catches a name assembled in part or held whole in a variable", () => {
+    // Proves the check above can fail, for both shapes it guards against.
+    const samples = ["width: `var(--drift-space-${n})`", "width: `var(${token})`"];
+    expect(samples.filter((s) => [...s.matchAll(ASSEMBLED)].length > 0)).toEqual(samples);
   });
 
   it("catches a property that is read but never defined", () => {

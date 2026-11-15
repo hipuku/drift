@@ -128,11 +128,11 @@ edited, but still takes focus and is still announced.
 
 ### Tokens
 
-**Decision.** Drift defines every custom property it reads, in eight cascade layers in three groups,
+**Decision.** Drift defines every custom property it reads, in seven cascade layers in three groups,
 lowest first:
 
-- **`foundation.*`** (`tokens/foundation.css`): primitives, brand inputs, motion and semantic roles.
-  197 declarations, all `--drift-*`.
+- **`foundation.*`** (`tokens/foundation.css`): primitives, motion and semantic roles. 176
+  declarations, all `--drift-*`.
 - **`base.*`** (`tokens/primitives.css`, `tokens/semantics.css`): 5 primitives and 15 roles Drift
   adds, such as two elevation levels, a panel radius and two insets below the 4px grid.
 - **`drift.*`** (`styles/drift.css`): the theme, mapping surface, ink, border and primary onto the

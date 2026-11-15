@@ -47,10 +47,13 @@
     /* Height above the page, not shadow size. A component asks to sit at a
        level; how that level is drawn is this layer's business, which is what
        lets the brand layer restyle every shadow at once. */
-    --drift-elevation-raised: var(--shadow-sm); /* lifted off the page: cards */
-    --drift-elevation-overlay: var(--shadow-md); /* above content: dropdowns */
-    --elevation-modal: var(--shadow-lg); /* above everything: dialogs */
-    --elevation-popover: var(--shadow-xl); /* the highest surfaces */
+    --drift-elevation-raised: 0 1px 2px oklch(0% 0 0 / 0.3); /* lifted off the page: cards */
+    --drift-elevation-overlay:
+      0 2px 4px oklch(0% 0 0 / 0.3), 0 8px 20px -8px oklch(0% 0 0 / 0.45); /* above content: dropdowns */
+    --elevation-modal:
+      0 2px 6px oklch(0% 0 0 / 0.35), 0 16px 34px -10px oklch(0% 0 0 / 0.55); /* above everything: dialogs */
+    --elevation-popover:
+      0 3px 8px oklch(0% 0 0 / 0.4), 0 28px 56px -14px oklch(0% 0 0 / 0.6); /* the highest surfaces */
 
     /* ── Motion ───────────────────────────────────────────────────────────── */
     /* Named for what is moving. The durations differ because the distances do:
