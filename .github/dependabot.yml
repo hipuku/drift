@@ -24,8 +24,9 @@ updates:
         patterns: ['vitest', '@vitest/*']
       tooling:
         patterns: ['eslint*', '@eslint/*', 'typescript-eslint', 'prettier*', 'tsx']
-    commit-message:
-      prefix: 'deps'
+    # Release notes group pull requests by label, and deps is the one they file under.
+    # Without this Dependabot adds its own dependencies and javascript labels instead.
+    labels: ['deps']
     ignore:
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
@@ -50,8 +51,9 @@ updates:
         patterns: ['vitest', '@vitest/*', 'jsdom', '@testing-library/*']
       tooling:
         patterns: ['vite', '@vitejs/*', 'eslint*', '@eslint/*', 'typescript-eslint']
-    commit-message:
-      prefix: 'deps'
+    # Release notes group pull requests by label, and deps is the one they file under.
+    # Without this Dependabot adds its own dependencies and javascript labels instead.
+    labels: ['deps']
     ignore:
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
@@ -60,3 +62,4 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    labels: ['deps']

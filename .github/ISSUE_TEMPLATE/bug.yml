@@ -1,0 +1,30 @@
+name: Bug
+description: Drift does something it should not, or does not do something it should.
+labels: [fix]
+body:
+  - type: textarea
+    id: expected
+    attributes:
+      label: What it should do, and what it does
+      description: The line in README or FEATURE it contradicts, if there is one.
+    validations: { required: true }
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to see it
+      description: The site that was audited and the pages picked, or the API request. A screenshot or the export helps.
+    validations: { required: true }
+  - type: input
+    id: version
+    attributes:
+      label: Drift version
+      description: The release tag, or the commit if you built it.
+      placeholder: v0.1.0
+    validations: { required: true }
+  - type: input
+    id: where
+    attributes:
+      label: Where it ran
+      description: The live demo, or your own server, with the Node version and browser.
+      placeholder: Own server, Node 22, Chrome 142
+    validations: { required: true }

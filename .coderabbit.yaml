@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# CodeRabbit reviews every pull request. It is not a required check: each comment is
+# applied as a normal commit or answered and resolved. The path instructions below are
+# the rules from DESIGN.md that a reviewer should hold this repo to.
+language: en-AU
+reviews:
+  profile: chill
+  high_level_summary: true
+  poem: false
+  request_changes_workflow: false
+  collapse_walkthrough: true
+  auto_review:
+    enabled: true
+    drafts: false
+  path_filters:
+    - '!**/package-lock.json'
+    - '!dist/**'
+    - '!client/dist/**'
+    - '!**/*.snap'
+    - '!scripts/punctuation-baseline.json'
+  path_instructions:
+    - path: 'client/src/{components,screens,shell,flow}/**/*.css'
+      instructions: >-
+        Component styles read role tokens (custom properties declared in client/src/tokens and
+        client/src/styles) only. Flag any raw colour, length, radius, shadow, duration or font
+        value, and any read of a primitive where a role exists. Only tokens/ and styles/
+        declare values.
+    - path: 'client/src/{components,screens}/**/*.tsx'
+      instructions: >-
+        Flag interactive elements with no accessible name, no keyboard handling, or a click
+        handler on an element that cannot take focus.
+    - path: 'src/{server,queue,crawler}/**'
+      instructions: >-
+        Drift fetches URLs a caller supplies. Flag any new outbound request that does not
+        check the protocol is http or https, and any callback delivery that skips
+        assertDeliverable. Flag a crawl that can leave the root's origin or pass
+        MAX_CRAWL_PAGES.
+    - path: '{openapi.yaml,src/server/**,client/src/lib/api.ts}'
+      instructions: >-
+        openapi.yaml is the contract. A field the service sends or accepts must be declared
+        there and in client/src/lib/api.ts in the same change; flag one that is not.
+    - path: '**/*.md'
+      instructions: >-
+        Australian English. No em dashes and no spaced hyphens. Headings are topic labels,
+        not claims. No marketing language. Flag any statement the code does not support.
+chat:
+  auto_reply: true
