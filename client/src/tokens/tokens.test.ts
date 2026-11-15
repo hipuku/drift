@@ -24,6 +24,8 @@ import { describe, expect, it } from "vitest";
 
 const SRC = resolve(process.cwd(), "src");
 const FOUNDATION = resolve(SRC, "tokens/foundation.css");
+// A token read whose name is built at runtime: var(--x-${n}) or var(${name}).
+const ASSEMBLED = /var\((?:--[a-z0-9-]*)?\$\{/g;
 
 function filesUnder(dir: string, extensions: string[]): string[] {
   return readdirSync(dir, { recursive: true, withFileTypes: true })
@@ -80,14 +82,19 @@ describe("custom properties", () => {
   it("are named in full wherever code reads one", () => {
     // A name assembled at runtime, var(--space-${n}), is one no test can check:
     // the specimen page read four families of tokens that way, three of which
-    // never existed, and nothing failed.
+    // never existed, and nothing failed. A whole name held in a variable,
+    // var(${token}), hides from the check above the same way.
     const tsx = filesUnder(SRC, [".tsx", ".ts"]).filter((f) => !/\.test\.tsx?$/.test(f));
     const assembled = tsx.flatMap((f) =>
-      [...readFileSync(f, "utf8").matchAll(/var\(--[a-z0-9-]*\$\{/g)].map(() =>
-        f.replace(SRC, "src"),
-      ),
+      [...readFileSync(f, "utf8").matchAll(ASSEMBLED)].map(() => f.replace(SRC, "src")),
     );
     expect(assembled).toEqual([]);
+  });
+
+  it("catches a name assembled in part or held whole in a variable", () => {
+    // Proves the check above can fail, for both shapes it guards against.
+    const samples = ["width: `var(--drift-space-${n})`", "width: `var(${token})`"];
+    expect(samples.filter((s) => [...s.matchAll(ASSEMBLED)].length > 0)).toEqual(samples);
   });
 
   it("catches a property that is read but never defined", () => {
