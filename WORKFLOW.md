@@ -29,6 +29,11 @@ A change to the API changes `openapi.yaml` and `client/src/lib/api.ts` together.
 generates its types from `openapi.yaml` and fails when they fall behind, so a contract change is
 followed by a drift-tests pull request that regenerates them.
 
+Every pull request also runs drift-tests' scenarios against its own server (the `Acceptance`
+check). A change that alters behaviour a scenario asserts carries the scenario change in a
+drift-tests branch with the same name as the drift branch; the check picks that branch up, and
+the drift-tests pull request merges right after the drift one.
+
 ## Checks
 
 | Check        | Workflow           | Runs                                                                                                                                                                    | Required |
@@ -40,6 +45,7 @@ followed by a drift-tests pull request that regenerates them.
 | Test         | `ci.yml`           | `npm test` for the service and for the client                                                                                                                           | Yes      |
 | Build        | `ci.yml`           | `npm run build` for the service and for the client, after Lint, Format, Typecheck and Test pass                                                                         | Yes      |
 | End to end   | `ci.yml`           | `npm run e2e` in `client/`, against the demo build, after Build passes                                                                                                  | Yes      |
+| Acceptance   | `ci.yml`           | [drift-tests](https://github.com/hipuku/drift-tests) against a running server, Redis and Chromium: its `main`, or its branch named as this one                          | Yes      |
 | Figma parity | `figma-parity.yml` | `npm run figma:check`: tokens and components against the Figma file ([Design sync](#design-sync))                                                                       | Yes      |
 
 CodeQL scans every pull request as well, and Cloudflare Pages builds a preview of it. Neither is a

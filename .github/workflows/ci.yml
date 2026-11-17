@@ -174,3 +174,90 @@ jobs:
           name: playwright-report
           path: client/playwright-report/
           retention-days: 7
+
+  # The acceptance suite, drift-tests, against this change: a real server,
+  # Redis and Chromium, driven over HTTP with no import from drift. It runs
+  # drift-tests' main, or its branch of the same name when one exists, so a
+  # change that needs new scenarios can carry them in a drift-tests branch
+  # named the same. The generated-types check stays in drift-tests' own CI: a
+  # contract change here would fail it until drift-tests regenerates.
+  acceptance:
+    name: Acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Pick the drift-tests branch
+        id: suite
+        env:
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          if git ls-remote --exit-code --heads https://github.com/hipuku/drift-tests "$BRANCH" >/dev/null; then
+            echo "ref=$BRANCH" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check out drift-tests
+        uses: actions/checkout@v7
+        with:
+          repository: hipuku/drift-tests
+          ref: ${{ steps.suite.outputs.ref }}
+          path: drift-tests
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            drift-tests/package-lock.json
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Start the backend
+        env:
+          REDIS_URL: redis://127.0.0.1:6379
+          PORT: "3001"
+          DRIFT_WEBHOOK_ALLOWED_HOSTS: "127.0.0.1"
+          DRIFT_CRAWL_ALLOWED_HOSTS: "127.0.0.1"
+          DRIFT_WEBHOOK_SECRET: "drift-tests-secret"
+        run: |
+          npm run dev:server > drift-server.log 2>&1 &
+          server=$!
+          for i in $(seq 1 45); do
+            if ! kill -0 "$server" 2>/dev/null; then
+              echo "drift exited before it answered:"; cat drift-server.log; exit 1
+            fi
+            if [ "$(curl -s --connect-timeout 2 --max-time 5 -o /dev/null -w '%{http_code}' \
+                    -X POST localhost:3001/discover -H 'content-type: application/json' -d '{}')" = "400" ]; then
+              echo "drift is up"; exit 0
+            fi
+            sleep 1
+          done
+          echo "drift did not start:"; cat drift-server.log; exit 1
+
+      - name: Run the acceptance suite (drift-tests ${{ steps.suite.outputs.ref }})
+        working-directory: drift-tests
+        env:
+          DRIFT_URL: http://127.0.0.1:3001
+          DRIFT_VERSION: ${{ github.sha }}
+        run: |
+          npm ci
+          npm run test:ci
+
+      - name: Server log
+        if: always()
+        run: cat drift-server.log || true
