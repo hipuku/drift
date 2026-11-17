@@ -281,11 +281,12 @@ successful audit of an unreachable site.
 drift-tests waits for the server by sending `POST /discover` with no `url` and expecting `400`,
 which involves no Redis, Playwright or network. Changing that status breaks its readiness probe.
 
-CI runs seven jobs on every pull request, each required on `main`: `Lint` (ESLint with the import
+CI runs eight checks on every pull request, each required on `main`: `Lint` (ESLint with the import
 layers, JSX accessibility and type-checked promise rules, Stylelint, the prose check, `lint:api`,
 markdownlint and knip), `Links` (every relative link and heading anchor in the Markdown, offline),
-`Format`, `Typecheck`, `Test`, `Build` and `End to end`. CodeQL scans
-the code. CI does not crawl a real site; drift-tests crawls its own fixture.
+`Format`, `Typecheck`, `Test`, `Build`, `End to end`, and `Figma parity`, which compares the
+tokens and components with the Figma file ([WORKFLOW.md § Design sync](./WORKFLOW.md#design-sync)).
+CodeQL scans the code. CI does not crawl a real site; drift-tests crawls its own fixture.
 
 How changes reach `main`, and how a release is cut, is in [WORKFLOW.md](./WORKFLOW.md).
 

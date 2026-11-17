@@ -8,10 +8,11 @@ import { defineConfig } from "vitest/config";
  * include, vitest's default glob reaches into client/src and runs those files
  * in a Node environment, where every render fails. Scoping it keeps `npm test`
  * at the root meaning "test the service" and `npm test` in client/ meaning
- * "test the UI". CI runs both.
+ * "test the UI". CI runs both. The Figma parity scripts are tested here too
+ * (scripts/figma/parity.test.mjs).
  */
 export default defineConfig({
   test: {
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "scripts/**/*.test.mjs"],
   },
 });

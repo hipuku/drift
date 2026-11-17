@@ -1,0 +1,6 @@
+{
+  "about": "Differences between code and Figma that are meant to be there. Each is left out of the parity check with its reason. The check warns when an exception is no longer needed.",
+  "items": {
+    "axis TextField.content": "Placeholder or filled is whether the field has text, drawn as variants so both exist in Figma. Code has no prop for it."
+  }
+}
