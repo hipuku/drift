@@ -1,0 +1,2752 @@
+{
+  "exportedAt": "2026-11-17T05:22:23.000Z",
+  "source": "plugin",
+  "file": {
+    "key": "cG4D315cHRDKDwMQovDu7R",
+    "name": "drift"
+  },
+  "variables": [
+    {
+      "collection": "drift/primitives",
+      "name": "color/white",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-white)"
+      },
+      "value": {
+        "hex": "#ffffff"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/black",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-black)"
+      },
+      "value": {
+        "hex": "#040405"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/blue/100",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-blue-100)"
+      },
+      "value": {
+        "hex": "#eef5ff"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/blue/200",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-blue-200)"
+      },
+      "value": {
+        "hex": "#dbe8ff"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/blue/500",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-blue-500)"
+      },
+      "value": {
+        "hex": "#3665e4"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/blue/700",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-blue-700)"
+      },
+      "value": {
+        "hex": "#2043a3"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/green/100",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-green-100)"
+      },
+      "value": {
+        "hex": "#e8fbea"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/green/200",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-green-200)"
+      },
+      "value": {
+        "hex": "#d0f3d4"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/green/500",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-green-500)"
+      },
+      "value": {
+        "hex": "#009630"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/green/700",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-green-700)"
+      },
+      "value": {
+        "hex": "#006a1b"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/amber/100",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-amber-100)"
+      },
+      "value": {
+        "hex": "#fff2e4"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/amber/200",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-amber-200)"
+      },
+      "value": {
+        "hex": "#fee2c9"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/amber/500",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-amber-500)"
+      },
+      "value": {
+        "hex": "#c46300"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/amber/700",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-amber-700)"
+      },
+      "value": {
+        "hex": "#8e4400"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/red/100",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-red-100)"
+      },
+      "value": {
+        "hex": "#ffeeea"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/red/200",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-red-200)"
+      },
+      "value": {
+        "hex": "#ffdbd4"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/red/500",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-red-500)"
+      },
+      "value": {
+        "hex": "#d73431"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/red/700",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-red-700)"
+      },
+      "value": {
+        "hex": "#9a1316"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/size/11",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-size-11)"
+      },
+      "value": 11
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/size/12",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-size-12)"
+      },
+      "value": 12
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/size/13",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-size-13)"
+      },
+      "value": 13
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/size/14",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-size-14)"
+      },
+      "value": 14
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/size/16",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-size-16)"
+      },
+      "value": 16
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/size/20",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-size-20)"
+      },
+      "value": 20
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/size/24",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-size-24)"
+      },
+      "value": 24
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/size/30",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-size-30)"
+      },
+      "value": 30
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/weight/400",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-weight-400)"
+      },
+      "value": 400
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/weight/500",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-weight-500)"
+      },
+      "value": 500
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/weight/600",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-weight-600)"
+      },
+      "value": 600
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/weight/700",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-weight-700)"
+      },
+      "value": 700
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/leading/115",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-leading-115)"
+      },
+      "value": 1.149999976158142
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/leading/120",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-leading-120)"
+      },
+      "value": 1.2000000476837158
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/leading/125",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-leading-125)"
+      },
+      "value": 1.25
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/leading/130",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-leading-130)"
+      },
+      "value": 1.2999999523162842
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/leading/140",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-leading-140)"
+      },
+      "value": 1.399999976158142
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/leading/150",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-leading-150)"
+      },
+      "value": 1.5
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/leading/160",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-leading-160)"
+      },
+      "value": 1.600000023841858
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/tracking/tightest",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-tracking-tightest)"
+      },
+      "value": -0.029999999329447746
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/tracking/tighter",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-tracking-tighter)"
+      },
+      "value": -0.019999999552965164
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/tracking/tight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-tracking-tight)"
+      },
+      "value": -0.009999999776482582
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/tracking/normal",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-tracking-normal)"
+      },
+      "value": 0
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/tracking/wide",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-tracking-wide)"
+      },
+      "value": 0.019999999552965164
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/tracking/widest",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-tracking-widest)"
+      },
+      "value": 0.07999999821186066
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/1",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-1)"
+      },
+      "value": 4
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/2",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-2)"
+      },
+      "value": 8
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/3",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-3)"
+      },
+      "value": 12
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/4",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-4)"
+      },
+      "value": 16
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/5",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-5)"
+      },
+      "value": 20
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/6",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-6)"
+      },
+      "value": 24
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/7",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-7)"
+      },
+      "value": 28
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/8",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-8)"
+      },
+      "value": 32
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/10",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-10)"
+      },
+      "value": 40
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/12",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-12)"
+      },
+      "value": 48
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/16",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-16)"
+      },
+      "value": 64
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/20",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-20)"
+      },
+      "value": 80
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "radius/sm",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-radius-sm)"
+      },
+      "value": 4
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "radius/md",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-radius-md)"
+      },
+      "value": 8
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "radius/lg",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-radius-lg)"
+      },
+      "value": 12
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "radius/xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-radius-xl)"
+      },
+      "value": 16
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "radius/full",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-radius-full)"
+      },
+      "value": 9999
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "z/200",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-z-200)"
+      },
+      "value": 200
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "z/300",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-z-300)"
+      },
+      "value": 300
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "z/400",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-z-400)"
+      },
+      "value": 400
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "border/width-1",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-border-width-1)"
+      },
+      "value": 1
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "border/width-2",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-border-width-2)"
+      },
+      "value": 2
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "opacity/40",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-opacity-40)"
+      },
+      "value": 40
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "opacity/60",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-opacity-60)"
+      },
+      "value": 60
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "size/icon-16",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-size-icon-16)"
+      },
+      "value": 16
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "motion/duration/100",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-motion-duration-100)"
+      },
+      "value": 100
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "motion/duration/200",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-motion-duration-200)"
+      },
+      "value": 200
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "motion/duration/300",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-motion-duration-300)"
+      },
+      "value": 300
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "motion/ease/in-out",
+      "type": "STRING",
+      "codeSyntax": {
+        "WEB": "var(--drift-motion-ease-in-out)"
+      },
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/family/sans",
+      "type": "STRING",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-family-sans)"
+      },
+      "value": "\"Stack Sans Text Variable\", \"Stack Sans Text\", system-ui, sans-serif"
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/family/display",
+      "type": "STRING",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-family-display)"
+      },
+      "value": "\"Stack Sans Notch Variable\", \"Stack Sans Notch\", \"Stack Sans Text Variable\", system-ui, sans-serif"
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "type/family/mono",
+      "type": "STRING",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-family-mono)"
+      },
+      "value": "\"Fira Code\", ui-monospace, \"SFMono-Regular\", Menlo, monospace"
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/0-25",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-0-25)"
+      },
+      "value": 1
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "space/0-5",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-0-5)"
+      },
+      "value": 2
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/h",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-h)"
+      },
+      "value": 239
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/c",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-c)"
+      },
+      "value": 0.1899999976158142
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/50",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-50)"
+      },
+      "value": {
+        "hex": "#e6f8ff"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/100",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-100)"
+      },
+      "value": {
+        "hex": "#cef1ff"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/200",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-200)"
+      },
+      "value": {
+        "hex": "#a4e0ff"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/300",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-300)"
+      },
+      "value": {
+        "hex": "#69c8ff"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/400",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-400)"
+      },
+      "value": {
+        "hex": "#00adfd"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/500",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-500)"
+      },
+      "value": {
+        "hex": "#0096f1"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/600",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-600)"
+      },
+      "value": {
+        "hex": "#0073c8"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/700",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-700)"
+      },
+      "value": {
+        "hex": "#005ea7"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/800",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-800)"
+      },
+      "value": {
+        "hex": "#00477e"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/accent/900",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-accent-900)"
+      },
+      "value": {
+        "hex": "#003259"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/0",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-0)"
+      },
+      "value": {
+        "hex": "#fbfdff"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/50",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-50)"
+      },
+      "value": {
+        "hex": "#f6f9fb"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/100",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-100)"
+      },
+      "value": {
+        "hex": "#eff2f6"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/200",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-200)"
+      },
+      "value": {
+        "hex": "#e1e5ea"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/300",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-300)"
+      },
+      "value": {
+        "hex": "#ccd2d7"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/400",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-400)"
+      },
+      "value": {
+        "hex": "#9fa5ad"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/500",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-500)"
+      },
+      "value": {
+        "hex": "#666c75"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/600",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-600)"
+      },
+      "value": {
+        "hex": "#535861"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/700",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-700)"
+      },
+      "value": {
+        "hex": "#3b4049"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/800",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-800)"
+      },
+      "value": {
+        "hex": "#22272f"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/900",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-900)"
+      },
+      "value": {
+        "hex": "#13161d"
+      }
+    },
+    {
+      "collection": "drift/primitives",
+      "name": "color/neutral/950",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-neutral-950)"
+      },
+      "value": {
+        "hex": "#090b11"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/ink/on-primary",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-ink-on-primary)"
+      },
+      "value": {
+        "alias": "--drift-color-white"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/border/focus",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-border-focus)"
+      },
+      "value": {
+        "alias": "--drift-color-primary-default"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/info/subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-info-subtle)"
+      },
+      "value": {
+        "alias": "--drift-color-blue-100"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/info/border",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-info-border)"
+      },
+      "value": {
+        "alias": "--drift-color-blue-200"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/info/default",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-info-default)"
+      },
+      "value": {
+        "alias": "--drift-color-blue-500"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/info/on-subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-info-on-subtle)"
+      },
+      "value": {
+        "alias": "--drift-color-blue-700"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/success/subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-success-subtle)"
+      },
+      "value": {
+        "alias": "--drift-color-green-100"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/success/border",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-success-border)"
+      },
+      "value": {
+        "alias": "--drift-color-green-200"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/success/default",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-success-default)"
+      },
+      "value": {
+        "alias": "--drift-color-green-500"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/success/on-subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-success-on-subtle)"
+      },
+      "value": {
+        "alias": "--drift-color-green-700"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/warning/subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-warning-subtle)"
+      },
+      "value": {
+        "alias": "--drift-color-amber-100"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/warning/border",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-warning-border)"
+      },
+      "value": {
+        "alias": "--drift-color-amber-200"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/warning/default",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-warning-default)"
+      },
+      "value": {
+        "alias": "--drift-color-amber-500"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/warning/on-subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-warning-on-subtle)"
+      },
+      "value": {
+        "alias": "--drift-color-amber-700"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/error/subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-error-subtle)"
+      },
+      "value": {
+        "alias": "--drift-color-red-100"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/error/border",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-error-border)"
+      },
+      "value": {
+        "alias": "--drift-color-red-200"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/error/default",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-error-default)"
+      },
+      "value": {
+        "alias": "--drift-color-red-500"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/error/on-subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-error-on-subtle)"
+      },
+      "value": {
+        "alias": "--drift-color-red-700"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/backdrop",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-backdrop)"
+      },
+      "value": {
+        "hex": "#04040599"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/xs-size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-xs-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-11"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/xs-weight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-xs-weight)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-500"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/xs-leading",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-xs-leading)"
+      },
+      "value": {
+        "alias": "--drift-type-leading-140"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/xs-tracking",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-xs-tracking)"
+      },
+      "value": {
+        "alias": "--drift-type-tracking-widest"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/sm-size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-sm-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-12"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/sm-weight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-sm-weight)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-500"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/sm-leading",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-sm-leading)"
+      },
+      "value": {
+        "alias": "--drift-type-leading-140"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/sm-tracking",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-sm-tracking)"
+      },
+      "value": {
+        "alias": "--drift-type-tracking-wide"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-13"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/weight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-weight)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-500"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/leading",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-leading)"
+      },
+      "value": {
+        "alias": "--drift-type-leading-140"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/label/tracking",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-label-tracking)"
+      },
+      "value": {
+        "alias": "--drift-type-tracking-normal"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/sm-size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-sm-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-13"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/sm-weight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-sm-weight)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-400"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/sm-leading",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-sm-leading)"
+      },
+      "value": {
+        "alias": "--drift-type-leading-150"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/sm-tracking",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-sm-tracking)"
+      },
+      "value": {
+        "alias": "--drift-type-tracking-normal"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-14"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/weight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-weight)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-400"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/leading",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-leading)"
+      },
+      "value": {
+        "alias": "--drift-type-leading-150"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/tracking",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-tracking)"
+      },
+      "value": {
+        "alias": "--drift-type-tracking-normal"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/lg-size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-lg-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-16"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/lg-weight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-lg-weight)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-400"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/lg-leading",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-lg-leading)"
+      },
+      "value": {
+        "alias": "--drift-type-leading-160"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/body/lg-tracking",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-body-lg-tracking)"
+      },
+      "value": {
+        "alias": "--drift-type-tracking-normal"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/sm-size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-sm-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-16"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/sm-weight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-sm-weight)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-600"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/sm-leading",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-sm-leading)"
+      },
+      "value": {
+        "alias": "--drift-type-leading-130"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/sm-tracking",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-sm-tracking)"
+      },
+      "value": {
+        "alias": "--drift-type-tracking-tight"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-20"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/weight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-weight)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-600"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/leading",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-leading)"
+      },
+      "value": {
+        "alias": "--drift-type-leading-125"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/tracking",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-tracking)"
+      },
+      "value": {
+        "alias": "--drift-type-tracking-tight"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/lg-size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-lg-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-24"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/lg-weight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-lg-weight)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-600"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/lg-leading",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-lg-leading)"
+      },
+      "value": {
+        "alias": "--drift-type-leading-120"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/heading/lg-tracking",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-heading-lg-tracking)"
+      },
+      "value": {
+        "alias": "--drift-type-tracking-tighter"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/display/size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-display-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-30"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/display/weight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-display-weight)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-700"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/display/leading",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-display-leading)"
+      },
+      "value": {
+        "alias": "--drift-type-leading-115"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/display/tracking",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-display-tracking)"
+      },
+      "value": {
+        "alias": "--drift-type-tracking-tightest"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/weight/emphasis",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-weight-emphasis)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-500"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/weight/strong",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-weight-strong)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-600"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/mono/size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-mono-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-13"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/mono/weight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-mono-weight)"
+      },
+      "value": {
+        "alias": "--drift-type-weight-400"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/mono/leading",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-mono-leading)"
+      },
+      "value": {
+        "alias": "--drift-type-leading-160"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/mono/tracking",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-mono-tracking)"
+      },
+      "value": {
+        "alias": "--drift-type-tracking-normal"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/2xs",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-2xs)"
+      },
+      "value": {
+        "alias": "--drift-space-1"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/xs",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-xs)"
+      },
+      "value": {
+        "alias": "--drift-space-2"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/sm",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-sm)"
+      },
+      "value": {
+        "alias": "--drift-space-3"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/md",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-md)"
+      },
+      "value": {
+        "alias": "--drift-space-4"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/lg",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-lg)"
+      },
+      "value": {
+        "alias": "--drift-space-5"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-xl)"
+      },
+      "value": {
+        "alias": "--drift-space-6"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/2xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-2xl)"
+      },
+      "value": {
+        "alias": "--drift-space-7"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/3xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-3xl)"
+      },
+      "value": {
+        "alias": "--drift-space-8"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/5xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-5xl)"
+      },
+      "value": {
+        "alias": "--drift-space-12"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/6xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-6xl)"
+      },
+      "value": {
+        "alias": "--drift-space-16"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/7xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-7xl)"
+      },
+      "value": {
+        "alias": "--drift-space-20"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/gap/2xs",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-gap-2xs)"
+      },
+      "value": {
+        "alias": "--drift-space-1"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/gap/xs",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-gap-xs)"
+      },
+      "value": {
+        "alias": "--drift-space-2"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/gap/sm",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-gap-sm)"
+      },
+      "value": {
+        "alias": "--drift-space-3"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/gap/md",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-gap-md)"
+      },
+      "value": {
+        "alias": "--drift-space-4"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/gap/lg",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-gap-lg)"
+      },
+      "value": {
+        "alias": "--drift-space-5"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/gap/2xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-gap-2xl)"
+      },
+      "value": {
+        "alias": "--drift-space-7"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/gap/3xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-gap-3xl)"
+      },
+      "value": {
+        "alias": "--drift-space-8"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/stack/2xs",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-stack-2xs)"
+      },
+      "value": {
+        "alias": "--drift-space-1"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/stack/xs",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-stack-xs)"
+      },
+      "value": {
+        "alias": "--drift-space-2"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/stack/sm",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-stack-sm)"
+      },
+      "value": {
+        "alias": "--drift-space-3"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/stack/md",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-stack-md)"
+      },
+      "value": {
+        "alias": "--drift-space-4"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/stack/lg",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-stack-lg)"
+      },
+      "value": {
+        "alias": "--drift-space-5"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/stack/xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-stack-xl)"
+      },
+      "value": {
+        "alias": "--drift-space-6"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/stack/2xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-stack-2xl)"
+      },
+      "value": {
+        "alias": "--drift-space-7"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/stack/3xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-stack-3xl)"
+      },
+      "value": {
+        "alias": "--drift-space-8"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/stack/4xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-stack-4xl)"
+      },
+      "value": {
+        "alias": "--drift-space-10"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/stack/5xl",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-stack-5xl)"
+      },
+      "value": {
+        "alias": "--drift-space-12"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "radius/control",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-radius-control)"
+      },
+      "value": {
+        "alias": "--drift-radius-sm"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "radius/surface",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-radius-surface)"
+      },
+      "value": {
+        "alias": "--drift-radius-md"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "radius/overlay",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-radius-overlay)"
+      },
+      "value": {
+        "alias": "--drift-radius-lg"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "radius/pill",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-radius-pill)"
+      },
+      "value": {
+        "alias": "--drift-radius-full"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "z/sticky",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-z-sticky)"
+      },
+      "value": {
+        "alias": "--drift-z-200"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "z/overlay",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-z-overlay)"
+      },
+      "value": {
+        "alias": "--drift-z-300"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "z/modal",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-z-modal)"
+      },
+      "value": {
+        "alias": "--drift-z-400"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "border/width-default",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-border-width-default)"
+      },
+      "value": {
+        "alias": "--drift-border-width-1"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "border/width-thick",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-border-width-thick)"
+      },
+      "value": {
+        "alias": "--drift-border-width-2"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "opacity/disabled",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-opacity-disabled)"
+      },
+      "value": {
+        "alias": "--drift-opacity-40"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/hairline",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-hairline)"
+      },
+      "value": {
+        "alias": "--drift-space-0-25"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "space/inset/tight",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-space-inset-tight)"
+      },
+      "value": {
+        "alias": "--drift-space-0-5"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "radius/panel",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-radius-panel)"
+      },
+      "value": {
+        "alias": "--drift-radius-xl"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "motion/duration/micro",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-motion-duration-micro)"
+      },
+      "value": {
+        "alias": "--drift-motion-duration-100"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "motion/duration/ui",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-motion-duration-ui)"
+      },
+      "value": {
+        "alias": "--drift-motion-duration-200"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "motion/duration/panel",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-motion-duration-panel)"
+      },
+      "value": {
+        "alias": "--drift-motion-duration-300"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "motion/ease/standard",
+      "type": "STRING",
+      "codeSyntax": {
+        "WEB": "var(--drift-motion-ease-standard)"
+      },
+      "value": {
+        "alias": "--drift-motion-ease-in-out"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "size/icon-inline",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-size-icon-inline)"
+      },
+      "value": {
+        "alias": "--drift-size-icon-16"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/data/family",
+      "type": "STRING",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-data-family)"
+      },
+      "value": {
+        "alias": "--drift-type-family-mono"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/data/size",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-data-size)"
+      },
+      "value": {
+        "alias": "--drift-type-size-12"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/surface/default",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-surface-default)"
+      },
+      "value": {
+        "alias": "--drift-color-neutral-900"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/surface/subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-surface-subtle)"
+      },
+      "value": {
+        "alias": "--drift-color-neutral-950"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/surface/raised",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-surface-raised)"
+      },
+      "value": {
+        "alias": "--drift-color-neutral-800"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/surface/sunken",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-surface-sunken)"
+      },
+      "value": {
+        "hex": "#04060a"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/ink/primary",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-ink-primary)"
+      },
+      "value": {
+        "alias": "--drift-color-neutral-50"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/ink/secondary",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-ink-secondary)"
+      },
+      "value": {
+        "alias": "--drift-color-neutral-300"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/ink/tertiary",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-ink-tertiary)"
+      },
+      "value": {
+        "alias": "--drift-color-neutral-400"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/ink/disabled",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-ink-disabled)"
+      },
+      "value": {
+        "alias": "--drift-color-neutral-600"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/ink/link",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-ink-link)"
+      },
+      "value": {
+        "alias": "--drift-color-accent-400"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/border/subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-border-subtle)"
+      },
+      "value": {
+        "alias": "--drift-color-neutral-800"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/border/default",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-border-default)"
+      },
+      "value": {
+        "alias": "--drift-color-neutral-700"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/border/strong",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-border-strong)"
+      },
+      "value": {
+        "alias": "--drift-color-neutral-600"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/primary/default",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-primary-default)"
+      },
+      "value": {
+        "alias": "--drift-color-accent-600"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/primary/hover",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-primary-hover)"
+      },
+      "value": {
+        "alias": "--drift-color-accent-700"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/primary/pressed",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-primary-pressed)"
+      },
+      "value": {
+        "alias": "--drift-color-accent-800"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/primary/subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-primary-subtle)"
+      },
+      "value": {
+        "hex": "#0073c833"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/primary/on-subtle",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-primary-on-subtle)"
+      },
+      "value": {
+        "alias": "--drift-color-accent-300"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/grid/line",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-grid-line)"
+      },
+      "value": {
+        "hex": "#c5cfdb0b"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/border/card",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-border-card)"
+      },
+      "value": {
+        "hex": "#f6f9fb1a"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "size/grid",
+      "type": "FLOAT",
+      "codeSyntax": {
+        "WEB": "var(--drift-size-grid)"
+      },
+      "value": 32
+    },
+    {
+      "collection": "drift/roles",
+      "name": "color/error/ink",
+      "type": "COLOR",
+      "codeSyntax": {
+        "WEB": "var(--drift-color-error-ink)"
+      },
+      "value": {
+        "hex": "#e8796f"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/family/ui",
+      "type": "STRING",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-family-ui)"
+      },
+      "value": {
+        "alias": "--drift-type-family-sans"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/family/heading",
+      "type": "STRING",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-family-heading)"
+      },
+      "value": {
+        "alias": "--drift-type-family-display"
+      }
+    },
+    {
+      "collection": "drift/roles",
+      "name": "type/family/code",
+      "type": "STRING",
+      "codeSyntax": {
+        "WEB": "var(--drift-type-family-code)"
+      },
+      "value": {
+        "alias": "--drift-type-family-mono"
+      }
+    }
+  ],
+  "components": [
+    {
+      "name": "Badge",
+      "page": "-> Badge",
+      "type": "COMPONENT_SET",
+      "inSet": false,
+      "props": [
+        {
+          "name": "Label#7:0",
+          "type": "TEXT",
+          "options": []
+        },
+        {
+          "name": "Variant",
+          "type": "VARIANT",
+          "options": ["neutral", "info", "warning", "danger"]
+        },
+        {
+          "name": "Mono",
+          "type": "VARIANT",
+          "options": ["false", "true"]
+        }
+      ]
+    },
+    {
+      "name": "Button",
+      "page": "-> Button",
+      "type": "COMPONENT_SET",
+      "inSet": false,
+      "props": [
+        {
+          "name": "Label#7:9",
+          "type": "TEXT",
+          "options": []
+        },
+        {
+          "name": "Variant",
+          "type": "VARIANT",
+          "options": ["primary", "secondary"]
+        },
+        {
+          "name": "State",
+          "type": "VARIANT",
+          "options": ["Default", "Hover", "Pressed", "Focus", "Disabled"]
+        }
+      ]
+    },
+    {
+      "name": "Callout",
+      "page": "-> Callout",
+      "type": "COMPONENT_SET",
+      "inSet": false,
+      "props": [
+        {
+          "name": "Body#7:19",
+          "type": "TEXT",
+          "options": []
+        },
+        {
+          "name": "Variant",
+          "type": "VARIANT",
+          "options": ["error", "warning", "info", "success"]
+        }
+      ]
+    },
+    {
+      "name": "Text",
+      "page": "-> Text",
+      "type": "COMPONENT_SET",
+      "inSet": false,
+      "props": [
+        {
+          "name": "Text#10:0",
+          "type": "TEXT",
+          "options": []
+        },
+        {
+          "name": "Role",
+          "type": "VARIANT",
+          "options": [
+            "display",
+            "heading-lg",
+            "heading",
+            "heading-sm",
+            "body-lg",
+            "body",
+            "body-sm",
+            "label",
+            "label-sm",
+            "label-xs",
+            "mono"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TextField",
+      "page": "-> TextField",
+      "type": "COMPONENT_SET",
+      "inSet": false,
+      "props": [
+        {
+          "name": "Label#10:12",
+          "type": "TEXT",
+          "options": []
+        },
+        {
+          "name": "Placeholder#10:19",
+          "type": "TEXT",
+          "options": []
+        },
+        {
+          "name": "Value#10:26",
+          "type": "TEXT",
+          "options": []
+        },
+        {
+          "name": "State",
+          "type": "VARIANT",
+          "options": ["Default", "Focus", "Read-only"]
+        },
+        {
+          "name": "Content",
+          "type": "VARIANT",
+          "options": ["Placeholder", "Filled"]
+        }
+      ]
+    },
+    {
+      "name": "Icon/Overview",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Colour",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Contrast",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Type",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Spacing",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Radius",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Shadow",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Border",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Opacity",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Z-index",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Breakpoints",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Gradient",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Motion",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Chevron",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/GitHub",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Icon/Globe",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    },
+    {
+      "name": "Top bar",
+      "page": "Screens",
+      "type": "COMPONENT",
+      "inSet": false,
+      "props": []
+    }
+  ]
+}

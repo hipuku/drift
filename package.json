@@ -27,7 +27,9 @@
     "format:check": "prettier --check .",
     "lint:api": "redocly lint openapi.yaml",
     "lint:md": "markdownlint-cli2",
-    "knip": "knip && knip --directory client"
+    "knip": "knip && knip --directory client",
+    "figma:check": "node scripts/figma/check.mjs",
+    "figma:accept": "node scripts/figma/check.mjs --accept"
   },
   "dependencies": {
     "bullmq": "^6.7.5",

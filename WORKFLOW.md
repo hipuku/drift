@@ -31,15 +31,16 @@ followed by a drift-tests pull request that regenerates them.
 
 ## Checks
 
-| Check      | Workflow | Runs                                                                                                                                                                    | Required |
-| ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| Lint       | `ci.yml` | `npm run lint` (ESLint: import layers, JSX accessibility, type-checked promises), `lint:css` (Stylelint), `lint:prose`, `lint:api` (the contract), `lint:md` and `knip` | Yes      |
-| Links      | `ci.yml` | lychee, offline: every relative link and heading anchor in the Markdown resolves                                                                                        | Yes      |
-| Format     | `ci.yml` | `npm run format:check`                                                                                                                                                  | Yes      |
-| Typecheck  | `ci.yml` | `npm run typecheck` for the service and for the client                                                                                                                  | Yes      |
-| Test       | `ci.yml` | `npm test` for the service and for the client                                                                                                                           | Yes      |
-| Build      | `ci.yml` | `npm run build` for the service and for the client, after Lint, Format, Typecheck and Test pass                                                                         | Yes      |
-| End to end | `ci.yml` | `npm run e2e` in `client/`, against the demo build, after Build passes                                                                                                  | Yes      |
+| Check        | Workflow           | Runs                                                                                                                                                                    | Required |
+| ------------ | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| Lint         | `ci.yml`           | `npm run lint` (ESLint: import layers, JSX accessibility, type-checked promises), `lint:css` (Stylelint), `lint:prose`, `lint:api` (the contract), `lint:md` and `knip` | Yes      |
+| Links        | `ci.yml`           | lychee, offline: every relative link and heading anchor in the Markdown resolves                                                                                        | Yes      |
+| Format       | `ci.yml`           | `npm run format:check`                                                                                                                                                  | Yes      |
+| Typecheck    | `ci.yml`           | `npm run typecheck` for the service and for the client                                                                                                                  | Yes      |
+| Test         | `ci.yml`           | `npm test` for the service and for the client                                                                                                                           | Yes      |
+| Build        | `ci.yml`           | `npm run build` for the service and for the client, after Lint, Format, Typecheck and Test pass                                                                         | Yes      |
+| End to end   | `ci.yml`           | `npm run e2e` in `client/`, against the demo build, after Build passes                                                                                                  | Yes      |
+| Figma parity | `figma-parity.yml` | `npm run figma:check`: tokens and components against the Figma file ([Design sync](#design-sync))                                                                       | Yes      |
 
 CodeQL scans every pull request as well, and Cloudflare Pages builds a preview of it. Neither is a
 required check. What each suite covers is in
@@ -77,10 +78,54 @@ by an `overrides` entry if the fix is not yet released upstream, so a new findin
 
 ## Design sync
 
-Drift's design file is [drift on Figma](https://www.figma.com/design/cG4D315cHRDKDwMQovDu7R/drift).
-It does not have its pages yet, and there is no parity check: nothing compares Figma with the code
-on a pull request. Until there is, a visual change says in its pull request whether Figma was
-updated, or carries the `figma-later` label.
+Drift's design file is [drift on Figma](https://www.figma.com/design/cG4D315cHRDKDwMQovDu7R/drift):
+its variables, a page per component and the screens. The Figma parity check compares it with the
+code on every pull request and every push to `main`, so a difference is found when it is made.
+Variables are compared from an exported snapshot, `figma/snapshot/drift.json`, so a variable
+changed in Figma is found once that snapshot is refreshed.
+
+### What is compared
+
+| Item                           | Code                                                                       | Figma                                            |
+| ------------------------------ | -------------------------------------------------------------------------- | ------------------------------------------------ |
+| `token --drift-radius-control` | A `--drift-*` property, resolved by a headless Chromium to its final value | A variable, by its code syntax, aliases followed |
+| `component Button`             | A folder in `client/src/components`                                        | A component set on its own page                  |
+| `axis Button.variant`          | A prop typed as a union of strings, or an alias for one                    | A variant property of the set                    |
+| `states Button`                | The `:hover`, `:active` and `:disabled` rules its module writes            | The `Hover`, `Pressed` and `Disabled` variants   |
+
+Tokens are compared resolved because the accent ramp is computed in OKLCH from two numbers, which
+Figma holds as resolved colours. Opacity is compared as a fraction (Figma holds percentages), and
+axis names without case or spaces. Left out on purpose: elevation, focus and the page gradient
+(effect styles and a fill in Figma, not variables), focus states (one ring for every element),
+booleans and text properties, and the Screens page, whose components are parts of the screens.
+Differences meant to be there are listed with a reason in `figma/exceptions.json`, and the check
+warns when one is no longer needed.
+
+### How a finding is decided
+
+`figma/baseline.json` holds, for every item, the pair of values code and Figma had when the baseline
+was last accepted. Each side is compared with its own half, which says which side moved:
+
+| Code      | Figma     | Finding                   | Effect                                       |
+| --------- | --------- | ------------------------- | -------------------------------------------- |
+| Moved     | Not moved | Code ahead of Figma       | Fails the pull request                       |
+| Not moved | Moved     | Changed in Figma          | A `drift-decision` issue                     |
+| Lacks it  | Added it  | New in Figma              | A `design-proposal` issue                    |
+| Moved     | Moved     | Conflict                  | Fails the pull request                       |
+| Not moved | Not moved | Known drift               | Listed, never fails                          |
+| Match     | Match     | Agreed since the baseline | `npm run figma:accept` moves the baseline on |
+
+The `figma-later` label turns code ahead of Figma into a warning, for a change whose Figma update
+follows in its own pull request. It never waives a conflict. The rules are in
+`scripts/figma/diff.mjs` and tested in `scripts/figma/parity.test.mjs`.
+
+### Where Figma is read from
+
+Components are read live from Figma's REST API with the `FIGMA_TOKEN` repository secret. Variables
+need an Enterprise plan for that, so they come from the snapshot, exported through Figma's Plugin
+API: `npm run figma:check -- --plugin-code` prints the export to run in Figma, and
+`npm run figma:check -- --save <file>` stores its result. Without the token (a fork, a Dependabot
+pull request, or a local run) everything comes from the snapshot, and the report says so.
 
 ## Deployment
 

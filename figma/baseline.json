@@ -1,0 +1,997 @@
+{
+  "acceptedAt": "2026-11-17T05:22:24.441Z",
+  "items": {
+    "axis Badge.variant": {
+      "code": "danger|info|neutral|warning",
+      "figma": "danger|info|neutral|warning"
+    },
+    "axis Button.variant": {
+      "code": "primary|secondary",
+      "figma": "primary|secondary"
+    },
+    "axis Callout.variant": {
+      "code": "error|info|success|warning",
+      "figma": "error|info|success|warning"
+    },
+    "axis Text.role": {
+      "code": "body|body-lg|body-sm|display|heading|heading-lg|heading-sm|label|label-sm|label-xs|mono",
+      "figma": "body|body-lg|body-sm|display|heading|heading-lg|heading-sm|label|label-sm|label-xs|mono"
+    },
+    "component Badge": {
+      "code": "component",
+      "figma": "component"
+    },
+    "component Button": {
+      "code": "component",
+      "figma": "component"
+    },
+    "component Callout": {
+      "code": "component",
+      "figma": "component"
+    },
+    "component Text": {
+      "code": "component",
+      "figma": "component"
+    },
+    "component TextField": {
+      "code": "component",
+      "figma": "component"
+    },
+    "states Button": {
+      "code": "disabled|hover|pressed",
+      "figma": "disabled|hover|pressed"
+    },
+    "token --drift-border-width-1": {
+      "code": "1",
+      "figma": "1"
+    },
+    "token --drift-border-width-2": {
+      "code": "2",
+      "figma": "2"
+    },
+    "token --drift-border-width-default": {
+      "code": "1",
+      "figma": "1"
+    },
+    "token --drift-border-width-thick": {
+      "code": "2",
+      "figma": "2"
+    },
+    "token --drift-color-accent-100": {
+      "code": "#cef1ff",
+      "figma": "#cef1ff"
+    },
+    "token --drift-color-accent-200": {
+      "code": "#a4e0ff",
+      "figma": "#a4e0ff"
+    },
+    "token --drift-color-accent-300": {
+      "code": "#69c8ff",
+      "figma": "#69c8ff"
+    },
+    "token --drift-color-accent-400": {
+      "code": "#00adfd",
+      "figma": "#00adfd"
+    },
+    "token --drift-color-accent-50": {
+      "code": "#e6f8ff",
+      "figma": "#e6f8ff"
+    },
+    "token --drift-color-accent-500": {
+      "code": "#0096f1",
+      "figma": "#0096f1"
+    },
+    "token --drift-color-accent-600": {
+      "code": "#0073c8",
+      "figma": "#0073c8"
+    },
+    "token --drift-color-accent-700": {
+      "code": "#005ea7",
+      "figma": "#005ea7"
+    },
+    "token --drift-color-accent-800": {
+      "code": "#00477e",
+      "figma": "#00477e"
+    },
+    "token --drift-color-accent-900": {
+      "code": "#003259",
+      "figma": "#003259"
+    },
+    "token --drift-color-accent-c": {
+      "code": "0.19",
+      "figma": "0.19"
+    },
+    "token --drift-color-accent-h": {
+      "code": "239",
+      "figma": "239"
+    },
+    "token --drift-color-amber-100": {
+      "code": "#fff2e4",
+      "figma": "#fff2e4"
+    },
+    "token --drift-color-amber-200": {
+      "code": "#fee2c9",
+      "figma": "#fee2c9"
+    },
+    "token --drift-color-amber-500": {
+      "code": "#c46300",
+      "figma": "#c46300"
+    },
+    "token --drift-color-amber-700": {
+      "code": "#8e4400",
+      "figma": "#8e4400"
+    },
+    "token --drift-color-backdrop": {
+      "code": "#04040599",
+      "figma": "#04040599"
+    },
+    "token --drift-color-black": {
+      "code": "#040405",
+      "figma": "#040405"
+    },
+    "token --drift-color-blue-100": {
+      "code": "#eef5ff",
+      "figma": "#eef5ff"
+    },
+    "token --drift-color-blue-200": {
+      "code": "#dbe8ff",
+      "figma": "#dbe8ff"
+    },
+    "token --drift-color-blue-500": {
+      "code": "#3665e4",
+      "figma": "#3665e4"
+    },
+    "token --drift-color-blue-700": {
+      "code": "#2043a3",
+      "figma": "#2043a3"
+    },
+    "token --drift-color-border-card": {
+      "code": "#f6f9fb1a",
+      "figma": "#f6f9fb1a"
+    },
+    "token --drift-color-border-default": {
+      "code": "#3b4049",
+      "figma": "#3b4049"
+    },
+    "token --drift-color-border-focus": {
+      "code": "#0073c8",
+      "figma": "#0073c8"
+    },
+    "token --drift-color-border-strong": {
+      "code": "#535861",
+      "figma": "#535861"
+    },
+    "token --drift-color-border-subtle": {
+      "code": "#22272f",
+      "figma": "#22272f"
+    },
+    "token --drift-color-error-border": {
+      "code": "#ffdbd4",
+      "figma": "#ffdbd4"
+    },
+    "token --drift-color-error-default": {
+      "code": "#d73431",
+      "figma": "#d73431"
+    },
+    "token --drift-color-error-ink": {
+      "code": "#e8796f",
+      "figma": "#e8796f"
+    },
+    "token --drift-color-error-on-subtle": {
+      "code": "#9a1316",
+      "figma": "#9a1316"
+    },
+    "token --drift-color-error-subtle": {
+      "code": "#ffeeea",
+      "figma": "#ffeeea"
+    },
+    "token --drift-color-green-100": {
+      "code": "#e8fbea",
+      "figma": "#e8fbea"
+    },
+    "token --drift-color-green-200": {
+      "code": "#d0f3d4",
+      "figma": "#d0f3d4"
+    },
+    "token --drift-color-green-500": {
+      "code": "#009630",
+      "figma": "#009630"
+    },
+    "token --drift-color-green-700": {
+      "code": "#006a1b",
+      "figma": "#006a1b"
+    },
+    "token --drift-color-grid-line": {
+      "code": "#c5cfdb0b",
+      "figma": "#c5cfdb0b"
+    },
+    "token --drift-color-info-border": {
+      "code": "#dbe8ff",
+      "figma": "#dbe8ff"
+    },
+    "token --drift-color-info-default": {
+      "code": "#3665e4",
+      "figma": "#3665e4"
+    },
+    "token --drift-color-info-on-subtle": {
+      "code": "#2043a3",
+      "figma": "#2043a3"
+    },
+    "token --drift-color-info-subtle": {
+      "code": "#eef5ff",
+      "figma": "#eef5ff"
+    },
+    "token --drift-color-ink-disabled": {
+      "code": "#535861",
+      "figma": "#535861"
+    },
+    "token --drift-color-ink-link": {
+      "code": "#00adfd",
+      "figma": "#00adfd"
+    },
+    "token --drift-color-ink-on-primary": {
+      "code": "#ffffff",
+      "figma": "#ffffff"
+    },
+    "token --drift-color-ink-primary": {
+      "code": "#f6f9fb",
+      "figma": "#f6f9fb"
+    },
+    "token --drift-color-ink-secondary": {
+      "code": "#ccd2d7",
+      "figma": "#ccd2d7"
+    },
+    "token --drift-color-ink-tertiary": {
+      "code": "#9fa5ad",
+      "figma": "#9fa5ad"
+    },
+    "token --drift-color-neutral-0": {
+      "code": "#fbfdff",
+      "figma": "#fbfdff"
+    },
+    "token --drift-color-neutral-100": {
+      "code": "#eff2f6",
+      "figma": "#eff2f6"
+    },
+    "token --drift-color-neutral-200": {
+      "code": "#e1e5ea",
+      "figma": "#e1e5ea"
+    },
+    "token --drift-color-neutral-300": {
+      "code": "#ccd2d7",
+      "figma": "#ccd2d7"
+    },
+    "token --drift-color-neutral-400": {
+      "code": "#9fa5ad",
+      "figma": "#9fa5ad"
+    },
+    "token --drift-color-neutral-50": {
+      "code": "#f6f9fb",
+      "figma": "#f6f9fb"
+    },
+    "token --drift-color-neutral-500": {
+      "code": "#666c75",
+      "figma": "#666c75"
+    },
+    "token --drift-color-neutral-600": {
+      "code": "#535861",
+      "figma": "#535861"
+    },
+    "token --drift-color-neutral-700": {
+      "code": "#3b4049",
+      "figma": "#3b4049"
+    },
+    "token --drift-color-neutral-800": {
+      "code": "#22272f",
+      "figma": "#22272f"
+    },
+    "token --drift-color-neutral-900": {
+      "code": "#13161d",
+      "figma": "#13161d"
+    },
+    "token --drift-color-neutral-950": {
+      "code": "#090b11",
+      "figma": "#090b11"
+    },
+    "token --drift-color-primary-default": {
+      "code": "#0073c8",
+      "figma": "#0073c8"
+    },
+    "token --drift-color-primary-hover": {
+      "code": "#005ea7",
+      "figma": "#005ea7"
+    },
+    "token --drift-color-primary-on-subtle": {
+      "code": "#69c8ff",
+      "figma": "#69c8ff"
+    },
+    "token --drift-color-primary-pressed": {
+      "code": "#00477e",
+      "figma": "#00477e"
+    },
+    "token --drift-color-primary-subtle": {
+      "code": "#0073c833",
+      "figma": "#0073c833"
+    },
+    "token --drift-color-red-100": {
+      "code": "#ffeeea",
+      "figma": "#ffeeea"
+    },
+    "token --drift-color-red-200": {
+      "code": "#ffdbd4",
+      "figma": "#ffdbd4"
+    },
+    "token --drift-color-red-500": {
+      "code": "#d73431",
+      "figma": "#d73431"
+    },
+    "token --drift-color-red-700": {
+      "code": "#9a1316",
+      "figma": "#9a1316"
+    },
+    "token --drift-color-success-border": {
+      "code": "#d0f3d4",
+      "figma": "#d0f3d4"
+    },
+    "token --drift-color-success-default": {
+      "code": "#009630",
+      "figma": "#009630"
+    },
+    "token --drift-color-success-on-subtle": {
+      "code": "#006a1b",
+      "figma": "#006a1b"
+    },
+    "token --drift-color-success-subtle": {
+      "code": "#e8fbea",
+      "figma": "#e8fbea"
+    },
+    "token --drift-color-surface-default": {
+      "code": "#13161d",
+      "figma": "#13161d"
+    },
+    "token --drift-color-surface-raised": {
+      "code": "#22272f",
+      "figma": "#22272f"
+    },
+    "token --drift-color-surface-subtle": {
+      "code": "#090b11",
+      "figma": "#090b11"
+    },
+    "token --drift-color-surface-sunken": {
+      "code": "#04060a",
+      "figma": "#04060a"
+    },
+    "token --drift-color-warning-border": {
+      "code": "#fee2c9",
+      "figma": "#fee2c9"
+    },
+    "token --drift-color-warning-default": {
+      "code": "#c46300",
+      "figma": "#c46300"
+    },
+    "token --drift-color-warning-on-subtle": {
+      "code": "#8e4400",
+      "figma": "#8e4400"
+    },
+    "token --drift-color-warning-subtle": {
+      "code": "#fff2e4",
+      "figma": "#fff2e4"
+    },
+    "token --drift-color-white": {
+      "code": "#ffffff",
+      "figma": "#ffffff"
+    },
+    "token --drift-motion-duration-100": {
+      "code": "100",
+      "figma": "100"
+    },
+    "token --drift-motion-duration-200": {
+      "code": "200",
+      "figma": "200"
+    },
+    "token --drift-motion-duration-300": {
+      "code": "300",
+      "figma": "300"
+    },
+    "token --drift-motion-duration-micro": {
+      "code": "100",
+      "figma": "100"
+    },
+    "token --drift-motion-duration-panel": {
+      "code": "300",
+      "figma": "300"
+    },
+    "token --drift-motion-duration-ui": {
+      "code": "200",
+      "figma": "200"
+    },
+    "token --drift-motion-ease-in-out": {
+      "code": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "figma": "cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "token --drift-motion-ease-standard": {
+      "code": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "figma": "cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "token --drift-opacity-40": {
+      "code": "0.4",
+      "figma": "0.4"
+    },
+    "token --drift-opacity-60": {
+      "code": "0.6",
+      "figma": "0.6"
+    },
+    "token --drift-opacity-disabled": {
+      "code": "0.4",
+      "figma": "0.4"
+    },
+    "token --drift-radius-control": {
+      "code": "4",
+      "figma": "4"
+    },
+    "token --drift-radius-full": {
+      "code": "9999",
+      "figma": "9999"
+    },
+    "token --drift-radius-lg": {
+      "code": "12",
+      "figma": "12"
+    },
+    "token --drift-radius-md": {
+      "code": "8",
+      "figma": "8"
+    },
+    "token --drift-radius-overlay": {
+      "code": "12",
+      "figma": "12"
+    },
+    "token --drift-radius-panel": {
+      "code": "16",
+      "figma": "16"
+    },
+    "token --drift-radius-pill": {
+      "code": "9999",
+      "figma": "9999"
+    },
+    "token --drift-radius-sm": {
+      "code": "4",
+      "figma": "4"
+    },
+    "token --drift-radius-surface": {
+      "code": "8",
+      "figma": "8"
+    },
+    "token --drift-radius-xl": {
+      "code": "16",
+      "figma": "16"
+    },
+    "token --drift-size-grid": {
+      "code": "32",
+      "figma": "32"
+    },
+    "token --drift-size-icon-16": {
+      "code": "16",
+      "figma": "16"
+    },
+    "token --drift-size-icon-inline": {
+      "code": "16",
+      "figma": "16"
+    },
+    "token --drift-space-0-25": {
+      "code": "1",
+      "figma": "1"
+    },
+    "token --drift-space-0-5": {
+      "code": "2",
+      "figma": "2"
+    },
+    "token --drift-space-1": {
+      "code": "4",
+      "figma": "4"
+    },
+    "token --drift-space-10": {
+      "code": "40",
+      "figma": "40"
+    },
+    "token --drift-space-12": {
+      "code": "48",
+      "figma": "48"
+    },
+    "token --drift-space-16": {
+      "code": "64",
+      "figma": "64"
+    },
+    "token --drift-space-2": {
+      "code": "8",
+      "figma": "8"
+    },
+    "token --drift-space-20": {
+      "code": "80",
+      "figma": "80"
+    },
+    "token --drift-space-3": {
+      "code": "12",
+      "figma": "12"
+    },
+    "token --drift-space-4": {
+      "code": "16",
+      "figma": "16"
+    },
+    "token --drift-space-5": {
+      "code": "20",
+      "figma": "20"
+    },
+    "token --drift-space-6": {
+      "code": "24",
+      "figma": "24"
+    },
+    "token --drift-space-7": {
+      "code": "28",
+      "figma": "28"
+    },
+    "token --drift-space-8": {
+      "code": "32",
+      "figma": "32"
+    },
+    "token --drift-space-gap-2xl": {
+      "code": "28",
+      "figma": "28"
+    },
+    "token --drift-space-gap-2xs": {
+      "code": "4",
+      "figma": "4"
+    },
+    "token --drift-space-gap-3xl": {
+      "code": "32",
+      "figma": "32"
+    },
+    "token --drift-space-gap-lg": {
+      "code": "20",
+      "figma": "20"
+    },
+    "token --drift-space-gap-md": {
+      "code": "16",
+      "figma": "16"
+    },
+    "token --drift-space-gap-sm": {
+      "code": "12",
+      "figma": "12"
+    },
+    "token --drift-space-gap-xs": {
+      "code": "8",
+      "figma": "8"
+    },
+    "token --drift-space-inset-2xl": {
+      "code": "28",
+      "figma": "28"
+    },
+    "token --drift-space-inset-2xs": {
+      "code": "4",
+      "figma": "4"
+    },
+    "token --drift-space-inset-3xl": {
+      "code": "32",
+      "figma": "32"
+    },
+    "token --drift-space-inset-5xl": {
+      "code": "48",
+      "figma": "48"
+    },
+    "token --drift-space-inset-6xl": {
+      "code": "64",
+      "figma": "64"
+    },
+    "token --drift-space-inset-7xl": {
+      "code": "80",
+      "figma": "80"
+    },
+    "token --drift-space-inset-hairline": {
+      "code": "1",
+      "figma": "1"
+    },
+    "token --drift-space-inset-lg": {
+      "code": "20",
+      "figma": "20"
+    },
+    "token --drift-space-inset-md": {
+      "code": "16",
+      "figma": "16"
+    },
+    "token --drift-space-inset-sm": {
+      "code": "12",
+      "figma": "12"
+    },
+    "token --drift-space-inset-tight": {
+      "code": "2",
+      "figma": "2"
+    },
+    "token --drift-space-inset-xl": {
+      "code": "24",
+      "figma": "24"
+    },
+    "token --drift-space-inset-xs": {
+      "code": "8",
+      "figma": "8"
+    },
+    "token --drift-space-stack-2xl": {
+      "code": "28",
+      "figma": "28"
+    },
+    "token --drift-space-stack-2xs": {
+      "code": "4",
+      "figma": "4"
+    },
+    "token --drift-space-stack-3xl": {
+      "code": "32",
+      "figma": "32"
+    },
+    "token --drift-space-stack-4xl": {
+      "code": "40",
+      "figma": "40"
+    },
+    "token --drift-space-stack-5xl": {
+      "code": "48",
+      "figma": "48"
+    },
+    "token --drift-space-stack-lg": {
+      "code": "20",
+      "figma": "20"
+    },
+    "token --drift-space-stack-md": {
+      "code": "16",
+      "figma": "16"
+    },
+    "token --drift-space-stack-sm": {
+      "code": "12",
+      "figma": "12"
+    },
+    "token --drift-space-stack-xl": {
+      "code": "24",
+      "figma": "24"
+    },
+    "token --drift-space-stack-xs": {
+      "code": "8",
+      "figma": "8"
+    },
+    "token --drift-type-body-leading": {
+      "code": "1.5",
+      "figma": "1.5"
+    },
+    "token --drift-type-body-lg-leading": {
+      "code": "1.6",
+      "figma": "1.6"
+    },
+    "token --drift-type-body-lg-size": {
+      "code": "16",
+      "figma": "16"
+    },
+    "token --drift-type-body-lg-tracking": {
+      "code": "0",
+      "figma": "0"
+    },
+    "token --drift-type-body-lg-weight": {
+      "code": "400",
+      "figma": "400"
+    },
+    "token --drift-type-body-size": {
+      "code": "14",
+      "figma": "14"
+    },
+    "token --drift-type-body-sm-leading": {
+      "code": "1.5",
+      "figma": "1.5"
+    },
+    "token --drift-type-body-sm-size": {
+      "code": "13",
+      "figma": "13"
+    },
+    "token --drift-type-body-sm-tracking": {
+      "code": "0",
+      "figma": "0"
+    },
+    "token --drift-type-body-sm-weight": {
+      "code": "400",
+      "figma": "400"
+    },
+    "token --drift-type-body-tracking": {
+      "code": "0",
+      "figma": "0"
+    },
+    "token --drift-type-body-weight": {
+      "code": "400",
+      "figma": "400"
+    },
+    "token --drift-type-data-family": {
+      "code": "\"Fira Code\", ui-monospace, \"SFMono-Regular\", Menlo, monospace",
+      "figma": "\"Fira Code\", ui-monospace, \"SFMono-Regular\", Menlo, monospace"
+    },
+    "token --drift-type-data-size": {
+      "code": "12",
+      "figma": "12"
+    },
+    "token --drift-type-display-leading": {
+      "code": "1.15",
+      "figma": "1.15"
+    },
+    "token --drift-type-display-size": {
+      "code": "30",
+      "figma": "30"
+    },
+    "token --drift-type-display-tracking": {
+      "code": "-0.03",
+      "figma": "-0.03"
+    },
+    "token --drift-type-display-weight": {
+      "code": "700",
+      "figma": "700"
+    },
+    "token --drift-type-family-code": {
+      "code": "\"Fira Code\", ui-monospace, \"SFMono-Regular\", Menlo, monospace",
+      "figma": "\"Fira Code\", ui-monospace, \"SFMono-Regular\", Menlo, monospace"
+    },
+    "token --drift-type-family-display": {
+      "code": "\"Stack Sans Notch Variable\", \"Stack Sans Notch\", \"Stack Sans Text Variable\", system-ui, sans-serif",
+      "figma": "\"Stack Sans Notch Variable\", \"Stack Sans Notch\", \"Stack Sans Text Variable\", system-ui, sans-serif"
+    },
+    "token --drift-type-family-heading": {
+      "code": "\"Stack Sans Notch Variable\", \"Stack Sans Notch\", \"Stack Sans Text Variable\", system-ui, sans-serif",
+      "figma": "\"Stack Sans Notch Variable\", \"Stack Sans Notch\", \"Stack Sans Text Variable\", system-ui, sans-serif"
+    },
+    "token --drift-type-family-mono": {
+      "code": "\"Fira Code\", ui-monospace, \"SFMono-Regular\", Menlo, monospace",
+      "figma": "\"Fira Code\", ui-monospace, \"SFMono-Regular\", Menlo, monospace"
+    },
+    "token --drift-type-family-sans": {
+      "code": "\"Stack Sans Text Variable\", \"Stack Sans Text\", system-ui, sans-serif",
+      "figma": "\"Stack Sans Text Variable\", \"Stack Sans Text\", system-ui, sans-serif"
+    },
+    "token --drift-type-family-ui": {
+      "code": "\"Stack Sans Text Variable\", \"Stack Sans Text\", system-ui, sans-serif",
+      "figma": "\"Stack Sans Text Variable\", \"Stack Sans Text\", system-ui, sans-serif"
+    },
+    "token --drift-type-heading-leading": {
+      "code": "1.25",
+      "figma": "1.25"
+    },
+    "token --drift-type-heading-lg-leading": {
+      "code": "1.2",
+      "figma": "1.2"
+    },
+    "token --drift-type-heading-lg-size": {
+      "code": "24",
+      "figma": "24"
+    },
+    "token --drift-type-heading-lg-tracking": {
+      "code": "-0.02",
+      "figma": "-0.02"
+    },
+    "token --drift-type-heading-lg-weight": {
+      "code": "600",
+      "figma": "600"
+    },
+    "token --drift-type-heading-size": {
+      "code": "20",
+      "figma": "20"
+    },
+    "token --drift-type-heading-sm-leading": {
+      "code": "1.3",
+      "figma": "1.3"
+    },
+    "token --drift-type-heading-sm-size": {
+      "code": "16",
+      "figma": "16"
+    },
+    "token --drift-type-heading-sm-tracking": {
+      "code": "-0.01",
+      "figma": "-0.01"
+    },
+    "token --drift-type-heading-sm-weight": {
+      "code": "600",
+      "figma": "600"
+    },
+    "token --drift-type-heading-tracking": {
+      "code": "-0.01",
+      "figma": "-0.01"
+    },
+    "token --drift-type-heading-weight": {
+      "code": "600",
+      "figma": "600"
+    },
+    "token --drift-type-label-leading": {
+      "code": "1.4",
+      "figma": "1.4"
+    },
+    "token --drift-type-label-size": {
+      "code": "13",
+      "figma": "13"
+    },
+    "token --drift-type-label-sm-leading": {
+      "code": "1.4",
+      "figma": "1.4"
+    },
+    "token --drift-type-label-sm-size": {
+      "code": "12",
+      "figma": "12"
+    },
+    "token --drift-type-label-sm-tracking": {
+      "code": "0.02",
+      "figma": "0.02"
+    },
+    "token --drift-type-label-sm-weight": {
+      "code": "500",
+      "figma": "500"
+    },
+    "token --drift-type-label-tracking": {
+      "code": "0",
+      "figma": "0"
+    },
+    "token --drift-type-label-weight": {
+      "code": "500",
+      "figma": "500"
+    },
+    "token --drift-type-label-xs-leading": {
+      "code": "1.4",
+      "figma": "1.4"
+    },
+    "token --drift-type-label-xs-size": {
+      "code": "11",
+      "figma": "11"
+    },
+    "token --drift-type-label-xs-tracking": {
+      "code": "0.08",
+      "figma": "0.08"
+    },
+    "token --drift-type-label-xs-weight": {
+      "code": "500",
+      "figma": "500"
+    },
+    "token --drift-type-leading-115": {
+      "code": "1.15",
+      "figma": "1.15"
+    },
+    "token --drift-type-leading-120": {
+      "code": "1.2",
+      "figma": "1.2"
+    },
+    "token --drift-type-leading-125": {
+      "code": "1.25",
+      "figma": "1.25"
+    },
+    "token --drift-type-leading-130": {
+      "code": "1.3",
+      "figma": "1.3"
+    },
+    "token --drift-type-leading-140": {
+      "code": "1.4",
+      "figma": "1.4"
+    },
+    "token --drift-type-leading-150": {
+      "code": "1.5",
+      "figma": "1.5"
+    },
+    "token --drift-type-leading-160": {
+      "code": "1.6",
+      "figma": "1.6"
+    },
+    "token --drift-type-mono-leading": {
+      "code": "1.6",
+      "figma": "1.6"
+    },
+    "token --drift-type-mono-size": {
+      "code": "13",
+      "figma": "13"
+    },
+    "token --drift-type-mono-tracking": {
+      "code": "0",
+      "figma": "0"
+    },
+    "token --drift-type-mono-weight": {
+      "code": "400",
+      "figma": "400"
+    },
+    "token --drift-type-size-11": {
+      "code": "11",
+      "figma": "11"
+    },
+    "token --drift-type-size-12": {
+      "code": "12",
+      "figma": "12"
+    },
+    "token --drift-type-size-13": {
+      "code": "13",
+      "figma": "13"
+    },
+    "token --drift-type-size-14": {
+      "code": "14",
+      "figma": "14"
+    },
+    "token --drift-type-size-16": {
+      "code": "16",
+      "figma": "16"
+    },
+    "token --drift-type-size-20": {
+      "code": "20",
+      "figma": "20"
+    },
+    "token --drift-type-size-24": {
+      "code": "24",
+      "figma": "24"
+    },
+    "token --drift-type-size-30": {
+      "code": "30",
+      "figma": "30"
+    },
+    "token --drift-type-tracking-normal": {
+      "code": "0",
+      "figma": "0"
+    },
+    "token --drift-type-tracking-tight": {
+      "code": "-0.01",
+      "figma": "-0.01"
+    },
+    "token --drift-type-tracking-tighter": {
+      "code": "-0.02",
+      "figma": "-0.02"
+    },
+    "token --drift-type-tracking-tightest": {
+      "code": "-0.03",
+      "figma": "-0.03"
+    },
+    "token --drift-type-tracking-wide": {
+      "code": "0.02",
+      "figma": "0.02"
+    },
+    "token --drift-type-tracking-widest": {
+      "code": "0.08",
+      "figma": "0.08"
+    },
+    "token --drift-type-weight-400": {
+      "code": "400",
+      "figma": "400"
+    },
+    "token --drift-type-weight-500": {
+      "code": "500",
+      "figma": "500"
+    },
+    "token --drift-type-weight-600": {
+      "code": "600",
+      "figma": "600"
+    },
+    "token --drift-type-weight-700": {
+      "code": "700",
+      "figma": "700"
+    },
+    "token --drift-type-weight-emphasis": {
+      "code": "500",
+      "figma": "500"
+    },
+    "token --drift-type-weight-strong": {
+      "code": "600",
+      "figma": "600"
+    },
+    "token --drift-z-200": {
+      "code": "200",
+      "figma": "200"
+    },
+    "token --drift-z-300": {
+      "code": "300",
+      "figma": "300"
+    },
+    "token --drift-z-400": {
+      "code": "400",
+      "figma": "400"
+    },
+    "token --drift-z-modal": {
+      "code": "400",
+      "figma": "400"
+    },
+    "token --drift-z-overlay": {
+      "code": "300",
+      "figma": "300"
+    },
+    "token --drift-z-sticky": {
+      "code": "200",
+      "figma": "200"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+name: Figma parity
+
+# Compares drift's tokens and its five components with its Figma file. The
+# decisions are made by scripts/figma/diff.mjs; see WORKFLOW.md for what each
+# finding means and who acts on it.
+#
+# Pull requests get the check and one comment, updated in place. Main gets the
+# check on every merge. Monday's run also keeps the drift issues current.
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  push:
+    branches: [main]
+  schedule:
+    # 22:00 UTC on Sunday: Monday 09:00 in Sydney in summer (AEDT), 08:00 in winter (AEST).
+    - cron: "0 22 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  parity:
+    name: Figma parity
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      # The check needs chroma-js and nothing that builds, so install scripts
+      # (Electron's binary download, the SQLite driver) are skipped.
+      - run: npm ci
+      # The code side resolves drift's tokens in a headless Chromium: the
+      # cascade layers and the OKLCH accent ramp are the browser's to apply.
+      - name: Install Chromium
+        run: npx playwright install chromium --only-shell --with-deps
+
+      - name: Compare code with Figma
+        id: check
+        continue-on-error: true
+        run: >-
+          npm run figma:check --
+          --report figma-report.md --json figma-report.json
+          ${{ github.event_name == 'pull_request' && '--compact' || '' }}
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_LATER: ${{ contains(github.event.pull_request.labels.*.name, 'figma-later') }}
+
+      # One comment per pull request, updated in place. Posted only when there is
+      # something to act on, or to update a comment already there. A fork's token
+      # and Dependabot's are read-only, so those pull requests read the job
+      # summary instead.
+      - name: Comment on the pull request
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          github.actor != 'dependabot[bot]' &&
+          hashFiles('figma-report.json') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          actionable=$(jq '[.findings[] | select(.kind != "known")] | length' figma-report.json)
+          id=$(gh api "repos/$REPO/issues/$PR/comments" --paginate \
+            --jq '.[] | select(.body | startswith("<!-- figma-parity -->")) | .id' | head -n 1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$id" -F body=@figma-report.md >/dev/null
+          elif [ "$actionable" -gt 0 ]; then
+            gh pr comment "$PR" --repo "$REPO" --body-file figma-report.md
+          fi
+
+      - name: Keep the drift issues current
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/figma/issues.mjs figma-report.json
+
+      - name: Fail when code and Figma need bringing together
+        if: steps.check.outcome == 'failure'
+        run: exit 1
