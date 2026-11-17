@@ -271,12 +271,12 @@ successful audit of an unreachable site.
 
 ## Testing and CI
 
-| Suite      | Where                                                | What                                                                                                                 |
-| ---------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Service    | `src/**/*.test.ts`                                   | 234 tests in 19 files: the analysis, the API against `openapi.yaml`, the address and access rules, the queue adapter |
-| Client     | `client/src/**/*.test.ts(x)`                         | 235 tests in 13 files: screens with axe, the token tests, the audit model                                            |
-| End to end | `client/e2e`                                         | Against the demo build: the audit flow by keyboard, every tab, focus visibility, the API reference                   |
-| Acceptance | [drift-tests](https://github.com/hipuku/drift-tests) | BDD scenarios over HTTP against a real server, Redis and a fixture site                                              |
+| Suite      | Where                                                | What                                                                                                                                         |
+| ---------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Service    | `src/**/*.test.ts`, `scripts/**/*.test.mjs`          | 248 tests in 20 files: the analysis, the API against `openapi.yaml`, the address and access rules, the queue adapter, the Figma parity rules |
+| Client     | `client/src/**/*.test.ts(x)`                         | 235 tests in 13 files: screens with axe, the token tests, the audit model                                                                    |
+| End to end | `client/e2e`                                         | Against the demo build: the audit flow by keyboard, every tab, focus visibility, the API reference                                           |
+| Acceptance | [drift-tests](https://github.com/hipuku/drift-tests) | BDD scenarios over HTTP against a real server, Redis and a fixture site                                                                      |
 
 drift-tests waits for the server by sending `POST /discover` with no `url` and expecting `400`,
 which involves no Redis, Playwright or network. Changing that status breaks its readiness probe.
