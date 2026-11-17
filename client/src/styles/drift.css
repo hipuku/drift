@@ -11,9 +11,8 @@
    Both ramps are theme-agnostic in name (--drift-color-neutral-*, --drift-color-accent-*) so switching
    the whole palette warm↔cool is only ever a values edit. The accent is
    generated as an OKLCH tonal ramp from two custom properties (--drift-color-accent-h,
-   --drift-color-accent-c), so the live theme playground retunes the entire brand by changing
-   a hue and a chroma, the same OKLCH-ramp idea Drift ships as a product
-   feature, eaten as its own dog food.
+   --drift-color-accent-c), so changing a hue and a chroma retunes the entire
+   brand, the same OKLCH-ramp idea Drift reports on.
    ─────────────────────────────────────────────────────────────────────────── */
 
 @layer drift.primitives {
@@ -25,8 +24,9 @@
     --drift-color-accent-c: 0.19;
 
     /* Accent: a cool tonal ramp generated from the seed above. Lightness is
-       fixed per step (hue-agnostic, so white-on-anchor keeps its contrast
-       whatever the hue); chroma scales off the seed. */
+       fixed per step, so white on the 600 anchor stays near 5:1 at any hue,
+       though it dips below AA for hues 162 to 219 (DESIGN.md § Accent);
+       chroma scales off the seed. */
     --drift-color-accent-50: oklch(
       97% calc(var(--drift-color-accent-c) * 0.14) var(--drift-color-accent-h)
     );
@@ -129,7 +129,7 @@
 
     /* The primary button's raised look, in three states.
        A role rather than four literals in Button.module.css, and it takes its
-       hue from --drift-color-accent-h so it follows the theme playground: pinned at 200
+       hue from --drift-color-accent-h so it follows the accent: pinned at 200
        under a 239 brand, the lift did not change when the accent did. Lightness
        and chroma are fixed, so the shadow stays less saturated than the colour
        casting it. */

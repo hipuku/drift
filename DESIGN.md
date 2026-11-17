@@ -30,10 +30,12 @@ test and keep honest, for no product gain (a97c8f7).
 ### Accent
 
 **Decision.** One blue accent, generated as an OKLCH tonal ramp from two values,
-`--drift-color-accent-h` (239) and `--drift-color-accent-c` (0.19). Lightness is fixed per step, so white text
-on the 600 anchor clears AA whatever the hue.
+`--drift-color-accent-h` (239) and `--drift-color-accent-c` (0.19). Lightness is fixed per step, so
+white text on the 600 anchor stays near 5:1 when the hue changes, but not at one ratio: WCAG contrast
+follows luminance, not OKLCH lightness. Measured in Chromium, it runs from 4.26:1 to 5.88:1 across
+the hues and falls below AA from 162 to 219, the teals and cyans. Drift's 239 measures 4.90:1.
 
-**Reason.** The theme playground retunes the whole brand by changing a hue and a chroma, the same
+**Reason.** Changing a hue and a chroma retunes the whole brand, the same
 OKLCH ramp idea Drift reports on. The hue itself is a visual choice.
 
 **Alternatives.** The primary button's raised look was five fixed `oklch()` values at hue 200, so
