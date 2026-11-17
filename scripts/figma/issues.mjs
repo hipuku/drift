@@ -113,7 +113,13 @@ function main() {
     }
   }
 
-  // One tracking issue for the known drift, rewritten each run.
+  // One tracking issue for the known drift, rewritten each run. Its token rows
+  // come from the variables snapshot, so while that is stale the issue is left
+  // as it is rather than rewritten from out-of-date values.
+  if (!variablesFresh) {
+    console.log("The variables snapshot is stale, so the tracking issue was left as it is.");
+    return;
+  }
   // The tracking issue lists what is known, which a stale snapshot does not change.
   const known = report.findings.filter((f) => f.kind === "known");
   const tracking = openIssues(TRACKING.label).find((i) => i.title === TRACKING.title);

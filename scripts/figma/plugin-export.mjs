@@ -29,7 +29,9 @@ export async function exportFile(figma) {
         const syntax = target?.codeSyntax?.WEB?.match(/var\((--[\w-]+)\)/);
         // The same rule as variableToProperty in normalise.mjs: code syntax first,
         // then the name with slashes as hyphens.
-        const property = target ? `--${target.name.replace(/\//g, "-")}` : `unresolved ${raw.id}`;
+        const property = target
+          ? `--drift-${target.name.replace(/\//g, "-")}`
+          : `unresolved ${raw.id}`;
         value = { alias: syntax ? syntax[1] : property };
       } else if (raw && typeof raw === "object" && "r" in raw) {
         const hex = [raw.r, raw.g, raw.b]
@@ -82,4 +84,7 @@ export async function exportFile(figma) {
   return { capturedAt, variables, components };
 }
 
+/* A function body, as the Figma MCP server's use_figma tool runs code: its
+   last statement returns the export. To run it as a development plugin
+   instead, wrap it: `(async () => { ... })().then(r => console.log(JSON.stringify(r)))`. */
 export const pluginCode = () => `${exportFile.toString()}\nreturn await exportFile(figma)\n`;

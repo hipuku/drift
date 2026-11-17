@@ -3,8 +3,8 @@
    The file endpoint returns every component and its property definitions on any
    plan, so components are read live. Variables are not: the REST variables
    endpoint needs an Enterprise plan, so they come from the snapshot exported by
-   plugin-export.js, and this module only reports when that snapshot is older
-   than the file. */
+   plugin-export.mjs; check.mjs compares the file's lastModified, from the
+   same response as the components, with the snapshot's export time. */
 
 const API = "https://api.figma.com/v1";
 
@@ -64,12 +64,6 @@ async function get(url, token) {
     }
     await wait(delay);
   }
-}
-
-/** When the file last changed, without downloading its tree. */
-export async function lastModified(key, token) {
-  const file = await get(`${API}/files/${key}?depth=1`, token);
-  return file.lastModified;
 }
 
 /** The file's components in the raw shape plugin-export.js also produces. */

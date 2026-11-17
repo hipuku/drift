@@ -34,7 +34,13 @@ export function axesOf(tsxPath, name) {
   if (!m) return {};
   const aliases = unionAliases(src);
   const axes = {};
-  for (const line of m[1].replace(/\/\*[\s\S]*?\*\//g, "").split("\n")) {
+  // A long union is wrapped by Prettier, one member a line: join each member
+  // back onto its prop before reading it.
+  const body = m[1]
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/:\s*\n\s*\|/g, ": ")
+    .replace(/\n\s*\|/g, " |");
+  for (const line of body.split("\n")) {
     const p = line.match(/^\s*(\w+)\??\s*:\s*(.+?);?\s*$/);
     if (!p) continue;
     const [, prop, type] = p;

@@ -82,6 +82,11 @@ describe("variants", () => {
     expect(axesOf(tsx, "Badge")).toEqual({ variant: ["neutral", "info"], size: ["sm", "md"] });
   });
 
+  it("reads a prop whose union Prettier wrapped onto several lines", () => {
+    const tsx = tmp("Chip.tsx", 'interface ChipProps {\n  size?:\n    | "sm"\n    | "md";\n}\n');
+    expect(axesOf(tsx, "Chip")).toEqual({ size: ["sm", "md"] });
+  });
+
   it("joins a multi-line union", () => {
     expect(unionAliases('type Role =\n  | "a"\n  | "b";')).toEqual({ Role: ["a", "b"] });
   });

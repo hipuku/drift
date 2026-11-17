@@ -21,6 +21,13 @@ on:
 permissions:
   contents: read
 
+# One run at a time per pull request, the newest winning, so two runs cannot
+# both post a report. Runs on main queue rather than cancel, so a report and its
+# issue reconciliation always run start to finish without another in between.
+concurrency:
+  group: figma-parity-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   parity:
     name: Figma parity
@@ -79,7 +86,9 @@ jobs:
           fi
 
       - name: Keep the drift issues current
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        # Only main's state may open or close the drift issues: a manual run on a
+        # branch that fixes a difference must not close the issue main still has.
+        if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: node scripts/figma/issues.mjs figma-report.json

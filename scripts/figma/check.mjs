@@ -20,7 +20,7 @@ import { codeItems } from "./code.mjs";
 import { figmaItems } from "./normalise.mjs";
 import { diff, accept, applyExceptions } from "./diff.mjs";
 import { report } from "./report.mjs";
-import { FigmaUnavailable, fetchComponents, lastModified } from "./rest.mjs";
+import { FigmaUnavailable, fetchComponents } from "./rest.mjs";
 import { pluginCode } from "./plugin-export.mjs";
 
 const args = process.argv.slice(2);
@@ -49,14 +49,16 @@ async function figmaSide() {
   let variablesFresh = false;
   if (token) {
     try {
-      const modified = await lastModified(FIGMA_FILE.key, token);
+      // Freshness comes from the same response as the components, so the two
+      // describe one revision of the file even if Figma changes in between.
+      const fetched = await fetchComponents(FIGMA_FILE.key, token);
+      const modified = fetched.file.lastModified;
       variablesFresh = new Date(modified) <= new Date(snap.exportedAt);
       if (!variablesFresh)
         warnings.push(
           `The snapshot was exported ${snap.exportedAt} and the file changed ${modified}. ` +
             "Variables were compared against the snapshot; re-export it to compare the current file.",
         );
-      const fetched = await fetchComponents(FIGMA_FILE.key, token);
       components = fetched.components;
       live = true;
       if (flag("--refresh"))
