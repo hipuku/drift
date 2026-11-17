@@ -203,11 +203,18 @@ jobs:
         env:
           BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
-          if git ls-remote --exit-code --heads https://github.com/hipuku/drift-tests "$BRANCH" >/dev/null; then
-            echo "ref=$BRANCH" >> "$GITHUB_OUTPUT"
-          else
-            echo "ref=main" >> "$GITHUB_OUTPUT"
-          fi
+          # Exit status 2 means no such branch, so main is used. Any other
+          # failure is a lookup that did not answer, and stops the job rather
+          # than quietly testing against main.
+          set +e
+          git ls-remote --exit-code --heads https://github.com/hipuku/drift-tests "$BRANCH" >/dev/null
+          status=$?
+          set -e
+          case $status in
+            0) echo "ref=$BRANCH" >> "$GITHUB_OUTPUT" ;;
+            2) echo "ref=main" >> "$GITHUB_OUTPUT" ;;
+            *) echo "Could not look up drift-tests branches (git ls-remote exited $status)"; exit 1 ;;
+          esac
 
       - name: Check out drift-tests
         uses: actions/checkout@v7
