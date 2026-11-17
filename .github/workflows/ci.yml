@@ -207,7 +207,7 @@ jobs:
           # failure is a lookup that did not answer, and stops the job rather
           # than quietly testing against main.
           set +e
-          git ls-remote --exit-code --heads https://github.com/hipuku/drift-tests "$BRANCH" >/dev/null
+          git ls-remote --exit-code https://github.com/hipuku/drift-tests "refs/heads/$BRANCH" >/dev/null
           status=$?
           set -e
           case $status in
