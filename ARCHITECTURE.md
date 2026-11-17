@@ -271,22 +271,23 @@ successful audit of an unreachable site.
 
 ## Testing and CI
 
-| Suite      | Where                                                | What                                                                                                                 |
-| ---------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Service    | `src/**/*.test.ts`                                   | 234 tests in 19 files: the analysis, the API against `openapi.yaml`, the address and access rules, the queue adapter |
-| Client     | `client/src/**/*.test.ts(x)`                         | 235 tests in 13 files: screens with axe, the token tests, the audit model                                            |
-| End to end | `client/e2e`                                         | Against the demo build: the audit flow by keyboard, every tab, focus visibility, the API reference                   |
-| Acceptance | [drift-tests](https://github.com/hipuku/drift-tests) | BDD scenarios over HTTP against a real server, Redis and a fixture site                                              |
+| Suite      | Where                                                | What                                                                                                                                         |
+| ---------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Service    | `src/**/*.test.ts`, `scripts/**/*.test.mjs`          | 248 tests in 20 files: the analysis, the API against `openapi.yaml`, the address and access rules, the queue adapter, the Figma parity rules |
+| Client     | `client/src/**/*.test.ts(x)`                         | 235 tests in 13 files: screens with axe, the token tests, the audit model                                                                    |
+| End to end | `client/e2e`                                         | Against the demo build: the audit flow by keyboard, every tab, focus visibility, the API reference                                           |
+| Acceptance | [drift-tests](https://github.com/hipuku/drift-tests) | BDD scenarios over HTTP against a real server, Redis and a fixture site                                                                      |
 
 drift-tests waits for the server by sending `POST /discover` with no `url` and expecting `400`,
 which involves no Redis, Playwright or network. Changing that status breaks its readiness probe.
 
-CI runs eight checks on every pull request, each required on `main`: `Lint` (ESLint with the import
+CI runs nine checks on every pull request, each required on `main`: `Lint` (ESLint with the import
 layers, JSX accessibility and type-checked promise rules, Stylelint, the prose check, `lint:api`,
 markdownlint and knip), `Links` (every relative link and heading anchor in the Markdown, offline),
-`Format`, `Typecheck`, `Test`, `Build`, `End to end`, and `Figma parity`, which compares the
+`Format`, `Typecheck`, `Test`, `Build`, `End to end`, `Acceptance` (drift-tests' scenarios against
+this change's own server), and `Figma parity`, which compares the
 tokens and components with the Figma file ([WORKFLOW.md § Design sync](./WORKFLOW.md#design-sync)).
-CodeQL scans the code. CI does not crawl a real site; drift-tests crawls its own fixture.
+CodeQL scans the code. CI does not crawl a real site; the acceptance suite crawls its own fixture.
 
 How changes reach `main`, and how a release is cut, is in [WORKFLOW.md](./WORKFLOW.md).
 
